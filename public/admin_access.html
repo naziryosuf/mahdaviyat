@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>درگاه اختصاصی مدیریت - مجله ایدئولوژی مهدویت</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #0b111e;
+      color: #f9fafb;
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+    .card {
+      background: #111827;
+      border: 2px solid #1B889A;
+      padding: 2.5rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      max-width: 420px;
+      width: 90%;
+    }
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(27, 136, 154, 0.2);
+      border-top-color: #1B889A;
+      border-radius: 50%;
+      animation: spin 1s infinite linear;
+      margin: 0 auto 1.5rem auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    h2 {
+      color: #1B889A;
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      color: #9ca3af;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    a.btn {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.5rem;
+      background: #1B889A;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 0.75rem;
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="spinner"></div>
+    <h2>درگاه امنیت مدیریت سامانه</h2>
+    <p>در حال انتقال امن به پنل مدیریت مجله ایدئولوژی مهدویت...</p>
+    <p id="targetUrl" style="font-size: 11px; color: #6b7280; font-family: monospace;"></p>
+    <a id="directBtn" href="#" class="btn">ورود مستقیم به پنل مدیریت</a>
+  </div>
+
+  <script>
+    (function() {
+      // Dynamically resolve target admin URL based on current host/domain
+      var target = window.location.origin + '/secret-admin-gate';
+      document.getElementById('targetUrl').textContent = target;
+      document.getElementById('directBtn').href = target;
+      
+      // Auto-redirect after 1 second
+      setTimeout(function() {
+        window.location.href = target;
+      }, 1000);
+    })();
+  </script>
+</body>
+</html>

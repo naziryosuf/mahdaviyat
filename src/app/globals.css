@@ -1,26 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;200;300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --font-vazir: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* User Explicit Custom Color Palette */
+  --color-teal: #1B889A;      /* Ocean Teal / Primary Accent */
+  --color-charcoal: #404040;  /* Slate Charcoal / Text & Neutrals */
+  --color-crimson: #A32838;   /* Crimson Red / Highlights & Badges */
+
+  /* Light Mode */
+  --bg-color: #f8fafc;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --text-primary: #111827;
+  --text-secondary: #404040;
+  --muted-bg: #f1f5f9;
+  --nav-bg: rgba(255, 255, 255, 0.92);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.dark {
+  /* Dark Slate Mode with Charcoal (#404040) & Deep Teal (#1B889A) */
+  --bg-color: #0b111e;
+  --card-bg: #111827;
+  --card-border: #1f2937;
+  --text-primary: #f9fafb;
+  --text-secondary: #9ca3af;
+  --muted-bg: #1f2937;
+  --nav-bg: rgba(11, 17, 30, 0.92);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* HARDWARE ACCELERATION & ULTRA-SMOOTH PERFORMANCE UTILITIES */
+.gpu-accelerate {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ENFORCE VAZIRMATN FONT 100% SITE-WIDE ACROSS ALL ELEMENTS */
+*, ::before, ::after, html, body, input, textarea, button, select, option, h1, h2, h3, h4, h5, h6, p, span, a, label, div {
+  font-family: var(--font-vazir) !important;
+}
+
+html, body {
+  min-height: 100vh;
+  height: 100%;
+  background-color: var(--bg-color) !important;
+  color: var(--text-primary);
+  font-size: 16px;
+  line-height: 1.75;
+  direction: rtl;
+  text-align: right;
+  overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.font-serif-persian {
+  font-family: var(--font-vazir) !important;
+  font-weight: 700;
+}
+
+/* Custom Gradient & Badges using #1B889A, #404040, #A32838 */
+.teal-gradient-text {
+  background: linear-gradient(135deg, #1B889A 0%, #06b6d4 50%, #A32838 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.crimson-gradient-text {
+  background: linear-gradient(135deg, #A32838 0%, #e11d48 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.teal-badge {
+  background: rgba(27, 136, 154, 0.12);
+  border: 1px solid rgba(27, 136, 154, 0.35);
+  color: #1B889A;
+  font-family: var(--font-vazir) !important;
+}
+
+.crimson-badge {
+  background: rgba(163, 40, 56, 0.12);
+  border: 1px solid rgba(163, 40, 56, 0.35);
+  color: #A32838;
+  font-family: var(--font-vazir) !important;
+}
+
+.charcoal-badge {
+  background: rgba(64, 64, 64, 0.12);
+  border: 1px solid rgba(64, 64, 64, 0.35);
+  color: #404040;
+  font-family: var(--font-vazir) !important;
+}
+
+.dark .charcoal-badge {
+  color: #d1d5db;
+}
+
+/* Glassmorphism & Fast Modern Card Styling */
+.glass-panel {
+  background: var(--nav-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--card-border);
+  transform: translateZ(0);
+}
+
+.modern-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.05);
+  transform: translateZ(0);
+}
+
+.modern-card:hover {
+  border-color: rgba(27, 136, 154, 0.5);
+  transform: translateY(-2px) translateZ(0);
+  box-shadow: 0 12px 24px -6px rgba(27, 136, 154, 0.2);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+}
+::-webkit-scrollbar-thumb {
+  background: #1B889A;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #156d7b;
+}
+
+.paper-stage-shadow {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 30px rgba(27, 136, 154, 0.2);
 }
