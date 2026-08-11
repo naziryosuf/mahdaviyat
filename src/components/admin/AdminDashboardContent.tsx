@@ -957,21 +957,21 @@ export const AdminDashboardContent: React.FC = () => {
                   <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">
                     نمایش وضعیت و میزان مصرف حافظه دیتابیس
                   </h2>
-                  <p className="text-xs text-[var(--text-secondary)]">آمار کامل رکوردها و فضا در حالت ذخیره‌سازی محلی و همگام‌سازی بک‌اند</p>
+                  <p className="text-xs text-[var(--text-secondary)]">آمار کامل رکوردها و فضای ذخیره‌سازی ابری سوپربیس (Supabase PostgreSQL Cloud)</p>
                 </div>
               </div>
 
               <div className="px-4 py-1.5 rounded-full teal-badge text-xs font-bold flex items-center gap-2 w-fit">
                 <Server className="w-4 h-4 text-[#1B889A]" />
-                <span>وضعیت: دیتابیس فعال و آنلاین</span>
+                <span>وضعیت: دیتابیس ابری سوپربیس (Supabase Cloud Online)</span>
               </div>
             </div>
 
             {/* Storage Meter Bar */}
             <div className="space-y-3 bg-[var(--bg-color)] p-5 rounded-2xl border border-[var(--card-border)]">
               <div className="flex items-center justify-between text-xs font-bold text-[var(--text-primary)]">
-                <span>حجم اشغال‌شده دیتابیس ارتقایافته:</span>
-                <span className="font-mono text-[#1B889A]">{formattedStorageKB} KB / 5,120,000 KB ({storagePercentage}% پر شده)</span>
+                <span>حجم اشغال‌شده دیتابیس ابری سوپربیس (Supabase):</span>
+                <span className="font-mono text-[#1B889A]">{formattedStorageKB} KB / Supabase Cloud PostgreSQL</span>
               </div>
 
               <div className="w-full h-3 bg-stone-800 rounded-full overflow-hidden p-0.5 border border-[var(--card-border)]">
@@ -981,9 +981,9 @@ export const AdminDashboardContent: React.FC = () => {
                 />
               </div>
 
-              <div className="flex items-center justify-between text-[11px] text-[var(--text-secondary)] pt-1">
-                <span>مجموع رکوردهای ذخیره‌شده: <strong className="text-[var(--text-primary)]">{totalRecordsCount} مورد</strong></span>
-                <span className="text-[#1B889A] font-bold">حد مجاز جدید: ۵ گیگابایت (۵,۰۰۰ مگابایت - نامحدود رایگان)</span>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between text-[11px] text-[var(--text-secondary)] pt-1 gap-1">
+                <span>مجموع رکوردهای همگام‌سازی‌شده: <strong className="text-[var(--text-primary)]">{totalRecordsCount} مورد</strong></span>
+                <span className="text-[#1B889A] font-bold">میزبانی ابری: Supabase Cloud (PostgreSQL 500MB+ نامحدود ابری)</span>
               </div>
             </div>
 
