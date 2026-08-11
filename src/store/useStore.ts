@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { Article, MagazineIssue, VideoItem, AudioItem, InfographicItem, TeamMember, ContactMessage, CoHostUser } from '../types';
 import { initialArticles, initialMagazineIssues, initialVideos, initialAudios, initialInfographics, initialTeamMembers, initialContactMessages, initialCoHosts } from '../data/initialData';
 import { Language } from '../data/translations';
+import { supabase } from '@/lib/supabase';
 
 export type ThemeMode = 'dark' | 'light';
 
@@ -244,83 +245,63 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   addArticle: async (articleData) => {
-    try {
-      const res = await fetch('/api/articles', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(articleData),
-      });
-      const data = await res.json();
-      if (data.success && data.data) {
-        set((state) => ({ articles: [data.data, ...state.articles] }));
-        return;
-      }
-    } catch {}
-
     const newArticle: Article = {
       ...articleData,
       id: `art-${Date.now()}`,
       views: 1,
     };
     set((state) => ({ articles: [newArticle, ...state.articles] }));
+    try {
+      await supabase.from('articles').upsert(newArticle);
+    } catch {}
   },
 
   updateArticle: async (id, articleData) => {
-    try {
-      await fetch(`/api/articles/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(articleData),
-      });
-    } catch {}
-
     set((state) => ({
       articles: state.articles.map((art) => (art.id === id ? { ...art, ...articleData } : art)),
     }));
+    try {
+      await supabase.from('articles').update(articleData).eq('id', id);
+    } catch {}
   },
 
   deleteArticle: async (id) => {
-    try {
-      await fetch(`/api/articles/${id}`, { method: 'DELETE' });
-    } catch {}
-
     set((state) => ({
       articles: state.articles.filter((art) => art.id !== id),
     }));
+    try {
+      await supabase.from('articles').delete().eq('id', id);
+    } catch {}
   },
 
   addMagazineIssue: async (issueData) => {
-    try {
-      const res = await fetch('/api/magazines', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(issueData),
-      });
-      const data = await res.json();
-      if (data.success && data.data) {
-        set((state) => ({ magazineIssues: [data.data, ...state.magazineIssues] }));
-        return;
-      }
-    } catch {}
-
     const newIssue: MagazineIssue = {
       ...issueData,
       id: `mag-${Date.now()}`,
       download_count: 0,
     };
     set((state) => ({ magazineIssues: [newIssue, ...state.magazineIssues] }));
+    try {
+      await supabase.from('magazine_issues').upsert(newIssue);
+    } catch {}
   },
 
   updateMagazineIssue: (id, issueData) => {
     set((state) => ({
       magazineIssues: state.magazineIssues.map((iss) => (iss.id === id ? { ...iss, ...issueData } : iss)),
     }));
+    try {
+      supabase.from('magazine_issues').update(issueData).eq('id', id);
+    } catch {}
   },
 
   deleteMagazineIssue: (id) => {
     set((state) => ({
       magazineIssues: state.magazineIssues.filter((iss) => iss.id !== id),
     }));
+    try {
+      supabase.from('magazine_issues').delete().eq('id', id);
+    } catch {}
   },
 
   addVideo: (videoData) => {
@@ -330,18 +311,27 @@ export const useStore = create<AppState>((set, get) => ({
       views: 1,
     };
     set((state) => ({ videos: [newVid, ...state.videos] }));
+    try {
+      supabase.from('video_items').upsert(newVid);
+    } catch {}
   },
 
   updateVideo: (id, videoData) => {
     set((state) => ({
       videos: state.videos.map((v) => (v.id === id ? { ...v, ...videoData } : v)),
     }));
+    try {
+      supabase.from('video_items').update(videoData).eq('id', id);
+    } catch {}
   },
 
   deleteVideo: (id) => {
     set((state) => ({
       videos: state.videos.filter((v) => v.id !== id),
     }));
+    try {
+      supabase.from('video_items').delete().eq('id', id);
+    } catch {}
   },
 
   addAudio: (audioData) => {
@@ -351,18 +341,27 @@ export const useStore = create<AppState>((set, get) => ({
       plays: 1,
     };
     set((state) => ({ audios: [newAud, ...state.audios] }));
+    try {
+      supabase.from('audio_items').upsert(newAud);
+    } catch {}
   },
 
   updateAudio: (id, audioData) => {
     set((state) => ({
       audios: state.audios.map((a) => (a.id === id ? { ...a, ...audioData } : a)),
     }));
+    try {
+      supabase.from('audio_items').update(audioData).eq('id', id);
+    } catch {}
   },
 
   deleteAudio: (id) => {
     set((state) => ({
       audios: state.audios.filter((a) => a.id !== id),
     }));
+    try {
+      supabase.from('audio_items').delete().eq('id', id);
+    } catch {}
   },
 
   addInfographic: (infoData) => {
@@ -371,12 +370,18 @@ export const useStore = create<AppState>((set, get) => ({
       id: `info-${Date.now()}`,
     };
     set((state) => ({ infographics: [newInfo, ...state.infographics] }));
+    try {
+      supabase.from('infographic_items').upsert(newInfo);
+    } catch {}
   },
 
   deleteInfographic: (id) => {
     set((state) => ({
       infographics: state.infographics.filter((i) => i.id !== id),
     }));
+    try {
+      supabase.from('infographic_items').delete().eq('id', id);
+    } catch {}
   },
 
   addTeamMember: (memberData) => {
@@ -385,34 +390,30 @@ export const useStore = create<AppState>((set, get) => ({
       id: `team-${Date.now()}`,
     };
     set((state) => ({ teamMembers: [...state.teamMembers, newMember] }));
+    try {
+      supabase.from('team_members').upsert(newMember);
+    } catch {}
   },
 
   updateTeamMember: (id, memberData) => {
     set((state) => ({
       teamMembers: state.teamMembers.map((m) => (m.id === id ? { ...m, ...memberData } : m)),
     }));
+    try {
+      supabase.from('team_members').update(memberData).eq('id', id);
+    } catch {}
   },
 
   deleteTeamMember: (id) => {
     set((state) => ({
       teamMembers: state.teamMembers.filter((m) => m.id !== id),
     }));
+    try {
+      supabase.from('team_members').delete().eq('id', id);
+    } catch {}
   },
 
   addContactMessage: async (msgData) => {
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(msgData),
-      });
-      const data = await res.json();
-      if (data.success && data.data) {
-        set((state) => ({ contactMessages: [data.data, ...state.contactMessages] }));
-        return;
-      }
-    } catch {}
-
     const newMsg: ContactMessage = {
       ...msgData,
       id: `msg-${Date.now()}`,
@@ -420,35 +421,86 @@ export const useStore = create<AppState>((set, get) => ({
       status: 'unread',
     };
     set((state) => ({ contactMessages: [newMsg, ...state.contactMessages] }));
+    try {
+      await supabase.from('contact_messages').upsert(newMsg);
+    } catch {}
   },
 
   markContactRead: (id) => {
     set((state) => ({
       contactMessages: state.contactMessages.map((m) => (m.id === id ? { ...m, status: 'read' } : m)),
     }));
+    try {
+      supabase.from('contact_messages').update({ status: 'read' }).eq('id', id);
+    } catch {}
   },
 
   deleteContactMessage: (id) => {
     set((state) => ({
       contactMessages: state.contactMessages.filter((m) => m.id !== id),
     }));
+    try {
+      supabase.from('contact_messages').delete().eq('id', id);
+    } catch {}
   },
 
   fetchFromBackend: async () => {
     try {
-      const resArticles = await fetch('/api/articles');
-      const dataArticles = await resArticles.json();
-      if (dataArticles.success && Array.isArray(dataArticles.data)) {
-        set({ articles: dataArticles.data });
+      // 1. Articles
+      const { data: supaArticles, error: artErr } = await supabase.from('articles').select('*').order('created_at', { ascending: false });
+      if (!artErr && supaArticles && supaArticles.length > 0) {
+        set({ articles: supaArticles });
+      } else if (!artErr) {
+        await supabase.from('articles').upsert(initialArticles);
       }
 
-      const resMagazines = await fetch('/api/magazines');
-      const dataMagazines = await resMagazines.json();
-      if (dataMagazines.success && Array.isArray(dataMagazines.data)) {
-        set({ magazineIssues: dataMagazines.data });
+      // 2. Magazine Issues
+      const { data: supaMagazines, error: magErr } = await supabase.from('magazine_issues').select('*').order('issue_number', { ascending: true });
+      if (!magErr && supaMagazines && supaMagazines.length > 0) {
+        set({ magazineIssues: supaMagazines });
+      } else if (!magErr) {
+        await supabase.from('magazine_issues').upsert(initialMagazineIssues);
+      }
+
+      // 3. Videos
+      const { data: supaVideos, error: vidErr } = await supabase.from('video_items').select('*');
+      if (!vidErr && supaVideos && supaVideos.length > 0) {
+        set({ videos: supaVideos });
+      } else if (!vidErr) {
+        await supabase.from('video_items').upsert(initialVideos);
+      }
+
+      // 4. Audios
+      const { data: supaAudios, error: audErr } = await supabase.from('audio_items').select('*');
+      if (!audErr && supaAudios && supaAudios.length > 0) {
+        set({ audios: supaAudios });
+      } else if (!audErr) {
+        await supabase.from('audio_items').upsert(initialAudios);
+      }
+
+      // 5. Team Members
+      const { data: supaTeam, error: teamErr } = await supabase.from('team_members').select('*');
+      if (!teamErr && supaTeam && supaTeam.length > 0) {
+        set({ teamMembers: supaTeam });
+      } else if (!teamErr) {
+        await supabase.from('team_members').upsert(initialTeamMembers);
+      }
+
+      // 6. Contact Messages
+      const { data: supaMsgs, error: msgErr } = await supabase.from('contact_messages').select('*');
+      if (!msgErr && supaMsgs && supaMsgs.length > 0) {
+        set({ contactMessages: supaMsgs });
+      }
+
+      // 7. Co-Hosts Access Control
+      const { data: supaCoHosts, error: coErr } = await supabase.from('co_hosts').select('*');
+      if (!coErr && supaCoHosts && supaCoHosts.length > 0) {
+        set({ coHosts: supaCoHosts });
+      } else if (!coErr) {
+        await supabase.from('co_hosts').upsert(initialCoHosts);
       }
     } catch (err) {
-      console.log('Backend fetch fallback to static data');
+      console.log('Supabase Cloud Sync Fallback:', err);
     }
   },
 
