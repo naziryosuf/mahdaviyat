@@ -448,47 +448,37 @@ export const useStore = create<AppState>((set, get) => ({
     try {
       // 1. Articles
       const { data: supaArticles, error: artErr } = await supabase.from('articles').select('*').order('created_at', { ascending: false });
-      if (!artErr && supaArticles && supaArticles.length > 0) {
+      if (!artErr && supaArticles) {
         set({ articles: supaArticles });
-      } else if (!artErr) {
-        await supabase.from('articles').upsert(initialArticles);
       }
 
       // 2. Magazine Issues
       const { data: supaMagazines, error: magErr } = await supabase.from('magazine_issues').select('*').order('issue_number', { ascending: true });
-      if (!magErr && supaMagazines && supaMagazines.length > 0) {
+      if (!magErr && supaMagazines) {
         set({ magazineIssues: supaMagazines });
-      } else if (!magErr) {
-        await supabase.from('magazine_issues').upsert(initialMagazineIssues);
       }
 
       // 3. Videos
       const { data: supaVideos, error: vidErr } = await supabase.from('video_items').select('*');
-      if (!vidErr && supaVideos && supaVideos.length > 0) {
+      if (!vidErr && supaVideos) {
         set({ videos: supaVideos });
-      } else if (!vidErr) {
-        await supabase.from('video_items').upsert(initialVideos);
       }
 
       // 4. Audios
       const { data: supaAudios, error: audErr } = await supabase.from('audio_items').select('*');
-      if (!audErr && supaAudios && supaAudios.length > 0) {
+      if (!audErr && supaAudios) {
         set({ audios: supaAudios });
-      } else if (!audErr) {
-        await supabase.from('audio_items').upsert(initialAudios);
       }
 
       // 5. Team Members
       const { data: supaTeam, error: teamErr } = await supabase.from('team_members').select('*');
-      if (!teamErr && supaTeam && supaTeam.length > 0) {
+      if (!teamErr && supaTeam) {
         set({ teamMembers: supaTeam });
-      } else if (!teamErr) {
-        await supabase.from('team_members').upsert(initialTeamMembers);
       }
 
       // 6. Contact Messages
       const { data: supaMsgs, error: msgErr } = await supabase.from('contact_messages').select('*');
-      if (!msgErr && supaMsgs && supaMsgs.length > 0) {
+      if (!msgErr && supaMsgs) {
         set({ contactMessages: supaMsgs });
       }
 
@@ -496,7 +486,7 @@ export const useStore = create<AppState>((set, get) => ({
       const { data: supaCoHosts, error: coErr } = await supabase.from('co_hosts').select('*');
       if (!coErr && supaCoHosts && supaCoHosts.length > 0) {
         set({ coHosts: supaCoHosts });
-      } else if (!coErr) {
+      } else if (!coErr && (!supaCoHosts || supaCoHosts.length === 0)) {
         await supabase.from('co_hosts').upsert(initialCoHosts);
       }
     } catch (err) {
