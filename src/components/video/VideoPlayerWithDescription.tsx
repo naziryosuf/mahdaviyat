@@ -98,7 +98,7 @@ export const VideoPlayerWithDescription: React.FC<Props> = ({ video }) => {
               onClick={handleShare}
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] text-[var(--text-primary)] text-xs font-bold transition-all active:scale-95 shadow-sm"
             >
-              {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4 text-[#1B889A]" />}
+              {copied ? <Check className="w-4 h-4 text-[#1B889A]" /> : <Share2 className="w-4 h-4 text-[#1B889A]" />}
               <span>{copied ? 'لینک کپی شد' : 'اشتراک‌گذاری'}</span>
             </button>
 

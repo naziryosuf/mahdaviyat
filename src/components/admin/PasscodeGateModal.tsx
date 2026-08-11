@@ -3,11 +3,10 @@
 import React, { useState } from 'react';
 import { useStore } from '@/store/useStore';
 import { Lock, ShieldAlert, KeyRound, ArrowRight, CheckCircle2 } from 'lucide-react';
-import confetti from 'canvas-confetti';
-
 export const PasscodeGateModal: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
   const [passcode, setPasscode] = useState('');
   const [error, setError] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const { loginAdmin } = useStore();
 
   const handleKeyClick = (num: string) => {
@@ -31,12 +30,10 @@ export const PasscodeGateModal: React.FC<{ onSuccess: () => void }> = ({ onSucce
     e.preventDefault();
     const success = await loginAdmin(passcode);
     if (success) {
-      confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: { y: 0.6 }
-      });
-      onSuccess();
+      setIsSuccess(true);
+      setTimeout(() => {
+        onSuccess();
+      }, 350);
     } else {
       setError(true);
     }
@@ -76,6 +73,13 @@ export const PasscodeGateModal: React.FC<{ onSuccess: () => void }> = ({ onSucce
               </div>
             ))}
           </div>
+
+          {isSuccess && (
+            <div className="p-4 rounded-2xl bg-[#1B889A]/15 border-2 border-[#1B889A] text-[#1B889A] font-bold text-xs text-center flex items-center justify-center gap-2 animate-in fade-in duration-200 shadow-md">
+              <CheckCircle2 className="w-5 h-5 text-[#1B889A] shrink-0" />
+              <span>کد عبور با موفقیت تایید گردید</span>
+            </div>
+          )}
 
           {error && (
             <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-bold text-center flex items-center justify-center gap-2">

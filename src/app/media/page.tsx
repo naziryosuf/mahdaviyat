@@ -1,398 +1,279 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import Link from 'next/link';
 import { useStore } from '@/store/useStore';
-import { VideoPlayerWithDescription } from '@/components/video/VideoPlayerWithDescription';
 import { 
-  Layers, 
+  Sparkles, 
   Volume2, 
   Video, 
-  Image as ImageIcon, 
-  Grid, 
   Play, 
-  Pause, 
-  Clock, 
-  Eye, 
+  Download, 
+  Search, 
   FileText, 
-  Sparkles,
+  Image as ImageIcon,
   Radio,
+  Clock,
+  Layers,
   BookOpenCheck,
-  MonitorPlay
+  MonitorPlay,
+  ArrowLeft
 } from 'lucide-react';
-import { translations } from '@/data/translations';
+import { AudioItem, VideoItem, InfographicItem } from '@/types';
 
 export default function MediaPage() {
-  const { audios, videos, infographics, currentAudio, isPlayingAudio, playAudio, pauseAudio, language, initFromStorage } = useStore();
-  const t = translations[language] || translations.fa;
+  const { audios, videos, infographics, playAudio, currentAudio, isPlayingAudio } = useStore();
+  const [activeTab, setActiveTab] = useState<'all' | 'podcasts' | 'videos' | 'infographics'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeDisplayVideo, setActiveDisplayVideo] = useState<VideoItem | null>(null);
 
-  useEffect(() => {
-    initFromStorage();
-  }, [initFromStorage]);
+  const currentDisplayVideo = activeDisplayVideo || videos[0];
 
-  const [activeTab, setActiveTab] = useState<'all' | 'podcasts' | 'videos' | 'lectures' | 'webinairs' | 'infographics'>('all');
-  const [selectedVideo, setSelectedVideo] = useState<any>(null);
-  const [selectedInfographicModal, setSelectedInfographicModal] = useState<any | null>(null);
+  const filteredAudios = audios.filter(a => 
+    a.title_fa.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    a.speaker_fa.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  // Sync selected video once videos are available
-  useEffect(() => {
-    if (videos && videos.length > 0 && !selectedVideo) {
-      setSelectedVideo(videos[0]);
-    }
-  }, [videos, selectedVideo]);
+  const filteredVideos = videos.filter(v => 
+    v.title_fa.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    v.speaker_fa.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  // Filtered lists for specialized categories
-  const podcastAudios = audios.filter(a => a.category_fa === 'پادکست‌ها' || a.id === 'aud-rahbar-salim');
-  const lectureAudios = audios.filter(a => a.category_fa === 'درس‌گفتارها');
-  const lectureVideos = videos.filter(v => v.category_fa === 'درس‌گفتارها');
-
-  const webinarVideos = videos.filter(v => v.category_fa === 'وبینارها' || v.category_fa === 'نقد مکاتب' || v.id === 'vid-webinar-1' || v.id === 'vid-yt-user-1');
-  const webinarAudios = audios.filter(a => a.category_fa === 'وبینارها');
-
-  const activeDisplayVideo = selectedVideo || videos[0];
+  const filteredInfographics = infographics.filter(i => 
+    i.title_fa.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    i.description_fa.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className="space-y-12 py-6">
+    <div className="space-y-10 py-6">
       
       {/* Header Banner */}
-      <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-8 sm:p-12 text-center space-y-4 modern-card shadow-lg">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full emerald-badge text-xs font-bold shadow-sm">
-          <Sparkles className="w-4 h-4 text-emerald-400" />
-          <span>مرکز چندرسانه‌ای مجله ایدئولوژی مهدویت</span>
+      <section className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 sm:p-10 shadow-xl space-y-4 modern-card">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full teal-badge text-xs font-bold shadow-sm">
+          <Sparkles className="w-4 h-4 text-[#1B889A]" />
+          <span>آرشیو جامع چندرسانه‌ای</span>
         </div>
-
-        <h1 className="text-3xl sm:text-5xl font-extrabold text-[var(--text-primary)] font-serif-persian">
-          {t.media} (پادکست‌ها، ویدیوها، درس‌گفتارها، وبینارها)
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-[var(--text-primary)] font-serif-persian">
+          چندرسانه‌ای مجله <span className="teal-gradient-text">ایدئولوژی مهدویت</span>
         </h1>
-        
-        <p className="text-sm sm:text-base text-[var(--text-secondary)] max-w-3xl mx-auto leading-relaxed">
-          آرشیو چندرسانه‌ای طبقه‌بندی‌شده شامل پادکست‌های صوتی، کلیپ‌های ویدیویی یوتیوب، درس‌گفتارهای علمی، وبینارهای تخصصی آنلاین و اینفوگرافیک‌ها.
+        <p className="text-xs sm:text-sm text-[var(--text-secondary)] max-w-2xl leading-relaxed">
+          دسترسی به پادکست‌های صوتی، ویدیوهای تحلیل مکاتب، اینفوگرافیک‌های معرفتی و مطالب شنیداری.
         </p>
 
-        {/* Specialized Sub-Tabs Filter Buttons: همه، پادکست‌ها، ویدیوها، درس‌گفتارها، وبینارها، اینفوگرافیک‌ها */}
-        <div className="flex flex-wrap items-center justify-center gap-2 pt-4">
-          
-          {/* همه */}
+        {/* Tab Filters */}
+        <div className="pt-4 flex flex-wrap items-center gap-2 border-t border-[var(--card-border)]">
           <button
             onClick={() => setActiveTab('all')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === 'all'
-                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
-                : 'bg-[var(--bg-color)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:border-emerald-500'
+                ? 'bg-[#1B889A] text-white shadow-md shadow-[#1B889A]/30'
+                : 'bg-[var(--bg-color)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:border-[#1B889A]'
             }`}
           >
-            <Grid className="w-4 h-4" />
-            <span>{t.all}</span>
+            همه بخش‌ها
           </button>
-
-          {/* پادکست‌ها */}
           <button
             onClick={() => setActiveTab('podcasts')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === 'podcasts'
-                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
-                : 'bg-[var(--bg-color)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:border-emerald-500'
+                ? 'bg-[#1B889A] text-white shadow-md shadow-[#1B889A]/30'
+                : 'bg-[var(--bg-color)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:border-[#1B889A]'
             }`}
           >
-            <Radio className="w-4 h-4" />
-            <span>{t.podcast} ({podcastAudios.length})</span>
+            پادکست‌های صوتی
           </button>
-
-          {/* ویدیوها */}
           <button
             onClick={() => setActiveTab('videos')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === 'videos'
-                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
-                : 'bg-[var(--bg-color)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:border-emerald-500'
+                ? 'bg-[#1B889A] text-white shadow-md shadow-[#1B889A]/30'
+                : 'bg-[var(--bg-color)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:border-[#1B889A]'
             }`}
           >
-            <Video className="w-4 h-4" />
-            <span>{t.video} ({videos.length})</span>
+            ویدیوها و درس‌گفتارها
           </button>
-
-          {/* درس‌گفتارها */}
-          <button
-            onClick={() => setActiveTab('lectures')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
-              activeTab === 'lectures'
-                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
-                : 'bg-[var(--bg-color)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:border-emerald-500'
-            }`}
-          >
-            <BookOpenCheck className="w-4 h-4" />
-            <span>{t.lecture} ({lectureAudios.length + lectureVideos.length})</span>
-          </button>
-
-          {/* وبینارها */}
-          <button
-            onClick={() => setActiveTab('webinairs')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
-              activeTab === 'webinairs'
-                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
-                : 'bg-[var(--bg-color)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:border-emerald-500'
-            }`}
-          >
-            <MonitorPlay className="w-4 h-4" />
-            <span>{t.webinar} ({webinarVideos.length + webinarAudios.length})</span>
-          </button>
-
-          {/* اینفوگرافیک‌ها */}
           <button
             onClick={() => setActiveTab('infographics')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === 'infographics'
-                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
-                : 'bg-[var(--bg-color)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:border-emerald-500'
+                ? 'bg-[#1B889A] text-white shadow-md shadow-[#1B889A]/30'
+                : 'bg-[var(--bg-color)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:border-[#1B889A]'
             }`}
           >
-            <ImageIcon className="w-4 h-4" />
-            <span>{t.infographic} ({infographics.length})</span>
+            اینفوگرافیک‌ها
           </button>
-
         </div>
-      </div>
+      </section>
 
-      {/* 1. TAB: PODCASTS (پادکست‌ها) */}
+      {/* AUDIO PODCASTS SECTION */}
       {(activeTab === 'all' || activeTab === 'podcasts') && (
-        <div className="space-y-6">
+        <section className="space-y-6">
           <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
-            <h2 className="text-xl font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
-              <Radio className="w-5 h-5 text-emerald-400" />
-              <span>پادکست‌های صوتی اختصاصی ({podcastAudios.length})</span>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
+              <Radio className="w-5 h-5 text-[#1B889A]" />
+              <span>پادکست‌ها و فایل‌های صوتی ({filteredAudios.length})</span>
             </h2>
+            <Link href="/audio" className="text-xs text-[#1B889A] font-bold hover:underline">
+              صفحه اختصاصی آرشیو صوتی
+            </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {podcastAudios.map((aud) => {
-              const isCurrentPlaying = currentAudio?.id === aud.id && isPlayingAudio;
-              return (
-                <div
-                  key={aud.id}
-                  className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 modern-card flex flex-col justify-between space-y-4 shadow-md"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="w-20 h-20 rounded-2xl overflow-hidden shrink-0 border border-[var(--card-border)] relative">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={aud.cover_image} alt="" className="w-full h-full object-cover" />
-                      <button
-                        onClick={() => isCurrentPlaying ? pauseAudio() : playAudio(aud)}
-                        className="absolute inset-0 bg-black/40 flex items-center justify-center text-white hover:bg-emerald-600/80 transition-colors"
-                      >
-                        {isCurrentPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 fill-current" />}
-                      </button>
-                    </div>
-
-                    <div className="min-w-0 space-y-1">
-                      <span className="px-2.5 py-0.5 rounded-full emerald-badge text-[10px] font-bold">
-                        پادکست
-                      </span>
-                      <h3 className="text-base font-bold text-[var(--text-primary)] truncate font-serif-persian mt-1">
-                        {aud.title_fa}
-                      </h3>
-                      <p className="text-xs text-[var(--text-secondary)]">گوینده: {aud.speaker_fa} • {aud.duration_fa}</p>
-                    </div>
-                  </div>
-
-                  <p className="text-xs text-[var(--text-secondary)] font-serif-persian leading-relaxed line-clamp-2">
-                    {aud.description_fa}
-                  </p>
-
-                  <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between">
-                    <span className="text-[11px] text-[var(--text-secondary)]">تعداد پخش: {aud.plays} بار</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredAudios.map((aud) => (
+              <div key={aud.id} className="p-5 rounded-3xl bg-[var(--card-bg)] border border-[var(--card-border)] hover:border-[#1B889A] transition-all modern-card shadow-md space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-2xl overflow-hidden border border-[#1B889A]/40 shrink-0 relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={aud.cover_image} alt="" className="w-full h-full object-cover" />
                     <button
-                      onClick={() => isCurrentPlaying ? pauseAudio() : playAudio(aud)}
-                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-md active:scale-95"
+                      onClick={() => playAudio(aud)}
+                      className="absolute inset-0 bg-black/40 flex items-center justify-center text-white hover:bg-[#1B889A]/80 transition-colors"
                     >
-                      {isCurrentPlaying ? (
-                        <>
-                          <Pause className="w-3.5 h-3.5" />
-                          <span>توقف پخش</span>
-                        </>
-                      ) : (
-                        <>
-                          <Play className="w-3.5 h-3.5 fill-current" />
-                          <span>شنیدن پادکست</span>
-                        </>
-                      )}
+                      <Play className="w-6 h-6 fill-current" />
                     </button>
                   </div>
+                  <div className="min-w-0">
+                    <span className="px-2.5 py-0.5 rounded-full teal-badge text-[10px] font-bold">
+                      {aud.category_fa}
+                    </span>
+                    <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate mt-1">
+                      {aud.title_fa}
+                    </h3>
+                    <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{aud.speaker_fa}</p>
+                  </div>
                 </div>
-              );
-            })}
+
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed line-clamp-2">
+                  {aud.description_fa}
+                </p>
+
+                {/* Clickable Tags Chips (Max 3) */}
+                {aud.tags && aud.tags.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                    {aud.tags.slice(0, 3).map((tag, idx) => (
+                      <Link
+                        key={idx}
+                        href={`/?search=${encodeURIComponent(tag)}`}
+                        className="px-2 py-0.5 rounded-full bg-[#1B889A]/10 border border-[#1B889A]/30 text-[#1B889A] hover:bg-[#1B889A] hover:text-white text-[10px] font-bold transition-all shadow-sm"
+                      >
+                        #{tag}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+
+                <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs">
+                  <span className="text-[var(--text-secondary)] font-bold">{aud.duration_fa}</span>
+                  <button
+                    onClick={() => playAudio(aud)}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs transition-all shadow-md active:scale-95"
+                  >
+                    <Play className="w-3.5 h-3.5 fill-current" />
+                    <span>پخش صوتی</span>
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
+        </section>
       )}
 
-      {/* 2. TAB: VIDEOS (ویدیوها) */}
+      {/* VIDEO SECTION */}
       {(activeTab === 'all' || activeTab === 'videos') && (
-        <div className="space-y-6 pt-4">
+        <section className="space-y-6">
           <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
-            <h2 className="text-xl font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
-              <Video className="w-5 h-5 text-emerald-400" />
-              <span>نشست‌های ویدیویی ({videos.length})</span>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
+              <Video className="w-5 h-5 text-[#1B889A]" />
+              <span>درس‌گفتارهای تصویری و تحلیل‌ها ({filteredVideos.length})</span>
             </h2>
+            <Link href="/video" className="text-xs text-[#1B889A] font-bold hover:underline">
+              صفحه اختصاصی ویدیویی
+            </Link>
           </div>
 
-          {activeDisplayVideo && (
-            <VideoPlayerWithDescription video={activeDisplayVideo} />
-          )}
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
-            {videos.map((vid) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredVideos.map((vid) => (
               <div
                 key={vid.id}
-                onClick={() => setSelectedVideo(vid)}
-                className={`bg-[var(--card-bg)] border rounded-3xl p-4 modern-card cursor-pointer transition-all ${
-                  activeDisplayVideo?.id === vid.id ? 'border-emerald-500 ring-2 ring-emerald-500/30' : 'border-[var(--card-border)]'
+                onClick={() => setActiveDisplayVideo(vid)}
+                className={`p-4 rounded-3xl bg-[var(--card-bg)] border transition-all modern-card shadow-md space-y-3 cursor-pointer group ${
+                  currentDisplayVideo?.id === vid.id ? 'border-[#1B889A] ring-2 ring-[#1B889A]/30' : 'border-[var(--card-border)]'
                 }`}
               >
-                <div className="relative rounded-2xl overflow-hidden aspect-video bg-stone-900 mb-3 border border-[var(--card-border)]">
+                <div className="relative rounded-2xl overflow-hidden aspect-video bg-stone-900 border border-[var(--card-border)]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={vid.thumbnail_url} alt="" className="w-full h-full object-cover" />
+                  <img src={vid.thumbnail_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                    <div className="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-lg">
-                      <Play className="w-4 h-4 fill-current mr-0.5" />
+                    <div className="w-10 h-10 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-lg">
+                      <Play className="w-5 h-5 fill-current" />
                     </div>
                   </div>
                 </div>
 
-                <span className="px-2 py-0.5 rounded-full emerald-badge text-[10px] font-bold block w-fit mb-1">
-                  {vid.category_fa}
-                </span>
-                <h4 className="text-sm font-bold text-[var(--text-primary)] truncate font-serif-persian">{vid.title_fa}</h4>
-                <p className="text-xs text-[var(--text-secondary)] mt-1">{vid.speaker_fa} • {vid.duration_fa}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 3. TAB: LECTURES (درس‌گفتارها) */}
-      {(activeTab === 'all' || activeTab === 'lectures') && (
-        <div className="space-y-6 pt-4">
-          <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
-            <h2 className="text-xl font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
-              <BookOpenCheck className="w-5 h-5 text-emerald-400" />
-              <span>درس‌گفتارهای علمی (صوتی و تصویری)</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {lectureAudios.map((aud) => (
-              <div key={aud.id} className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-5 modern-card flex items-center justify-between gap-4">
                 <div>
-                  <span className="px-2.5 py-0.5 rounded-full emerald-badge text-[10px] font-bold block w-fit mb-1">درس‌گفتار صوتی</span>
-                  <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">{aud.title_fa}</h4>
-                  <p className="text-xs text-[var(--text-secondary)] mt-1">{aud.speaker_fa} • {aud.duration_fa}</p>
-                </div>
-                <button
-                  onClick={() => playAudio(aud)}
-                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shrink-0 flex items-center gap-1"
-                >
-                  <Play className="w-3.5 h-3.5 fill-current" />
-                  <span>پخش</span>
-                </button>
-              </div>
-            ))}
-
-            {lectureVideos.map((vid) => (
-              <div key={vid.id} onClick={() => setSelectedVideo(vid)} className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-5 modern-card cursor-pointer flex items-center justify-between gap-4">
-                <div>
-                  <span className="px-2.5 py-0.5 rounded-full emerald-badge text-[10px] font-bold block w-fit mb-1">درس‌گفتار تصویری</span>
-                  <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">{vid.title_fa}</h4>
-                  <p className="text-xs text-[var(--text-secondary)] mt-1">{vid.speaker_fa} • {vid.duration_fa}</p>
-                </div>
-                <div className="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
-                  <Play className="w-4 h-4 fill-current" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 4. TAB: WEBINARS (وبینارها) */}
-      {(activeTab === 'all' || activeTab === 'webinairs') && (
-        <div className="space-y-6 pt-4">
-          <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
-            <h2 className="text-xl font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
-              <MonitorPlay className="w-5 h-5 text-emerald-400" />
-              <span>وبینارها و سمینارهای تخصصی آنلاین ({webinarVideos.length})</span>
-            </h2>
-          </div>
-
-          {activeDisplayVideo && (
-            <VideoPlayerWithDescription video={activeDisplayVideo} />
-          )}
-        </div>
-      )}
-
-      {/* 5. TAB: INFOGRAPHICS (اینفوگرافیک‌ها) */}
-      {(activeTab === 'all' || activeTab === 'infographics') && (
-        <div className="space-y-6 pt-4">
-          <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
-            <h2 className="text-xl font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
-              <ImageIcon className="w-5 h-5 text-emerald-400" />
-              <span>اینفوگرافیک‌ها و داده‌نماهای تصویری ({infographics.length})</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {infographics.map((info) => (
-              <div
-                key={info.id}
-                onClick={() => setSelectedInfographicModal(info)}
-                className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-5 modern-card cursor-pointer space-y-4 shadow-md group"
-              >
-                <div className="relative rounded-2xl overflow-hidden aspect-[16/9] bg-stone-900 border border-[var(--card-border)]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={info.image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4">
-                    <span className="text-white text-xs font-bold flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                      مشاهده تصویر کیفیت بالا
-                    </span>
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <span className="px-2.5 py-0.5 rounded-full emerald-badge text-[10px] font-bold">
-                    {info.category_fa}
+                  <span className="px-2 py-0.5 rounded-full teal-badge text-[10px] font-bold block w-fit mb-1">
+                    {vid.category_fa}
                   </span>
-                  <h3 className="text-base font-bold text-[var(--text-primary)] font-serif-persian pt-1">
+                  <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors">
+                    {vid.title_fa}
+                  </h3>
+                  <p className="text-xs text-[var(--text-secondary)] mt-1">{vid.speaker_fa} • {vid.duration_fa}</p>
+
+                  {/* Clickable Tags Chips (Max 3) */}
+                  {vid.tags && vid.tags.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-1.5 pt-2">
+                      {vid.tags.slice(0, 3).map((tag, idx) => (
+                        <Link
+                          key={idx}
+                          href={`/?search=${encodeURIComponent(tag)}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="px-2 py-0.5 rounded-full bg-[#1B889A]/10 border border-[#1B889A]/30 text-[#1B889A] hover:bg-[#1B889A] hover:text-white text-[10px] font-bold transition-all shadow-sm"
+                        >
+                          #{tag}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* INFOGRAPHICS SECTION */}
+      {(activeTab === 'all' || activeTab === 'infographics') && (
+        <section className="space-y-6">
+          <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
+            <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
+              <ImageIcon className="w-5 h-5 text-[#1B889A]" />
+              <span>اینفوگرافیک‌ها و تصاویر معرفتی ({filteredInfographics.length})</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredInfographics.map((info) => (
+              <div key={info.id} className="p-4 rounded-3xl bg-[var(--card-bg)] border border-[var(--card-border)] hover:border-[#1B889A] transition-all modern-card shadow-md space-y-3">
+                <div className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-stone-900 border border-[var(--card-border)]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={info.image_url} alt="" className="w-full h-full object-cover" />
+                </div>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-[#1B889A]" />
+                    <span className="text-xs font-bold text-[#1B889A]">{info.category_fa}</span>
+                  </div>
+                  <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">
                     {info.title_fa}
                   </h3>
-                  <p className="text-xs text-[var(--text-secondary)] font-serif-persian line-clamp-2">
+                  <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
                     {info.description_fa}
                   </p>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      )}
-
-      {/* Infographic Modal View */}
-      {selectedInfographicModal && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
-              <h3 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">{selectedInfographicModal.title_fa}</h3>
-              <button onClick={() => setSelectedInfographicModal(null)} className="text-slate-400 hover:text-[var(--text-primary)] font-bold text-xs">
-                بستن
-              </button>
-            </div>
-            
-            <div className="rounded-2xl overflow-hidden border border-[var(--card-border)] bg-black">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={selectedInfographicModal.image_url} alt="" className="w-full h-auto object-contain max-h-[70vh] mx-auto" />
-            </div>
-
-            <p className="text-sm text-[var(--text-secondary)] font-serif-persian leading-relaxed">
-              {selectedInfographicModal.description_fa}
-            </p>
-          </div>
-        </div>
+        </section>
       )}
 
     </div>

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { Article, MagazineIssue, VideoItem, AudioItem, InfographicItem, TeamMember, ContactMessage } from '../types';
-import { initialArticles, initialMagazineIssues, initialVideos, initialAudios, initialInfographics, initialTeamMembers, initialContactMessages } from '../data/initialData';
+import { Article, MagazineIssue, VideoItem, AudioItem, InfographicItem, TeamMember, ContactMessage, CoHostUser } from '../types';
+import { initialArticles, initialMagazineIssues, initialVideos, initialAudios, initialInfographics, initialTeamMembers, initialContactMessages, initialCoHosts } from '../data/initialData';
 import { Language } from '../data/translations';
 
 export type ThemeMode = 'dark' | 'light';
@@ -15,6 +15,10 @@ interface AppState {
   language: Language;
   setLanguage: (lang: Language) => void;
 
+  // Editable About Us Mission Text
+  aboutUsMission: string;
+  setAboutUsMission: (desc: string) => void;
+
   // Database tables
   articles: Article[];
   magazineIssues: MagazineIssue[];
@@ -24,11 +28,16 @@ interface AppState {
   teamMembers: TeamMember[];
   contactMessages: ContactMessage[];
 
-  // Admin Security Gate
+  // Admin Security Gate & Co-Host RBAC
   isAdminLoggedIn: boolean;
   adminPasscode: string;
+  coHosts: CoHostUser[];
+  currentUser: CoHostUser | null;
   loginAdmin: (passcode: string) => Promise<boolean>;
   logoutAdmin: () => void;
+  addCoHost: (coHost: Omit<CoHostUser, 'id' | 'created_at'>) => void;
+  updateCoHost: (id: string, updates: Partial<CoHostUser>) => void;
+  deleteCoHost: (id: string) => void;
 
   // Active Audio Player State
   currentAudio: AudioItem | null;
@@ -74,11 +83,16 @@ interface AppState {
   initFromStorage: () => void;
 }
 
+const defaultMissionText = 'مجلۀ «ایدئولوژی مهدویت» بستری است برای ارائه شناخت پیرامون مهم‌ترین موضوعات: خداشناسی، خودشناسی، جامعه‌شناسی، هستی‌شناسی و سایر موضوعات تاریخی؛ به هدف ایجاد بیداری معنوی و اجتماعی. این مجله توسط جمعی از نویسندگان آزاد افغانستان از سراسر جهان تشکیل شده و به صورت کاملاً داوطلبانه و غیرانتفاعی اداره می‌شود.';
+
 export const useStore = create<AppState>((set, get) => ({
   theme: 'dark',
   toggleTheme: () => {
     const nextTheme = get().theme === 'dark' ? 'light' : 'dark';
     get().setTheme(nextTheme);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('mahdism_theme_user_set', nextTheme);
+    }
   },
   setTheme: (t: ThemeMode) => {
     set({ theme: t });
@@ -88,7 +102,6 @@ export const useStore = create<AppState>((set, get) => ({
       } else {
         document.documentElement.classList.remove('dark');
       }
-      localStorage.setItem('mahdism_theme_mode', t);
     }
   },
 
@@ -97,6 +110,14 @@ export const useStore = create<AppState>((set, get) => ({
     set({ language: lang });
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('mahdism_lang', lang);
+    }
+  },
+
+  aboutUsMission: defaultMissionText,
+  setAboutUsMission: (desc: string) => {
+    set({ aboutUsMission: desc });
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('mahdism_about_mission', desc);
     }
   },
 
@@ -109,69 +130,119 @@ export const useStore = create<AppState>((set, get) => ({
   contactMessages: initialContactMessages,
 
   isAdminLoggedIn: false,
-  adminPasscode: '123456',
+  adminPasscode: '190716',
+  coHosts: initialCoHosts,
+  currentUser: null,
 
   loginAdmin: async (passcode: string) => {
-    try {
-      const res = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ passcode }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        set({ isAdminLoggedIn: true });
-        if (typeof localStorage !== 'undefined') {
-          localStorage.setItem('mahdism_admin_auth', 'true');
-        }
-        return true;
+    const trimmed = passcode.trim();
+    const coHosts = get().coHosts;
+    const foundUser = coHosts.find(u => u.password_code === trimmed);
+
+    if (foundUser) {
+      set({ isAdminLoggedIn: true, currentUser: foundUser });
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('mahdism_admin_auth', 'true');
+        localStorage.setItem('mahdism_current_user', JSON.stringify(foundUser));
       }
-      return false;
-    } catch {
-      if (passcode === '123456') {
-        set({ isAdminLoggedIn: true });
-        return true;
-      }
-      return false;
+      return true;
     }
+
+    if (trimmed === '190716' || trimmed === get().adminPasscode) {
+      const superAdminUser: CoHostUser = {
+        id: 'cohost-super-admin',
+        name_fa: 'M. Nazir Yosuf',
+        password_code: '190716',
+        role_fa: 'مدیر کل و سردبیر ارشد',
+        created_at: '۱۴۰۴/۰۵/۰۱',
+        is_super_admin: true,
+        permissions: {
+          can_manage_articles: true,
+          can_manage_magazines: true,
+          can_manage_videos: true,
+          can_manage_audios: true,
+          can_manage_team: true,
+          can_manage_messages: true,
+          can_manage_cohosts: true,
+        }
+      };
+      set({ isAdminLoggedIn: true, currentUser: superAdminUser });
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('mahdism_admin_auth', 'true');
+        localStorage.setItem('mahdism_current_user', JSON.stringify(superAdminUser));
+      }
+      return true;
+    }
+
+    return false;
   },
 
   logoutAdmin: () => {
-    set({ isAdminLoggedIn: false });
+    set({ isAdminLoggedIn: false, currentUser: null });
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem('mahdism_admin_auth');
+      localStorage.removeItem('mahdism_current_user');
+    }
+  },
+
+  addCoHost: (coHostData) => {
+    const newCoHost: CoHostUser = {
+      ...coHostData,
+      id: `cohost-${Date.now()}`,
+      created_at: new Date().toLocaleDateString('fa-IR'),
+    };
+    const updated = [...get().coHosts, newCoHost];
+    set({ coHosts: updated });
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('mahdism_cohosts', JSON.stringify(updated));
+    }
+  },
+
+  updateCoHost: (id, updates) => {
+    const updated = get().coHosts.map((ch) => (ch.id === id ? { ...ch, ...updates } : ch));
+    set({ coHosts: updated });
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('mahdism_cohosts', JSON.stringify(updated));
+    }
+    if (get().currentUser?.id === id) {
+      const updatedUser = updated.find(ch => ch.id === id) || null;
+      set({ currentUser: updatedUser });
+      if (typeof localStorage !== 'undefined' && updatedUser) {
+        localStorage.setItem('mahdism_current_user', JSON.stringify(updatedUser));
+      }
+    }
+  },
+
+  deleteCoHost: (id) => {
+    const target = get().coHosts.find(ch => ch.id === id);
+    if (target?.is_super_admin || target?.password_code === '190716') {
+      return;
+    }
+    const updated = get().coHosts.filter((ch) => ch.id !== id);
+    set({ coHosts: updated });
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('mahdism_cohosts', JSON.stringify(updated));
     }
   },
 
   currentAudio: null,
   isPlayingAudio: false,
-
-  playAudio: (audio: AudioItem) => {
-    set({ currentAudio: audio, isPlayingAudio: true });
-  },
-  pauseAudio: () => {
-    set({ isPlayingAudio: false });
-  },
-  toggleAudioPlay: () => {
-    set({ isPlayingAudio: !get().isPlayingAudio });
-  },
-  closeAudioPlayer: () => {
-    set({ currentAudio: null, isPlayingAudio: false });
-  },
+  playAudio: (audio) => set({ currentAudio: audio, isPlayingAudio: true }),
+  pauseAudio: () => set({ isPlayingAudio: false }),
+  toggleAudioPlay: () => set((state) => ({ isPlayingAudio: !state.isPlayingAudio })),
+  closeAudioPlayer: () => set({ currentAudio: null, isPlayingAudio: false }),
 
   bookmarkedArticles: [],
-  toggleBookmark: (articleId: string) => {
+  toggleBookmark: (articleId) => {
     const current = get().bookmarkedArticles;
-    const next = current.includes(articleId)
-      ? current.filter(id => id !== articleId)
-      : [...current, articleId];
-    set({ bookmarkedArticles: next });
+    const exists = current.includes(articleId);
+    const updated = exists ? current.filter((id) => id !== articleId) : [...current, articleId];
+    set({ bookmarkedArticles: updated });
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('mahdism_bookmarks', JSON.stringify(next));
+      localStorage.setItem('mahdism_bookmarks', JSON.stringify(updated));
     }
   },
 
-  // BACKEND API SYNCED CRUD ACTIONS
   addArticle: async (articleData) => {
     try {
       const res = await fetch('/api/articles', {
@@ -181,16 +252,17 @@ export const useStore = create<AppState>((set, get) => ({
       });
       const data = await res.json();
       if (data.success && data.data) {
-        set({ articles: [data.data, ...get().articles] });
+        set((state) => ({ articles: [data.data, ...state.articles] }));
+        return;
       }
-    } catch {
-      const newArt: Article = {
-        ...articleData,
-        id: `art-${Date.now()}`,
-        views: 1,
-      };
-      set({ articles: [newArt, ...get().articles] });
-    }
+    } catch {}
+
+    const newArticle: Article = {
+      ...articleData,
+      id: `art-${Date.now()}`,
+      views: 1,
+    };
+    set((state) => ({ articles: [newArticle, ...state.articles] }));
   },
 
   updateArticle: async (id, articleData) => {
@@ -201,16 +273,20 @@ export const useStore = create<AppState>((set, get) => ({
         body: JSON.stringify(articleData),
       });
     } catch {}
-    set({
-      articles: get().articles.map(a => a.id === id ? { ...a, ...articleData } : a),
-    });
+
+    set((state) => ({
+      articles: state.articles.map((art) => (art.id === id ? { ...art, ...articleData } : art)),
+    }));
   },
 
   deleteArticle: async (id) => {
     try {
       await fetch(`/api/articles/${id}`, { method: 'DELETE' });
     } catch {}
-    set({ articles: get().articles.filter(a => a.id !== id) });
+
+    set((state) => ({
+      articles: state.articles.filter((art) => art.id !== id),
+    }));
   },
 
   addMagazineIssue: async (issueData) => {
@@ -222,67 +298,105 @@ export const useStore = create<AppState>((set, get) => ({
       });
       const data = await res.json();
       if (data.success && data.data) {
-        set({ magazineIssues: [data.data, ...get().magazineIssues] });
+        set((state) => ({ magazineIssues: [data.data, ...state.magazineIssues] }));
+        return;
       }
-    } catch {
-      const newIssue: MagazineIssue = {
-        ...issueData,
-        id: `issue-${Date.now()}`,
-        download_count: 0,
-      };
-      set({ magazineIssues: [newIssue, ...get().magazineIssues] });
-    }
+    } catch {}
+
+    const newIssue: MagazineIssue = {
+      ...issueData,
+      id: `mag-${Date.now()}`,
+      download_count: 0,
+    };
+    set((state) => ({ magazineIssues: [newIssue, ...state.magazineIssues] }));
   },
 
   updateMagazineIssue: (id, issueData) => {
-    set({
-      magazineIssues: get().magazineIssues.map(i => i.id === id ? { ...i, ...issueData } : i),
-    });
+    set((state) => ({
+      magazineIssues: state.magazineIssues.map((iss) => (iss.id === id ? { ...iss, ...issueData } : iss)),
+    }));
   },
 
   deleteMagazineIssue: (id) => {
-    set({ magazineIssues: get().magazineIssues.filter(i => i.id !== id) });
+    set((state) => ({
+      magazineIssues: state.magazineIssues.filter((iss) => iss.id !== id),
+    }));
   },
 
   addVideo: (videoData) => {
-    const newVid: VideoItem = { ...videoData, id: `vid-${Date.now()}`, views: 1 };
-    set({ videos: [newVid, ...get().videos] });
+    const newVid: VideoItem = {
+      ...videoData,
+      id: `vid-${Date.now()}`,
+      views: 1,
+    };
+    set((state) => ({ videos: [newVid, ...state.videos] }));
   },
+
   updateVideo: (id, videoData) => {
-    set({ videos: get().videos.map(v => v.id === id ? { ...v, ...videoData } : v) });
+    set((state) => ({
+      videos: state.videos.map((v) => (v.id === id ? { ...v, ...videoData } : v)),
+    }));
   },
+
   deleteVideo: (id) => {
-    set({ videos: get().videos.filter(v => v.id !== id) });
+    set((state) => ({
+      videos: state.videos.filter((v) => v.id !== id),
+    }));
   },
 
   addAudio: (audioData) => {
-    const newAud: AudioItem = { ...audioData, id: `aud-${Date.now()}`, plays: 1 };
-    set({ audios: [newAud, ...get().audios] });
+    const newAud: AudioItem = {
+      ...audioData,
+      id: `aud-${Date.now()}`,
+      plays: 1,
+    };
+    set((state) => ({ audios: [newAud, ...state.audios] }));
   },
+
   updateAudio: (id, audioData) => {
-    set({ audios: get().audios.map(a => a.id === id ? { ...a, ...audioData } : a) });
+    set((state) => ({
+      audios: state.audios.map((a) => (a.id === id ? { ...a, ...audioData } : a)),
+    }));
   },
+
   deleteAudio: (id) => {
-    set({ audios: get().audios.filter(a => a.id !== id) });
+    set((state) => ({
+      audios: state.audios.filter((a) => a.id !== id),
+    }));
   },
 
   addInfographic: (infoData) => {
-    const newInfo: InfographicItem = { ...infoData, id: `info-${Date.now()}` };
-    set({ infographics: [newInfo, ...get().infographics] });
+    const newInfo: InfographicItem = {
+      ...infoData,
+      id: `info-${Date.now()}`,
+    };
+    set((state) => ({ infographics: [newInfo, ...state.infographics] }));
   },
+
   deleteInfographic: (id) => {
-    set({ infographics: get().infographics.filter(i => i.id !== id) });
+    set((state) => ({
+      infographics: state.infographics.filter((i) => i.id !== id),
+    }));
   },
 
   addTeamMember: (memberData) => {
-    const newMember: TeamMember = { ...memberData, id: `team-${Date.now()}` };
-    set({ teamMembers: [...get().teamMembers, newMember] });
+    const newMember: TeamMember = {
+      ...memberData,
+      id: `team-${Date.now()}`,
+    };
+    set((state) => ({ teamMembers: [...state.teamMembers, newMember] }));
   },
+
   updateTeamMember: (id, memberData) => {
-    set({ teamMembers: get().teamMembers.map(m => m.id === id ? { ...m, ...memberData } : m) });
+    set((state) => ({
+      teamMembers: state.teamMembers.map((m) => (m.id === id ? { ...m, ...memberData } : m)),
+    }));
   },
+
   deleteTeamMember: (id) => {
-    set({ teamMembers: get().teamMembers.filter(m => m.id !== id) });
+    set((state) => ({
+      teamMembers: state.teamMembers.filter((m) => m.id !== id),
+    }));
   },
 
   addContactMessage: async (msgData) => {
@@ -294,7 +408,7 @@ export const useStore = create<AppState>((set, get) => ({
       });
       const data = await res.json();
       if (data.success && data.data) {
-        set({ contactMessages: [data.data, ...get().contactMessages] });
+        set((state) => ({ contactMessages: [data.data, ...state.contactMessages] }));
         return;
       }
     } catch {}
@@ -302,19 +416,22 @@ export const useStore = create<AppState>((set, get) => ({
     const newMsg: ContactMessage = {
       ...msgData,
       id: `msg-${Date.now()}`,
-      created_at: new Date().toLocaleString('fa-IR'),
-      status: 'new',
+      sent_at: new Date().toLocaleDateString('fa-IR'),
+      status: 'unread',
     };
-    set({ contactMessages: [newMsg, ...get().contactMessages] });
+    set((state) => ({ contactMessages: [newMsg, ...state.contactMessages] }));
   },
 
   markContactRead: (id) => {
-    set({
-      contactMessages: get().contactMessages.map(m => m.id === id ? { ...m, status: 'read' as const } : m),
-    });
+    set((state) => ({
+      contactMessages: state.contactMessages.map((m) => (m.id === id ? { ...m, status: 'read' } : m)),
+    }));
   },
+
   deleteContactMessage: (id) => {
-    set({ contactMessages: get().contactMessages.filter(m => m.id !== id) });
+    set((state) => ({
+      contactMessages: state.contactMessages.filter((m) => m.id !== id),
+    }));
   },
 
   fetchFromBackend: async () => {
@@ -338,14 +455,22 @@ export const useStore = create<AppState>((set, get) => ({
   initFromStorage: () => {
     if (typeof localStorage === 'undefined') return;
 
-    const savedTheme = localStorage.getItem('mahdism_theme_mode') as ThemeMode;
-    if (savedTheme) {
-      get().setTheme(savedTheme);
+    const userSetTheme = localStorage.getItem('mahdism_theme_user_set') as ThemeMode;
+    if (userSetTheme === 'dark' || userSetTheme === 'light') {
+      get().setTheme(userSetTheme);
+    } else {
+      const prefersDark = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      get().setTheme(prefersDark ? 'dark' : 'light');
     }
 
     const savedLang = localStorage.getItem('mahdism_lang') as Language;
     if (savedLang) {
       set({ language: savedLang });
+    }
+
+    const savedAboutMission = localStorage.getItem('mahdism_about_mission');
+    if (savedAboutMission) {
+      set({ aboutUsMission: savedAboutMission });
     }
 
     const savedBookmarks = localStorage.getItem('mahdism_bookmarks');
@@ -358,6 +483,20 @@ export const useStore = create<AppState>((set, get) => ({
     const savedAdmin = localStorage.getItem('mahdism_admin_auth');
     if (savedAdmin === 'true') {
       set({ isAdminLoggedIn: true });
+    }
+
+    const savedCoHosts = localStorage.getItem('mahdism_cohosts');
+    if (savedCoHosts) {
+      try {
+        set({ coHosts: JSON.parse(savedCoHosts) });
+      } catch {}
+    }
+
+    const savedCurrentUser = localStorage.getItem('mahdism_current_user');
+    if (savedCurrentUser) {
+      try {
+        set({ currentUser: JSON.parse(savedCurrentUser) });
+      } catch {}
     }
 
     // Trigger backend sync

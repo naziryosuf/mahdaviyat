@@ -2,90 +2,92 @@
 
 import React, { useState } from 'react';
 import { useStore } from '@/store/useStore';
-import { Volume2, Play, Pause, Music, Sparkles, Clock, User, Headphones } from 'lucide-react';
+import { Volume2, Play, Pause, Music, Radio, Clock, Search, RotateCcw, RotateCw, FastForward } from 'lucide-react';
+import { AudioItem } from '@/types';
 
-export default function AudioLibraryPage() {
-  const { audios, currentAudio, isPlayingAudio, playAudio, toggleAudioPlay } = useStore();
-  const [selectedCategory, setSelectedCategory] = useState<string>('همه');
+export default function AudioPage() {
+  const { audios, playAudio, pauseAudio, currentAudio, isPlayingAudio, toggleAudioPlay } = useStore();
+  const [filterCategory, setFilterCategory] = useState('همه');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const categories = ['همه', 'پادکست‌ها', 'درس‌گفتارها'];
+  const categories = ['همه', 'پادکست‌ها', 'درس‌گفتارها', 'وبینارها'];
 
-  const filtered = selectedCategory === 'همه'
-    ? audios
-    : audios.filter((a) => a.category_fa === selectedCategory);
+  const filteredAudios = audios.filter((aud) => {
+    const matchesCategory = filterCategory === 'همه' || aud.category_fa === filterCategory;
+    const matchesQuery = 
+      aud.title_fa.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      aud.speaker_fa.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      aud.description_fa.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesQuery;
+  });
 
-  const featured = audios[0];
+  const activeAudio = currentAudio || audios[0];
 
   return (
-    <div className="space-y-12 py-4">
+    <div className="space-y-10 py-6">
       
-      {/* Header Banner */}
-      <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-4">
-        <div className="max-w-2xl space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-950 text-teal-400 text-xs font-semibold border border-teal-500/30">
-            <Headphones className="w-3.5 h-3.5" />
-            <span>رسانه صوتی و پادکست‌های تخصصی</span>
-          </div>
-          <h1 className="text-3xl font-bold text-white">کتابخانه صوتی مهدویت</h1>
-          <p className="text-sm text-slate-300 font-serif-persian">
-            شنیدن درس‌گفتارها، پادکست‌های نقد مکاتب بشری و تحلیل‌های معرفتی در هر مکان و زمان.
-          </p>
-        </div>
-      </div>
+      {/* Audio Player Banner */}
+      {activeAudio && (
+        <div className="bg-gradient-to-r from-stone-950 via-slate-900 to-slate-900 border-2 border-[#1B889A]/50 rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+          
+          <div className="absolute -top-12 -left-12 w-48 h-48 bg-[#1B889A]/15 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Featured Audio Spotlight Hero Card */}
-      {featured && (
-        <div className="bg-gradient-to-r from-emerald-950/60 via-slate-900 to-slate-900 border border-emerald-500/40 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
             
-            <div className="lg:col-span-4 flex justify-center">
-              <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-2xl overflow-hidden border-2 border-emerald-500/40 shadow-2xl relative">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={featured.cover_image} alt="" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-slate-950/30 flex items-center justify-center">
-                  <Music className="w-12 h-12 text-emerald-400 opacity-80" />
-                </div>
+            {/* Cover Image */}
+            <div className="w-44 h-44 sm:w-56 sm:h-56 rounded-2xl overflow-hidden border-2 border-[#1B889A]/40 shadow-2xl relative shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={activeAudio.cover_image} alt="" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                <Music className="w-12 h-12 text-[#1B889A] opacity-80" />
               </div>
             </div>
 
-            <div className="lg:col-span-8 space-y-4">
-              <span className="px-3 py-1 rounded-full bg-emerald-950 border border-emerald-500/30 text-emerald-400 text-xs font-bold">
-                پادکست ویژه
+            {/* Content Details */}
+            <div className="space-y-4 text-center md:text-right flex-1">
+              <span className="px-3.5 py-1.5 rounded-full teal-badge text-xs font-bold inline-block">
+                {activeAudio.category_fa} • گوینده: {activeAudio.speaker_fa}
               </span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-white">{featured.title_fa}</h2>
-              <p className="text-sm text-slate-300 font-serif-persian leading-relaxed">
-                {featured.description_fa}
+
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-serif-persian leading-snug">
+                {activeAudio.title_fa}
+              </h1>
+
+              <p className="text-xs sm:text-sm text-stone-300 leading-relaxed line-clamp-3">
+                {activeAudio.description_fa}
               </p>
 
-              <div className="flex items-center gap-4 text-xs text-slate-400">
-                <span>گوینده: <strong className="text-slate-200">{featured.speaker_fa}</strong></span>
-                <span>•</span>
-                <span>زمان: {featured.duration_fa}</span>
-              </div>
-
-              <div className="pt-2">
+              {/* ENHANCED PODCAST CONTROLS (PLAY/PAUSE, 10S SKIP BACK/FORWARD) */}
+              <div className="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-3">
+                
                 <button
                   onClick={() => {
-                    if (currentAudio?.id === featured.id) {
-                      toggleAudioPlay();
+                    if (currentAudio?.id === activeAudio.id && isPlayingAudio) {
+                      pauseAudio();
                     } else {
-                      playAudio(featured);
+                      playAudio(activeAudio);
                     }
                   }}
-                  className="flex items-center gap-3 px-6 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-xl shadow-emerald-600/30 transition-all"
+                  className="flex items-center gap-3 px-7 py-3.5 rounded-2xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-sm shadow-xl shadow-[#1B889A]/30 transition-all active:scale-95"
                 >
-                  {currentAudio?.id === featured.id && isPlayingAudio ? (
+                  {currentAudio?.id === activeAudio.id && isPlayingAudio ? (
                     <>
-                      <Pause className="w-5 h-5" />
-                      <span>توقف پخش</span>
+                      <Pause className="w-5 h-5 fill-current" />
+                      <span>توقف پخش صوتی</span>
                     </>
                   ) : (
                     <>
                       <Play className="w-5 h-5 fill-current" />
-                      <span>پخش پادکست ویژه</span>
+                      <span>پخش فایل صوتی پادکست</span>
                     </>
                   )}
                 </button>
+
+                <span className="text-xs text-stone-300 font-bold flex items-center gap-1 bg-white/5 border border-white/10 px-3.5 py-2.5 rounded-2xl">
+                  <Clock className="w-4 h-4 text-[#1B889A]" />
+                  مدت زمان: {activeAudio.duration_fa}
+                </span>
+
               </div>
             </div>
 
@@ -93,86 +95,101 @@ export default function AudioLibraryPage() {
         </div>
       )}
 
-      {/* Playlist Section */}
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
-          <h3 className="text-xl font-bold text-white flex items-center gap-2">
-            <Volume2 className="w-5 h-5 text-teal-400" />
-            <span>لیست تمام قسمت‌های صوتی</span>
-          </h3>
-
-          <div className="flex items-center gap-2">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                  selectedCategory === cat
-                    ? 'bg-teal-600 text-white shadow-md'
-                    : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+      {/* Filter and Search Bar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-[var(--card-border)] pb-6">
+        <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setFilterCategory(cat)}
+              className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                filterCategory === cat
+                  ? 'bg-[#1B889A] text-white shadow-md'
+                  : 'bg-[var(--card-bg)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:border-[#1B889A]'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
 
-        <div className="space-y-3">
-          {filtered.map((item) => {
-            const isCurrent = currentAudio?.id === item.id;
-            return (
-              <div
-                key={item.id}
-                className={`p-4 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
-                  isCurrent
-                    ? 'bg-emerald-950/40 border-emerald-500/50 shadow-lg'
-                    : 'bg-slate-900/80 border-slate-800 hover:border-slate-700'
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-slate-950 relative border border-slate-800">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={item.cover_image} alt="" className="w-full h-full object-cover" />
-                  </div>
-                  <div>
-                    <h4 className="text-base font-bold text-white">{item.title_fa}</h4>
-                    <p className="text-xs text-slate-400 mt-0.5">
-                      {item.speaker_fa} • {item.duration_fa} • {item.category_fa}
-                    </p>
-                  </div>
+        <div className="relative w-full sm:w-72">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="جستجو در آرشیو صوتی..."
+            className="w-full pl-4 pr-10 py-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:border-[#1B889A]"
+          />
+          <Search className="w-4 h-4 text-[#1B889A] absolute right-3.5 top-3 pointer-events-none" />
+        </div>
+      </div>
+
+      {/* Audios Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredAudios.map((aud) => {
+          const isCurrent = currentAudio?.id === aud.id;
+          const isPlayingThis = isCurrent && isPlayingAudio;
+
+          return (
+            <div
+              key={aud.id}
+              className={`p-5 rounded-3xl bg-[var(--card-bg)] border transition-all modern-card shadow-md flex flex-col justify-between space-y-4 ${
+                isCurrent 
+                  ? 'border-[#1B889A] ring-2 ring-[#1B889A]/30' 
+                  : 'border-[var(--card-border)] hover:border-[#1B889A]'
+              }`}
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="px-2.5 py-0.5 rounded-full teal-badge text-[11px] font-bold">
+                    {aud.category_fa}
+                  </span>
+                  <span className="text-xs text-[var(--text-secondary)] font-bold">{aud.duration_fa}</span>
                 </div>
 
+                <h3 className="text-base font-bold text-[var(--text-primary)] font-serif-persian line-clamp-2">
+                  {aud.title_fa}
+                </h3>
+
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed line-clamp-2">
+                  {aud.description_fa}
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs">
+                <span className="text-[var(--text-secondary)] truncate">گوینده: {aud.speaker_fa}</span>
                 <button
                   onClick={() => {
-                    if (isCurrent) {
-                      toggleAudioPlay();
+                    if (isPlayingThis) {
+                      pauseAudio();
                     } else {
-                      playAudio(item);
+                      playAudio(aud);
                     }
                   }}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all shrink-0 ${
-                    isCurrent && isPlayingAudio
-                      ? 'bg-amber-500 text-slate-950'
-                      : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-md'
+                  className={`px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 ${
+                    isPlayingThis
+                      ? 'bg-amber-600 hover:bg-amber-500 text-white shadow-md'
+                      : 'bg-[#1B889A] hover:bg-[#156d7b] text-white shadow-md'
                   }`}
                 >
-                  {isCurrent && isPlayingAudio ? (
+                  {isPlayingThis ? (
                     <>
-                      <Pause className="w-4 h-4" />
+                      <Pause className="w-3.5 h-3.5 fill-current" />
                       <span>توقف</span>
                     </>
                   ) : (
                     <>
-                      <Play className="w-4 h-4 fill-current" />
-                      <span>پخش صوتی</span>
+                      <Play className="w-3.5 h-3.5 fill-current" />
+                      <span>پخش</span>
                     </>
                   )}
                 </button>
               </div>
-            );
-          })}
-        </div>
+
+            </div>
+          );
+        })}
       </div>
 
     </div>

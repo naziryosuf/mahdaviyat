@@ -104,7 +104,7 @@ export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
       {/* 2. DEDICATED PDF STAGE (CLEAN & WITHOUT FLOATING OPTION BAR) */}
       <div 
         className={`w-full bg-[var(--card-bg)] border-2 border-[#1B889A]/40 rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 relative ${
-          isFullscreen ? 'h-[calc(100vh-90px)] rounded-none border-0' : 'h-[720px] sm:h-[840px]'
+          isFullscreen ? 'h-[calc(100vh-90px)] rounded-none border-0' : 'h-[520px] sm:h-[820px]'
         }`}
       >
         <iframe

@@ -56,7 +56,7 @@ export default function VideoLibraryPage() {
                 }}
                 className={`bg-slate-900/80 border rounded-3xl overflow-hidden cursor-pointer transition-all duration-300 shadow-xl group ${
                   isSelected
-                    ? 'border-emerald-500 bg-emerald-950/20 ring-2 ring-emerald-500/30'
+                    ? 'border-[#1B889A] bg-cyan-950/20 ring-2 ring-[#1B889A]/30'
                     : 'border-slate-800 hover:border-slate-700'
                 }`}
               >
@@ -68,7 +68,7 @@ export default function VideoLibraryPage() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                   />
                   <div className="absolute inset-0 bg-slate-950/30 flex items-center justify-center">
-                    <div className="w-10 h-10 rounded-full bg-emerald-600/90 text-white flex items-center justify-center shadow-lg">
+                    <div className="w-10 h-10 rounded-full bg-[#1B889A]/90 text-white flex items-center justify-center shadow-lg">
                       <Play className="w-4 h-4 mr-0.5 fill-current" />
                     </div>
                   </div>
@@ -81,7 +81,7 @@ export default function VideoLibraryPage() {
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-500/30">
                     {vid.category_fa}
                   </span>
-                  <h4 className="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors line-clamp-2">
+                  <h4 className="text-sm font-bold text-white group-hover:text-[#1B889A] transition-colors line-clamp-2">
                     {vid.title_fa}
                   </h4>
                   <p className="text-xs text-slate-400">سخنران: {vid.speaker_fa}</p>

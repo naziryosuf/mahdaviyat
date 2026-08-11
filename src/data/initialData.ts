@@ -1,4 +1,4 @@
-import { Article, MagazineIssue, VideoItem, AudioItem, InfographicItem, TeamMember, ContactMessage } from '../types';
+import { Article, MagazineIssue, VideoItem, AudioItem, InfographicItem, TeamMember, ContactMessage, CoHostUser } from '../types';
 
 export const initialArticles: Article[] = [
   {
@@ -20,11 +20,13 @@ export const initialArticles: Article[] = [
 حضرت مهدی (علیه‌السلام)، در این نگاه، نه تنها رهبر دینی برای گروهی خاص، بلکه نماینده‌ی اراده‌ی الهی برای بازگرداندن تعادل به حیات بشر و تحقق یک ساختار جهانی آرام و انسانی بر مبنای عدالت است.`,
     category_fa: 'سرمقاله‌ها',
     author_name_fa: 'میر الهام الدین سادات',
+    author_title_fa: 'سردبیر و پژوهشگر ارشد مهدویت',
     author_avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
     read_time_fa: '۶ دقیقه',
     published_at: 'تابستان ۱۴۰۴ خورشیدی',
     image_url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
     featured: true,
+    audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
     views: 3100,
   },
   {
@@ -155,7 +157,7 @@ export const initialMagazineIssues: MagazineIssue[] = [
   {
     id: 'mag-issue-1',
     issue_number: 1,
-    title_fa: 'شماره نخست: ایدئولوژی مهدویت (تابستان ۱۴۰۴)',
+    title_fa: 'شماره نخست: ایدئولوژی مهدویت',
     description_fa: 'نخستین شماره مجله تخصصی ایدئولوژی مهدویت شامل ۴۵ صفحه کامل با تمامی مقالات، سرمقاله، رهبریت در اسلام، اخوت اسلامی، اتصال به اصل، روشنگری چیست، و معیت خدای متعال.',
     publish_date_fa: 'تابستان ۱۴۰۴ خورشیدی',
     cover_image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
@@ -167,7 +169,7 @@ export const initialMagazineIssues: MagazineIssue[] = [
   {
     id: 'mag-issue-2',
     issue_number: 2,
-    title_fa: 'شماره دوم: اخوت اسلامی و بیداری امت (پاییز ۱۴۰۴)',
+    title_fa: 'شماره دوم: اخوت اسلامی و بیداری امت',
     description_fa: 'شماره دوم مجله شامل بررسی راهکارهای عملی وحدت امت اسلامی، نقد فرقه گرایی، مبانی رشد اخلاقی و تحلیل شناختی جامعه موعود.',
     publish_date_fa: 'پاییز ۱۴۰۴ خورشیدی',
     cover_image: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=800&q=80',
@@ -179,7 +181,7 @@ export const initialMagazineIssues: MagazineIssue[] = [
   {
     id: 'mag-issue-3',
     issue_number: 3,
-    title_fa: 'شماره سوم: تبیین حاکمیت عادلانه (زمستان ۱۴۰۴)',
+    title_fa: 'شماره سوم: تبیین حاکمیت عادلانه',
     description_fa: 'شماره سوم مجله تمرکز بر تبیین حقوق عامه در حکومت مهدوی، نقد اومانیسم غربی و بازخوانی جایگاه انسان در هندسه آفرینش دارد.',
     publish_date_fa: 'زمستان ۱۴۰۴ خورشیدی',
     cover_image: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80',
@@ -329,5 +331,42 @@ export const initialContactMessages: ContactMessage[] = [
     message: 'با سلام، شماره نخست مجله بسیار غنی و تحلیلی بود.',
     created_at: 'تابستان ۱۴۰۴',
     status: 'new'
+  }
+];
+
+export const initialCoHosts: CoHostUser[] = [
+  {
+    id: 'cohost-super-admin',
+    name_fa: 'M. Nazir Yosuf',
+    password_code: '190716',
+    role_fa: 'مدیر کل و سردبیر ارشد',
+    created_at: '۱۴۰۴/۰۵/۰۱',
+    is_super_admin: true,
+    permissions: {
+      can_manage_articles: true,
+      can_manage_magazines: true,
+      can_manage_videos: true,
+      can_manage_audios: true,
+      can_manage_team: true,
+      can_manage_messages: true,
+      can_manage_cohosts: true,
+    }
+  },
+  {
+    id: 'cohost-articles-manager',
+    name_fa: 'همکار / مدیر مقالات',
+    password_code: '123456',
+    role_fa: 'ویرایشگر و مسئول انتشار مقالات',
+    created_at: '۱۴۰۴/۰۵/۱۰',
+    is_super_admin: false,
+    permissions: {
+      can_manage_articles: true,
+      can_manage_magazines: false,
+      can_manage_videos: false,
+      can_manage_audios: false,
+      can_manage_team: false,
+      can_manage_messages: false,
+      can_manage_cohosts: false,
+    }
   }
 ];

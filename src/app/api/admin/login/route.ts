@@ -5,7 +5,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { passcode } = body;
 
-    if (passcode === '123456') {
+    if (passcode === '190716') {
       return NextResponse.json({
         success: true,
         message: 'ورود موفقیت‌آمیز مدیر',

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useStore } from '@/store/useStore';
-import { Mail, Send, CheckCircle2, Paperclip, MessageCircle, Globe, MapPin, AlertCircle } from 'lucide-react';
+import { Mail, Send, CheckCircle2, Paperclip, MessageCircle, Globe, MapPin, AlertCircle, Phone } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export default function ContactPage() {
@@ -81,8 +81,8 @@ export default function ContactPage() {
           <h2 className="text-xl font-bold text-[var(--text-primary)] font-serif-persian">فرم ارسال پیام</h2>
 
           {submitted && (
-            <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-3">
-              <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+            <div className="p-4 rounded-2xl bg-[#1B889A]/10 border border-[#1B889A]/30 text-[#1B889A] text-xs flex items-center gap-3">
+              <CheckCircle2 className="w-5 h-5 text-[#1B889A] shrink-0" />
               <span>پیام و فایل پیوست شما با موفقیت ثبت گردید. گروه کاری مجله آن را بررسی خواهد نمود.</span>
             </div>
           )}
@@ -206,12 +206,12 @@ export default function ContactPage() {
 
               {/* WhatsApp Contact */}
               <div className="flex items-center gap-3 p-3 bg-[var(--bg-color)] rounded-2xl border border-[var(--card-border)]">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
-                  <MessageCircle className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-xl bg-[#1B889A]/10 border border-[#1B889A]/30 flex items-center justify-center text-[#1B889A] shrink-0">
+                  <Phone className="w-5 h-5" />
                 </div>
                 <div>
-                  <span className="text-[11px] text-[var(--text-secondary)] block">ارتباط مستقیم در واتساپ:</span>
-                  <a href="https://wa.me/4917689062903" target="_blank" rel="noreferrer" className="font-mono text-sm font-bold text-[var(--text-primary)] hover:text-emerald-400 dir-ltr block text-right">
+                  <span className="text-[11px] text-[var(--text-secondary)] block">واتساپ و تلگرام مستقیم:</span>
+                  <a href="https://wa.me/4917689062903" target="_blank" rel="noreferrer" className="font-mono text-sm font-bold text-[var(--text-primary)] hover:text-[#1B889A] dir-ltr block text-right">
                     +49 176 89062903
                   </a>
                 </div>
