@@ -17,6 +17,10 @@ export interface Article {
   audio_speaker_fa?: string;
   views?: number;
   tags?: string[];
+  status?: 'published' | 'pending_approval';
+  submitted_by_name?: string;
+  submitted_at?: string;
+  submitted_device?: string;
 }
 
 export interface MagazinePageItem {
@@ -38,6 +42,10 @@ export interface MagazineIssue {
   pages: MagazinePageItem[];
   featured?: boolean;
   tags?: string[];
+  status?: 'published' | 'pending_approval';
+  submitted_by_name?: string;
+  submitted_at?: string;
+  submitted_device?: string;
 }
 
 export interface VideoItem {
@@ -56,6 +64,10 @@ export interface VideoItem {
   transcript_fa?: string;
   timestamps?: { time: string; label_fa: string }[];
   tags?: string[];
+  status?: 'published' | 'pending_approval';
+  submitted_by_name?: string;
+  submitted_at?: string;
+  submitted_device?: string;
 }
 
 export interface AudioItem {
@@ -71,6 +83,10 @@ export interface AudioItem {
   plays?: number;
   featured?: boolean;
   tags?: string[];
+  status?: 'published' | 'pending_approval';
+  submitted_by_name?: string;
+  submitted_at?: string;
+  submitted_device?: string;
 }
 
 export interface InfographicItem {
@@ -89,6 +105,10 @@ export interface TeamMember {
   bio_fa: string;
   avatar_url: string;
   specialization_fa: string;
+  status?: 'published' | 'pending_approval';
+  submitted_by_name?: string;
+  submitted_at?: string;
+  submitted_device?: string;
 }
 
 export interface ContactMessage {
@@ -115,6 +135,7 @@ export interface CoHostPermissions {
   can_manage_team: boolean;
   can_manage_messages: boolean;
   can_manage_cohosts: boolean;
+  can_direct_publish: boolean; // Direct publish permission without Super Admin approval requirement
 }
 
 export interface CoHostUser {
@@ -125,4 +146,17 @@ export interface CoHostUser {
   created_at: string;
   is_super_admin?: boolean;
   permissions: CoHostPermissions;
+}
+
+export interface AuditLogItem {
+  id: string;
+  user_name: string;
+  user_role: string;
+  action_type: 'افزودن' | 'ویرایش' | 'حذف' | 'تایید و انتشار' | 'رد درخواست';
+  target_title: string;
+  item_type: 'مقاله' | 'مجله' | 'ویدیو' | 'صوتی' | 'عضو تیم' | 'همکار';
+  timestamp: string;
+  time_only: string;
+  device_info: string;
+  status_note?: string;
 }

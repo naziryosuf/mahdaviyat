@@ -1,8 +1,9 @@
 import { create } from 'zustand';
-import { Article, MagazineIssue, VideoItem, AudioItem, InfographicItem, TeamMember, ContactMessage, CoHostUser } from '../types';
+import { Article, MagazineIssue, VideoItem, AudioItem, InfographicItem, TeamMember, ContactMessage, CoHostUser, AuditLogItem } from '../types';
 import { initialArticles, initialMagazineIssues, initialVideos, initialAudios, initialInfographics, initialTeamMembers, initialContactMessages, initialCoHosts } from '../data/initialData';
 import { Language } from '../data/translations';
 import { supabase } from '@/lib/supabase';
+import { getDeviceDetails } from '@/utils/deviceDetector';
 
 export type ThemeMode = 'dark' | 'light';
 
@@ -29,6 +30,21 @@ interface AppState {
   teamMembers: TeamMember[];
   contactMessages: ContactMessage[];
 
+  // Audit Logs & Device Activity Tracking
+  auditLogs: AuditLogItem[];
+  addAuditLog: (
+    action_type: 'افزودن' | 'ویرایش' | 'حذف' | 'تایید و انتشار' | 'رد درخواست',
+    target_title: string,
+    item_type: 'مقاله' | 'مجله' | 'ویدیو' | 'صوتی' | 'عضو تیم' | 'همکار',
+    status_note?: string
+  ) => void;
+
+  // Staged Unsaved Changes (Global Save Button)
+  stagedChangesCount: number;
+  hasUnsavedChanges: boolean;
+  saveAllChangesToLive: () => Promise<void>;
+  discardStagedChanges: () => void;
+
   // Admin Security Gate & Co-Host RBAC
   isAdminLoggedIn: boolean;
   adminPasscode: string;
@@ -39,6 +55,10 @@ interface AppState {
   addCoHost: (coHost: Omit<CoHostUser, 'id' | 'created_at'>) => void;
   updateCoHost: (id: string, updates: Partial<CoHostUser>) => void;
   deleteCoHost: (id: string) => void;
+
+  // Pending Approvals Queue Actions (Super Admin / Authorized Co-Host)
+  approvePendingItem: (itemType: 'article' | 'magazine' | 'video' | 'audio' | 'team', id: string) => void;
+  rejectPendingItem: (itemType: 'article' | 'magazine' | 'video' | 'audio' | 'team', id: string) => void;
 
   // Active Audio Player State
   currentAudio: AudioItem | null;
@@ -52,7 +72,7 @@ interface AppState {
   bookmarkedArticles: string[];
   toggleBookmark: (articleId: string) => void;
 
-  // Admin Full CRUD Actions with Real-Time Backend Sync
+  // Admin Full CRUD Actions
   addArticle: (article: Omit<Article, 'id' | 'views'>) => Promise<void>;
   updateArticle: (id: string, article: Partial<Article>) => Promise<void>;
   deleteArticle: (id: string) => Promise<void>;
@@ -116,10 +136,11 @@ export const useStore = create<AppState>((set, get) => ({
 
   aboutUsMission: defaultMissionText,
   setAboutUsMission: (desc: string) => {
-    set({ aboutUsMission: desc });
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('mahdism_about_mission', desc);
-    }
+    set((state) => ({ 
+      aboutUsMission: desc,
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
+    }));
   },
 
   articles: initialArticles,
@@ -129,6 +150,84 @@ export const useStore = create<AppState>((set, get) => ({
   infographics: initialInfographics,
   teamMembers: initialTeamMembers,
   contactMessages: initialContactMessages,
+
+  // Audit Logs State
+  auditLogs: [
+    {
+      id: 'log-1',
+      user_name: 'M. Nazir Yosuf',
+      user_role: 'سردبیر ارشد',
+      action_type: 'تایید و انتشار',
+      target_title: 'بیانیه افتتاحیه ایدئولوژی مهدویت',
+      item_type: 'مقاله',
+      timestamp: '۱۴۰۴/۰۵/۲۲ - ۱۲:۰۰',
+      time_only: '۱۲:۰۰',
+      device_info: 'Windows Desktop (Chrome)',
+      status_note: 'تایید مستقیم توسط ادمین کل'
+    }
+  ],
+
+  addAuditLog: (action_type, target_title, item_type, status_note) => {
+    const currentUser = get().currentUser;
+    const now = new Date();
+    const timeOnly = now.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+    const fullDate = `${now.toLocaleDateString('fa-IR')} - ${timeOnly}`;
+    const device = getDeviceDetails();
+
+    const newLog: AuditLogItem = {
+      id: `log-${Date.now()}`,
+      user_name: currentUser?.name_fa || 'M. Nazir Yosuf',
+      user_role: currentUser?.role_fa || 'مدیر',
+      action_type,
+      target_title,
+      item_type,
+      timestamp: fullDate,
+      time_only: timeOnly,
+      device_info: device,
+      status_note,
+    };
+
+    set((state) => ({
+      auditLogs: [newLog, ...state.auditLogs]
+    }));
+  },
+
+  // Global Save State
+  stagedChangesCount: 0,
+  hasUnsavedChanges: false,
+
+  saveAllChangesToLive: async () => {
+    const state = get();
+    // Save to LocalStorage
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('mahdism_articles', JSON.stringify(state.articles));
+      localStorage.setItem('mahdism_magazines', JSON.stringify(state.magazineIssues));
+      localStorage.setItem('mahdism_videos', JSON.stringify(state.videos));
+      localStorage.setItem('mahdism_audios', JSON.stringify(state.audios));
+      localStorage.setItem('mahdism_team', JSON.stringify(state.teamMembers));
+      localStorage.setItem('mahdism_audit_logs', JSON.stringify(state.auditLogs));
+      localStorage.setItem('mahdism_about_mission', state.aboutUsMission);
+    }
+
+    // Sync to Supabase cloud
+    try {
+      await supabase.from('articles').upsert(state.articles);
+      await supabase.from('magazine_issues').upsert(state.magazineIssues);
+      await supabase.from('video_items').upsert(state.videos);
+      await supabase.from('audio_items').upsert(state.audios);
+      await supabase.from('team_members').upsert(state.teamMembers);
+    } catch (e) {
+      console.log('Supabase Save Sync:', e);
+    }
+
+    // Reset staged count
+    set({ stagedChangesCount: 0, hasUnsavedChanges: false });
+  },
+
+  discardStagedChanges: () => {
+    get().fetchFromBackend();
+    set({ stagedChangesCount: 0, hasUnsavedChanges: false });
+  },
 
   isAdminLoggedIn: false,
   adminPasscode: '190716',
@@ -165,6 +264,7 @@ export const useStore = create<AppState>((set, get) => ({
           can_manage_team: true,
           can_manage_messages: true,
           can_manage_cohosts: true,
+          can_direct_publish: true,
         }
       };
       set({ isAdminLoggedIn: true, currentUser: superAdminUser });
@@ -193,24 +293,24 @@ export const useStore = create<AppState>((set, get) => ({
       created_at: new Date().toLocaleDateString('fa-IR'),
     };
     const updated = [...get().coHosts, newCoHost];
-    set({ coHosts: updated });
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('mahdism_cohosts', JSON.stringify(updated));
-    }
+    set((state) => ({ 
+      coHosts: updated,
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
+    }));
+    get().addAuditLog('افزودن', newCoHost.name_fa, 'همکار', `نقش: ${newCoHost.role_fa}`);
   },
 
   updateCoHost: (id, updates) => {
     const updated = get().coHosts.map((ch) => (ch.id === id ? { ...ch, ...updates } : ch));
-    set({ coHosts: updated });
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('mahdism_cohosts', JSON.stringify(updated));
-    }
-    if (get().currentUser?.id === id) {
-      const updatedUser = updated.find(ch => ch.id === id) || null;
-      set({ currentUser: updatedUser });
-      if (typeof localStorage !== 'undefined' && updatedUser) {
-        localStorage.setItem('mahdism_current_user', JSON.stringify(updatedUser));
-      }
+    set((state) => ({ 
+      coHosts: updated,
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
+    }));
+    const target = updated.find(c => c.id === id);
+    if (target) {
+      get().addAuditLog('ویرایش', target.name_fa, 'همکار', 'ویرایش سطح دسترسی همکار');
     }
   },
 
@@ -220,10 +320,109 @@ export const useStore = create<AppState>((set, get) => ({
       return;
     }
     const updated = get().coHosts.filter((ch) => ch.id !== id);
-    set({ coHosts: updated });
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('mahdism_cohosts', JSON.stringify(updated));
+    set((state) => ({ 
+      coHosts: updated,
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
+    }));
+    if (target) {
+      get().addAuditLog('حذف', target.name_fa, 'همکار', 'حذف حساب همکار');
     }
+  },
+
+  // Pending Approvals Queue
+  approvePendingItem: (itemType, id) => {
+    let title = '';
+    if (itemType === 'article') {
+      const art = get().articles.find(a => a.id === id);
+      if (art) title = art.title_fa;
+      set((state) => ({
+        articles: state.articles.map(a => a.id === id ? { ...a, status: 'published' } : a),
+        stagedChangesCount: state.stagedChangesCount + 1,
+        hasUnsavedChanges: true
+      }));
+    } else if (itemType === 'magazine') {
+      const mag = get().magazineIssues.find(m => m.id === id);
+      if (mag) title = mag.title_fa;
+      set((state) => ({
+        magazineIssues: state.magazineIssues.map(m => m.id === id ? { ...m, status: 'published' } : m),
+        stagedChangesCount: state.stagedChangesCount + 1,
+        hasUnsavedChanges: true
+      }));
+    } else if (itemType === 'video') {
+      const vid = get().videos.find(v => v.id === id);
+      if (vid) title = vid.title_fa;
+      set((state) => ({
+        videos: state.videos.map(v => v.id === id ? { ...v, status: 'published' } : v),
+        stagedChangesCount: state.stagedChangesCount + 1,
+        hasUnsavedChanges: true
+      }));
+    } else if (itemType === 'audio') {
+      const aud = get().audios.find(a => a.id === id);
+      if (aud) title = aud.title_fa;
+      set((state) => ({
+        audios: state.audios.map(a => a.id === id ? { ...a, status: 'published' } : a),
+        stagedChangesCount: state.stagedChangesCount + 1,
+        hasUnsavedChanges: true
+      }));
+    } else if (itemType === 'team') {
+      const tm = get().teamMembers.find(t => t.id === id);
+      if (tm) title = tm.name_fa;
+      set((state) => ({
+        teamMembers: state.teamMembers.map(t => t.id === id ? { ...t, status: 'published' } : t),
+        stagedChangesCount: state.stagedChangesCount + 1,
+        hasUnsavedChanges: true
+      }));
+    }
+
+    get().addAuditLog('تایید و انتشار', title, itemType === 'article' ? 'مقاله' : itemType === 'magazine' ? 'مجله' : itemType === 'video' ? 'ویدیو' : itemType === 'audio' ? 'صوتی' : 'عضو تیم', 'تایید نهایی توسط مدیر ارشد (Nazif Yosuf)');
+  },
+
+  rejectPendingItem: (itemType, id) => {
+    let title = '';
+    if (itemType === 'article') {
+      const art = get().articles.find(a => a.id === id);
+      if (art) title = art.title_fa;
+      set((state) => ({
+        articles: state.articles.filter(a => a.id !== id),
+        stagedChangesCount: state.stagedChangesCount + 1,
+        hasUnsavedChanges: true
+      }));
+    } else if (itemType === 'magazine') {
+      const mag = get().magazineIssues.find(m => m.id === id);
+      if (mag) title = mag.title_fa;
+      set((state) => ({
+        magazineIssues: state.magazineIssues.filter(m => m.id !== id),
+        stagedChangesCount: state.stagedChangesCount + 1,
+        hasUnsavedChanges: true
+      }));
+    } else if (itemType === 'video') {
+      const vid = get().videos.find(v => v.id === id);
+      if (vid) title = vid.title_fa;
+      set((state) => ({
+        videos: state.videos.filter(v => v.id !== id),
+        stagedChangesCount: state.stagedChangesCount + 1,
+        hasUnsavedChanges: true
+      }));
+    } else if (itemType === 'audio') {
+      const aud = get().audios.find(a => a.id === id);
+      if (aud) title = aud.title_fa;
+      set((state) => ({
+        audios: state.audios.filter(a => a.id !== id),
+        stagedChangesCount: state.stagedChangesCount + 1,
+        hasUnsavedChanges: true
+      }));
+    } else if (itemType === 'team') {
+      const tm = get().teamMembers.find(t => t.id === id);
+      if (tm) title = tm.name_fa;
+      set((state) => ({
+        teamMembers: state.teamMembers.filter(t => t.id !== id),
+        stagedChangesCount: state.stagedChangesCount + 1,
+        hasUnsavedChanges: true
+      }));
+    }
+
+    get().addAuditLog('رد درخواست', title, itemType === 'article' ? 'مقاله' : itemType === 'magazine' ? 'مجله' : itemType === 'video' ? 'ویدیو' : itemType === 'audio' ? 'صوتی' : 'عضو تیم', 'رد درخواست انتشار توسط مدیر ارشد');
   },
 
   currentAudio: null,
@@ -245,123 +444,258 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   addArticle: async (articleData) => {
+    const currentUser = get().currentUser;
+    const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
+    const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
+    const initialStatus = canDirect ? 'published' : 'pending_approval';
+
     const newArticle: Article = {
       ...articleData,
       id: `art-${Date.now()}`,
       views: 1,
+      status: initialStatus,
+      submitted_by_name: currentUser?.name_fa || 'M. Nazir Yosuf',
+      submitted_at: new Date().toLocaleDateString('fa-IR'),
+      submitted_device: getDeviceDetails(),
     };
-    set((state) => ({ articles: [newArticle, ...state.articles] }));
-    try {
-      await supabase.from('articles').upsert(newArticle);
-    } catch {}
+
+    set((state) => ({ 
+      articles: [newArticle, ...state.articles],
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
+    }));
+
+    get().addAuditLog(
+      'افزودن', 
+      newArticle.title_fa, 
+      'مقاله', 
+      canDirect ? 'انتشار مستقیم' : 'در انتظار تایید ادمین ارشد (Nazif Yosuf)'
+    );
   },
 
   updateArticle: async (id, articleData) => {
+    const currentUser = get().currentUser;
+    const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
+    const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
+    const nextStatus = canDirect ? 'published' : 'pending_approval';
+
     set((state) => ({
-      articles: state.articles.map((art) => (art.id === id ? { ...art, ...articleData } : art)),
+      articles: state.articles.map((art) => (art.id === id ? { 
+        ...art, 
+        ...articleData,
+        status: nextStatus,
+        submitted_by_name: currentUser?.name_fa || 'M. Nazir Yosuf',
+        submitted_at: new Date().toLocaleDateString('fa-IR'),
+        submitted_device: getDeviceDetails()
+      } : art)),
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
     }));
-    try {
-      await supabase.from('articles').update(articleData).eq('id', id);
-    } catch {}
+
+    const target = get().articles.find(a => a.id === id);
+    if (target) {
+      get().addAuditLog(
+        'ویرایش', 
+        target.title_fa, 
+        'مقاله', 
+        canDirect ? 'ویرایش و انتشار مستقیم' : 'ویرایش شده - در انتظار تایید ادمین ارشد'
+      );
+    }
   },
 
   deleteArticle: async (id) => {
+    const target = get().articles.find(a => a.id === id);
     set((state) => ({
       articles: state.articles.filter((art) => art.id !== id),
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
     }));
-    try {
-      await supabase.from('articles').delete().eq('id', id);
-    } catch {}
+    if (target) {
+      get().addAuditLog('حذف', target.title_fa, 'مقاله');
+    }
   },
 
   addMagazineIssue: async (issueData) => {
+    const currentUser = get().currentUser;
+    const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
+    const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
+    const initialStatus = canDirect ? 'published' : 'pending_approval';
+
     const newIssue: MagazineIssue = {
       ...issueData,
       id: `mag-${Date.now()}`,
       download_count: 0,
+      status: initialStatus,
+      submitted_by_name: currentUser?.name_fa || 'M. Nazir Yosuf',
+      submitted_at: new Date().toLocaleDateString('fa-IR'),
+      submitted_device: getDeviceDetails(),
     };
-    set((state) => ({ magazineIssues: [newIssue, ...state.magazineIssues] }));
-    try {
-      await supabase.from('magazine_issues').upsert(newIssue);
-    } catch {}
+    set((state) => ({ 
+      magazineIssues: [newIssue, ...state.magazineIssues],
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
+    }));
+    get().addAuditLog(
+      'افزودن', 
+      newIssue.title_fa, 
+      'مجله', 
+      canDirect ? 'انتشار مستقیم' : 'در انتظار تایید ادمین ارشد'
+    );
   },
 
   updateMagazineIssue: (id, issueData) => {
+    const currentUser = get().currentUser;
+    const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
+    const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
+    const nextStatus = canDirect ? 'published' : 'pending_approval';
+
     set((state) => ({
-      magazineIssues: state.magazineIssues.map((iss) => (iss.id === id ? { ...iss, ...issueData } : iss)),
+      magazineIssues: state.magazineIssues.map((iss) => (iss.id === id ? { 
+        ...iss, 
+        ...issueData,
+        status: nextStatus
+      } : iss)),
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
     }));
-    try {
-      supabase.from('magazine_issues').update(issueData).eq('id', id);
-    } catch {}
+    const target = get().magazineIssues.find(m => m.id === id);
+    if (target) {
+      get().addAuditLog('ویرایش', target.title_fa, 'مجله');
+    }
   },
 
   deleteMagazineIssue: (id) => {
+    const target = get().magazineIssues.find(m => m.id === id);
     set((state) => ({
       magazineIssues: state.magazineIssues.filter((iss) => iss.id !== id),
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
     }));
-    try {
-      supabase.from('magazine_issues').delete().eq('id', id);
-    } catch {}
+    if (target) {
+      get().addAuditLog('حذف', target.title_fa, 'مجله');
+    }
   },
 
   addVideo: (videoData) => {
+    const currentUser = get().currentUser;
+    const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
+    const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
+    const initialStatus = canDirect ? 'published' : 'pending_approval';
+
     const newVid: VideoItem = {
       ...videoData,
       id: `vid-${Date.now()}`,
       views: 1,
+      status: initialStatus,
+      submitted_by_name: currentUser?.name_fa || 'M. Nazir Yosuf',
+      submitted_at: new Date().toLocaleDateString('fa-IR'),
+      submitted_device: getDeviceDetails(),
     };
-    set((state) => ({ videos: [newVid, ...state.videos] }));
-    try {
-      supabase.from('video_items').upsert(newVid);
-    } catch {}
+    set((state) => ({ 
+      videos: [newVid, ...state.videos],
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
+    }));
+    get().addAuditLog(
+      'افزودن', 
+      newVid.title_fa, 
+      'ویدیو', 
+      canDirect ? 'انتشار مستقیم' : 'در انتظار تایید ادمین ارشد'
+    );
   },
 
   updateVideo: (id, videoData) => {
+    const currentUser = get().currentUser;
+    const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
+    const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
+    const nextStatus = canDirect ? 'published' : 'pending_approval';
+
     set((state) => ({
-      videos: state.videos.map((v) => (v.id === id ? { ...v, ...videoData } : v)),
+      videos: state.videos.map((v) => (v.id === id ? { 
+        ...v, 
+        ...videoData,
+        status: nextStatus
+      } : v)),
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
     }));
-    try {
-      supabase.from('video_items').update(videoData).eq('id', id);
-    } catch {}
+    const target = get().videos.find(v => v.id === id);
+    if (target) {
+      get().addAuditLog('ویرایش', target.title_fa, 'ویدیو');
+    }
   },
 
   deleteVideo: (id) => {
+    const target = get().videos.find(v => v.id === id);
     set((state) => ({
       videos: state.videos.filter((v) => v.id !== id),
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
     }));
-    try {
-      supabase.from('video_items').delete().eq('id', id);
-    } catch {}
+    if (target) {
+      get().addAuditLog('حذف', target.title_fa, 'ویدیو');
+    }
   },
 
   addAudio: (audioData) => {
+    const currentUser = get().currentUser;
+    const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
+    const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
+    const initialStatus = canDirect ? 'published' : 'pending_approval';
+
     const newAud: AudioItem = {
       ...audioData,
       id: `aud-${Date.now()}`,
       plays: 1,
+      status: initialStatus,
+      submitted_by_name: currentUser?.name_fa || 'M. Nazir Yosuf',
+      submitted_at: new Date().toLocaleDateString('fa-IR'),
+      submitted_device: getDeviceDetails(),
     };
-    set((state) => ({ audios: [newAud, ...state.audios] }));
-    try {
-      supabase.from('audio_items').upsert(newAud);
-    } catch {}
+    set((state) => ({ 
+      audios: [newAud, ...state.audios],
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
+    }));
+    get().addAuditLog(
+      'افزودن', 
+      newAud.title_fa, 
+      'صوتی', 
+      canDirect ? 'انتشار مستقیم' : 'در انتظار تایید ادمین ارشد'
+    );
   },
 
   updateAudio: (id, audioData) => {
+    const currentUser = get().currentUser;
+    const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
+    const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
+    const nextStatus = canDirect ? 'published' : 'pending_approval';
+
     set((state) => ({
-      audios: state.audios.map((a) => (a.id === id ? { ...a, ...audioData } : a)),
+      audios: state.audios.map((a) => (a.id === id ? { 
+        ...a, 
+        ...audioData,
+        status: nextStatus 
+      } : a)),
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
     }));
-    try {
-      supabase.from('audio_items').update(audioData).eq('id', id);
-    } catch {}
+    const target = get().audios.find(a => a.id === id);
+    if (target) {
+      get().addAuditLog('ویرایش', target.title_fa, 'صوتی');
+    }
   },
 
   deleteAudio: (id) => {
+    const target = get().audios.find(a => a.id === id);
     set((state) => ({
       audios: state.audios.filter((a) => a.id !== id),
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
     }));
-    try {
-      supabase.from('audio_items').delete().eq('id', id);
-    } catch {}
+    if (target) {
+      get().addAuditLog('حذف', target.title_fa, 'صوتی');
+    }
   },
 
   addInfographic: (infoData) => {
@@ -369,48 +703,70 @@ export const useStore = create<AppState>((set, get) => ({
       ...infoData,
       id: `info-${Date.now()}`,
     };
-    set((state) => ({ infographics: [newInfo, ...state.infographics] }));
-    try {
-      supabase.from('infographic_items').upsert(newInfo);
-    } catch {}
+    set((state) => ({ 
+      infographics: [newInfo, ...state.infographics],
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
+    }));
   },
 
   deleteInfographic: (id) => {
     set((state) => ({
       infographics: state.infographics.filter((i) => i.id !== id),
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
     }));
-    try {
-      supabase.from('infographic_items').delete().eq('id', id);
-    } catch {}
   },
 
   addTeamMember: (memberData) => {
+    const currentUser = get().currentUser;
+    const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
+    const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
+    const initialStatus = canDirect ? 'published' : 'pending_approval';
+
     const newMember: TeamMember = {
       ...memberData,
       id: `team-${Date.now()}`,
+      status: initialStatus,
+      submitted_by_name: currentUser?.name_fa || 'M. Nazir Yosuf',
+      submitted_at: new Date().toLocaleDateString('fa-IR'),
+      submitted_device: getDeviceDetails(),
     };
-    set((state) => ({ teamMembers: [...state.teamMembers, newMember] }));
-    try {
-      supabase.from('team_members').upsert(newMember);
-    } catch {}
+    set((state) => ({ 
+      teamMembers: [...state.teamMembers, newMember],
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
+    }));
+    get().addAuditLog(
+      'افزودن', 
+      newMember.name_fa, 
+      'عضو تیم', 
+      canDirect ? 'انتشار مستقیم' : 'در انتظار تایید ادمین ارشد'
+    );
   },
 
   updateTeamMember: (id, memberData) => {
     set((state) => ({
       teamMembers: state.teamMembers.map((m) => (m.id === id ? { ...m, ...memberData } : m)),
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
     }));
-    try {
-      supabase.from('team_members').update(memberData).eq('id', id);
-    } catch {}
+    const target = get().teamMembers.find(t => t.id === id);
+    if (target) {
+      get().addAuditLog('ویرایش', target.name_fa, 'عضو تیم');
+    }
   },
 
   deleteTeamMember: (id) => {
+    const target = get().teamMembers.find(t => t.id === id);
     set((state) => ({
       teamMembers: state.teamMembers.filter((m) => m.id !== id),
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
     }));
-    try {
-      supabase.from('team_members').delete().eq('id', id);
-    } catch {}
+    if (target) {
+      get().addAuditLog('حذف', target.name_fa, 'عضو تیم');
+    }
   },
 
   addContactMessage: async (msgData) => {
@@ -519,6 +875,41 @@ export const useStore = create<AppState>((set, get) => ({
     if (savedBookmarks) {
       try {
         set({ bookmarkedArticles: JSON.parse(savedBookmarks) });
+      } catch {}
+    }
+
+    const savedAuditLogs = localStorage.getItem('mahdism_audit_logs');
+    if (savedAuditLogs) {
+      try {
+        set({ auditLogs: JSON.parse(savedAuditLogs) });
+      } catch {}
+    }
+
+    const savedArticles = localStorage.getItem('mahdism_articles');
+    if (savedArticles) {
+      try {
+        set({ articles: JSON.parse(savedArticles) });
+      } catch {}
+    }
+
+    const savedMagazines = localStorage.getItem('mahdism_magazines');
+    if (savedMagazines) {
+      try {
+        set({ magazineIssues: JSON.parse(savedMagazines) });
+      } catch {}
+    }
+
+    const savedVideos = localStorage.getItem('mahdism_videos');
+    if (savedVideos) {
+      try {
+        set({ videos: JSON.parse(savedVideos) });
+      } catch {}
+    }
+
+    const savedAudios = localStorage.getItem('mahdism_audios');
+    if (savedAudios) {
+      try {
+        set({ audios: JSON.parse(savedAudios) });
       } catch {}
     }
 

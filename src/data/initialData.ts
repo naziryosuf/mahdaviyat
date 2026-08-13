@@ -30,6 +30,7 @@ export const initialCoHosts: CoHostUser[] = [
       can_manage_team: true,
       can_manage_messages: true,
       can_manage_cohosts: true,
+      can_direct_publish: true,
     }
   },
   {
@@ -47,6 +48,7 @@ export const initialCoHosts: CoHostUser[] = [
       can_manage_team: false,
       can_manage_messages: false,
       can_manage_cohosts: false,
+      can_direct_publish: false,
     }
   }
 ];
