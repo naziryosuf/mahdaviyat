@@ -6,7 +6,8 @@
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "backup": "node scripts/backup_db_to_git.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.3",

@@ -1,0 +1,177 @@
+{
+  "timestamp": "2026-08-13T21:23:08.814Z",
+  "articles": [],
+  "magazineIssues": [
+    {
+      "id": "issue-1",
+      "issue_number": 1,
+      "title_fa": "شماره نخست: عقلانیت، معرفت و بیداری معنوی",
+      "description_fa": "نخستین شماره رسمی مجله ایدئولوژی مهدویت متمرکز بر تبیین جهان‌بینی توحیدی و نقد ماتریالیسم.",
+      "publish_date_fa": "مرداد ۱۴۰۴",
+      "cover_image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80",
+      "pdf_url": "/downloads/mahdism_issue_1.pdf",
+      "download_count": 1240,
+      "featured": true,
+      "status": "published",
+      "submitted_by_name": null,
+      "submitted_at": null,
+      "submitted_device": null,
+      "tags": [
+        "شماره_۱",
+        "نشریه_کامل"
+      ],
+      "pages": [],
+      "created_at": "2026-08-13T20:05:17.297944+00:00"
+    }
+  ],
+  "videos": [
+    {
+      "id": "vid-1",
+      "title_fa": "تبیین عقلانی انتظار و تحول جوامع بشری",
+      "description_fa": "نشست تحلیلی و تخصصی پیرامون دلالت‌های عقلانی مهدویت در جهان معاصر.",
+      "video_url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      "thumbnail_url": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80",
+      "duration_fa": "۲۴:۱۵",
+      "category_fa": "تحلیل رسانه‌ای",
+      "speaker_fa": "دکتر علوی",
+      "published_at": "۱۴۰۴/۰۵/۱۵",
+      "views": 890,
+      "featured": true,
+      "status": "published",
+      "submitted_by_name": null,
+      "submitted_at": null,
+      "submitted_device": null,
+      "download_url": null,
+      "transcript_fa": null,
+      "timestamps": [],
+      "tags": [
+        "سخنرانی",
+        "تحلیل"
+      ],
+      "created_at": "2026-08-13T20:05:17.382879+00:00"
+    }
+  ],
+  "audios": [
+    {
+      "id": "aud-1",
+      "title_fa": "پادکست شناختی: جایگاه انسان در هستی‌شناسی مهدوی",
+      "speaker_fa": "استاد حسینی",
+      "audio_url": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      "duration_fa": "۱۸:۴۵",
+      "description_fa": "مباحثه تخصصی پیرامون کرامت انسانی و نقش بیداری معنوی در تمدن‌سازی.",
+      "published_at": "۱۴۰۴/۰۵/۲۱",
+      "category_fa": "پادکست صوتی",
+      "cover_image": "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=600&auto=format&fit=crop&q=80",
+      "plays": 620,
+      "featured": true,
+      "status": "published",
+      "submitted_by_name": null,
+      "submitted_at": null,
+      "submitted_device": null,
+      "tags": [
+        "پادکست",
+        "خودشناسی"
+      ],
+      "created_at": "2026-08-13T20:05:17.4679+00:00"
+    }
+  ],
+  "teamMembers": [
+    {
+      "id": "team-1",
+      "name_fa": "M. Nazir Yosuf",
+      "role_fa": "سردبیر ارشد و مدیر مسئول",
+      "bio_fa": "پژوهشگر معارف دینی و شناختی با تمرکز بر تبیین عقلانیت مهدویت.",
+      "avatar_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&auto=format&fit=crop&q=80",
+      "specialization_fa": "مدیریت محتوا و تحریریه",
+      "status": "published",
+      "submitted_by_name": null,
+      "submitted_at": null,
+      "submitted_device": null,
+      "created_at": "2026-08-13T20:05:17.539752+00:00"
+    }
+  ],
+  "coHosts": [
+    {
+      "id": "cohost-super-admin",
+      "name_fa": "M. Nazir Yosuf",
+      "password_code": "190716",
+      "role_fa": "مدیر کل و سردبیر ارشد",
+      "created_at": "۱۴۰۴/۰۵/۰۱",
+      "is_super_admin": true,
+      "permissions": {
+        "can_manage_team": true,
+        "can_manage_audios": true,
+        "can_manage_videos": true,
+        "can_direct_publish": true,
+        "can_manage_cohosts": true,
+        "can_manage_articles": true,
+        "can_manage_messages": true,
+        "can_manage_magazines": true
+      }
+    }
+  ],
+  "siteSettings": [
+    {
+      "key": "live_test_timestamp",
+      "value": "2026-08-13T20:05:28.838Z",
+      "updated_at": "2026-08-13T20:05:01.147442+00:00"
+    },
+    {
+      "key": "designer_name",
+      "value": "ARTIN",
+      "updated_at": "2026-08-13T20:05:17.688345+00:00"
+    },
+    {
+      "key": "designer_url",
+      "value": "https://artin-one.vercel.app/en",
+      "updated_at": "2026-08-13T20:05:17.688345+00:00"
+    },
+    {
+      "key": "about_mission",
+      "value": "مجلۀ «ایدئولوژی مهدویت» بستری است برای ارائه شناخت پیرامون مهم‌ترین موضوعات: خداشناسی، خودشناسی، جامعه‌شناسی، هستی‌شناسی و سایر موضوعات تاریخی؛ به هدف ایجاد بیداری معنوی و اجتماعی. این مجله توسط جمعی از نویسندگان آزاد افغانستان از سراسر جهان تشکیل شده و به صورت کاملاً داوطلبانه و غیرانتفاعی اداره می‌شود.",
+      "updated_at": "2026-08-13T20:05:17.688345+00:00"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "log-1",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "سردبیر ارشد",
+      "action_type": "تایید و انتشار",
+      "target_title": "بیانیه افتتاحیه ایدئولوژی مهدویت",
+      "item_type": "مقاله",
+      "timestamp": "۱۴۰۴/۰۵/۲۲ - ۱۲:۰۰",
+      "time_only": "۱۲:۰۰",
+      "device_info": "Windows Desktop (Chrome)",
+      "status_note": "تایید مستقیم توسط ادمین کل",
+      "created_at": "2026-08-13T21:20:05.518538+00:00"
+    },
+    {
+      "id": "log-1786656006746",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "نقد و بررسی ماتریالیسم تاریخی از منظر حکمت اسلامی",
+      "item_type": "مقاله",
+      "timestamp": "۱۴۰۵/۵/۲۲ - ۲۳:۲۰",
+      "time_only": "۲۳:۲۰",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-13T21:20:04.494466+00:00"
+    },
+    {
+      "id": "log-1786656006092",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "تبیین مفاهیم بنیادین معرفت‌شناختی در عصر غیبت",
+      "item_type": "مقاله",
+      "timestamp": "۱۴۰۵/۵/۲۲ - ۲۳:۲۰",
+      "time_only": "۲۳:۲۰",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-13T21:20:03.894183+00:00"
+    }
+  ],
+  "contactMessages": []
+}
