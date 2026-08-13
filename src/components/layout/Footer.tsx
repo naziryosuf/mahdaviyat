@@ -1,16 +1,19 @@
 'use client';
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { Send, CheckCircle2, Video, Phone, Mail } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Send, CheckCircle2, Video, Phone, Mail, ExternalLink } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { translations } from '@/data/translations';
 
 export const Footer: React.FC = () => {
-  const { language } = useStore();
+  const { language, designerName, designerWebsiteUrl, initFromStorage } = useStore();
   const t = translations[language] || translations.fa;
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+
+  useEffect(() => {
+    initFromStorage();
+  }, [initFromStorage]);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,28 +25,26 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-[var(--card-bg)] border-t border-[var(--card-border)] text-[var(--text-secondary)] mt-12 py-6 sm:py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <footer aria-label="پای‌برگ وب‌سایت" className="bg-[var(--card-bg)] border-t border-[var(--card-border)] text-[var(--text-secondary)] mt-12 py-6 sm:py-8">
+      <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 space-y-6">
         
-        {/* UNIFIED 2-COLUMN FOOTER LAYOUT (PERFECTLY BALANCED HEADINGS & COLUMNS) */}
+        {/* Contact Links & Subscription Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10 items-stretch">
           
-          {/* Col 1: Contact Channels (2-by-2 Grid) */}
+          {/* Official Social & Contact Card */}
           <div className="space-y-3 flex flex-col justify-between">
             <div>
               <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian border-r-2 border-[#1B889A] pr-2.5 leading-tight">
-                ارتباط با ما
+                {t.contact}
               </h4>
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-              
-              {/* ROW 1: ITEM 1 - YOUTUBE */}
               <a
                 href="https://www.youtube.com/@ideology-mahdaviyat"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] hover:text-[#1B889A] transition-all shadow-sm group"
+                className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] hover:text-[#1B889A] transition-all shadow-sm group min-w-0"
               >
                 <div className="w-8 h-8 rounded-lg bg-[#1B889A]/10 border border-[#1B889A]/30 flex items-center justify-center text-[#1B889A] shrink-0 group-hover:scale-105 transition-transform">
                   <Video className="w-4 h-4" />
@@ -54,12 +55,11 @@ export const Footer: React.FC = () => {
                 </div>
               </a>
 
-              {/* ROW 1: ITEM 2 - WHATSAPP */}
               <a
                 href="https://wa.me/4917689062903"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] hover:text-[#1B889A] transition-all shadow-sm group"
+                className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] hover:text-[#1B889A] transition-all shadow-sm group min-w-0"
               >
                 <div className="w-8 h-8 rounded-lg bg-[#1B889A]/10 border border-[#1B889A]/30 flex items-center justify-center text-[#1B889A] shrink-0 group-hover:scale-105 transition-transform">
                   <Phone className="w-4 h-4" />
@@ -70,12 +70,11 @@ export const Footer: React.FC = () => {
                 </div>
               </a>
 
-              {/* ROW 2: ITEM 1 - TELEGRAM */}
               <a
                 href="https://t.me/IdeologyMahdaviyat"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] hover:text-[#1B889A] transition-all shadow-sm group"
+                className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] hover:text-[#1B889A] transition-all shadow-sm group min-w-0"
               >
                 <div className="w-8 h-8 rounded-lg bg-[#1B889A]/10 border border-[#1B889A]/30 flex items-center justify-center text-[#1B889A] shrink-0 group-hover:scale-105 transition-transform">
                   <Send className="w-4 h-4" />
@@ -86,10 +85,9 @@ export const Footer: React.FC = () => {
                 </div>
               </a>
 
-              {/* ROW 2: ITEM 2 - EMAIL */}
               <a
                 href="mailto:ideology.mahdaviyat@gmail.com"
-                className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] hover:text-[#1B889A] transition-all shadow-sm group"
+                className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] hover:text-[#1B889A] transition-all shadow-sm group min-w-0"
               >
                 <div className="w-8 h-8 rounded-lg bg-[#1B889A]/10 border border-[#1B889A]/30 flex items-center justify-center text-[#1B889A] shrink-0 group-hover:scale-105 transition-transform">
                   <Mail className="w-4 h-4" />
@@ -99,11 +97,10 @@ export const Footer: React.FC = () => {
                   <span className="text-[10px] text-[var(--text-secondary)] font-mono truncate block">ideology.mahdaviyat@...</span>
                 </div>
               </a>
-
             </div>
           </div>
 
-          {/* Col 2: Newsletter Subscription */}
+          {/* Newsletter Subscription Box */}
           <div className="space-y-3 flex flex-col justify-between">
             <div>
               <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian border-r-2 border-[#1B889A] pr-2.5 leading-tight">
@@ -115,19 +112,20 @@ export const Footer: React.FC = () => {
               <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
                 جهت دریافت نسخه دیجیتال مجله و تازه‌ترین سرمقاله‌ها، ایمیل خود را وارد نمایید:
               </p>
-              
-              <form onSubmit={handleSubscribe} className="flex gap-2">
+
+              <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2">
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="آدرس ایمیل شما..."
                   required
-                  className="w-full px-3 py-2 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:border-[#1B889A] font-mono"
+                  aria-label="آدرس ایمیل خبرنامه"
+                  className="w-full min-w-0 px-3 py-2 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:border-[#1B889A] font-mono"
                 />
                 <button
                   type="submit"
-                  className="py-2 px-4 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs shrink-0 flex items-center gap-1.5 transition-all active:scale-95 shadow-sm"
+                  className="py-2 px-4 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs shrink-0 flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-sm"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>عضویت</span>
@@ -145,12 +143,25 @@ export const Footer: React.FC = () => {
 
         </div>
 
-        {/* CLEAN COPYRIGHT & DESIGNED BY CREDIT AT THE VERY BOTTOM */}
         <div className="pt-3 border-t border-[var(--card-border)] text-center space-y-1">
           <p className="text-[11px] sm:text-xs text-[var(--text-secondary)] font-serif-persian">{t.copyright}</p>
-          <p className="text-[9px] sm:text-[10px] text-stone-500 font-mono tracking-wider dir-ltr">
-            design by M.NazifYosufi
-          </p>
+          <div className="text-[10px] sm:text-[11px] text-stone-400 font-mono tracking-wider dir-ltr flex items-center justify-center gap-1.5 flex-wrap">
+            <span>design by</span>
+            {designerWebsiteUrl && designerWebsiteUrl.trim() !== '' ? (
+              <a
+                href={designerWebsiteUrl.startsWith('http') ? designerWebsiteUrl : `https://${designerWebsiteUrl}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-[#1B889A] hover:text-[#156d7b] font-bold hover:underline transition-all"
+                title="وب‌سایت شخصی طراح"
+              >
+                <span>{designerName || 'M. Nazir Yosufi'}</span>
+                <ExternalLink className="w-2.5 h-2.5" />
+              </a>
+            ) : (
+              <span className="text-[#1B889A] font-bold">{designerName || 'M. Nazir Yosufi'}</span>
+            )}
+          </div>
         </div>
 
       </div>

@@ -1,23 +1,28 @@
 import { NextResponse } from 'next/server';
-import { readDB, writeDB } from '@/lib/db';
+import { supabase } from '@/lib/supabase';
+import { initialArticles } from '@/data/initialData';
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const db = readDB();
-  const article = db.articles.find((a) => a.id === id);
+  try {
+    const { data: article } = await supabase.from('articles').select('*').eq('id', id).single();
+    const result = article || initialArticles.find((a) => a.id === id);
 
-  if (!article) {
-    return NextResponse.json({ success: false, message: 'مقاله پیدا نشد' }, { status: 404 });
+    if (!result) {
+      return NextResponse.json({ success: false, message: 'مقاله پیدا نشد' }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, data: result });
+  } catch {
+    const fallback = initialArticles.find((a) => a.id === id);
+    if (!fallback) {
+      return NextResponse.json({ success: false, message: 'مقاله پیدا نشد' }, { status: 404 });
+    }
+    return NextResponse.json({ success: true, data: fallback });
   }
-
-  // Increment views count in backend DB
-  article.views = (article.views || 0) + 1;
-  writeDB(db);
-
-  return NextResponse.json({ success: true, data: article });
 }
 
 export async function PUT(
@@ -27,28 +32,26 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const db = readDB();
-    const index = db.articles.findIndex((a) => a.id === id);
 
-    if (index === -1) {
-      return NextResponse.json({ success: false, message: 'مقاله یافت نشد' }, { status: 404 });
-    }
-
-    db.articles[index] = {
-      ...db.articles[index],
+    const updatedData = {
+      id,
       ...body,
-      updated_at: new Date().toLocaleDateString('fa-IR'),
+      updated_at: new Date().toISOString(),
     };
 
-    writeDB(db);
+    const { data } = await supabase
+      .from('articles')
+      .upsert(updatedData)
+      .select()
+      .single();
 
     return NextResponse.json({
       success: true,
-      message: 'مقاله بهروزرسانی شد',
-      data: db.articles[index],
+      message: 'مقاله به‌روزرسانی شد',
+      data: data || updatedData,
     });
   } catch (error) {
-    return NextResponse.json({ success: false, message: 'خطا در ویرایش' }, { status: 500 });
+    return NextResponse.json({ success: false, message: 'خطا در ویرایش مقاله' }, { status: 500 });
   }
 }
 
@@ -56,19 +59,15 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params;
-  const db = readDB();
-  const initialCount = db.articles.length;
-  db.articles = db.articles.filter((a) => a.id !== id);
+  try {
+    const { id } = await params;
+    await supabase.from('articles').delete().eq('id', id);
 
-  if (db.articles.length === initialCount) {
-    return NextResponse.json({ success: false, message: 'مقاله پیدا نشد' }, { status: 404 });
+    return NextResponse.json({
+      success: true,
+      message: 'مقاله با موفقیت حذف گردید',
+    });
+  } catch {
+    return NextResponse.json({ success: false, message: 'خطا در حذف مقاله' }, { status: 500 });
   }
-
-  writeDB(db);
-
-  return NextResponse.json({
-    success: true,
-    message: 'مقاله با موفقیت حذف گردید',
-  });
 }

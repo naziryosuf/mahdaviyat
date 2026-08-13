@@ -133,24 +133,24 @@ export const Navbar: React.FC = () => {
           ? 'glass-panel shadow-2xl py-2.5 sm:py-3 border-b border-[var(--card-border)]' 
           : 'bg-[var(--nav-bg)] backdrop-blur-md py-3 sm:py-4 border-b border-[var(--card-border)]'
       }`}>
-        <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between gap-2 min-w-0">
             
             {/* Brand Logo with Kaaba & Unity Hands Emblem */}
-            <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group">
+            <Link href="/" className="flex items-center gap-2 sm:gap-3 group shrink-0">
               <KaabaUnityLogo size="md" />
               <div className="space-y-0.5 sm:space-y-1">
-                <span className="text-base sm:text-xl font-extrabold tracking-tight text-[var(--text-primary)] block leading-none font-serif-persian">
+                <span className="text-sm sm:text-xl font-extrabold tracking-tight text-[var(--text-primary)] block leading-none font-serif-persian whitespace-nowrap">
                   {t.siteTitle}
                 </span>
-                <span className="text-[10px] sm:text-[11px] font-bold text-[#1B889A] block pt-0.5 leading-none font-serif-persian">
+                <span className="text-[9px] sm:text-[11px] font-bold text-[#1B889A] block pt-0.5 leading-none font-serif-persian whitespace-nowrap">
                   {t.subTitle}
                 </span>
               </div>
             </Link>
 
             {/* Desktop Navigation Pills */}
-            <nav className="hidden lg:flex items-center gap-1 bg-[var(--card-bg)] p-1.5 rounded-2xl border border-[var(--card-border)] shadow-sm">
+            <nav aria-label="منوی اصلی" className="hidden lg:flex items-center gap-1 bg-[var(--card-bg)] p-1.5 rounded-2xl border border-[var(--card-border)] shadow-sm">
               {navLinks.map((link) => {
                 const Icon = link.icon;
                 const isActive = pathname === link.href;
@@ -172,7 +172,7 @@ export const Navbar: React.FC = () => {
             </nav>
 
             {/* Right Action Controls */}
-            <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 shrink-0">
               
               {/* Audio Indicator Pill */}
               {currentAudio && (
@@ -185,24 +185,25 @@ export const Navbar: React.FC = () => {
                 </Link>
               )}
 
-              {/* QUICK DROPDOWN SEARCH BOX UNDER MAGNIFYING GLASS ICON */}
+              {/* QUICK DROPDOWN SEARCH BOX */}
               <div className="relative" ref={searchRef}>
                 <button
                   onClick={() => setSearchDropdownOpen(!searchDropdownOpen)}
-                  className={`p-2 sm:p-2.5 rounded-xl border transition-all shadow-sm active:scale-95 flex items-center justify-center ${
+                  className={`p-2 sm:p-2.5 rounded-xl border transition-all shadow-sm active:scale-95 flex items-center justify-center touch-target ${
                     searchDropdownOpen
                       ? 'bg-[#1B889A] text-white border-[#1B889A]'
                       : 'bg-[var(--card-bg)] border-[var(--card-border)] text-[#1B889A] hover:bg-[#1B889A]/10 hover:border-[#1B889A]'
                   }`}
                   title="جستجوی سریع در سایت"
                   aria-label="جستجو"
+                  aria-expanded={searchDropdownOpen}
                 >
                   <Search className="w-4 h-4" />
                 </button>
 
-                {/* SEARCH INPUT DROPDOWN POPOVER DIRECTLY UNDER ICON */}
+                {/* SEARCH INPUT DROPDOWN POPOVER */}
                 {searchDropdownOpen && (
-                  <div className="absolute left-0 mt-2 w-72 sm:w-80 max-w-[calc(100vw-24px)] bg-[var(--card-bg)] border-2 border-[#1B889A] rounded-2xl shadow-2xl p-2.5 sm:p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="absolute left-0 mt-2 w-72 sm:w-80 max-w-[calc(100vw-20px)] bg-[var(--card-bg)] border-2 border-[#1B889A] rounded-2xl shadow-2xl p-2.5 sm:p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                     <form onSubmit={handleQuickSearchSubmit} className="relative flex items-center">
                       <input
                         ref={searchInputRef}
@@ -210,7 +211,7 @@ export const Navbar: React.FC = () => {
                         value={quickQuery}
                         onChange={(e) => setQuickQuery(e.target.value)}
                         placeholder={t.searchPlaceholder}
-                        className="w-full pl-20 pr-3 py-2 sm:py-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:border-[#1B889A] font-serif-persian"
+                        className="w-full pl-20 pr-3 py-2 sm:py-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:border-[#1B889A] font-serif-persian min-w-0"
                       />
                       <button
                         type="submit"
@@ -228,8 +229,10 @@ export const Navbar: React.FC = () => {
               <div className="relative" ref={langRef}>
                 <button
                   onClick={() => setLangDropdownOpen(!langDropdownOpen)}
-                  className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] text-[11px] sm:text-xs font-bold text-[var(--text-primary)] hover:border-[#1B889A] transition-all shadow-sm active:scale-95"
+                  className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] text-[11px] sm:text-xs font-bold text-[var(--text-primary)] hover:border-[#1B889A] transition-all shadow-sm active:scale-95 touch-target"
                   title="تغییر زبان"
+                  aria-label="تغییر زبان"
+                  aria-expanded={langDropdownOpen}
                 >
                   <Globe className="w-3.5 h-3.5 text-[#1B889A]" />
                   <span>{languageLabels[language]}</span>
@@ -271,7 +274,7 @@ export const Navbar: React.FC = () => {
               {/* Theme Switcher Button */}
               <button
                 onClick={toggleTheme}
-                className="p-2 sm:p-2.5 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] text-amber-400 hover:text-amber-300 transition-all shadow-sm active:scale-95"
+                className="p-2 sm:p-2.5 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] text-amber-400 hover:text-amber-300 transition-all shadow-sm active:scale-95 touch-target"
                 title={theme === 'dark' ? 'تم روشن' : 'تم تاریک مدرن'}
                 aria-label="تغییر تم"
               >
@@ -285,8 +288,9 @@ export const Navbar: React.FC = () => {
               {/* Mobile Hamburger Toggle */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 sm:p-2.5 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                aria-label="منو"
+                className="lg:hidden p-2 sm:p-2.5 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] touch-target"
+                aria-label="منوی موبایل"
+                aria-expanded={mobileMenuOpen}
               >
                 {mobileMenuOpen ? <X className="w-5 h-5 text-[#1B889A]" /> : <Menu className="w-5 h-5" />}
               </button>
@@ -295,7 +299,7 @@ export const Navbar: React.FC = () => {
 
           {/* Mobile Menu Drawer */}
           {mobileMenuOpen && (
-            <div className="lg:hidden mt-3 pt-3 border-t border-[var(--card-border)] bg-[var(--card-bg)] rounded-2xl p-3.5 shadow-2xl space-y-2.5 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="lg:hidden mt-3 pt-3 border-t border-[var(--card-border)] bg-[var(--card-bg)] rounded-2xl p-3.5 shadow-2xl space-y-2.5 max-h-[calc(100vh-80px)] overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200">
               <div className="flex items-center justify-between pb-2.5 border-b border-[var(--card-border)]">
                 <div className="flex items-center gap-1.5">
                   <button
@@ -320,7 +324,7 @@ export const Navbar: React.FC = () => {
                   </button>
                 </div>
 
-                <button onClick={toggleTheme} className="p-2 rounded-lg bg-slate-800 text-amber-400">
+                <button onClick={toggleTheme} aria-label="تغییر تم" className="p-2 rounded-lg bg-slate-800 text-amber-400">
                   {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                 </button>
               </div>
@@ -351,7 +355,7 @@ export const Navbar: React.FC = () => {
         </div>
       </header>
 
-      {/* LANGUAGE NOT-AVAILABLE MODAL POPUP (EXACT CENTER OF SCREEN) */}
+      {/* LANGUAGE NOT-AVAILABLE MODAL POPUP */}
       {langNotice && (
         <div className="fixed inset-0 z-[9999] top-0 left-0 w-screen h-screen min-h-screen flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in zoom-in-95 duration-200">
           <div className="bg-[var(--card-bg)] border-2 border-[#1B889A] rounded-3xl p-6 sm:p-7 max-w-sm w-full space-y-4 shadow-2xl text-center modern-card relative my-auto">

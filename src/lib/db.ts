@@ -1,10 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import { supabase } from '@/lib/supabase';
 import { initialArticles, initialMagazineIssues, initialAudios, initialVideos } from '@/data/initialData';
-
-const DB_FILE = process.env.VERCEL || process.env.NODE_ENV === 'production'
-  ? path.join('/tmp', 'mahdism_db.json')
-  : path.join(process.cwd(), 'data', 'db.json');
 
 export interface ContactMessage {
   id: string;
@@ -25,41 +20,31 @@ export interface DBData {
   messages: ContactMessage[];
 }
 
-export function readDB(): DBData {
+export async function readDBAsync(): Promise<DBData> {
   try {
-    const dir = path.dirname(DB_FILE);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
+    const [
+      { data: articles },
+      { data: magazineIssues },
+      { data: audios },
+      { data: videos },
+      { data: messages }
+    ] = await Promise.all([
+      supabase.from('articles').select('*').order('created_at', { ascending: false }),
+      supabase.from('magazine_issues').select('*').order('issue_number', { ascending: true }),
+      supabase.from('audio_items').select('*'),
+      supabase.from('video_items').select('*'),
+      supabase.from('contact_messages').select('*')
+    ]);
 
-    if (!fs.existsSync(DB_FILE)) {
-      const initialData: DBData = {
-        articles: initialArticles,
-        magazineIssues: initialMagazineIssues,
-        audios: initialAudios,
-        videos: initialVideos,
-        messages: [
-          {
-            id: 'msg-1',
-            sender_name: 'احمد رضایی',
-            sender_email: 'ahmad.rezaei@gmail.com',
-            sender_phone: '+93 799 123456',
-            subject: 'پیشنهاد برای شماره دوم مجله',
-            message_text: 'سلام و احترام، مقاله بسیار ارزشمندی در حوزه شناختی مهدویت آماده نموده‌ام که تمایل به انتشار آن در شماره بعدی مجله دارم.',
-            sent_at: '۱۴۰۴/۰۵/۱۵ - ۱۰:۳۰',
-            status: 'unread',
-          }
-        ],
-      };
-      try {
-        fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2), 'utf-8');
-      } catch {}
-      return initialData;
-    }
-
-    const fileContent = fs.readFileSync(DB_FILE, 'utf-8');
-    return JSON.parse(fileContent) as DBData;
+    return {
+      articles: articles && articles.length > 0 ? articles : initialArticles,
+      magazineIssues: magazineIssues && magazineIssues.length > 0 ? magazineIssues : initialMagazineIssues,
+      audios: audios && audios.length > 0 ? audios : initialAudios,
+      videos: videos && videos.length > 0 ? videos : initialVideos,
+      messages: messages || [],
+    };
   } catch (error) {
+    console.error('Supabase readDBAsync error:', error);
     return {
       articles: initialArticles,
       magazineIssues: initialMagazineIssues,
@@ -70,16 +55,36 @@ export function readDB(): DBData {
   }
 }
 
+export function readDB(): DBData {
+  return {
+    articles: initialArticles,
+    magazineIssues: initialMagazineIssues,
+    audios: initialAudios,
+    videos: initialVideos,
+    messages: [],
+  };
+}
+
 export function writeDB(data: DBData): boolean {
   try {
-    const dir = path.dirname(DB_FILE);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+    if (data.articles && data.articles.length > 0) {
+      supabase.from('articles').upsert(data.articles).then(() => {});
     }
-    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+    if (data.magazineIssues && data.magazineIssues.length > 0) {
+      supabase.from('magazine_issues').upsert(data.magazineIssues).then(() => {});
+    }
+    if (data.audios && data.audios.length > 0) {
+      supabase.from('audio_items').upsert(data.audios).then(() => {});
+    }
+    if (data.videos && data.videos.length > 0) {
+      supabase.from('video_items').upsert(data.videos).then(() => {});
+    }
+    if (data.messages && data.messages.length > 0) {
+      supabase.from('contact_messages').upsert(data.messages).then(() => {});
+    }
     return true;
   } catch (error) {
-    console.error('Error writing backend database:', error);
+    console.error('Supabase writeDB sync error:', error);
     return false;
   }
 }

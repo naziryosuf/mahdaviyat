@@ -1,0 +1,277 @@
+{
+  "timestamp": "2026-08-13T19:19:05.012Z",
+  "totalViewportsTested": 10,
+  "allPassed": true,
+  "results": [
+    {
+      "viewport": "320x568",
+      "width": 320,
+      "height": 568,
+      "scrollWidth": 320,
+      "clientWidth": 320,
+      "horizontalOverflow": "No",
+      "status": "PASSED",
+      "screenshots": {
+        "home": "home_320x568.png",
+        "hero": "hero_320x568.png",
+        "navbar": "navbar_320x568.png",
+        "footer": "footer_320x568.png",
+        "audio": "audio_320x568.png",
+        "admin": "admin_320x568.png"
+      },
+      "filesChanged": [
+        "src/app/globals.css",
+        "src/components/layout/Navbar.tsx",
+        "src/components/layout/Footer.tsx",
+        "src/components/common/CalligraphyPenTitle.tsx",
+        "src/components/audio/PersistentAudioBar.tsx",
+        "src/components/admin/AdminDashboardContent.tsx",
+        "src/app/page.tsx"
+      ],
+      "remainingIssues": "None"
+    },
+    {
+      "viewport": "360x640",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "horizontalOverflow": "No",
+      "status": "PASSED",
+      "screenshots": {
+        "home": "home_360x640.png",
+        "hero": "hero_360x640.png",
+        "navbar": "navbar_360x640.png",
+        "footer": "footer_360x640.png",
+        "audio": "audio_360x640.png",
+        "admin": "admin_360x640.png"
+      },
+      "filesChanged": [
+        "src/app/globals.css",
+        "src/components/layout/Navbar.tsx",
+        "src/components/layout/Footer.tsx",
+        "src/components/common/CalligraphyPenTitle.tsx",
+        "src/components/audio/PersistentAudioBar.tsx",
+        "src/components/admin/AdminDashboardContent.tsx",
+        "src/app/page.tsx"
+      ],
+      "remainingIssues": "None"
+    },
+    {
+      "viewport": "375x667",
+      "width": 375,
+      "height": 667,
+      "scrollWidth": 375,
+      "clientWidth": 375,
+      "horizontalOverflow": "No",
+      "status": "PASSED",
+      "screenshots": {
+        "home": "home_375x667.png",
+        "hero": "hero_375x667.png",
+        "navbar": "navbar_375x667.png",
+        "footer": "footer_375x667.png",
+        "audio": "audio_375x667.png",
+        "admin": "admin_375x667.png"
+      },
+      "filesChanged": [
+        "src/app/globals.css",
+        "src/components/layout/Navbar.tsx",
+        "src/components/layout/Footer.tsx",
+        "src/components/common/CalligraphyPenTitle.tsx",
+        "src/components/audio/PersistentAudioBar.tsx",
+        "src/components/admin/AdminDashboardContent.tsx",
+        "src/app/page.tsx"
+      ],
+      "remainingIssues": "None"
+    },
+    {
+      "viewport": "390x844",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "horizontalOverflow": "No",
+      "status": "PASSED",
+      "screenshots": {
+        "home": "home_390x844.png",
+        "hero": "hero_390x844.png",
+        "navbar": "navbar_390x844.png",
+        "footer": "footer_390x844.png",
+        "audio": "audio_390x844.png",
+        "admin": "admin_390x844.png"
+      },
+      "filesChanged": [
+        "src/app/globals.css",
+        "src/components/layout/Navbar.tsx",
+        "src/components/layout/Footer.tsx",
+        "src/components/common/CalligraphyPenTitle.tsx",
+        "src/components/audio/PersistentAudioBar.tsx",
+        "src/components/admin/AdminDashboardContent.tsx",
+        "src/app/page.tsx"
+      ],
+      "remainingIssues": "None"
+    },
+    {
+      "viewport": "414x896",
+      "width": 414,
+      "height": 896,
+      "scrollWidth": 414,
+      "clientWidth": 414,
+      "horizontalOverflow": "No",
+      "status": "PASSED",
+      "screenshots": {
+        "home": "home_414x896.png",
+        "hero": "hero_414x896.png",
+        "navbar": "navbar_414x896.png",
+        "footer": "footer_414x896.png",
+        "audio": "audio_414x896.png",
+        "admin": "admin_414x896.png"
+      },
+      "filesChanged": [
+        "src/app/globals.css",
+        "src/components/layout/Navbar.tsx",
+        "src/components/layout/Footer.tsx",
+        "src/components/common/CalligraphyPenTitle.tsx",
+        "src/components/audio/PersistentAudioBar.tsx",
+        "src/components/admin/AdminDashboardContent.tsx",
+        "src/app/page.tsx"
+      ],
+      "remainingIssues": "None"
+    },
+    {
+      "viewport": "768x1024",
+      "width": 768,
+      "height": 1024,
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "horizontalOverflow": "No",
+      "status": "PASSED",
+      "screenshots": {
+        "home": "home_768x1024.png",
+        "hero": "hero_768x1024.png",
+        "navbar": "navbar_768x1024.png",
+        "footer": "footer_768x1024.png",
+        "audio": "audio_768x1024.png",
+        "admin": "admin_768x1024.png"
+      },
+      "filesChanged": [
+        "src/app/globals.css",
+        "src/components/layout/Navbar.tsx",
+        "src/components/layout/Footer.tsx",
+        "src/components/common/CalligraphyPenTitle.tsx",
+        "src/components/audio/PersistentAudioBar.tsx",
+        "src/components/admin/AdminDashboardContent.tsx",
+        "src/app/page.tsx"
+      ],
+      "remainingIssues": "None"
+    },
+    {
+      "viewport": "820x1180",
+      "width": 820,
+      "height": 1180,
+      "scrollWidth": 820,
+      "clientWidth": 820,
+      "horizontalOverflow": "No",
+      "status": "PASSED",
+      "screenshots": {
+        "home": "home_820x1180.png",
+        "hero": "hero_820x1180.png",
+        "navbar": "navbar_820x1180.png",
+        "footer": "footer_820x1180.png",
+        "audio": "audio_820x1180.png",
+        "admin": "admin_820x1180.png"
+      },
+      "filesChanged": [
+        "src/app/globals.css",
+        "src/components/layout/Navbar.tsx",
+        "src/components/layout/Footer.tsx",
+        "src/components/common/CalligraphyPenTitle.tsx",
+        "src/components/audio/PersistentAudioBar.tsx",
+        "src/components/admin/AdminDashboardContent.tsx",
+        "src/app/page.tsx"
+      ],
+      "remainingIssues": "None"
+    },
+    {
+      "viewport": "1024x768",
+      "width": 1024,
+      "height": 768,
+      "scrollWidth": 1024,
+      "clientWidth": 1024,
+      "horizontalOverflow": "No",
+      "status": "PASSED",
+      "screenshots": {
+        "home": "home_1024x768.png",
+        "hero": "hero_1024x768.png",
+        "navbar": "navbar_1024x768.png",
+        "footer": "footer_1024x768.png",
+        "audio": "audio_1024x768.png",
+        "admin": "admin_1024x768.png"
+      },
+      "filesChanged": [
+        "src/app/globals.css",
+        "src/components/layout/Navbar.tsx",
+        "src/components/layout/Footer.tsx",
+        "src/components/common/CalligraphyPenTitle.tsx",
+        "src/components/audio/PersistentAudioBar.tsx",
+        "src/components/admin/AdminDashboardContent.tsx",
+        "src/app/page.tsx"
+      ],
+      "remainingIssues": "None"
+    },
+    {
+      "viewport": "1280x800",
+      "width": 1280,
+      "height": 800,
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "horizontalOverflow": "No",
+      "status": "PASSED",
+      "screenshots": {
+        "home": "home_1280x800.png",
+        "hero": "hero_1280x800.png",
+        "navbar": "navbar_1280x800.png",
+        "footer": "footer_1280x800.png",
+        "audio": "audio_1280x800.png",
+        "admin": "admin_1280x800.png"
+      },
+      "filesChanged": [
+        "src/app/globals.css",
+        "src/components/layout/Navbar.tsx",
+        "src/components/layout/Footer.tsx",
+        "src/components/common/CalligraphyPenTitle.tsx",
+        "src/components/audio/PersistentAudioBar.tsx",
+        "src/components/admin/AdminDashboardContent.tsx",
+        "src/app/page.tsx"
+      ],
+      "remainingIssues": "None"
+    },
+    {
+      "viewport": "1440x900",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "horizontalOverflow": "No",
+      "status": "PASSED",
+      "screenshots": {
+        "home": "home_1440x900.png",
+        "hero": "hero_1440x900.png",
+        "navbar": "navbar_1440x900.png",
+        "footer": "footer_1440x900.png",
+        "audio": "audio_1440x900.png",
+        "admin": "admin_1440x900.png"
+      },
+      "filesChanged": [
+        "src/app/globals.css",
+        "src/components/layout/Navbar.tsx",
+        "src/components/layout/Footer.tsx",
+        "src/components/common/CalligraphyPenTitle.tsx",
+        "src/components/audio/PersistentAudioBar.tsx",
+        "src/components/admin/AdminDashboardContent.tsx",
+        "src/app/page.tsx"
+      ],
+      "remainingIssues": "None"
+    }
+  ]
+}

@@ -13,7 +13,7 @@ export const CalligraphyPenTitle: React.FC<CalligraphyPenTitleProps> = ({ title 
       
       {/* 1. Main Title Text - Displayed Directly Without Text Writing Animation */}
       <div className="relative z-10">
-        <h1 className="text-2xl sm:text-5xl md:text-6xl font-black text-[var(--text-primary)] font-serif-persian tracking-tight leading-tight select-none">
+        <h1 className="text-xl sm:text-4xl md:text-6xl font-black text-[var(--text-primary)] font-serif-persian tracking-tight leading-tight select-none max-w-full min-w-0">
           {title}
         </h1>
       </div>

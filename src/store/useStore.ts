@@ -21,6 +21,12 @@ interface AppState {
   aboutUsMission: string;
   setAboutUsMission: (desc: string) => void;
 
+  // Designer Portfolio Website URL & Name (footer link)
+  designerName: string;
+  setDesignerName: (name: string) => void;
+  designerWebsiteUrl: string;
+  setDesignerWebsiteUrl: (url: string) => void;
+
   // Database tables
   articles: Article[];
   magazineIssues: MagazineIssue[];
@@ -141,6 +147,39 @@ export const useStore = create<AppState>((set, get) => ({
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+    try {
+      supabase.from('site_settings').upsert({ key: 'about_mission', value: desc }).then(() => {});
+    } catch {}
+  },
+
+  designerName: 'M. Nazir Yosufi',
+  setDesignerName: (name: string) => {
+    set((state) => ({ 
+      designerName: name,
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
+    }));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('mahdism_designer_name', name);
+    }
+    try {
+      supabase.from('site_settings').upsert({ key: 'designer_name', value: name }).then(() => {});
+    } catch {}
+  },
+
+  designerWebsiteUrl: 'https://github.com/naziryosuf',
+  setDesignerWebsiteUrl: (url: string) => {
+    set((state) => ({ 
+      designerWebsiteUrl: url,
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
+    }));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('mahdism_designer_url', url);
+    }
+    try {
+      supabase.from('site_settings').upsert({ key: 'designer_url', value: url }).then(() => {});
+    } catch {}
   },
 
   articles: initialArticles,
@@ -190,6 +229,10 @@ export const useStore = create<AppState>((set, get) => ({
     set((state) => ({
       auditLogs: [newLog, ...state.auditLogs]
     }));
+
+    try {
+      supabase.from('audit_logs').upsert(newLog).then(() => {});
+    } catch {}
   },
 
   // Global Save State
@@ -198,7 +241,7 @@ export const useStore = create<AppState>((set, get) => ({
 
   saveAllChangesToLive: async () => {
     const state = get();
-    // Save to LocalStorage
+    // Save to LocalStorage fallback
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('mahdism_articles', JSON.stringify(state.articles));
       localStorage.setItem('mahdism_magazines', JSON.stringify(state.magazineIssues));
@@ -207,17 +250,28 @@ export const useStore = create<AppState>((set, get) => ({
       localStorage.setItem('mahdism_team', JSON.stringify(state.teamMembers));
       localStorage.setItem('mahdism_audit_logs', JSON.stringify(state.auditLogs));
       localStorage.setItem('mahdism_about_mission', state.aboutUsMission);
+      localStorage.setItem('mahdism_designer_name', state.designerName);
+      localStorage.setItem('mahdism_designer_url', state.designerWebsiteUrl);
     }
 
-    // Sync to Supabase cloud
+    // Sync permanently to Supabase Cloud Database
     try {
-      await supabase.from('articles').upsert(state.articles);
-      await supabase.from('magazine_issues').upsert(state.magazineIssues);
-      await supabase.from('video_items').upsert(state.videos);
-      await supabase.from('audio_items').upsert(state.audios);
-      await supabase.from('team_members').upsert(state.teamMembers);
+      await Promise.all([
+        supabase.from('articles').upsert(state.articles),
+        supabase.from('magazine_issues').upsert(state.magazineIssues),
+        supabase.from('video_items').upsert(state.videos),
+        supabase.from('audio_items').upsert(state.audios),
+        supabase.from('team_members').upsert(state.teamMembers),
+        supabase.from('co_hosts').upsert(state.coHosts),
+        supabase.from('site_settings').upsert([
+          { key: 'designer_name', value: state.designerName },
+          { key: 'designer_url', value: state.designerWebsiteUrl },
+          { key: 'about_mission', value: state.aboutUsMission }
+        ]),
+        supabase.from('audit_logs').upsert(state.auditLogs)
+      ]);
     } catch (e) {
-      console.log('Supabase Save Sync:', e);
+      console.log('Supabase Save Sync Error:', e);
     }
 
     // Reset staged count
@@ -298,6 +352,9 @@ export const useStore = create<AppState>((set, get) => ({
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+    try {
+      supabase.from('co_hosts').upsert(newCoHost).then(() => {});
+    } catch {}
     get().addAuditLog('افزودن', newCoHost.name_fa, 'همکار', `نقش: ${newCoHost.role_fa}`);
   },
 
@@ -310,6 +367,9 @@ export const useStore = create<AppState>((set, get) => ({
     }));
     const target = updated.find(c => c.id === id);
     if (target) {
+      try {
+        supabase.from('co_hosts').upsert(target).then(() => {});
+      } catch {}
       get().addAuditLog('ویرایش', target.name_fa, 'همکار', 'ویرایش سطح دسترسی همکار');
     }
   },
@@ -325,6 +385,9 @@ export const useStore = create<AppState>((set, get) => ({
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+    try {
+      supabase.from('co_hosts').delete().eq('id', id).then(() => {});
+    } catch {}
     if (target) {
       get().addAuditLog('حذف', target.name_fa, 'همکار', 'حذف حساب همکار');
     }
@@ -335,7 +398,11 @@ export const useStore = create<AppState>((set, get) => ({
     let title = '';
     if (itemType === 'article') {
       const art = get().articles.find(a => a.id === id);
-      if (art) title = art.title_fa;
+      if (art) {
+        title = art.title_fa;
+        const updated = { ...art, status: 'published' as const };
+        supabase.from('articles').upsert(updated).then(() => {});
+      }
       set((state) => ({
         articles: state.articles.map(a => a.id === id ? { ...a, status: 'published' } : a),
         stagedChangesCount: state.stagedChangesCount + 1,
@@ -343,7 +410,11 @@ export const useStore = create<AppState>((set, get) => ({
       }));
     } else if (itemType === 'magazine') {
       const mag = get().magazineIssues.find(m => m.id === id);
-      if (mag) title = mag.title_fa;
+      if (mag) {
+        title = mag.title_fa;
+        const updated = { ...mag, status: 'published' as const };
+        supabase.from('magazine_issues').upsert(updated).then(() => {});
+      }
       set((state) => ({
         magazineIssues: state.magazineIssues.map(m => m.id === id ? { ...m, status: 'published' } : m),
         stagedChangesCount: state.stagedChangesCount + 1,
@@ -351,7 +422,11 @@ export const useStore = create<AppState>((set, get) => ({
       }));
     } else if (itemType === 'video') {
       const vid = get().videos.find(v => v.id === id);
-      if (vid) title = vid.title_fa;
+      if (vid) {
+        title = vid.title_fa;
+        const updated = { ...vid, status: 'published' as const };
+        supabase.from('video_items').upsert(updated).then(() => {});
+      }
       set((state) => ({
         videos: state.videos.map(v => v.id === id ? { ...v, status: 'published' } : v),
         stagedChangesCount: state.stagedChangesCount + 1,
@@ -359,7 +434,11 @@ export const useStore = create<AppState>((set, get) => ({
       }));
     } else if (itemType === 'audio') {
       const aud = get().audios.find(a => a.id === id);
-      if (aud) title = aud.title_fa;
+      if (aud) {
+        title = aud.title_fa;
+        const updated = { ...aud, status: 'published' as const };
+        supabase.from('audio_items').upsert(updated).then(() => {});
+      }
       set((state) => ({
         audios: state.audios.map(a => a.id === id ? { ...a, status: 'published' } : a),
         stagedChangesCount: state.stagedChangesCount + 1,
@@ -367,7 +446,11 @@ export const useStore = create<AppState>((set, get) => ({
       }));
     } else if (itemType === 'team') {
       const tm = get().teamMembers.find(t => t.id === id);
-      if (tm) title = tm.name_fa;
+      if (tm) {
+        title = tm.name_fa;
+        const updated = { ...tm, status: 'published' as const };
+        supabase.from('team_members').upsert(updated).then(() => {});
+      }
       set((state) => ({
         teamMembers: state.teamMembers.map(t => t.id === id ? { ...t, status: 'published' } : t),
         stagedChangesCount: state.stagedChangesCount + 1,
@@ -375,7 +458,7 @@ export const useStore = create<AppState>((set, get) => ({
       }));
     }
 
-    get().addAuditLog('تایید و انتشار', title, itemType === 'article' ? 'مقاله' : itemType === 'magazine' ? 'مجله' : itemType === 'video' ? 'ویدیو' : itemType === 'audio' ? 'صوتی' : 'عضو تیم', 'تایید نهایی توسط مدیر ارشد (Nazif Yosuf)');
+    get().addAuditLog('تایید و انتشار', title, itemType === 'article' ? 'مقاله' : itemType === 'magazine' ? 'مجله' : itemType === 'video' ? 'ویدیو' : itemType === 'audio' ? 'صوتی' : 'عضو تیم', 'تایید نهایی توسط مدیر ارشد (Nazir Yosuf)');
   },
 
   rejectPendingItem: (itemType, id) => {
@@ -383,6 +466,7 @@ export const useStore = create<AppState>((set, get) => ({
     if (itemType === 'article') {
       const art = get().articles.find(a => a.id === id);
       if (art) title = art.title_fa;
+      supabase.from('articles').delete().eq('id', id).then(() => {});
       set((state) => ({
         articles: state.articles.filter(a => a.id !== id),
         stagedChangesCount: state.stagedChangesCount + 1,
@@ -391,6 +475,7 @@ export const useStore = create<AppState>((set, get) => ({
     } else if (itemType === 'magazine') {
       const mag = get().magazineIssues.find(m => m.id === id);
       if (mag) title = mag.title_fa;
+      supabase.from('magazine_issues').delete().eq('id', id).then(() => {});
       set((state) => ({
         magazineIssues: state.magazineIssues.filter(m => m.id !== id),
         stagedChangesCount: state.stagedChangesCount + 1,
@@ -399,6 +484,7 @@ export const useStore = create<AppState>((set, get) => ({
     } else if (itemType === 'video') {
       const vid = get().videos.find(v => v.id === id);
       if (vid) title = vid.title_fa;
+      supabase.from('video_items').delete().eq('id', id).then(() => {});
       set((state) => ({
         videos: state.videos.filter(v => v.id !== id),
         stagedChangesCount: state.stagedChangesCount + 1,
@@ -407,6 +493,7 @@ export const useStore = create<AppState>((set, get) => ({
     } else if (itemType === 'audio') {
       const aud = get().audios.find(a => a.id === id);
       if (aud) title = aud.title_fa;
+      supabase.from('audio_items').delete().eq('id', id).then(() => {});
       set((state) => ({
         audios: state.audios.filter(a => a.id !== id),
         stagedChangesCount: state.stagedChangesCount + 1,
@@ -415,6 +502,7 @@ export const useStore = create<AppState>((set, get) => ({
     } else if (itemType === 'team') {
       const tm = get().teamMembers.find(t => t.id === id);
       if (tm) title = tm.name_fa;
+      supabase.from('team_members').delete().eq('id', id).then(() => {});
       set((state) => ({
         teamMembers: state.teamMembers.filter(t => t.id !== id),
         stagedChangesCount: state.stagedChangesCount + 1,
@@ -465,11 +553,17 @@ export const useStore = create<AppState>((set, get) => ({
       hasUnsavedChanges: true
     }));
 
+    try {
+      await supabase.from('articles').upsert(newArticle);
+    } catch (e) {
+      console.error('Supabase addArticle error:', e);
+    }
+
     get().addAuditLog(
       'افزودن', 
       newArticle.title_fa, 
       'مقاله', 
-      canDirect ? 'انتشار مستقیم' : 'در انتظار تایید ادمین ارشد (Nazif Yosuf)'
+      canDirect ? 'انتشار مستقیم' : 'در انتظار تایید ادمین ارشد (Nazir Yosuf)'
     );
   },
 
@@ -479,18 +573,33 @@ export const useStore = create<AppState>((set, get) => ({
     const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
     const nextStatus = canDirect ? 'published' : 'pending_approval';
 
+    let updatedArt: Article | null = null;
     set((state) => ({
-      articles: state.articles.map((art) => (art.id === id ? { 
-        ...art, 
-        ...articleData,
-        status: nextStatus,
-        submitted_by_name: currentUser?.name_fa || 'M. Nazir Yosuf',
-        submitted_at: new Date().toLocaleDateString('fa-IR'),
-        submitted_device: getDeviceDetails()
-      } : art)),
+      articles: state.articles.map((art) => {
+        if (art.id === id) {
+          updatedArt = { 
+            ...art, 
+            ...articleData,
+            status: nextStatus,
+            submitted_by_name: currentUser?.name_fa || 'M. Nazir Yosuf',
+            submitted_at: new Date().toLocaleDateString('fa-IR'),
+            submitted_device: getDeviceDetails()
+          };
+          return updatedArt;
+        }
+        return art;
+      }),
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+
+    if (updatedArt) {
+      try {
+        await supabase.from('articles').upsert(updatedArt);
+      } catch (e) {
+        console.error('Supabase updateArticle error:', e);
+      }
+    }
 
     const target = get().articles.find(a => a.id === id);
     if (target) {
@@ -510,6 +619,11 @@ export const useStore = create<AppState>((set, get) => ({
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+    try {
+      await supabase.from('articles').delete().eq('id', id);
+    } catch (e) {
+      console.error('Supabase deleteArticle error:', e);
+    }
     if (target) {
       get().addAuditLog('حذف', target.title_fa, 'مقاله');
     }
@@ -535,6 +649,11 @@ export const useStore = create<AppState>((set, get) => ({
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+    try {
+      await supabase.from('magazine_issues').upsert(newIssue);
+    } catch (e) {
+      console.error('Supabase addMagazineIssue error:', e);
+    }
     get().addAuditLog(
       'افزودن', 
       newIssue.title_fa, 
@@ -549,15 +668,25 @@ export const useStore = create<AppState>((set, get) => ({
     const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
     const nextStatus = canDirect ? 'published' : 'pending_approval';
 
+    let updatedMag: MagazineIssue | null = null;
     set((state) => ({
-      magazineIssues: state.magazineIssues.map((iss) => (iss.id === id ? { 
-        ...iss, 
-        ...issueData,
-        status: nextStatus
-      } : iss)),
+      magazineIssues: state.magazineIssues.map((iss) => {
+        if (iss.id === id) {
+          updatedMag = { 
+            ...iss, 
+            ...issueData,
+            status: nextStatus
+          };
+          return updatedMag;
+        }
+        return iss;
+      }),
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+    if (updatedMag) {
+      supabase.from('magazine_issues').upsert(updatedMag).then(() => {});
+    }
     const target = get().magazineIssues.find(m => m.id === id);
     if (target) {
       get().addAuditLog('ویرایش', target.title_fa, 'مجله');
@@ -571,6 +700,7 @@ export const useStore = create<AppState>((set, get) => ({
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+    supabase.from('magazine_issues').delete().eq('id', id).then(() => {});
     if (target) {
       get().addAuditLog('حذف', target.title_fa, 'مجله');
     }
@@ -596,6 +726,7 @@ export const useStore = create<AppState>((set, get) => ({
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+    supabase.from('video_items').upsert(newVid).then(() => {});
     get().addAuditLog(
       'افزودن', 
       newVid.title_fa, 
@@ -610,15 +741,25 @@ export const useStore = create<AppState>((set, get) => ({
     const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
     const nextStatus = canDirect ? 'published' : 'pending_approval';
 
+    let updatedVid: VideoItem | null = null;
     set((state) => ({
-      videos: state.videos.map((v) => (v.id === id ? { 
-        ...v, 
-        ...videoData,
-        status: nextStatus
-      } : v)),
+      videos: state.videos.map((v) => {
+        if (v.id === id) {
+          updatedVid = { 
+            ...v, 
+            ...videoData,
+            status: nextStatus
+          };
+          return updatedVid;
+        }
+        return v;
+      }),
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+    if (updatedVid) {
+      supabase.from('video_items').upsert(updatedVid).then(() => {});
+    }
     const target = get().videos.find(v => v.id === id);
     if (target) {
       get().addAuditLog('ویرایش', target.title_fa, 'ویدیو');
@@ -632,6 +773,7 @@ export const useStore = create<AppState>((set, get) => ({
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+    supabase.from('video_items').delete().eq('id', id).then(() => {});
     if (target) {
       get().addAuditLog('حذف', target.title_fa, 'ویدیو');
     }
@@ -657,6 +799,7 @@ export const useStore = create<AppState>((set, get) => ({
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+    supabase.from('audio_items').upsert(newAud).then(() => {});
     get().addAuditLog(
       'افزودن', 
       newAud.title_fa, 
@@ -671,15 +814,25 @@ export const useStore = create<AppState>((set, get) => ({
     const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
     const nextStatus = canDirect ? 'published' : 'pending_approval';
 
+    let updatedAud: AudioItem | null = null;
     set((state) => ({
-      audios: state.audios.map((a) => (a.id === id ? { 
-        ...a, 
-        ...audioData,
-        status: nextStatus 
-      } : a)),
+      audios: state.audios.map((a) => {
+        if (a.id === id) {
+          updatedAud = { 
+            ...a, 
+            ...audioData,
+            status: nextStatus 
+          };
+          return updatedAud;
+        }
+        return a;
+      }),
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+    if (updatedAud) {
+      supabase.from('audio_items').upsert(updatedAud).then(() => {});
+    }
     const target = get().audios.find(a => a.id === id);
     if (target) {
       get().addAuditLog('ویرایش', target.title_fa, 'صوتی');
@@ -693,6 +846,7 @@ export const useStore = create<AppState>((set, get) => ({
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+    supabase.from('audio_items').delete().eq('id', id).then(() => {});
     if (target) {
       get().addAuditLog('حذف', target.title_fa, 'صوتی');
     }
@@ -708,6 +862,7 @@ export const useStore = create<AppState>((set, get) => ({
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+    supabase.from('infographic_items').upsert(newInfo).then(() => {});
   },
 
   deleteInfographic: (id) => {
@@ -716,6 +871,7 @@ export const useStore = create<AppState>((set, get) => ({
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+    supabase.from('infographic_items').delete().eq('id', id).then(() => {});
   },
 
   addTeamMember: (memberData) => {
@@ -737,6 +893,7 @@ export const useStore = create<AppState>((set, get) => ({
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+    supabase.from('team_members').upsert(newMember).then(() => {});
     get().addAuditLog(
       'افزودن', 
       newMember.name_fa, 
@@ -746,11 +903,21 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   updateTeamMember: (id, memberData) => {
+    let updatedMember: TeamMember | null = null;
     set((state) => ({
-      teamMembers: state.teamMembers.map((m) => (m.id === id ? { ...m, ...memberData } : m)),
+      teamMembers: state.teamMembers.map((m) => {
+        if (m.id === id) {
+          updatedMember = { ...m, ...memberData };
+          return updatedMember;
+        }
+        return m;
+      }),
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+    if (updatedMember) {
+      supabase.from('team_members').upsert(updatedMember).then(() => {});
+    }
     const target = get().teamMembers.find(t => t.id === id);
     if (target) {
       get().addAuditLog('ویرایش', target.name_fa, 'عضو تیم');
@@ -764,6 +931,7 @@ export const useStore = create<AppState>((set, get) => ({
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+    supabase.from('team_members').delete().eq('id', id).then(() => {});
     if (target) {
       get().addAuditLog('حذف', target.name_fa, 'عضو تیم');
     }
@@ -804,37 +972,37 @@ export const useStore = create<AppState>((set, get) => ({
     try {
       // 1. Articles
       const { data: supaArticles, error: artErr } = await supabase.from('articles').select('*').order('created_at', { ascending: false });
-      if (!artErr && supaArticles) {
+      if (!artErr && supaArticles && supaArticles.length > 0) {
         set({ articles: supaArticles });
       }
 
       // 2. Magazine Issues
       const { data: supaMagazines, error: magErr } = await supabase.from('magazine_issues').select('*').order('issue_number', { ascending: true });
-      if (!magErr && supaMagazines) {
+      if (!magErr && supaMagazines && supaMagazines.length > 0) {
         set({ magazineIssues: supaMagazines });
       }
 
       // 3. Videos
       const { data: supaVideos, error: vidErr } = await supabase.from('video_items').select('*');
-      if (!vidErr && supaVideos) {
+      if (!vidErr && supaVideos && supaVideos.length > 0) {
         set({ videos: supaVideos });
       }
 
       // 4. Audios
       const { data: supaAudios, error: audErr } = await supabase.from('audio_items').select('*');
-      if (!audErr && supaAudios) {
+      if (!audErr && supaAudios && supaAudios.length > 0) {
         set({ audios: supaAudios });
       }
 
       // 5. Team Members
       const { data: supaTeam, error: teamErr } = await supabase.from('team_members').select('*');
-      if (!teamErr && supaTeam) {
+      if (!teamErr && supaTeam && supaTeam.length > 0) {
         set({ teamMembers: supaTeam });
       }
 
       // 6. Contact Messages
-      const { data: supaMsgs, error: msgErr } = await supabase.from('contact_messages').select('*');
-      if (!msgErr && supaMsgs) {
+      const { data: supaMsgs, error: msgErr } = await supabase.from('contact_messages').select('*').order('created_at', { ascending: false });
+      if (!msgErr && supaMsgs && supaMsgs.length > 0) {
         set({ contactMessages: supaMsgs });
       }
 
@@ -844,6 +1012,31 @@ export const useStore = create<AppState>((set, get) => ({
         set({ coHosts: supaCoHosts });
       } else if (!coErr && (!supaCoHosts || supaCoHosts.length === 0)) {
         await supabase.from('co_hosts').upsert(initialCoHosts);
+      }
+
+      // 8. Site Settings (designerName, designerWebsiteUrl, aboutUsMission)
+      const { data: supaSettings, error: setErr } = await supabase.from('site_settings').select('*');
+      if (!setErr && supaSettings && supaSettings.length > 0) {
+        supaSettings.forEach((item: { key: string; value: string }) => {
+          if (item.key === 'designer_name' && item.value) {
+            set({ designerName: item.value });
+            if (typeof localStorage !== 'undefined') localStorage.setItem('mahdism_designer_name', item.value);
+          }
+          if (item.key === 'designer_url' && item.value) {
+            set({ designerWebsiteUrl: item.value });
+            if (typeof localStorage !== 'undefined') localStorage.setItem('mahdism_designer_url', item.value);
+          }
+          if (item.key === 'about_mission' && item.value) {
+            set({ aboutUsMission: item.value });
+            if (typeof localStorage !== 'undefined') localStorage.setItem('mahdism_about_mission', item.value);
+          }
+        });
+      }
+
+      // 9. Audit Logs
+      const { data: supaLogs, error: logErr } = await supabase.from('audit_logs').select('*').order('created_at', { ascending: false });
+      if (!logErr && supaLogs && supaLogs.length > 0) {
+        set({ auditLogs: supaLogs });
       }
     } catch (err) {
       console.log('Supabase Cloud Sync Fallback:', err);
@@ -869,6 +1062,16 @@ export const useStore = create<AppState>((set, get) => ({
     const savedAboutMission = localStorage.getItem('mahdism_about_mission');
     if (savedAboutMission) {
       set({ aboutUsMission: savedAboutMission });
+    }
+
+    const savedDesignerName = localStorage.getItem('mahdism_designer_name');
+    if (savedDesignerName !== null) {
+      set({ designerName: savedDesignerName });
+    }
+
+    const savedDesignerUrl = localStorage.getItem('mahdism_designer_url');
+    if (savedDesignerUrl !== null) {
+      set({ designerWebsiteUrl: savedDesignerUrl });
     }
 
     const savedBookmarks = localStorage.getItem('mahdism_bookmarks');

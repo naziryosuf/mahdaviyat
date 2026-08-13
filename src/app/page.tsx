@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useStore } from '@/store/useStore';
 import { 
   BookOpen, 
@@ -11,7 +11,6 @@ import {
   Clock, 
   Search,
   Download,
-  Newspaper, 
   Video, 
   Volume2, 
   Play,
@@ -21,18 +20,13 @@ import {
   Bookmark,
   Calendar,
   CheckCircle2,
-  Filter,
   X,
-  Database,
   Info,
-  Server,
-  Headphones,
   Pin
 } from 'lucide-react';
 import { translations } from '@/data/translations';
 import { KaabaUnityLogo } from '@/components/common/KaabaUnityLogo';
 import { CalligraphyPenTitle } from '@/components/common/CalligraphyPenTitle';
-import { InitialSitePreloader } from '@/components/common/InitialSitePreloader';
 
 function HomeContent() {
   const searchParams = useSearchParams();
@@ -44,7 +38,6 @@ function HomeContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSearch, setActiveSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('همه');
-  const [isLoaded, setIsLoaded] = useState(false);
   const searchResultsRef = useRef<HTMLElement>(null);
 
   const categories = ['همه', 'سرمقاله‌ها', 'تحلیل‌ها', 'نقد مکاتب', 'شناخت مهدویت'];
@@ -139,7 +132,7 @@ function HomeContent() {
   return (
     <div className="space-y-8 sm:space-y-12 py-4 sm:py-6 relative gpu-accelerate">
       
-      {/* 2. HERO BANNER WITH WIDER FLOATING ANIMATED BLUE & RED AMBIENT GLOW SPHERES */}
+      {/* HERO BANNER WITH WIDER FLOATING ANIMATED BLUE & RED AMBIENT GLOW SPHERES */}
       <motion.section 
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -147,7 +140,6 @@ function HomeContent() {
         className="relative overflow-hidden bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl p-5 sm:p-12 text-center space-y-5 sm:space-y-6 modern-card shadow-xl"
       >
           
-          {/* WIDER FLOATING ANIMATED TOP-LEFT TEAL/BLUE AMBIENT GLOW SPHERE */}
           <motion.div 
             animate={{ 
               x: [0, 80, -45, 0], 
@@ -160,10 +152,9 @@ function HomeContent() {
               repeat: Infinity, 
               ease: 'easeInOut' 
             }}
-            className="absolute -top-32 -left-32 w-[450px] sm:w-[550px] h-[450px] sm:h-[550px] bg-[#1B889A]/35 rounded-full blur-[100px] pointer-events-none z-0" 
+            className="absolute -top-20 -left-20 w-72 sm:w-[550px] h-72 sm:h-[550px] bg-[#1B889A]/35 rounded-full blur-[80px] sm:blur-[100px] pointer-events-none z-0 max-w-full" 
           />
 
-          {/* FLOATING ANIMATED BOTTOM-RIGHT TEAL AMBIENT GLOW SPHERE */}
           <motion.div 
             animate={{ 
               x: [0, -85, 55, 0], 
@@ -176,10 +167,9 @@ function HomeContent() {
               repeat: Infinity, 
               ease: 'easeInOut' 
             }}
-            className="absolute -bottom-32 -right-32 w-[450px] sm:w-[550px] h-[450px] sm:h-[550px] bg-[#1B889A]/20 rounded-full blur-[100px] pointer-events-none z-0" 
+            className="absolute -bottom-20 -right-20 w-72 sm:w-[550px] h-72 sm:h-[550px] bg-[#1B889A]/20 rounded-full blur-[80px] sm:blur-[100px] pointer-events-none z-0 max-w-full" 
           />
 
-          {/* Top Emblem (Official Kaaba Unity Emblem) */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -189,10 +179,8 @@ function HomeContent() {
             <KaabaUnityLogo size="lg" />
           </motion.div>
 
-          {/* Headlines with Fast Right-to-Left Pen Writing Calligraphy Animation */}
           <div className="relative z-10 max-w-4xl mx-auto space-y-3 sm:space-y-4">
             
-            {/* CALLIGRAPHY PEN WRITING ANIMATION FROM RIGHT TO LEFT */}
             <CalligraphyPenTitle title={t.siteTitle || 'ایدئولوژی مهدویت'} />
 
             <motion.p 
@@ -214,7 +202,6 @@ function HomeContent() {
             </motion.p>
           </div>
 
-          {/* 3. FUNCTIONAL SEARCH BAR WITH SEARCH BUTTON INSIDE THE INPUT BOX */}
           <div className="relative z-10 max-w-2xl mx-auto space-y-3 pt-1">
             <form onSubmit={handleSearchSubmit} className="relative flex items-center">
               <input
@@ -226,7 +213,6 @@ function HomeContent() {
               />
               <Search className="w-4 sm:w-5 h-4 sm:h-5 text-[#1B889A] absolute right-3 sm:right-4 top-3.5 sm:top-4 pointer-events-none" />
 
-              {/* EMBEDDED SEARCH ACTION BUTTON INSIDE THE INPUT BOX */}
               <button
                 type="submit"
                 className="absolute left-1.5 top-1.5 bottom-1.5 px-3.5 sm:px-5 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-extrabold text-[11px] sm:text-xs shadow-md shadow-[#1B889A]/30 flex items-center gap-1.5 transition-all active:scale-95"
@@ -236,8 +222,7 @@ function HomeContent() {
               </button>
             </form>
 
-            {/* TOP 3 KEY HASHTAG BUTTONS ONLY (STRICTLY MAXIMUM 3 TAGS) */}
-            <div className="flex items-center justify-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-[var(--text-secondary)] py-1 px-1 whitespace-nowrap">
+            <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-[var(--text-secondary)] py-1 px-1">
               <span className="font-bold text-[var(--text-primary)] shrink-0">موضوعات پرجستجو:</span>
               {displayTop3Tags.map((tag, idx) => (
                 <button
@@ -251,7 +236,6 @@ function HomeContent() {
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="relative z-10 flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <Link
               href="/magazine"
@@ -270,9 +254,9 @@ function HomeContent() {
             </Link>
           </div>
 
-        </motion.section>
+      </motion.section>
 
-      {/* 3.5 PINNED CONTENT SHOWCASE SECTION (SHOWN RIGHT AFTER SEARCH BAR) */}
+      {/* PINNED CONTENT SHOWCASE SECTION */}
       {(articles.some(a => a.featured) || magazineIssues.some(m => m.featured) || videos.some(v => v.featured) || audios.some(au => au.featured)) && (
         <section className="bg-gradient-to-br from-[#1B889A]/15 via-[var(--card-bg)] to-[var(--bg-color)] border-2 border-[#1B889A] rounded-2xl sm:rounded-3xl p-4 sm:p-7 space-y-5 shadow-2xl modern-card">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
@@ -295,7 +279,6 @@ function HomeContent() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* Pinned Articles */}
             {articles.filter(art => art.featured).map(art => (
               <article key={art.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm group">
                 <div className="flex items-center justify-between text-xs">
@@ -322,7 +305,6 @@ function HomeContent() {
               </article>
             ))}
 
-            {/* Pinned Magazine Issues */}
             {magazineIssues.filter(iss => iss.featured).map(iss => (
               <div key={iss.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm">
                 <div className="flex items-center justify-between text-xs">
@@ -346,7 +328,6 @@ function HomeContent() {
               </div>
             ))}
 
-            {/* Pinned Videos */}
             {videos.filter(vid => vid.featured).map(vid => (
               <div key={vid.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm">
                 <div className="flex items-center justify-between text-xs">
@@ -373,7 +354,7 @@ function HomeContent() {
         </section>
       )}
 
-      {/* 4. DEDICATED VISIBLE SEARCH RESULTS SECTION WITH AUTOMATIC SMOOTH SCROLL */}
+      {/* SEARCH RESULTS SECTION */}
       {queryToMatch && (
         <section ref={searchResultsRef} className="bg-[var(--card-bg)] border-2 border-[#1B889A] rounded-2xl sm:rounded-3xl p-4 sm:p-8 space-y-6 shadow-2xl modern-card scroll-mt-24">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--card-border)] pb-4">
@@ -400,10 +381,7 @@ function HomeContent() {
             </button>
           </div>
 
-          {/* Search Results Grid */}
           <div className="space-y-8">
-            
-            {/* A. Matched Articles */}
             {filteredArticles.length > 0 && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-[#1B889A] flex items-center gap-2 border-b border-[var(--card-border)] pb-2">
@@ -435,7 +413,6 @@ function HomeContent() {
               </div>
             )}
 
-            {/* B. Matched Audio Podcasts */}
             {filteredAudios.length > 0 && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-[#1B889A] flex items-center gap-2 border-b border-[var(--card-border)] pb-2">
@@ -462,7 +439,6 @@ function HomeContent() {
               </div>
             )}
 
-            {/* C. Matched Videos */}
             {filteredVideos.length > 0 && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-[#A32838] flex items-center gap-2 border-b border-[var(--card-border)] pb-2">
@@ -498,128 +474,130 @@ function HomeContent() {
         </section>
       )}
 
-      {/* 5. Highlight Showcase: Issue 1 Magazine & Editorial Lead */}
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
-        
-        {/* Issue 1 Showcase Card */}
-        <div className="lg:col-span-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl p-5 sm:p-6 space-y-4 sm:space-y-5 modern-card flex flex-col justify-between shadow-lg">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="px-3 py-1 rounded-full teal-badge text-[11px] sm:text-xs font-bold">
-                شماره نخست مجله
-              </span>
-              <span className="text-xs text-[var(--text-secondary)] font-bold flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5 text-[#1B889A]" />
-                تابستان ۱۴۰۴
-              </span>
-            </div>
-
-            <h3 className="text-lg sm:text-xl font-bold text-[var(--text-primary)] font-serif-persian">
-              {issueOne.title_fa}
-            </h3>
-
-            <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
-              {issueOne.description_fa}
-            </p>
-
-            <div className="relative rounded-2xl overflow-hidden border border-[var(--card-border)] aspect-[16/9] sm:aspect-[4/3] bg-stone-900 group">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={issueOne.cover_image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-4">
-                <span className="text-white text-xs font-bold flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#1B889A]" />
-                  شامل ۴۵ صفحه کامل و تمامی ۹ مقاله اختصاصی
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-4 border-t border-[var(--card-border)] flex items-center justify-between">
-            <span className="text-xs text-[var(--text-secondary)]">تعداد دانلود: <strong className="text-[#1B889A] font-bold">{issueOne.download_count}</strong></span>
-            <Link
-              href="/magazine"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs transition-colors shadow-md"
-            >
-              <span>ورق زدن آنلاین</span>
-              <ArrowLeft className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </div>
-
-        {/* Lead Editorial Article */}
-        {featuredArticle && (
-          <div className="lg:col-span-7 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl p-5 sm:p-8 space-y-4 sm:space-y-5 modern-card flex flex-col justify-between shadow-lg">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs text-[#1B889A] font-bold">
-                  <FileText className="w-4 h-4" />
-                  <span>سرمقاله‌ها</span>
+      {/* HIGHLIGHT SHOWCASE SECTION */}
+      {(issueOne || featuredArticle) && (
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
+          
+          {/* Issue 1 Showcase Card */}
+          {issueOne && (
+            <div className="lg:col-span-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl p-5 sm:p-6 space-y-4 sm:space-y-5 modern-card flex flex-col justify-between shadow-lg">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="px-3 py-1 rounded-full teal-badge text-[11px] sm:text-xs font-bold">
+                    شماره نخست مجله
+                  </span>
+                  <span className="text-xs text-[var(--text-secondary)] font-bold flex items-center gap-1">
+                    <Calendar className="w-3.5 h-3.5 text-[#1B889A]" />
+                    {issueOne.publish_date_fa || 'تابستان ۱۴۰۴'}
+                  </span>
                 </div>
-                <button
-                  onClick={() => toggleBookmark(featuredArticle.id)}
-                  className={`p-1.5 rounded-xl border transition-all ${
-                    bookmarkedArticles.includes(featuredArticle.id)
-                      ? 'bg-[#1B889A] text-white border-[#1B889A]'
-                      : 'bg-[var(--bg-color)] border-[var(--card-border)] text-[var(--text-secondary)] hover:text-[#1B889A]'
-                  }`}
-                  title="نشان‌کردن مقاله"
-                >
-                  <Bookmark className="w-4 h-4" />
-                </button>
-              </div>
 
-              <h2 className="text-lg sm:text-2xl font-bold text-[var(--text-primary)] font-serif-persian leading-snug">
-                <Link href={`/content/${featuredArticle.id}`} className="hover:text-[#1B889A] transition-colors">
-                  {featuredArticle.title_fa}
-                </Link>
-              </h2>
+                <h3 className="text-lg sm:text-xl font-bold text-[var(--text-primary)] font-serif-persian">
+                  {issueOne.title_fa}
+                </h3>
 
-              <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
-                {featuredArticle.excerpt_fa}
-              </p>
+                <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+                  {issueOne.description_fa}
+                </p>
 
-              {/* Author & Metadata Pill */}
-              <div className="flex items-center gap-3 p-3 bg-[var(--bg-color)] rounded-2xl border border-[var(--card-border)] text-xs text-[var(--text-secondary)]">
-                <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-[#1B889A] shrink-0 shadow-md">
+                <div className="relative rounded-2xl overflow-hidden border border-[var(--card-border)] aspect-[16/9] sm:aspect-[4/3] bg-stone-900 group">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={featuredArticle.author_avatar} alt="" className="w-full h-full object-cover filter grayscale contrast-125" />
-                </div>
-                <div className="min-w-0">
-                  <span className="font-bold text-[var(--text-primary)] block truncate">{featuredArticle.author_name_fa}</span>
-                  <span className="text-[11px] text-[#1B889A] font-semibold block truncate">سردبیر مجله ایدئولوژی مهدویت</span>
-                </div>
-                <div className="mr-auto flex items-center gap-2 sm:gap-3 shrink-0">
-                  <span className="flex items-center gap-1 font-bold text-[#1B889A]">
-                    <Clock className="w-3.5 h-3.5" />
-                    {featuredArticle.read_time_fa}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Eye className="w-3.5 h-3.5 text-slate-400" />
-                    {featuredArticle.views}
-                  </span>
+                  <img src={issueOne.cover_image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-4">
+                    <span className="text-white text-xs font-bold flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-[#1B889A]" />
+                      شامل ۴۵ صفحه کامل و تمامی ۹ مقاله اختصاصی
+                    </span>
+                  </div>
                 </div>
               </div>
+
+              <div className="pt-4 border-t border-[var(--card-border)] flex items-center justify-between">
+                <span className="text-xs text-[var(--text-secondary)]">تعداد دانلود: <strong className="text-[#1B889A] font-bold">{issueOne.download_count || 0}</strong></span>
+                <Link
+                  href="/magazine"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs transition-colors shadow-md"
+                >
+                  <span>ورق زدن آنلاین</span>
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                </Link>
+              </div>
             </div>
+          )}
 
-            <div className="pt-4 border-t border-[var(--card-border)] flex items-center justify-between text-xs">
-              <span className="text-[var(--text-secondary)]">تاریخ انتشار: {featuredArticle.published_at}</span>
-              <Link
-                href={`/content/${featuredArticle.id}`}
-                className="inline-flex items-center gap-1.5 font-bold text-[#1B889A] hover:underline"
-              >
-                <span>مطالعه کامل سرمقاله</span>
-                <ArrowLeft className="w-3.5 h-3.5" />
-              </Link>
+          {/* Lead Editorial Article */}
+          {featuredArticle && (
+            <div className={`${issueOne ? 'lg:col-span-7' : 'lg:col-span-12'} bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl p-5 sm:p-8 space-y-4 sm:space-y-5 modern-card flex flex-col justify-between shadow-lg`}>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs text-[#1B889A] font-bold">
+                    <FileText className="w-4 h-4" />
+                    <span>سرمقاله‌ها</span>
+                  </div>
+                  <button
+                    onClick={() => toggleBookmark(featuredArticle.id)}
+                    className={`p-1.5 rounded-xl border transition-all ${
+                      bookmarkedArticles.includes(featuredArticle.id)
+                        ? 'bg-[#1B889A] text-white border-[#1B889A]'
+                        : 'bg-[var(--bg-color)] border-[var(--card-border)] text-[var(--text-secondary)] hover:text-[#1B889A]'
+                    }`}
+                    title="نشان‌کردن مقاله"
+                  >
+                    <Bookmark className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <h2 className="text-lg sm:text-2xl font-bold text-[var(--text-primary)] font-serif-persian leading-snug">
+                  <Link href={`/content/${featuredArticle.id}`} className="hover:text-[#1B889A] transition-colors">
+                    {featuredArticle.title_fa}
+                  </Link>
+                </h2>
+
+                <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+                  {featuredArticle.excerpt_fa}
+                </p>
+
+                <div className="flex items-center gap-3 p-3 bg-[var(--bg-color)] rounded-2xl border border-[var(--card-border)] text-xs text-[var(--text-secondary)]">
+                  <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-[#1B889A] shrink-0 shadow-md">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={featuredArticle.author_avatar} alt="" className="w-full h-full object-cover filter grayscale contrast-125" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="font-bold text-[var(--text-primary)] block truncate">{featuredArticle.author_name_fa}</span>
+                    <span className="text-[11px] text-[#1B889A] font-semibold block truncate">سردبیر مجله ایدئولوژی مهدویت</span>
+                  </div>
+                  <div className="mr-auto flex items-center gap-2 sm:gap-3 shrink-0">
+                    <span className="flex items-center gap-1 font-bold text-[#1B889A]">
+                      <Clock className="w-3.5 h-3.5" />
+                      {featuredArticle.read_time_fa}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Eye className="w-3.5 h-3.5 text-slate-400" />
+                      {featuredArticle.views || 1}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-[var(--card-border)] flex items-center justify-between text-xs">
+                <span className="text-[var(--text-secondary)]">تاریخ انتشار: {featuredArticle.published_at}</span>
+                <Link
+                  href={`/content/${featuredArticle.id}`}
+                  className="inline-flex items-center gap-1.5 font-bold text-[#1B889A] hover:underline"
+                >
+                  <span>مطالعه کامل سرمقاله</span>
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                </Link>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-      </section>
+        </section>
+      )}
 
-      {/* 6. Main Stream: Articles Stream & Sidebars */}
+      {/* ARTICLES STREAM & SIDEBARS */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
         
-        {/* Main Column: Articles Stream */}
         <div className="lg:col-span-8 space-y-6">
           
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
@@ -628,7 +606,6 @@ function HomeContent() {
               <span>{t.latestArticles} ({articles.length})</span>
             </h2>
 
-            {/* Category Filter Buttons */}
             <div className="flex flex-wrap items-center gap-1.5">
               {categories.map((cat) => (
                 <button
@@ -646,7 +623,6 @@ function HomeContent() {
             </div>
           </div>
 
-          {/* Articles Stream */}
           <div className="space-y-4 sm:space-y-5">
             {articles
               .filter(art => selectedCategory === 'همه' || art.category_fa === selectedCategory)
@@ -703,10 +679,8 @@ function HomeContent() {
 
         </div>
 
-        {/* Right Column: Archival Media Sidebars */}
         <div className="lg:col-span-4 space-y-6">
           
-          {/* Archival Audio Podcasts */}
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl p-4 sm:p-5 space-y-4 modern-card shadow-md">
             <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
               <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
@@ -740,7 +714,6 @@ function HomeContent() {
             </div>
           </div>
 
-          {/* Archival Video Lectures */}
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl p-4 sm:p-5 space-y-4 modern-card shadow-md">
             <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
               <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">

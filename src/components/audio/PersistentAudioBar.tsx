@@ -106,7 +106,7 @@ export const PersistentAudioBar: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-[var(--card-bg)]/95 backdrop-blur-xl border-t-2 border-[#1B889A]/50 shadow-[0_-8px_30px_rgba(0,0,0,0.3)] py-2 transition-all">
+    <aside aria-label="پخش‌کننده صوتی" className="fixed bottom-0 left-0 right-0 z-50 bg-[var(--card-bg)]/95 backdrop-blur-xl border-t-2 border-[#1B889A]/50 shadow-[0_-8px_30px_rgba(0,0,0,0.3)] py-1.5 sm:py-2 transition-all pb-[max(0.5rem,env(safe-area-inset-bottom))]">
       <audio
         ref={audioRef}
         src={currentAudio.audio_url}
@@ -122,15 +122,16 @@ export const PersistentAudioBar: React.FC = () => {
           max="100"
           value={progress}
           onChange={handleSeek}
+          aria-label="زمان‌پیمای پادکست"
           className="w-full h-1.5 bg-stone-300 dark:bg-neutral-800 accent-[#1B889A] cursor-pointer block"
         />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-3 sm:gap-6">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-1 flex items-center justify-between gap-1.5 sm:gap-6 min-w-0">
         
         {/* Track Details */}
-        <div className="flex items-center gap-3 min-w-0 max-w-[130px] sm:max-w-xs md:max-w-md">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl border border-[#1B889A]/40 overflow-hidden shrink-0 bg-[var(--bg-color)] shadow-md">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 max-w-[100px] xs:max-w-[130px] sm:max-w-xs md:max-w-md shrink">
+          <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-xl border border-[#1B889A]/40 overflow-hidden shrink-0 bg-[var(--bg-color)] shadow-md">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
               src={currentAudio.cover_image || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=300&q=80'} 
@@ -139,60 +140,62 @@ export const PersistentAudioBar: React.FC = () => {
             />
           </div>
           <div className="min-w-0">
-            <h5 className="text-xs sm:text-sm font-extrabold text-[var(--text-primary)] truncate font-serif-persian">
+            <h5 className="text-[11px] sm:text-sm font-extrabold text-[var(--text-primary)] truncate font-serif-persian">
               {currentAudio.title_fa}
             </h5>
-            <p className="text-[10px] sm:text-xs text-[var(--text-secondary)] truncate">
+            <p className="text-[9px] sm:text-xs text-[var(--text-secondary)] truncate">
               {currentAudio.speaker_fa}
             </p>
           </div>
         </div>
 
         {/* Playback Controls (10s Backward, Play/Pause, 10s Forward, Live Time Counter) */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        <div className="flex items-center gap-1 sm:gap-3 shrink-0">
           
           {/* Rewind 10s (-10s) */}
           <button
             onClick={() => skipTime(-10)}
-            className="p-1.5 sm:p-2 rounded-xl text-[var(--text-secondary)] hover:text-[#1B889A] hover:bg-[#1B889A]/10 transition-all active:scale-90 flex items-center gap-1"
+            className="p-1 sm:p-2 rounded-xl text-[var(--text-secondary)] hover:text-[#1B889A] hover:bg-[#1B889A]/10 transition-all active:scale-90 flex items-center gap-0.5"
             title="۱۰ ثانیه عقب زدن"
+            aria-label="۱۰ ثانیه عقب زدن"
           >
-            <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="text-[10px] font-bold font-mono hidden sm:inline">-10s</span>
+            <RotateCcw className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+            <span className="text-[9px] font-bold font-mono hidden sm:inline">-10s</span>
           </button>
 
           {/* Main Play/Pause Button */}
           <button
             onClick={toggleAudioPlay}
-            className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-[#1B889A] hover:bg-[#156d7b] text-white flex items-center justify-center shadow-lg shadow-[#1B889A]/30 transition-all active:scale-95 shrink-0"
-            aria-label="پخش/توقف"
+            className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-[#1B889A] hover:bg-[#156d7b] text-white flex items-center justify-center shadow-lg shadow-[#1B889A]/30 transition-all active:scale-95 shrink-0"
+            aria-label={isPlayingAudio ? "توقف پخش پادکست" : "پخش پادکست"}
           >
             {isPlayingAudio ? (
-              <Pause className="w-5 h-5 fill-current" />
+              <Pause className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
             ) : (
-              <Play className="w-5 h-5 mr-0.5 fill-current" />
+              <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-0.5 fill-current" />
             )}
           </button>
 
           {/* Forward 10s (+10s) */}
           <button
             onClick={() => skipTime(10)}
-            className="p-1.5 sm:p-2 rounded-xl text-[var(--text-secondary)] hover:text-[#1B889A] hover:bg-[#1B889A]/10 transition-all active:scale-90 flex items-center gap-1"
+            className="p-1 sm:p-2 rounded-xl text-[var(--text-secondary)] hover:text-[#1B889A] hover:bg-[#1B889A]/10 transition-all active:scale-90 flex items-center gap-0.5"
             title="۱۰ ثانیه جلو زدن"
+            aria-label="۱۰ ثانیه جلو زدن"
           >
-            <RotateCw className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="text-[10px] font-bold font-mono hidden sm:inline">+10s</span>
+            <RotateCw className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+            <span className="text-[9px] font-bold font-mono hidden sm:inline">+10s</span>
           </button>
 
-          {/* LIVE TIME COUNTER PLACED RIGHT NEXT TO PLAY BUTTON WITH FULL VISIBILITY */}
-          <div className="px-2.5 py-1.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] text-[#1B889A] font-mono font-bold text-xs sm:text-sm shadow-inner shrink-0 dir-ltr">
+          {/* LIVE TIME COUNTER */}
+          <div className="px-1.5 py-1 sm:px-2.5 sm:py-1.5 rounded-lg sm:rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] text-[#1B889A] font-mono font-bold text-[10px] sm:text-sm shadow-inner shrink-0 dir-ltr">
             {currentTimeFormatted} / {durationFormatted}
           </div>
 
         </div>
 
         {/* Speed Selector, Download Button, Interactive Volume Slider & Close */}
-        <div className="flex items-center gap-2 relative">
+        <div className="flex items-center gap-1 sm:gap-2 relative shrink-0">
           
           {/* Audio Download Button */}
           <a
@@ -200,20 +203,22 @@ export const PersistentAudioBar: React.FC = () => {
             download={`${currentAudio.title_fa}.mp3`}
             target="_blank"
             rel="noreferrer"
-            className="p-2 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] text-[var(--text-secondary)] hover:text-[#1B889A] transition-all shadow-sm flex items-center justify-center shrink-0"
-            title="دانلود فایل صوتی پادکست"
+            className="p-1.5 sm:p-2 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] text-[var(--text-secondary)] hover:text-[#1B889A] transition-all shadow-sm flex items-center justify-center shrink-0"
+            title="دانلود فایل صوتی"
+            aria-label="دانلود فایل صوتی"
           >
-            <Download className="w-4 h-4 text-[#1B889A]" />
+            <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#1B889A]" />
           </a>
 
           {/* Speed Selector Button */}
           <div className="relative">
             <button
               onClick={() => setShowSpeedMenu(!showSpeedMenu)}
-              className="px-2.5 py-1.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] text-[var(--text-primary)] text-xs font-bold font-mono flex items-center gap-1 transition-all shadow-sm"
-              title="سرعت پخش پادکست"
+              className="px-1.5 py-1 sm:px-2.5 sm:py-1.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] text-[var(--text-primary)] text-[10px] sm:text-xs font-bold font-mono flex items-center gap-0.5 transition-all shadow-sm"
+              title="سرعت پخش"
+              aria-label="تنظیم سرعت پخش"
             >
-              <Gauge className="w-3.5 h-3.5 text-[#1B889A]" />
+              <Gauge className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#1B889A]" />
               <span>{playbackRate}x</span>
             </button>
 
@@ -237,12 +242,13 @@ export const PersistentAudioBar: React.FC = () => {
             )}
           </div>
 
-          {/* INTERACTIVE VOLUME SLIDER (کم و زیاد کردن ولوم صدا) */}
-          <div className="hidden sm:flex items-center gap-1 bg-[var(--bg-color)] border border-[var(--card-border)] px-2.5 py-1 rounded-xl">
+          {/* VOLUME SLIDER (DESKTOP / TABLET) */}
+          <div className="hidden md:flex items-center gap-1 bg-[var(--bg-color)] border border-[var(--card-border)] px-2 py-1 rounded-xl">
             <button
               onClick={toggleMute}
               className="text-[var(--text-secondary)] hover:text-[#1B889A] transition-colors"
               title={muted ? 'وصل صدا' : 'قطع صدا'}
+              aria-label="قطع/وصل صدا"
             >
               {muted || volume === 0 ? (
                 <VolumeX className="w-4 h-4 text-red-500" />
@@ -260,21 +266,18 @@ export const PersistentAudioBar: React.FC = () => {
               step="0.05"
               value={muted ? 0 : volume}
               onChange={handleVolumeSliderChange}
-              className="w-16 sm:w-20 h-1.5 bg-stone-300 dark:bg-neutral-800 accent-[#1B889A] cursor-pointer rounded-full"
+              aria-label="تنظیم میزان صدا"
+              className="w-16 h-1.5 bg-stone-300 dark:bg-neutral-800 accent-[#1B889A] cursor-pointer rounded-full"
               title={`ولوم صدا: ${Math.round((muted ? 0 : volume) * 100)}%`}
             />
-            
-            <span className="text-[10px] font-mono font-bold text-[var(--text-secondary)] min-w-[26px]">
-              {Math.round((muted ? 0 : volume) * 100)}%
-            </span>
           </div>
 
           {/* Close Player Button */}
           <button
             onClick={closeAudioPlayer}
-            className="p-2 rounded-xl text-[var(--text-secondary)] hover:text-red-400 hover:bg-red-400/10 transition-all"
+            className="p-1.5 sm:p-2 rounded-xl text-[var(--text-secondary)] hover:text-red-400 hover:bg-red-400/10 transition-all"
             title="بستن پلیر"
-            aria-label="بستن"
+            aria-label="بستن پخش‌کننده صوتی"
           >
             <X className="w-4 h-4" />
           </button>
@@ -282,6 +285,6 @@ export const PersistentAudioBar: React.FC = () => {
         </div>
 
       </div>
-    </div>
+    </aside>
   );
 };

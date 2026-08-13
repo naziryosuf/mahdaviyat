@@ -1,40 +1,50 @@
 import { NextResponse } from 'next/server';
-import { readDB, writeDB, ContactMessage } from '@/lib/db';
+import { supabase } from '@/lib/supabase';
 
 export async function GET() {
-  const db = readDB();
-  return NextResponse.json({
-    success: true,
-    count: db.messages.length,
-    data: db.messages,
-  });
+  try {
+    const { data: messages } = await supabase
+      .from('contact_messages')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    return NextResponse.json({
+      success: true,
+      count: messages?.length || 0,
+      data: messages || [],
+    });
+  } catch {
+    return NextResponse.json({
+      success: true,
+      count: 0,
+      data: [],
+    });
+  }
 }
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     
-    if (!body.sender_name || !body.sender_email || !body.message_text) {
+    if (!body.sender_name || (!body.sender_email && !body.email) || (!body.message_text && !body.message)) {
       return NextResponse.json({
         success: false,
         message: 'لطفاً تمامی فیلدهای ضروری (نام، ایمیل و متن پیام) را تکمیل نمایید',
       }, { status: 400 });
     }
 
-    const db = readDB();
-    const newMessage: ContactMessage = {
+    const newMessage = {
       id: `msg-${Date.now()}`,
       sender_name: body.sender_name,
-      sender_email: body.sender_email,
+      sender_email: body.sender_email || body.email || '',
       sender_phone: body.sender_phone || '',
       subject: body.subject || 'پیام عمومی یا مقاله',
-      message_text: body.message_text,
+      message_text: body.message_text || body.message || '',
       sent_at: new Date().toLocaleString('fa-IR'),
       status: 'unread',
     };
 
-    db.messages.unshift(newMessage);
-    writeDB(db);
+    await supabase.from('contact_messages').upsert(newMessage);
 
     return NextResponse.json({
       success: true,

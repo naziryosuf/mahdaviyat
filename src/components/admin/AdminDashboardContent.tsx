@@ -27,7 +27,9 @@ import {
   UserPlus,
   KeyRound,
   Info,
-  HardDrive
+  HardDrive,
+  Globe,
+  ExternalLink
 } from 'lucide-react';
 import { calculateReadingTimeFa } from '@/utils/readingTime';
 import { Article, MagazineIssue, VideoItem, AudioItem, TeamMember, ContactMessage, CoHostUser } from '@/types';
@@ -57,6 +59,10 @@ export const AdminDashboardContent: React.FC = () => {
     contactMessages,
     aboutUsMission,
     setAboutUsMission,
+    designerName,
+    setDesignerName,
+    designerWebsiteUrl,
+    setDesignerWebsiteUrl,
     addArticle,
     updateArticle,
     deleteArticle,
@@ -91,7 +97,7 @@ export const AdminDashboardContent: React.FC = () => {
 
   const [passcode, setPasscode] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
-  const [activeTab, setActiveTab] = useState<'pending' | 'articles' | 'magazines' | 'videos' | 'audios' | 'team' | 'messages' | 'cohosts' | 'audit_logs' | 'about' | 'storage'>('articles');
+  const [activeTab, setActiveTab] = useState<'pending' | 'articles' | 'magazines' | 'videos' | 'audios' | 'team' | 'messages' | 'cohosts' | 'audit_logs' | 'about' | 'storage' | 'footer_designer'>('articles');
 
   // Save Success Notification Toast
   const [showSaveToast, setShowSaveToast] = useState(false);
@@ -341,7 +347,7 @@ export const AdminDashboardContent: React.FC = () => {
                 خوش آمدید {isSuperAdmin ? 'M. Nazir Yosuf' : (currentUser?.name_fa || 'مدیر سامانه')}
               </h1>
               <span className="px-2.5 py-0.5 rounded-full teal-badge text-[10px] sm:text-[11px] font-bold">
-                {isSuperAdmin ? 'سردبیر ارشد (NAZIF YOSUF) 👑' : currentUser?.role_fa || 'همکار'}
+                {isSuperAdmin ? 'سردبیر ارشد (NAZIR YOSUF) 👑' : currentUser?.role_fa || 'همکار'}
               </span>
             </div>
             <p className="text-xs text-[#1B889A] font-bold mt-0.5 flex items-center gap-1.5">
@@ -537,6 +543,19 @@ export const AdminDashboardContent: React.FC = () => {
             </button>
           )}
 
+          {/* DEDICATED DESIGNER LINK TAB (DESIGN BY) */}
+          {(isSuperAdmin || userPerms.can_manage_about) && (
+            <button
+              onClick={() => setActiveTab('footer_designer')}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+                activeTab === 'footer_designer' ? 'bg-[#1B889A] text-white shadow-md' : 'bg-[var(--card-bg)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:border-[#1B889A]'
+              }`}
+            >
+              <Globe className="w-4 h-4 text-[#1B889A]" />
+              <span>ویرایش لینک طراح (design by)</span>
+            </button>
+          )}
+
           {/* CO-HOSTS MANAGEMENT - ONLY SUPER ADMIN */}
           {isSuperAdmin && (
             <button
@@ -552,7 +571,7 @@ export const AdminDashboardContent: React.FC = () => {
         </div>
       </div>
 
-      {/* ABOUT US EDIT TAB CONTENT */}
+      {/* ABOUT US & SITE SETTINGS TAB CONTENT */}
       {activeTab === 'about' && (isSuperAdmin || userPerms.can_manage_about) && (
         <div className="space-y-6">
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] p-6 rounded-3xl space-y-4">
@@ -574,6 +593,90 @@ export const AdminDashboardContent: React.FC = () => {
                 ذخیره بیانیه در پیش‌نویس
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* DEDICATED DESIGN BY FOOTER LINK MANAGEMENT VIEW */}
+      {activeTab === 'footer_designer' && (isSuperAdmin || userPerms.can_manage_about) && (
+        <div className="space-y-6">
+          <div className="bg-gradient-to-br from-[#1B889A]/15 via-[var(--card-bg)] to-[var(--bg-color)] border-2 border-[#1B889A] p-6 sm:p-8 rounded-3xl space-y-6 shadow-xl modern-card">
+            
+            <div className="flex items-center gap-3 border-b border-[var(--card-border)] pb-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#1B889A] text-white flex items-center justify-center font-bold shadow-lg shrink-0">
+                <Globe className="w-6 h-6" />
+              </div>
+              <div>
+                <h2 className="text-lg sm:text-xl font-extrabold text-[var(--text-primary)] font-serif-persian">
+                  مدیریت اختصاصی متن و لینک طراح سایت (design by)
+                </h2>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                  ویرایش مستقیم نام طراح و آدرس وب‌سایت در پایین‌ترین قسمت وب‌سایت
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="space-y-2.5 bg-[var(--bg-color)] p-5 rounded-2xl border border-[var(--card-border)]">
+                <label className="text-xs font-extrabold text-[var(--text-primary)] block flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[#1B889A]/20 text-[#1B889A] flex items-center justify-center text-xs">۱</span>
+                  <span>نام / متن نمایش داده‌شده پس از design by:</span>
+                </label>
+                <input
+                  type="text"
+                  value={designerName}
+                  onChange={(e) => setDesignerName(e.target.value)}
+                  placeholder="M. Nazir Yosufi"
+                  className="w-full px-4 py-3 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:border-[#1B889A] dir-ltr text-left font-bold"
+                />
+                <p className="text-[11px] text-[var(--text-secondary)]">مثلاً: M. Nazir Yosufi</p>
+              </div>
+
+              <div className="space-y-2.5 bg-[var(--bg-color)] p-5 rounded-2xl border border-[var(--card-border)]">
+                <label className="text-xs font-extrabold text-[var(--text-primary)] block flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[#1B889A]/20 text-[#1B889A] flex items-center justify-center text-xs">۲</span>
+                  <span>آدرس وب‌سایت یا نمونه‌کار طراح (URL):</span>
+                </label>
+                <input
+                  type="url"
+                  value={designerWebsiteUrl}
+                  onChange={(e) => setDesignerWebsiteUrl(e.target.value)}
+                  placeholder="https://github.com/naziryosuf"
+                  className="w-full px-4 py-3 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:border-[#1B889A] dir-ltr text-left font-bold"
+                />
+                <p className="text-[11px] text-[var(--text-secondary)]">مثلاً: https://github.com/naziryosuf</p>
+              </div>
+            </div>
+
+            {/* Live Preview Card & Instant Save Button */}
+            <div className="p-5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] space-y-4 text-center">
+              <span className="text-xs text-[var(--text-secondary)] font-bold block dir-rtl text-right">پیش‌نمایش زنده در فوتر:</span>
+              <div className="text-xs text-stone-400 font-mono tracking-wider flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] w-fit mx-auto dir-ltr">
+                <span>design by</span>
+                <a
+                  href={designerWebsiteUrl || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#1B889A] font-bold underline flex items-center gap-1"
+                >
+                  <span>{designerName || 'M. Nazir Yosufi'}</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+
+              <button
+                type="button"
+                onClick={async () => {
+                  await saveAllChangesToLive();
+                  alert('اطلاعات فوتر طراح با موفقیت ذخیره شد و زنده در کل سایت اعمال گردید!');
+                }}
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-extrabold text-xs shadow-lg flex items-center justify-center gap-2 mx-auto transition-all active:scale-95"
+              >
+                <Save className="w-4 h-4" />
+                <span>ذخیره و به روز رسانی آنی لینک فوتر در سایت</span>
+              </button>
+            </div>
+
           </div>
         </div>
       )}
@@ -661,7 +764,7 @@ export const AdminDashboardContent: React.FC = () => {
           <div className="bg-amber-500/10 border border-amber-500/30 p-6 rounded-3xl space-y-2">
             <h2 className="text-lg font-bold text-amber-400 font-serif-persian flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-amber-400" />
-              <span>پست‌ها و ویرایش‌های در انتظار تایید مدیر ارشد (NAZIF YOSUF)</span>
+              <span>پست‌ها و ویرایش‌های در انتظار تایید مدیر ارشد (NAZIR YOSUF)</span>
             </h2>
           </div>
 
@@ -876,7 +979,7 @@ export const AdminDashboardContent: React.FC = () => {
                       onChange={(e) => setPermDirectPublish(e.target.checked)}
                       className="w-4 h-4 accent-[#1B889A] rounded"
                     />
-                    <span>مجوز انتشار مستقیم بدون نیاز به تایید NAZIF YOSUF</span>
+                    <span>مجوز انتشار مستقیم بدون نیاز به تایید NAZIR YOSUF</span>
                   </label>
                 </div>
               </div>

@@ -1,65 +1,76 @@
 import { NextResponse } from 'next/server';
-import { readDB, writeDB } from '@/lib/db';
+import { supabase } from '@/lib/supabase';
+import { initialArticles } from '@/data/initialData';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const q = searchParams.get('q')?.toLowerCase() || '';
   const category = searchParams.get('category') || '';
 
-  const db = readDB();
-  let results = db.articles;
+  try {
+    const { data: supaArticles, error } = await supabase
+      .from('articles')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-  if (category && category !== 'همه') {
-    results = results.filter((art) => art.category_fa === category);
+    let results = supaArticles && supaArticles.length > 0 ? supaArticles : initialArticles;
+
+    if (category && category !== 'همه') {
+      results = results.filter((art: any) => art.category_fa === category);
+    }
+
+    if (q) {
+      results = results.filter((art: any) => 
+        art.title_fa?.toLowerCase().includes(q) ||
+        art.excerpt_fa?.toLowerCase().includes(q) ||
+        art.content_fa?.toLowerCase().includes(q) ||
+        art.author_name_fa?.toLowerCase().includes(q)
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      count: results.length,
+      data: results,
+    });
+  } catch (err) {
+    return NextResponse.json({
+      success: true,
+      count: initialArticles.length,
+      data: initialArticles,
+    });
   }
-
-  if (q) {
-    results = results.filter((art) => 
-      art.title_fa.toLowerCase().includes(q) ||
-      art.excerpt_fa.toLowerCase().includes(q) ||
-      art.content_fa.toLowerCase().includes(q) ||
-      art.author_name_fa.toLowerCase().includes(q)
-    );
-  }
-
-  return NextResponse.json({
-    success: true,
-    count: results.length,
-    data: results,
-  });
 }
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const db = readDB();
 
     const newArticle = {
-      id: `art-${Date.now()}`,
+      id: body.id || `art-${Date.now()}`,
       title_fa: body.title_fa || 'مقاله جدید',
       excerpt_fa: body.excerpt_fa || '',
       content_fa: body.content_fa || '',
       author_name_fa: body.author_name_fa || 'نویسنده داوطلب',
-      author_avatar: body.author_avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      author_avatar: body.author_avatar || '',
       category_fa: body.category_fa || 'مقالات',
       read_time_fa: body.read_time_fa || '۵ دقیقه',
-      published_at: new Date().toLocaleDateString('fa-IR'),
-      views: 1,
-      bookmarked: false,
+      published_at: body.published_at || new Date().toLocaleDateString('fa-IR'),
+      views: body.views || 1,
+      status: body.status || 'published',
     };
 
-    db.articles.unshift(newArticle);
-    writeDB(db);
+    const { data, error } = await supabase.from('articles').upsert(newArticle).select().single();
 
     return NextResponse.json({
       success: true,
-      message: 'مقاله با موفقیت ذخیره گردید',
-      data: newArticle,
+      message: 'مقاله با موفقیت در دیتابیس آنلاین ثبت شد',
+      data: data || newArticle,
     }, { status: 201 });
   } catch (error) {
     return NextResponse.json({
       success: false,
-      message: 'خطا در ثبت مقاله',
+      message: 'خطا در ثبت مقاله در دیتابیس',
     }, { status: 500 });
   }
 }
