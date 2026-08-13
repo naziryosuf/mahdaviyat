@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStore } from '@/store/useStore';
 import { 
   ShieldCheck, 
@@ -14,32 +14,23 @@ import {
   LogOut, 
   CheckCircle2, 
   X, 
-  Upload, 
-  Sparkles,
-  Globe,
   Users,
   Database,
   Mail,
   Check,
-  ChevronDown,
-  ChevronUp,
-  Clock,
-  User,
-  Copy,
   Save,
   Lock,
-  ShieldAlert,
   Smartphone,
   History,
-  CheckSquare,
   AlertCircle,
   RotateCcw,
-  Zap,
   UserPlus,
-  KeyRound
+  KeyRound,
+  Info,
+  HardDrive
 } from 'lucide-react';
 import { calculateReadingTimeFa } from '@/utils/readingTime';
-import { Article, MagazineIssue, VideoItem, AudioItem, TeamMember, ContactMessage, CoHostUser, AuditLogItem } from '@/types';
+import { Article, MagazineIssue, VideoItem, AudioItem, TeamMember, ContactMessage, CoHostUser } from '@/types';
 
 export const AdminDashboardContent: React.FC = () => {
   const { 
@@ -62,7 +53,6 @@ export const AdminDashboardContent: React.FC = () => {
     magazineIssues, 
     videos, 
     audios,
-    infographics,
     teamMembers,
     contactMessages,
     aboutUsMission,
@@ -82,8 +72,6 @@ export const AdminDashboardContent: React.FC = () => {
     addTeamMember,
     updateTeamMember,
     deleteTeamMember,
-    markContactRead,
-    deleteContactMessage
   } = useStore();
 
   const isSuperAdmin = currentUser?.is_super_admin || currentUser?.password_code === '190716';
@@ -97,11 +85,13 @@ export const AdminDashboardContent: React.FC = () => {
     can_manage_messages: true,
     can_manage_cohosts: isSuperAdmin,
     can_direct_publish: isSuperAdmin,
+    can_manage_about: isSuperAdmin,
+    can_view_storage: isSuperAdmin,
   };
 
   const [passcode, setPasscode] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
-  const [activeTab, setActiveTab] = useState<'pending' | 'articles' | 'magazines' | 'videos' | 'audios' | 'team' | 'messages' | 'cohosts' | 'audit_logs' | 'about'>('articles');
+  const [activeTab, setActiveTab] = useState<'pending' | 'articles' | 'magazines' | 'videos' | 'audios' | 'team' | 'messages' | 'cohosts' | 'audit_logs' | 'about' | 'storage'>('articles');
 
   // Save Success Notification Toast
   const [showSaveToast, setShowSaveToast] = useState(false);
@@ -128,6 +118,8 @@ export const AdminDashboardContent: React.FC = () => {
   const [permTeam, setPermTeam] = useState(false);
   const [permMessages, setPermMessages] = useState(false);
   const [permDirectPublish, setPermDirectPublish] = useState(false);
+  const [permManageAbout, setPermManageAbout] = useState(false);
+  const [permViewStorage, setPermViewStorage] = useState(false);
 
   const openAddCoHost = () => {
     setEditingCoHost(null);
@@ -141,6 +133,8 @@ export const AdminDashboardContent: React.FC = () => {
     setPermTeam(false);
     setPermMessages(false);
     setPermDirectPublish(false);
+    setPermManageAbout(false);
+    setPermViewStorage(false);
     setShowCoHostModal(true);
   };
 
@@ -156,6 +150,8 @@ export const AdminDashboardContent: React.FC = () => {
     setPermTeam(!!ch.permissions.can_manage_team);
     setPermMessages(!!ch.permissions.can_manage_messages);
     setPermDirectPublish(!!ch.permissions.can_direct_publish);
+    setPermManageAbout(!!ch.permissions.can_manage_about);
+    setPermViewStorage(!!ch.permissions.can_view_storage);
     setShowCoHostModal(true);
   };
 
@@ -171,6 +167,8 @@ export const AdminDashboardContent: React.FC = () => {
         can_manage_messages: permMessages,
         can_manage_cohosts: false,
         can_direct_publish: permDirectPublish,
+        can_manage_about: permManageAbout,
+        can_view_storage: permViewStorage,
       };
 
       if (editingCoHost) {
@@ -202,9 +200,29 @@ export const AdminDashboardContent: React.FC = () => {
 
   const totalPendingCount = pendingArticles.length + pendingMagazines.length + pendingVideos.length + pendingAudios.length + pendingTeam.length;
 
-  // Track expanded long messages IDs & Copy state
-  const [expandedMessageIds, setExpandedMessageIds] = useState<string[]>([]);
-  const [copiedMsgId, setCopiedMsgId] = useState<string | null>(null);
+  // Storage Stats Calculation
+  const [storageUsedBytes, setStorageUsedBytes] = useState(0);
+  const [storagePercentage, setStoragePercentage] = useState(0);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const fullPayloadStr = JSON.stringify({
+          articles,
+          magazineIssues,
+          videos,
+          audios,
+          teamMembers,
+          contactMessages,
+          aboutUsMission
+        });
+        const bytes = new Blob([fullPayloadStr]).size;
+        setStorageUsedBytes(bytes);
+        const pct = Math.min(Math.round((bytes / (5000 * 1024 * 1024)) * 100 * 100) / 100, 100);
+        setStoragePercentage(pct);
+      } catch (e) {}
+    }
+  }, [articles, magazineIssues, videos, audios, teamMembers, contactMessages, aboutUsMission]);
 
   // About Us Edit Form State
   const [aboutInputText, setAboutInputText] = useState(aboutUsMission);
@@ -224,80 +242,22 @@ export const AdminDashboardContent: React.FC = () => {
     }
   };
 
-  const handleCopyMessage = (msg: ContactMessage) => {
-    if (typeof window !== 'undefined') {
-      const fullText = `نام فرستنده: ${msg.sender_name}\nایمیل: ${msg.email}\nموضوع: ${msg.subject}\nتاریخ: ${msg.created_at || msg.sent_at}\n\nمتن پیام:\n${msg.message || msg.message_text}`;
-      navigator.clipboard.writeText(fullText);
-      setCopiedMsgId(msg.id);
-      setTimeout(() => setCopiedMsgId(null), 3000);
-    }
-  };
-
-  // Create Modals State
+  // Article Modal & Form State
   const [showArticleModal, setShowArticleModal] = useState(false);
-  const [showMagazineModal, setShowMagazineModal] = useState(false);
-  const [showVideoModal, setShowVideoModal] = useState(false);
-  const [showAudioModal, setShowAudioModal] = useState(false);
-  const [showTeamModal, setShowTeamModal] = useState(false);
-
-  // Edit State Targets
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
-  const [editingMagazine, setEditingMagazine] = useState<MagazineIssue | null>(null);
-  const [editingVideo, setEditingVideo] = useState<VideoItem | null>(null);
-  const [editingAudio, setEditingAudio] = useState<AudioItem | null>(null);
-  const [editingTeam, setEditingTeam] = useState<TeamMember | null>(null);
-
-  // Form State: Article
   const [artTitle, setArtTitle] = useState('');
   const [artExcerpt, setArtExcerpt] = useState('');
   const [artContent, setArtContent] = useState('');
   const [artCategory, setArtCategory] = useState<'سرمقاله‌ها' | 'تحلیل‌ها' | 'نقد مکاتب' | 'شناخت مهدویت'>('تحلیل‌ها');
   const [artAuthor, setArtAuthor] = useState('میر الهام الدین سادات');
-  const [artAuthorTitle, setArtAuthorTitle] = useState('');
   const [artReadTime, setArtReadTime] = useState('۷ دقیقه');
   const [artImage, setArtImage] = useState('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80');
-  const [artImagePosition, setArtImagePosition] = useState<'center' | 'top' | 'bottom'>('center');
-  const [artAudioUrl, setArtAudioUrl] = useState('');
-  const [artAudioSpeaker, setArtAudioSpeaker] = useState('میر الهام الدین سادات');
 
   useEffect(() => {
     if (artContent) {
       setArtReadTime(calculateReadingTimeFa(artContent));
     }
   }, [artContent]);
-
-  // Form State: Video
-  const [vidTitle, setVidTitle] = useState('');
-  const [vidDesc, setVidDesc] = useState('');
-  const [vidUrl, setVidUrl] = useState('');
-  const [vidCategory, setVidCategory] = useState('وبینارها');
-  const [vidSpeaker, setVidSpeaker] = useState('میر الهام الدین سادات');
-  const [vidDuration, setVidDuration] = useState('۳۰ دقیقه');
-  const [vidThumbnail, setVidThumbnail] = useState('https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=80');
-
-  // Form State: Magazine Issue
-  const [issNumber, setIssNumber] = useState(1);
-  const [issTitle, setIssTitle] = useState('');
-  const [issDesc, setIssDesc] = useState('');
-  const [issDate, setIssDate] = useState('تابستان ۱۴۰۴');
-  const [issCover, setIssCover] = useState('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1200&q=80');
-  const [issPdfUrl, setIssPdfUrl] = useState('');
-
-  // Form State: Audio Podcast
-  const [audTitle, setAudTitle] = useState('');
-  const [audSpeaker, setAudSpeaker] = useState('میر الهام الدین سادات');
-  const [audUrl, setAudUrl] = useState('');
-  const [audDuration, setAudDuration] = useState('۲۰ دقیقه');
-  const [audDesc, setAudDesc] = useState('');
-  const [audCategory, setAudCategory] = useState('پادکست‌ها');
-  const [audCover, setAudCover] = useState('https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=600&q=80');
-
-  // Form State: Team Member
-  const [teamName, setTeamName] = useState('');
-  const [teamRole, setTeamRole] = useState('');
-  const [teamBio, setTeamBio] = useState('');
-  const [teamAvatar, setTeamAvatar] = useState('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80');
-  const [teamSpec, setTeamSpec] = useState('شناخت مهدویت & فلسفه اسلامی');
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -306,60 +266,6 @@ export const AdminDashboardContent: React.FC = () => {
       setErrorMsg('کد عبور وارد شده نادرست است.');
     } else {
       setErrorMsg('');
-    }
-  };
-
-  const resetForm = () => {
-    setArtTitle('');
-    setArtExcerpt('');
-    setArtContent('');
-    setArtAuthor('میر الهام الدین سادات');
-    setVidTitle('');
-    setVidDesc('');
-    setVidUrl('');
-    setTeamName('');
-    setTeamRole('');
-    setTeamBio('');
-  };
-
-  // Handlers for Save operations
-  const handleSaveArticle = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (artTitle && artContent) {
-      if (editingArticle) {
-        await updateArticle(editingArticle.id, {
-          title_fa: artTitle,
-          excerpt_fa: artExcerpt || artContent.slice(0, 150),
-          content_fa: artContent,
-          category_fa: artCategory,
-          author_name_fa: artAuthor,
-          author_title_fa: artAuthorTitle || undefined,
-          read_time_fa: artReadTime,
-          image_url: artImage || '',
-          audio_url: artAudioUrl || undefined,
-          audio_speaker_fa: artAudioSpeaker || undefined,
-        });
-        setEditingArticle(null);
-      } else {
-        await addArticle({
-          title_fa: artTitle,
-          slug: artTitle.toLowerCase().replace(/\s+/g, '-'),
-          excerpt_fa: artExcerpt || artContent.slice(0, 150),
-          content_fa: artContent,
-          category_fa: artCategory,
-          author_name_fa: artAuthor,
-          author_title_fa: artAuthorTitle || undefined,
-          author_avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80',
-          read_time_fa: artReadTime,
-          published_at: new Date().toLocaleDateString('fa-IR'),
-          image_url: artImage || '',
-          audio_url: artAudioUrl || undefined,
-          audio_speaker_fa: artAudioSpeaker || undefined,
-          featured: false,
-        });
-      }
-      setShowArticleModal(false);
-      resetForm();
     }
   };
 
@@ -376,7 +282,7 @@ export const AdminDashboardContent: React.FC = () => {
               ورود به پنل مدیریت دیتابیس
             </h2>
             <p className="text-xs text-[var(--text-secondary)]">
-              برای دسترسی کامل، کد عبور مدیریت را وارد نمایید.
+              برای دسترسی به بخش‌های مجاز، کد عبور مدیریت را وارد نمایید.
             </p>
           </div>
 
@@ -422,7 +328,7 @@ export const AdminDashboardContent: React.FC = () => {
         </div>
       )}
 
-      {/* STICKY TOP HEADER WITH GLOBAL SAVE BUTTON (TOP RIGHT) */}
+      {/* STICKY TOP HEADER WITH GLOBAL SAVE BUTTON */}
       <div className="bg-[var(--card-bg)] border-2 border-[#1B889A]/40 rounded-3xl p-4 sm:p-6 flex flex-col md:flex-row items-center justify-between gap-4 modern-card shadow-xl sticky top-20 z-40 backdrop-blur-md bg-opacity-95">
         
         <div className="flex items-center gap-3">
@@ -439,7 +345,7 @@ export const AdminDashboardContent: React.FC = () => {
               </span>
             </div>
             <p className="text-xs text-[#1B889A] font-bold mt-0.5 flex items-center gap-1.5">
-              <span>{isSuperAdmin ? 'کنترل کامل وب‌سایت و تایید پست‌ها' : `ورود با اکانت: ${currentUser?.name_fa}`}</span>
+              <span>{isSuperAdmin ? 'کنترل کامل وب‌سایت و سطح دسترسی‌ها' : `ورود با اکانت: ${currentUser?.name_fa}`}</span>
             </p>
           </div>
         </div>
@@ -447,7 +353,6 @@ export const AdminDashboardContent: React.FC = () => {
         {/* TOP RIGHT ACTIONS: SAVE & DISCARD & LOGOUT */}
         <div className="flex items-center gap-3 w-full md:w-auto justify-end">
           
-          {/* Unsaved Changes Indicator & SAVE BUTTON */}
           <div className="flex items-center gap-2">
             {hasUnsavedChanges && (
               <button
@@ -495,7 +400,7 @@ export const AdminDashboardContent: React.FC = () => {
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--card-border)] pb-4">
         <div className="flex flex-wrap items-center gap-2">
           
-          {/* Pending Approvals Queue Tab (with badge) */}
+          {/* Pending Approvals Queue Tab */}
           {(isSuperAdmin || userPerms.can_direct_publish) && (
             <button
               onClick={() => setActiveTab('pending')}
@@ -515,7 +420,7 @@ export const AdminDashboardContent: React.FC = () => {
             </button>
           )}
 
-          {/* Audit Logs & Devices Activity Tab */}
+          {/* Audit Logs Tab */}
           <button
             onClick={() => setActiveTab('audit_logs')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
@@ -526,12 +431,9 @@ export const AdminDashboardContent: React.FC = () => {
           >
             <History className="w-4 h-4 text-[#1B889A]" />
             <span>تاریخچه فعالیت‌ها & دیوایس‌ها</span>
-            <span className="px-1.5 py-0.5 rounded-md bg-[#1B889A]/15 text-[#1B889A] text-[10px]">
-              {auditLogs.length}
-            </span>
           </button>
 
-          {/* Standard Content Tabs */}
+          {/* Articles */}
           {userPerms.can_manage_articles && (
             <button
               onClick={() => setActiveTab('articles')}
@@ -544,6 +446,7 @@ export const AdminDashboardContent: React.FC = () => {
             </button>
           )}
 
+          {/* Magazines */}
           {userPerms.can_manage_magazines && (
             <button
               onClick={() => setActiveTab('magazines')}
@@ -556,6 +459,7 @@ export const AdminDashboardContent: React.FC = () => {
             </button>
           )}
 
+          {/* Videos */}
           {userPerms.can_manage_videos && (
             <button
               onClick={() => setActiveTab('videos')}
@@ -568,6 +472,7 @@ export const AdminDashboardContent: React.FC = () => {
             </button>
           )}
 
+          {/* Audios */}
           {userPerms.can_manage_audios && (
             <button
               onClick={() => setActiveTab('audios')}
@@ -580,6 +485,7 @@ export const AdminDashboardContent: React.FC = () => {
             </button>
           )}
 
+          {/* Team Members */}
           {userPerms.can_manage_team && (
             <button
               onClick={() => setActiveTab('team')}
@@ -592,6 +498,7 @@ export const AdminDashboardContent: React.FC = () => {
             </button>
           )}
 
+          {/* Messages */}
           {userPerms.can_manage_messages && (
             <button
               onClick={() => setActiveTab('messages')}
@@ -604,6 +511,33 @@ export const AdminDashboardContent: React.FC = () => {
             </button>
           )}
 
+          {/* EDIT ABOUT US - STRICTLY CONTROLLED PERMISSION */}
+          {(isSuperAdmin || userPerms.can_manage_about) && (
+            <button
+              onClick={() => setActiveTab('about')}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+                activeTab === 'about' ? 'bg-[#1B889A] text-white shadow-md' : 'bg-[var(--card-bg)] text-[var(--text-secondary)] border border-[var(--card-border)]'
+              }`}
+            >
+              <Info className="w-4 h-4" />
+              <span>ویرایش «درباره ما»</span>
+            </button>
+          )}
+
+          {/* VIEW STORAGE STATS - STRICTLY CONTROLLED PERMISSION */}
+          {(isSuperAdmin || userPerms.can_view_storage) && (
+            <button
+              onClick={() => setActiveTab('storage')}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+                activeTab === 'storage' ? 'bg-[#1B889A] text-white shadow-md' : 'bg-[var(--card-bg)] text-[var(--text-secondary)] border border-[var(--card-border)]'
+              }`}
+            >
+              <HardDrive className="w-4 h-4" />
+              <span>فضای دیتابیس</span>
+            </button>
+          )}
+
+          {/* CO-HOSTS MANAGEMENT - ONLY SUPER ADMIN */}
           {isSuperAdmin && (
             <button
               onClick={() => setActiveTab('cohosts')}
@@ -618,7 +552,52 @@ export const AdminDashboardContent: React.FC = () => {
         </div>
       </div>
 
-      {/* 1. AUDIT LOGS & DEVICES ACTIVITY TAB CONTENT */}
+      {/* ABOUT US EDIT TAB CONTENT */}
+      {activeTab === 'about' && (isSuperAdmin || userPerms.can_manage_about) && (
+        <div className="space-y-6">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] p-6 rounded-3xl space-y-4">
+            <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
+              <Info className="w-5 h-5 text-[#1B889A]" />
+              <span>ویرایش بیانیه و ماموریت «درباره ما»</span>
+            </h2>
+            <form onSubmit={handleSaveAboutUs} className="space-y-4">
+              <textarea
+                rows={5}
+                value={aboutInputText}
+                onChange={(e) => setAboutInputText(e.target.value)}
+                className="w-full p-4 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-2xl text-sm text-[var(--text-primary)] leading-relaxed focus:outline-none focus:border-[#1B889A]"
+              ></textarea>
+              <button
+                type="submit"
+                className="px-5 py-2.5 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs"
+              >
+                ذخیره بیانیه در پیش‌نویس
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* STORAGE STATS TAB CONTENT */}
+      {activeTab === 'storage' && (isSuperAdmin || userPerms.can_view_storage) && (
+        <div className="bg-[var(--card-bg)] border border-[var(--card-border)] p-6 rounded-3xl space-y-4">
+          <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
+            <HardDrive className="w-5 h-5 text-[#1B889A]" />
+            <span>آمار مصرفی فضای دیتابیس و حافظه</span>
+          </h2>
+          <div className="p-4 bg-[var(--bg-color)] rounded-2xl border border-[var(--card-border)] space-y-2 text-xs">
+            <div className="flex justify-between">
+              <span>حجم دیتابیس فعلی:</span>
+              <span className="font-bold font-mono text-[#1B889A]">{(storageUsedBytes / 1024).toFixed(1)} KB</span>
+            </div>
+            <div className="w-full h-2 rounded-full bg-slate-700 overflow-hidden">
+              <div className="h-full bg-[#1B889A]" style={{ width: `${Math.max(storagePercentage, 2)}%` }}></div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* AUDIT LOGS TAB CONTENT */}
       {activeTab === 'audit_logs' && (
         <div className="space-y-6">
           <div className="flex items-center justify-between bg-[var(--card-bg)] border border-[var(--card-border)] p-6 rounded-3xl modern-card">
@@ -628,7 +607,7 @@ export const AdminDashboardContent: React.FC = () => {
                 <span>تاریخچه فعالیت‌ها، تغییرات و دستگاه‌های استفاده‌شده</span>
               </h2>
               <p className="text-xs text-[var(--text-secondary)] mt-1">
-                در این بخش تمامی اقدامات انجام شده توسط مدیر ارشد و دستیاران به همراه ساعت دقیق و دیوایس مربوطه ثبت و قرار می‌گیرد.
+                در این بخش تمامی اقدامات انجام شده توسط مدیر ارشد و دستیاران به همراه ساعت دقیق و دیوایس مربوطه ثبت می‌گردد.
               </p>
             </div>
           </div>
@@ -661,7 +640,6 @@ export const AdminDashboardContent: React.FC = () => {
                   )}
                 </div>
 
-                {/* Device & Timestamp Info */}
                 <div className="flex flex-col items-end gap-1 shrink-0 text-left dir-ltr">
                   <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-[#1B889A] bg-[#1B889A]/10 px-2.5 py-1 rounded-xl">
                     <Smartphone className="w-3.5 h-3.5" />
@@ -677,7 +655,7 @@ export const AdminDashboardContent: React.FC = () => {
         </div>
       )}
 
-      {/* 2. PENDING APPROVALS QUEUE TAB CONTENT */}
+      {/* PENDING APPROVALS QUEUE */}
       {activeTab === 'pending' && (
         <div className="space-y-6">
           <div className="bg-amber-500/10 border border-amber-500/30 p-6 rounded-3xl space-y-2">
@@ -685,14 +663,11 @@ export const AdminDashboardContent: React.FC = () => {
               <AlertCircle className="w-5 h-5 text-amber-400" />
               <span>پست‌ها و ویرایش‌های در انتظار تایید مدیر ارشد (NAZIF YOSUF)</span>
             </h2>
-            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-              پست‌هایی که همکاران بدون مجوز انتشار مستقیم اضافه کرده‌اند در این بخش مانده‌اند تا توسط مدیر ارشد بررسی و تایید گردند.
-            </p>
           </div>
 
           {totalPendingCount === 0 ? (
             <div className="p-12 text-center text-xs text-[var(--text-secondary)] bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl">
-              هیچ پستی در انتظار تایید وجود ندارد. همه محتواها بررسی شده‌اند.
+              هیچ پستی در انتظار تایید وجود ندارد.
             </div>
           ) : (
             <div className="space-y-4">
@@ -726,17 +701,17 @@ export const AdminDashboardContent: React.FC = () => {
         </div>
       )}
 
-      {/* 3. CO-HOST MANAGEMENT TAB CONTENT */}
+      {/* CO-HOST MANAGEMENT TAB */}
       {activeTab === 'cohosts' && isSuperAdmin && (
         <div className="space-y-6">
           <div className="flex items-center justify-between bg-[var(--card-bg)] border border-[var(--card-border)] p-6 rounded-3xl modern-card">
             <div>
               <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
                 <KeyRound className="w-5 h-5 text-[#1B889A]" />
-                <span>مدیریت همکاران، پسوردها و تعیین سطوح دسترسی (Co-Hosts)</span>
+                <span>مدیریت همکاران، پسوردها و تعیین دقیق سطوح دسترسی (Co-Hosts)</span>
               </h2>
               <p className="text-xs text-[var(--text-secondary)] mt-1">
-                تعیین کد عبور برای دستیاران و اعطای مجوز انتشار مستقیم یا تایید ادمین ارشد.
+                کنترل کامل دسترسی همکاران به مقالات، درباره ما، فضای دیتابیس و مجوز انتشار مستقیم.
               </p>
             </div>
 
@@ -749,7 +724,6 @@ export const AdminDashboardContent: React.FC = () => {
             </button>
           </div>
 
-          {/* Co-Hosts Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {coHosts.map((ch) => (
               <div key={ch.id} className="p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] space-y-4 hover:border-[#1B889A] transition-all">
@@ -793,9 +767,15 @@ export const AdminDashboardContent: React.FC = () => {
                     <span className="font-bold text-[#1B889A] bg-[#1B889A]/10 px-2 py-0.5 rounded-md">{ch.password_code}</span>
                   </div>
                   <div className="flex items-center justify-between text-[var(--text-secondary)]">
-                    <span>مجوز انتشار مستقیم:</span>
-                    <span className={`font-bold ${ch.permissions.can_direct_publish ? 'text-emerald-400' : 'text-amber-400'}`}>
-                      {ch.permissions.can_direct_publish ? 'دارد (بدون تایید)' : 'ندارد (نیازمند تایید Nazif Yosuf)'}
+                    <span>ویرایش درباره ما:</span>
+                    <span className={`font-bold ${ch.permissions.can_manage_about ? 'text-emerald-400' : 'text-red-400'}`}>
+                      {ch.permissions.can_manage_about ? 'مجاز' : 'غیرمجاز'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-[var(--text-secondary)]">
+                    <span>مشاهده فضای دیتابیس:</span>
+                    <span className={`font-bold ${ch.permissions.can_view_storage ? 'text-emerald-400' : 'text-red-400'}`}>
+                      {ch.permissions.can_view_storage ? 'مجاز' : 'غیرمجاز'}
                     </span>
                   </div>
                 </div>
@@ -805,7 +785,7 @@ export const AdminDashboardContent: React.FC = () => {
         </div>
       )}
 
-      {/* CO-HOST EDIT/ADD MODAL */}
+      {/* CO-HOST MODAL WITH ALL PERMISSION TOGGLES */}
       {showCoHostModal && (
         <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 max-w-lg w-full space-y-5 modern-card shadow-2xl">
@@ -844,31 +824,61 @@ export const AdminDashboardContent: React.FC = () => {
                 />
               </div>
 
-              <div>
-                <label className="block font-bold text-[var(--text-primary)] mb-1">عنوان و نقش همکار:</label>
-                <input
-                  type="text"
-                  value={coHostRole}
-                  onChange={(e) => setCoHostRole(e.target.value)}
-                  placeholder="ویرایشگر مقالات"
-                  className="w-full px-3.5 py-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-[var(--text-primary)]"
-                />
-              </div>
+              {/* GRANULAR PERMISSIONS */}
+              <div className="space-y-2 pt-2 border-t border-[var(--card-border)]">
+                <span className="block font-bold text-[#1B889A] mb-1">تعیین سطوح دسترسی همکار:</span>
 
-              {/* PERMISSION TOGGLE FOR DIRECT PUBLISH WITHOUT APPROVAL */}
-              <div className="p-3.5 rounded-2xl bg-[#1B889A]/10 border border-[#1B889A]/30 space-y-2">
                 <label className="flex items-center gap-2 cursor-pointer font-bold text-[var(--text-primary)]">
                   <input
                     type="checkbox"
-                    checked={permDirectPublish}
-                    onChange={(e) => setPermDirectPublish(e.target.checked)}
+                    checked={permArticles}
+                    onChange={(e) => setPermArticles(e.target.checked)}
                     className="w-4 h-4 accent-[#1B889A] rounded"
                   />
-                  <span>مجوز انتشار مستقیم بدون نیاز به تایید مدیر ارشد (NAZIF YOSUF)</span>
+                  <span>دسترسی به بخش مقالات</span>
                 </label>
-                <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed pr-6">
-                  اگر این گزینه خاموش باشد، ویرایش‌ها و پست‌های این همکار به بخش "در انتظار تایید" رفته و بدون تایید مدیر ارشد روی سایت منتشر نمی‌شود.
-                </p>
+
+                <label className="flex items-center gap-2 cursor-pointer font-bold text-[var(--text-primary)]">
+                  <input
+                    type="checkbox"
+                    checked={permMagazines}
+                    onChange={(e) => setPermMagazines(e.target.checked)}
+                    className="w-4 h-4 accent-[#1B889A] rounded"
+                  />
+                  <span>دسترسی به بخش مجله‌ها</span>
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer font-bold text-[var(--text-primary)]">
+                  <input
+                    type="checkbox"
+                    checked={permManageAbout}
+                    onChange={(e) => setPermManageAbout(e.target.checked)}
+                    className="w-4 h-4 accent-[#1B889A] rounded"
+                  />
+                  <span>دسترسی به ویرایش بخش «درباره ما»</span>
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer font-bold text-[var(--text-primary)]">
+                  <input
+                    type="checkbox"
+                    checked={permViewStorage}
+                    onChange={(e) => setPermViewStorage(e.target.checked)}
+                    className="w-4 h-4 accent-[#1B889A] rounded"
+                  />
+                  <span>دسترسی به مشاهده «فضای دیتابیس & آمار»</span>
+                </label>
+
+                <div className="p-3 rounded-xl bg-[#1B889A]/10 border border-[#1B889A]/30 mt-2">
+                  <label className="flex items-center gap-2 cursor-pointer font-bold text-[var(--text-primary)]">
+                    <input
+                      type="checkbox"
+                      checked={permDirectPublish}
+                      onChange={(e) => setPermDirectPublish(e.target.checked)}
+                      className="w-4 h-4 accent-[#1B889A] rounded"
+                    />
+                    <span>مجوز انتشار مستقیم بدون نیاز به تایید NAZIF YOSUF</span>
+                  </label>
+                </div>
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-3 border-t border-[var(--card-border)]">
@@ -917,27 +927,6 @@ export const AdminDashboardContent: React.FC = () => {
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* MAGAZINES TAB */}
-      {activeTab === 'magazines' && userPerms.can_manage_magazines && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-[var(--text-primary)] font-serif-persian">مدیریت مجله‌ها</h2>
-          </div>
-          <div className="grid grid-cols-1 gap-3">
-            {magazineIssues.map(iss => (
-              <div key={iss.id} className="p-4 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] flex items-center justify-between">
-                <div>
-                  <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">{iss.title_fa} (شماره {iss.issue_number})</h4>
-                </div>
-                <button onClick={() => deleteMagazineIssue(iss.id)} className="p-2 rounded-lg text-red-400 hover:bg-red-500/10">
-                  <Trash2 className="w-4 h-4" />
-                </button>
               </div>
             ))}
           </div>

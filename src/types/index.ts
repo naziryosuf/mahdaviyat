@@ -135,7 +135,9 @@ export interface CoHostPermissions {
   can_manage_team: boolean;
   can_manage_messages: boolean;
   can_manage_cohosts: boolean;
-  can_direct_publish: boolean; // Direct publish permission without Super Admin approval requirement
+  can_direct_publish: boolean;
+  can_manage_about?: boolean; // Access to edit "About Us" section
+  can_view_storage?: boolean; // Access to view "Database Storage Space & Stats"
 }
 
 export interface CoHostUser {
@@ -154,7 +156,7 @@ export interface AuditLogItem {
   user_role: string;
   action_type: 'افزودن' | 'ویرایش' | 'حذف' | 'تایید و انتشار' | 'رد درخواست';
   target_title: string;
-  item_type: 'مقاله' | 'مجله' | 'ویدیو' | 'صوتی' | 'عضو تیم' | 'همکار';
+  item_type: 'مقاله' | 'مجله' | 'ویدیو' | 'صوتی' | 'عضو تیم' | 'همکار' | 'درباره ما';
   timestamp: string;
   time_only: string;
   device_info: string;
