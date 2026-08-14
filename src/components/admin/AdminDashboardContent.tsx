@@ -36,6 +36,7 @@ import {
 } from 'lucide-react';
 import { calculateReadingTimeFa } from '@/utils/readingTime';
 import { compressImageFile } from '@/utils/imageCompressor';
+import { uploadMagazineFile } from '@/utils/storageUpload';
 import { Article, MagazineIssue, VideoItem, AudioItem, TeamMember, ContactMessage, CoHostUser } from '@/types';
 
 const parseTagsInput = (str: string): string[] => {
@@ -314,14 +315,21 @@ export const AdminDashboardContent: React.FC = () => {
   const [magAuthorTitle, setMagAuthorTitle] = useState('سردبیر ارشد');
   const [magTags, setMagTags] = useState('#نشریه_کامل, #شماره_یک');
 
+  // Binary File objects for Storage Upload
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [isSavingMagazine, setIsSavingMagazine] = useState(false);
+  const [uploadStatusMsg, setUploadStatusMsg] = useState('');
+
   const handleCoverFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setCoverFile(file);
       try {
         const compressed = await compressImageFile(file);
         setMagCoverImage(compressed);
       } catch (err) {
-        console.error('Error compressing image:', err);
+        console.error('Error creating image preview:', err);
       }
     }
   };
@@ -329,13 +337,8 @@ export const AdminDashboardContent: React.FC = () => {
   const handlePdfFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setMagPdfUrl(event.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
+      setPdfFile(file);
+      setMagPdfUrl(`فایل انتخاب شد: ${file.name}`);
     }
   };
 
@@ -351,6 +354,9 @@ export const AdminDashboardContent: React.FC = () => {
     setMagAuthorName(currentUser?.name_fa || 'M. Nazir Yosufi');
     setMagAuthorTitle(currentUser?.role_fa || 'سردبیر ارشد');
     setMagTags('#نشریه_کامل, #شماره_یک');
+    setCoverFile(null);
+    setPdfFile(null);
+    setUploadStatusMsg('');
     setShowMagModal(true);
   };
 
@@ -366,6 +372,9 @@ export const AdminDashboardContent: React.FC = () => {
     setMagAuthorName(mag.author_name_fa || 'M. Nazir Yosufi');
     setMagAuthorTitle(mag.author_title_fa || 'سردبیر ارشد');
     setMagTags(mag.tags ? mag.tags.join(', ') : '#نشریه_کامل, #شماره_یک');
+    setCoverFile(null);
+    setPdfFile(null);
+    setUploadStatusMsg('');
     setShowMagModal(true);
   };
 
@@ -373,38 +382,68 @@ export const AdminDashboardContent: React.FC = () => {
     e.preventDefault();
     if (!magTitle.trim()) return;
 
-    const parsedTags = parseTagsInput(magTags);
+    setIsSavingMagazine(true);
+    setUploadStatusMsg('در حال آماده‌سازی و آپلود فایل‌ها به حافظه ابری Supabase...');
 
-    if (editingMag) {
-      updateMagazineIssue(editingMag.id, {
-        issue_number: magNumber,
-        title_fa: magTitle,
-        description_fa: magDesc,
-        publish_date_fa: magPublishDate,
-        cover_image: magCoverImage,
-        cover_position: magCoverPosition,
-        pdf_url: magPdfUrl,
-        author_name_fa: magAuthorName,
-        author_title_fa: magAuthorTitle,
-        tags: parsedTags,
-      });
-    } else {
-      await addMagazineIssue({
-        issue_number: magNumber,
-        title_fa: magTitle,
-        description_fa: magDesc,
-        publish_date_fa: magPublishDate,
-        cover_image: magCoverImage,
-        cover_position: magCoverPosition,
-        pdf_url: magPdfUrl,
-        author_name_fa: magAuthorName,
-        author_title_fa: magAuthorTitle,
-        tags: parsedTags,
-        pages: [],
-        featured: true,
-      });
+    try {
+      let finalCoverUrl = magCoverImage;
+      let finalPdfUrl = magPdfUrl;
+
+      // 1. Upload binary Cover Image to Supabase Storage bucket 'magazines'
+      if (coverFile) {
+        setUploadStatusMsg('در حال آپلود تصویر کاور به حافظه ابری...');
+        finalCoverUrl = await uploadMagazineFile(coverFile, 'covers');
+      }
+
+      // 2. Upload binary PDF File to Supabase Storage bucket 'magazines'
+      if (pdfFile) {
+        setUploadStatusMsg('در حال آپلود فایل PDF به حافظه ابری...');
+        finalPdfUrl = await uploadMagazineFile(pdfFile, 'pdfs');
+      }
+
+      setUploadStatusMsg('در حال ثبت اطلاعات شماره مجله در دیتابیس...');
+      const parsedTags = parseTagsInput(magTags);
+
+      if (editingMag) {
+        await updateMagazineIssue(editingMag.id, {
+          issue_number: magNumber,
+          title_fa: magTitle,
+          description_fa: magDesc,
+          publish_date_fa: magPublishDate,
+          cover_image: finalCoverUrl,
+          cover_position: magCoverPosition,
+          pdf_url: finalPdfUrl,
+          author_name_fa: magAuthorName,
+          author_title_fa: magAuthorTitle,
+          tags: parsedTags,
+        });
+      } else {
+        await addMagazineIssue({
+          issue_number: magNumber,
+          title_fa: magTitle,
+          description_fa: magDesc,
+          publish_date_fa: magPublishDate,
+          cover_image: finalCoverUrl,
+          cover_position: magCoverPosition,
+          pdf_url: finalPdfUrl,
+          author_name_fa: magAuthorName,
+          author_title_fa: magAuthorTitle,
+          tags: parsedTags,
+          pages: [],
+          featured: true,
+        });
+      }
+
+      setShowMagModal(false);
+      setCoverFile(null);
+      setPdfFile(null);
+    } catch (err: any) {
+      console.error('Error saving magazine issue:', err);
+      alert(`خطا در ذخیره‌سازی مجله: ${err?.message || 'مشکلی رخ داد'}`);
+    } finally {
+      setIsSavingMagazine(false);
+      setUploadStatusMsg('');
     }
-    setShowMagModal(false);
   };
 
   // Video Modal State
@@ -1414,9 +1453,30 @@ export const AdminDashboardContent: React.FC = () => {
                 />
               </div>
 
+              {uploadStatusMsg && (
+                <div className="p-3 rounded-xl bg-[#1B889A]/15 border border-[#1B889A]/40 text-[#1B889A] text-xs font-bold flex items-center gap-2 animate-pulse">
+                  <div className="w-4 h-4 border-2 border-[#1B889A] border-t-transparent rounded-full animate-spin shrink-0" />
+                  <span>{uploadStatusMsg}</span>
+                </div>
+              )}
+
               <div className="flex justify-end gap-2 pt-3 border-t border-[var(--card-border)]">
-                <button type="button" onClick={() => setShowMagModal(false)} className="px-4 py-2 rounded-xl border border-[var(--card-border)] text-[var(--text-secondary)] font-bold">انصراف</button>
-                <button type="submit" className="px-5 py-2 rounded-xl bg-[#1B889A] text-white font-bold hover:bg-[#156d7b] shadow-md">ثبت شماره مجله در دیتابیس</button>
+                <button
+                  type="button"
+                  disabled={isSavingMagazine}
+                  onClick={() => setShowMagModal(false)}
+                  className="px-4 py-2 rounded-xl border border-[var(--card-border)] text-[var(--text-secondary)] font-bold disabled:opacity-50"
+                >
+                  انصراف
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSavingMagazine}
+                  className="px-5 py-2 rounded-xl bg-[#1B889A] text-white font-bold hover:bg-[#156d7b] shadow-md disabled:opacity-50 flex items-center gap-2"
+                >
+                  {isSavingMagazine && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+                  <span>{isSavingMagazine ? 'در حال آپلود و ثبت...' : 'ثبت شماره مجله در دیتابیس'}</span>
+                </button>
               </div>
             </form>
           </div>

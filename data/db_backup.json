@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-14T10:59:07.374Z",
+  "timestamp": "2026-08-14T11:26:01.761Z",
   "articles": [],
   "magazineIssues": [
     {
@@ -106,6 +106,19 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "log-1786705271783",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۰۱",
+      "time_only": "۱۳:۰۱",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
     {
       "id": "log-1786704965347",
       "user_name": "M. Nazir Yosuf",

@@ -664,7 +664,7 @@ export const useStore = create<AppState>((set, get) => ({
     );
   },
 
-  updateMagazineIssue: (id, issueData) => {
+  updateMagazineIssue: async (id, issueData) => {
     const currentUser = get().currentUser;
     const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
     const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
@@ -688,9 +688,18 @@ export const useStore = create<AppState>((set, get) => ({
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+
     if (updatedMag) {
-      supabase.from('magazine_issues').upsert(updatedMag).then(() => {});
+      try {
+        const { error } = await supabase.from('magazine_issues').upsert(updatedMag);
+        if (error) {
+          console.error('Supabase updateMagazineIssue error:', error.message, error.details);
+        }
+      } catch (e) {
+        console.error('Supabase updateMagazineIssue exception:', e);
+      }
     }
+
     const target = get().magazineIssues.find(m => m.id === id);
     if (target) {
       get().addAuditLog('ویرایش', target.title_fa, 'مجله');
