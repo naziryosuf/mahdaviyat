@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-14T11:58:42.530Z",
+  "timestamp": "2026-08-14T12:05:19.574Z",
   "articles": [],
   "magazineIssues": [
     {
@@ -298,6 +298,71 @@
       "created_at": "2026-08-13T21:20:04.494466+00:00"
     },
     {
+      "id": "log-1786708134233",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "پادکست شماره ۱: پادکست، رهبر سلیم",
+      "item_type": "صوتی",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۴۸",
+      "time_only": "۱۳:۴۸",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786708132873",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "پادکست شماره ۲: نسخه صوتی وبینار وحدت امت و اخوت اسلامی",
+      "item_type": "صوتی",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۴۸",
+      "time_only": "۱۳:۴۸",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786708132329",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "درس‌گفتار صوتی ۱: تبیین اصول رهبریت در اسلام",
+      "item_type": "صوتی",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۴۸",
+      "time_only": "۱۳:۴۸",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786708130153",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "نشست تصویری ویژه: ایدئولوژی مهدویت و پاسخ به پرسش‌های شناختی",
+      "item_type": "ویدیو",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۴۸",
+      "time_only": "۱۳:۴۸",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786708128809",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "درس‌گفتار تصویری: نقد اومانیسم و فلسفه‌های مادی",
+      "item_type": "ویدیو",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۴۸",
+      "time_only": "۱۳:۴۸",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
       "id": "log-1786708128257",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
@@ -376,97 +441,6 @@
       "created_at": null
     },
     {
-      "id": "log-1786708134233",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "حذف",
-      "target_title": "پادکست شماره ۱: پادکست، رهبر سلیم",
-      "item_type": "صوتی",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۴۸",
-      "time_only": "۱۳:۴۸",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
-    {
-      "id": "log-1786708132873",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "حذف",
-      "target_title": "پادکست شماره ۲: نسخه صوتی وبینار وحدت امت و اخوت اسلامی",
-      "item_type": "صوتی",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۴۸",
-      "time_only": "۱۳:۴۸",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
-    {
-      "id": "log-1786708132329",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "حذف",
-      "target_title": "درس‌گفتار صوتی ۱: تبیین اصول رهبریت در اسلام",
-      "item_type": "صوتی",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۴۸",
-      "time_only": "۱۳:۴۸",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
-    {
-      "id": "log-1786708130153",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "حذف",
-      "target_title": "نشست تصویری ویژه: ایدئولوژی مهدویت و پاسخ به پرسش‌های شناختی",
-      "item_type": "ویدیو",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۴۸",
-      "time_only": "۱۳:۴۸",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
-    {
-      "id": "log-1786708128809",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "حذف",
-      "target_title": "درس‌گفتار تصویری: نقد اومانیسم و فلسفه‌های مادی",
-      "item_type": "ویدیو",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۴۸",
-      "time_only": "۱۳:۴۸",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
-    {
-      "id": "log-1786708601552",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "ویرایش",
-      "target_title": " شماره دوم مجلۀ دیجیتالی ایدئولوژی مهدویت",
-      "item_type": "مجله",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۵۶",
-      "time_only": "۱۳:۵۶",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
-    {
-      "id": "log-1786708567953",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "ویرایش",
-      "target_title": " شماره دوم مجلۀ دیجیتالی ایدئولوژی مهدویت",
-      "item_type": "مجله",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۵۶",
-      "time_only": "۱۳:۵۶",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
-    {
       "id": "log-1786708439718",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
@@ -504,6 +478,32 @@
       "device_info": "Windows Desktop (Edge)",
       "status_note": null,
       "created_at": null
+    },
+    {
+      "id": "log-1786708528021",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۵۵",
+      "time_only": "۱۳:۵۵",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-14T11:55:25.036505+00:00"
+    },
+    {
+      "id": "log-1786656006092",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "تبیین مفاهیم بنیادین معرفت‌شناختی در عصر غیبت",
+      "item_type": "مقاله",
+      "timestamp": "۱۴۰۵/۵/۲۲ - ۲۳:۲۰",
+      "time_only": "۲۳:۲۰",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-13T21:20:03.894183+00:00"
     },
     {
       "id": "log-1786707356253",
@@ -545,19 +545,6 @@
       "created_at": null
     },
     {
-      "id": "log-1786708528021",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "ویرایش",
-      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
-      "item_type": "مجله",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۵۵",
-      "time_only": "۱۳:۵۵",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": "2026-08-14T11:55:25.036505+00:00"
-    },
-    {
       "id": "log-1786707427028",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
@@ -571,17 +558,30 @@
       "created_at": null
     },
     {
-      "id": "log-1786656006092",
+      "id": "log-1786708601552",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "حذف",
-      "target_title": "تبیین مفاهیم بنیادین معرفت‌شناختی در عصر غیبت",
-      "item_type": "مقاله",
-      "timestamp": "۱۴۰۵/۵/۲۲ - ۲۳:۲۰",
-      "time_only": "۲۳:۲۰",
+      "action_type": "ویرایش",
+      "target_title": " شماره دوم مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۵۶",
+      "time_only": "۱۳:۵۶",
       "device_info": "Windows Desktop (Edge)",
       "status_note": null,
-      "created_at": "2026-08-13T21:20:03.894183+00:00"
+      "created_at": null
+    },
+    {
+      "id": "log-1786708567953",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": " شماره دوم مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۵۶",
+      "time_only": "۱۳:۵۶",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
     }
   ],
   "contactMessages": []

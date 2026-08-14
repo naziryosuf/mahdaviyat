@@ -682,6 +682,7 @@ export const useStore = create<AppState>((set, get) => ({
     if (newIssue.cover_position) dbPayload.cover_position = newIssue.cover_position;
     if (newIssue.author_name_fa) dbPayload.author_name_fa = newIssue.author_name_fa;
     if (newIssue.author_title_fa) dbPayload.author_title_fa = newIssue.author_title_fa;
+    if (newIssue.page_count_fa) dbPayload.page_count_fa = newIssue.page_count_fa;
 
     try {
       let { error } = await supabase.from('magazine_issues').upsert(dbPayload);
@@ -689,6 +690,7 @@ export const useStore = create<AppState>((set, get) => ({
         delete dbPayload.author_name_fa;
         delete dbPayload.author_title_fa;
         delete dbPayload.cover_position;
+        delete dbPayload.page_count_fa;
         const retryRes = await supabase.from('magazine_issues').upsert(dbPayload);
         error = retryRes.error;
       }
@@ -756,6 +758,7 @@ export const useStore = create<AppState>((set, get) => ({
       if ((updatedMag as MagazineIssue).cover_position) dbPayload.cover_position = (updatedMag as MagazineIssue).cover_position;
       if ((updatedMag as MagazineIssue).author_name_fa) dbPayload.author_name_fa = (updatedMag as MagazineIssue).author_name_fa;
       if ((updatedMag as MagazineIssue).author_title_fa) dbPayload.author_title_fa = (updatedMag as MagazineIssue).author_title_fa;
+      if ((updatedMag as MagazineIssue).page_count_fa) dbPayload.page_count_fa = (updatedMag as MagazineIssue).page_count_fa;
 
       try {
         let { error } = await supabase.from('magazine_issues').upsert(dbPayload);
@@ -763,6 +766,7 @@ export const useStore = create<AppState>((set, get) => ({
           delete dbPayload.author_name_fa;
           delete dbPayload.author_title_fa;
           delete dbPayload.cover_position;
+          delete dbPayload.page_count_fa;
           const retryRes = await supabase.from('magazine_issues').upsert(dbPayload);
           error = retryRes.error;
         }
@@ -1069,14 +1073,19 @@ export const useStore = create<AppState>((set, get) => ({
       const { data: supaMagazines, error: magErr } = await supabase.from('magazine_issues').select('*').order('issue_number', { ascending: true });
       if (!magErr && supaMagazines && supaMagazines.length > 0) {
         const stopWords = ['در', 'به', 'از', 'با', 'و', 'یا', 'بر', 'که', 'را', 'ان', 'این'];
-        const sanitizedMags = supaMagazines.map((mag: MagazineIssue) => ({
-          ...mag,
-          cover_image: mag.cover_image && mag.cover_image.trim() !== '' ? mag.cover_image : 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80',
-          pdf_url: mag.pdf_url && mag.pdf_url.trim() !== '' ? mag.pdf_url : '/downloads/mahdism_issue_1.pdf',
-          tags: Array.isArray(mag.tags) 
-            ? mag.tags.map((t: string) => String(t).trim().replace(/^#/, '')).filter((t: string) => t.length > 1 && !stopWords.includes(t)).map((t: string) => `#${t}`)
-            : ['#شماره_نخست', '#ایدئولوژی_مهدویت']
-        }));
+        const sanitizedMags = supaMagazines.map((mag: MagazineIssue) => {
+          const isBadCover = !mag.cover_image || mag.cover_image.startsWith('file://') || mag.cover_image.trim() === '';
+          const isBadPdf = !mag.pdf_url || mag.pdf_url.startsWith('file://') || mag.pdf_url.includes('فایل انتخاب شد') || mag.pdf_url.trim() === '';
+
+          return {
+            ...mag,
+            cover_image: isBadCover ? 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80' : mag.cover_image,
+            pdf_url: isBadPdf ? '/downloads/mahdism_issue_1.pdf' : mag.pdf_url,
+            tags: Array.isArray(mag.tags) 
+              ? mag.tags.map((t: string) => String(t).trim().replace(/^#/, '')).filter((t: string) => t.length > 1 && !stopWords.includes(t)).map((t: string) => `#${t}`)
+              : ['#شماره_نخست', '#ایدئولوژی_مهدویت']
+          };
+        });
         set({ magazineIssues: sanitizedMags });
       }
 
