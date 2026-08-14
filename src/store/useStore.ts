@@ -635,27 +635,72 @@ export const useStore = create<AppState>((set, get) => ({
     const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
     const initialStatus = canDirect ? 'published' : 'pending_approval';
 
+    let cover = issueData.cover_image && !issueData.cover_image.startsWith('file://') && issueData.cover_image.trim() !== ''
+      ? issueData.cover_image
+      : 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80';
+
+    let pdf = issueData.pdf_url && !issueData.pdf_url.startsWith('file://') && issueData.pdf_url.trim() !== ''
+      ? issueData.pdf_url
+      : '/downloads/mahdism_issue_1.pdf';
+
     const newIssue: MagazineIssue = {
       ...issueData,
       id: `mag-${Date.now()}`,
-      cover_image: issueData.cover_image && issueData.cover_image.trim() !== '' ? issueData.cover_image : 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80',
-      pdf_url: issueData.pdf_url && issueData.pdf_url.trim() !== '' ? issueData.pdf_url : '/downloads/mahdism_issue_1.pdf',
+      cover_image: cover,
+      pdf_url: pdf,
       download_count: 0,
       status: initialStatus,
       submitted_by_name: currentUser?.name_fa || 'M. Nazir Yosuf',
       submitted_at: new Date().toLocaleDateString('fa-IR'),
       submitted_device: getDeviceDetails(),
     };
+
     set((state) => ({ 
       magazineIssues: [newIssue, ...state.magazineIssues],
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+
+    const dbPayload: Record<string, any> = {
+      id: newIssue.id,
+      issue_number: newIssue.issue_number,
+      title_fa: newIssue.title_fa,
+      description_fa: newIssue.description_fa,
+      publish_date_fa: newIssue.publish_date_fa,
+      cover_image: newIssue.cover_image,
+      pdf_url: newIssue.pdf_url,
+      download_count: newIssue.download_count,
+      featured: newIssue.featured,
+      status: newIssue.status,
+      submitted_by_name: newIssue.submitted_by_name,
+      submitted_at: newIssue.submitted_at,
+      submitted_device: newIssue.submitted_device,
+      tags: newIssue.tags,
+      pages: newIssue.pages
+    };
+
+    if (newIssue.cover_position) dbPayload.cover_position = newIssue.cover_position;
+    if (newIssue.author_name_fa) dbPayload.author_name_fa = newIssue.author_name_fa;
+    if (newIssue.author_title_fa) dbPayload.author_title_fa = newIssue.author_title_fa;
+
     try {
-      await supabase.from('magazine_issues').upsert(newIssue);
-    } catch (e) {
-      console.error('Supabase addMagazineIssue error:', e);
+      let { error } = await supabase.from('magazine_issues').upsert(dbPayload);
+      if (error && error.code === 'PGRST204') {
+        delete dbPayload.author_name_fa;
+        delete dbPayload.author_title_fa;
+        delete dbPayload.cover_position;
+        const retryRes = await supabase.from('magazine_issues').upsert(dbPayload);
+        error = retryRes.error;
+      }
+      if (error) {
+        console.error('Supabase addMagazineIssue error:', error.message);
+        throw new Error(`خطای دیتابیس Supabase: ${error.message}`);
+      }
+    } catch (e: any) {
+      console.error('Supabase addMagazineIssue exception:', e);
+      throw e;
     }
+
     get().addAuditLog(
       'افزودن', 
       newIssue.title_fa, 
@@ -677,8 +722,8 @@ export const useStore = create<AppState>((set, get) => ({
           updatedMag = { 
             ...iss, 
             ...issueData,
-            cover_image: issueData.cover_image && issueData.cover_image.trim() !== '' ? issueData.cover_image : (iss.cover_image || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80'),
-            pdf_url: issueData.pdf_url && issueData.pdf_url.trim() !== '' ? issueData.pdf_url : (iss.pdf_url || '/downloads/mahdism_issue_1.pdf'),
+            cover_image: issueData.cover_image && !issueData.cover_image.startsWith('file://') && issueData.cover_image.trim() !== '' ? issueData.cover_image : (iss.cover_image || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80'),
+            pdf_url: issueData.pdf_url && !issueData.pdf_url.startsWith('file://') && issueData.pdf_url.trim() !== '' ? issueData.pdf_url : (iss.pdf_url || '/downloads/mahdism_issue_1.pdf'),
             status: nextStatus
           };
           return updatedMag;
@@ -690,13 +735,44 @@ export const useStore = create<AppState>((set, get) => ({
     }));
 
     if (updatedMag) {
+      const dbPayload: Record<string, any> = {
+        id: (updatedMag as MagazineIssue).id,
+        issue_number: (updatedMag as MagazineIssue).issue_number,
+        title_fa: (updatedMag as MagazineIssue).title_fa,
+        description_fa: (updatedMag as MagazineIssue).description_fa,
+        publish_date_fa: (updatedMag as MagazineIssue).publish_date_fa,
+        cover_image: (updatedMag as MagazineIssue).cover_image,
+        pdf_url: (updatedMag as MagazineIssue).pdf_url,
+        download_count: (updatedMag as MagazineIssue).download_count,
+        featured: (updatedMag as MagazineIssue).featured,
+        status: (updatedMag as MagazineIssue).status,
+        submitted_by_name: (updatedMag as MagazineIssue).submitted_by_name,
+        submitted_at: (updatedMag as MagazineIssue).submitted_at,
+        submitted_device: (updatedMag as MagazineIssue).submitted_device,
+        tags: (updatedMag as MagazineIssue).tags,
+        pages: (updatedMag as MagazineIssue).pages
+      };
+
+      if ((updatedMag as MagazineIssue).cover_position) dbPayload.cover_position = (updatedMag as MagazineIssue).cover_position;
+      if ((updatedMag as MagazineIssue).author_name_fa) dbPayload.author_name_fa = (updatedMag as MagazineIssue).author_name_fa;
+      if ((updatedMag as MagazineIssue).author_title_fa) dbPayload.author_title_fa = (updatedMag as MagazineIssue).author_title_fa;
+
       try {
-        const { error } = await supabase.from('magazine_issues').upsert(updatedMag);
-        if (error) {
-          console.error('Supabase updateMagazineIssue error:', error.message, error.details);
+        let { error } = await supabase.from('magazine_issues').upsert(dbPayload);
+        if (error && error.code === 'PGRST204') {
+          delete dbPayload.author_name_fa;
+          delete dbPayload.author_title_fa;
+          delete dbPayload.cover_position;
+          const retryRes = await supabase.from('magazine_issues').upsert(dbPayload);
+          error = retryRes.error;
         }
-      } catch (e) {
+        if (error) {
+          console.error('Supabase updateMagazineIssue error:', error.message);
+          throw new Error(`خطای دیتابیس Supabase: ${error.message}`);
+        }
+      } catch (e: any) {
         console.error('Supabase updateMagazineIssue exception:', e);
+        throw e;
       }
     }
 
