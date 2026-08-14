@@ -29,7 +29,10 @@ import {
   Info,
   HardDrive,
   Globe,
-  ExternalLink
+  ExternalLink,
+  Upload,
+  Eye,
+  Download
 } from 'lucide-react';
 import { calculateReadingTimeFa } from '@/utils/readingTime';
 import { Article, MagazineIssue, VideoItem, AudioItem, TeamMember, ContactMessage, CoHostUser } from '@/types';
@@ -57,6 +60,8 @@ export const AdminDashboardContent: React.FC = () => {
     audios,
     teamMembers,
     contactMessages,
+    markContactRead,
+    deleteContactMessage,
     aboutUsMission,
     setAboutUsMission,
     designerName,
@@ -197,6 +202,320 @@ export const AdminDashboardContent: React.FC = () => {
     }
   };
 
+  // Article Modal State
+  const [showArticleModal, setShowArticleModal] = useState(false);
+  const [editingArticle, setEditingArticle] = useState<Article | null>(null);
+  const [artTitle, setArtTitle] = useState('');
+  const [artExcerpt, setArtExcerpt] = useState('');
+  const [artContent, setArtContent] = useState('');
+  const [artCategory, setArtCategory] = useState<'سرمقاله‌ها' | 'تحلیل‌ها' | 'نقد مکاتب' | 'شناخت مهدویت'>('تحلیل‌ها');
+  const [artAuthor, setArtAuthor] = useState('M. Nazir Yosuf');
+  const [artReadTime, setArtReadTime] = useState('۷ دقیقه');
+  const [artImage, setArtImage] = useState('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80');
+
+  useEffect(() => {
+    if (artContent) {
+      setArtReadTime(calculateReadingTimeFa(artContent));
+    }
+  }, [artContent]);
+
+  const openAddArticle = () => {
+    setEditingArticle(null);
+    setArtTitle('');
+    setArtExcerpt('');
+    setArtContent('');
+    setArtCategory('تحلیل‌ها');
+    setArtAuthor(currentUser?.name_fa || 'M. Nazir Yosuf');
+    setArtImage('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80');
+    setShowArticleModal(true);
+  };
+
+  const openEditArticle = (art: Article) => {
+    setEditingArticle(art);
+    setArtTitle(art.title_fa || '');
+    setArtExcerpt(art.excerpt_fa || '');
+    setArtContent(art.content_fa || '');
+    setArtCategory(art.category_fa || 'تحلیل‌ها');
+    setArtAuthor(art.author_name_fa || 'M. Nazir Yosuf');
+    setArtImage(art.image_url || '');
+    setShowArticleModal(true);
+  };
+
+  const handleSaveArticle = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!artTitle.trim()) return;
+
+    if (editingArticle) {
+      await updateArticle(editingArticle.id, {
+        title_fa: artTitle,
+        excerpt_fa: artExcerpt,
+        content_fa: artContent,
+        category_fa: artCategory,
+        author_name_fa: artAuthor,
+        image_url: artImage,
+        read_time_fa: artReadTime,
+      });
+    } else {
+      await addArticle({
+        title_fa: artTitle,
+        slug: `art-${Date.now()}`,
+        excerpt_fa: artExcerpt,
+        content_fa: artContent,
+        category_fa: artCategory,
+        author_name_fa: artAuthor,
+        author_avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
+        read_time_fa: artReadTime,
+        published_at: new Date().toLocaleDateString('fa-IR'),
+        image_url: artImage,
+        featured: false,
+      });
+    }
+    setShowArticleModal(false);
+  };
+
+  // Magazine Modal State
+  const [showMagModal, setShowMagModal] = useState(false);
+  const [editingMag, setEditingMag] = useState<MagazineIssue | null>(null);
+  const [magNumber, setMagNumber] = useState(1);
+  const [magTitle, setMagTitle] = useState('');
+  const [magDesc, setMagDesc] = useState('');
+  const [magPublishDate, setMagPublishDate] = useState('مرداد ۱۴۰۴');
+  const [magCoverImage, setMagCoverImage] = useState('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80');
+  const [magPdfUrl, setMagPdfUrl] = useState('/downloads/mahdism_issue_1.pdf');
+
+  const openAddMagazine = () => {
+    setEditingMag(null);
+    setMagNumber(magazineIssues.length + 1);
+    setMagTitle(`شماره ${magazineIssues.length + 1}: عقلانیت و معرفت‌شناسی`);
+    setMagDesc('توضیحات شماره جدید مجله ایدئولوژی مهدویت');
+    setMagPublishDate(new Date().toLocaleDateString('fa-IR'));
+    setMagCoverImage('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80');
+    setMagPdfUrl('/downloads/mahdism_issue_1.pdf');
+    setShowMagModal(true);
+  };
+
+  const openEditMagazine = (mag: MagazineIssue) => {
+    setEditingMag(mag);
+    setMagNumber(mag.issue_number);
+    setMagTitle(mag.title_fa);
+    setMagDesc(mag.description_fa);
+    setMagPublishDate(mag.publish_date_fa);
+    setMagCoverImage(mag.cover_image);
+    setMagPdfUrl(mag.pdf_url);
+    setShowMagModal(true);
+  };
+
+  const handleSaveMagazine = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!magTitle.trim()) return;
+
+    if (editingMag) {
+      updateMagazineIssue(editingMag.id, {
+        issue_number: magNumber,
+        title_fa: magTitle,
+        description_fa: magDesc,
+        publish_date_fa: magPublishDate,
+        cover_image: magCoverImage,
+        pdf_url: magPdfUrl,
+      });
+    } else {
+      await addMagazineIssue({
+        issue_number: magNumber,
+        title_fa: magTitle,
+        description_fa: magDesc,
+        publish_date_fa: magPublishDate,
+        cover_image: magCoverImage,
+        pdf_url: magPdfUrl,
+        pages: [],
+        featured: true,
+      });
+    }
+    setShowMagModal(false);
+  };
+
+  // Video Modal State
+  const [showVidModal, setShowVidModal] = useState(false);
+  const [editingVid, setEditingVid] = useState<VideoItem | null>(null);
+  const [vidTitle, setVidTitle] = useState('');
+  const [vidDesc, setVidDesc] = useState('');
+  const [vidUrl, setVidUrl] = useState('');
+  const [vidThumb, setVidThumb] = useState('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80');
+  const [vidDuration, setVidDuration] = useState('۲۰ دقیقه');
+  const [vidCategory, setVidCategory] = useState('نشست تحلیلی');
+  const [vidSpeaker, setVidSpeaker] = useState('استاد علوی');
+
+  const openAddVideo = () => {
+    setEditingVid(null);
+    setVidTitle('');
+    setVidDesc('');
+    setVidUrl('https://www.youtube.com/embed/dQw4w9WgXcQ');
+    setVidThumb('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80');
+    setVidDuration('۲۰ دقیقه');
+    setVidCategory('نشست تحلیلی');
+    setVidSpeaker('استاد علوی');
+    setShowVidModal(true);
+  };
+
+  const openEditVideo = (vid: VideoItem) => {
+    setEditingVid(vid);
+    setVidTitle(vid.title_fa);
+    setVidDesc(vid.description_fa);
+    setVidUrl(vid.video_url);
+    setVidThumb(vid.thumbnail_url);
+    setVidDuration(vid.duration_fa);
+    setVidCategory(vid.category_fa);
+    setVidSpeaker(vid.speaker_fa);
+    setShowVidModal(true);
+  };
+
+  const handleSaveVideo = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!vidTitle.trim()) return;
+
+    if (editingVid) {
+      updateVideo(editingVid.id, {
+        title_fa: vidTitle,
+        description_fa: vidDesc,
+        video_url: vidUrl,
+        thumbnail_url: vidThumb,
+        duration_fa: vidDuration,
+        category_fa: vidCategory,
+        speaker_fa: vidSpeaker,
+      });
+    } else {
+      addVideo({
+        title_fa: vidTitle,
+        description_fa: vidDesc,
+        video_url: vidUrl,
+        thumbnail_url: vidThumb,
+        duration_fa: vidDuration,
+        category_fa: vidCategory,
+        speaker_fa: vidSpeaker,
+        published_at: new Date().toLocaleDateString('fa-IR'),
+        featured: true,
+      });
+    }
+    setShowVidModal(false);
+  };
+
+  // Audio Modal State
+  const [showAudModal, setShowAudModal] = useState(false);
+  const [editingAud, setEditingAud] = useState<AudioItem | null>(null);
+  const [audTitle, setAudTitle] = useState('');
+  const [audSpeaker, setAudSpeaker] = useState('استاد حسینی');
+  const [audUrl, setAudUrl] = useState('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
+  const [audDuration, setAudDuration] = useState('۱۵ دقیقه');
+  const [audDesc, setAudDesc] = useState('');
+  const [audCategory, setAudCategory] = useState('پادکست صوتی');
+  const [audCover, setAudCover] = useState('https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=600&auto=format&fit=crop&q=80');
+
+  const openAddAudio = () => {
+    setEditingAud(null);
+    setAudTitle('');
+    setAudSpeaker('استاد حسینی');
+    setAudUrl('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
+    setAudDuration('۱۵ دقیقه');
+    setAudDesc('');
+    setAudCategory('پادکست صوتی');
+    setAudCover('https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=600&auto=format&fit=crop&q=80');
+    setShowAudModal(true);
+  };
+
+  const openEditAudio = (aud: AudioItem) => {
+    setEditingAud(aud);
+    setAudTitle(aud.title_fa);
+    setAudSpeaker(aud.speaker_fa);
+    setAudUrl(aud.audio_url);
+    setAudDuration(aud.duration_fa);
+    setAudDesc(aud.description_fa);
+    setAudCategory(aud.category_fa);
+    setAudCover(aud.cover_image);
+    setShowAudModal(true);
+  };
+
+  const handleSaveAudio = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!audTitle.trim()) return;
+
+    if (editingAud) {
+      updateAudio(editingAud.id, {
+        title_fa: audTitle,
+        speaker_fa: audSpeaker,
+        audio_url: audUrl,
+        duration_fa: audDuration,
+        description_fa: audDesc,
+        category_fa: audCategory,
+        cover_image: audCover,
+      });
+    } else {
+      addAudio({
+        title_fa: audTitle,
+        speaker_fa: audSpeaker,
+        audio_url: audUrl,
+        duration_fa: audDuration,
+        description_fa: audDesc,
+        published_at: new Date().toLocaleDateString('fa-IR'),
+        category_fa: audCategory,
+        cover_image: audCover,
+        featured: true,
+      });
+    }
+    setShowAudModal(false);
+  };
+
+  // Team Modal State
+  const [showTeamModal, setShowTeamModal] = useState(false);
+  const [editingTeam, setEditingTeam] = useState<TeamMember | null>(null);
+  const [teamName, setTeamName] = useState('');
+  const [teamRole, setTeamRole] = useState('نویسنده و پژوهشگر');
+  const [teamBio, setTeamBio] = useState('');
+  const [teamAvatar, setTeamAvatar] = useState('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&auto=format&fit=crop&q=80');
+  const [teamSpec, setTeamSpec] = useState('تحریریه');
+
+  const openAddTeam = () => {
+    setEditingTeam(null);
+    setTeamName('');
+    setTeamRole('نویسنده و پژوهشگر');
+    setTeamBio('پژوهشگر حوزه مهدویت و حکمت اسلامی');
+    setTeamAvatar('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&auto=format&fit=crop&q=80');
+    setTeamSpec('تحریریه');
+    setShowTeamModal(true);
+  };
+
+  const openEditTeam = (tm: TeamMember) => {
+    setEditingTeam(tm);
+    setTeamName(tm.name_fa);
+    setTeamRole(tm.role_fa);
+    setTeamBio(tm.bio_fa);
+    setTeamAvatar(tm.avatar_url);
+    setTeamSpec(tm.specialization_fa);
+    setShowTeamModal(true);
+  };
+
+  const handleSaveTeam = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!teamName.trim()) return;
+
+    if (editingTeam) {
+      updateTeamMember(editingTeam.id, {
+        name_fa: teamName,
+        role_fa: teamRole,
+        bio_fa: teamBio,
+        avatar_url: teamAvatar,
+        specialization_fa: teamSpec,
+      });
+    } else {
+      addTeamMember({
+        name_fa: teamName,
+        role_fa: teamRole,
+        bio_fa: teamBio,
+        avatar_url: teamAvatar,
+        specialization_fa: teamSpec,
+      });
+    }
+    setShowTeamModal(false);
+  };
+
   // Pending items count calculation
   const pendingArticles = articles.filter(a => a.status === 'pending_approval');
   const pendingMagazines = magazineIssues.filter(m => m.status === 'pending_approval');
@@ -247,23 +566,6 @@ export const AdminDashboardContent: React.FC = () => {
       setTimeout(() => setAboutSavedNotify(false), 3500);
     }
   };
-
-  // Article Modal & Form State
-  const [showArticleModal, setShowArticleModal] = useState(false);
-  const [editingArticle, setEditingArticle] = useState<Article | null>(null);
-  const [artTitle, setArtTitle] = useState('');
-  const [artExcerpt, setArtExcerpt] = useState('');
-  const [artContent, setArtContent] = useState('');
-  const [artCategory, setArtCategory] = useState<'سرمقاله‌ها' | 'تحلیل‌ها' | 'نقد مکاتب' | 'شناخت مهدویت'>('تحلیل‌ها');
-  const [artAuthor, setArtAuthor] = useState('میر الهام الدین سادات');
-  const [artReadTime, setArtReadTime] = useState('۷ دقیقه');
-  const [artImage, setArtImage] = useState('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80');
-
-  useEffect(() => {
-    if (artContent) {
-      setArtReadTime(calculateReadingTimeFa(artContent));
-    }
-  }, [artContent]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -329,7 +631,7 @@ export const AdminDashboardContent: React.FC = () => {
           <CheckCircle2 className="w-5 h-5 text-emerald-300 shrink-0" />
           <div>
             <h4 className="text-xs font-bold font-serif-persian">تغییرات با موفقیت ذخیره شد</h4>
-            <p className="text-[11px] text-white/80">تمام ویرایش‌ها و پست‌ها روی سایت اصلی آنلاین شدند.</p>
+            <p className="text-[11px] text-white/80">تمام ویرایش‌ها و آپلودها در Supabase و سایت آنلاین ثبت گردیدند.</p>
           </div>
         </div>
       )}
@@ -351,7 +653,7 @@ export const AdminDashboardContent: React.FC = () => {
               </span>
             </div>
             <p className="text-xs text-[#1B889A] font-bold mt-0.5 flex items-center gap-1.5">
-              <span>{isSuperAdmin ? 'کنترل کامل وب‌سایت و سطح دسترسی‌ها' : `ورود با اکانت: ${currentUser?.name_fa}`}</span>
+              <span>{isSuperAdmin ? 'کنترل کامل وب‌سایت و آپلود محتوا در دیتابیس ابری' : `ورود با اکانت: ${currentUser?.name_fa}`}</span>
             </p>
           </div>
         </div>
@@ -517,7 +819,7 @@ export const AdminDashboardContent: React.FC = () => {
             </button>
           )}
 
-          {/* EDIT ABOUT US - STRICTLY CONTROLLED PERMISSION */}
+          {/* EDIT ABOUT US */}
           {(isSuperAdmin || userPerms.can_manage_about) && (
             <button
               onClick={() => setActiveTab('about')}
@@ -530,7 +832,7 @@ export const AdminDashboardContent: React.FC = () => {
             </button>
           )}
 
-          {/* VIEW STORAGE STATS - STRICTLY CONTROLLED PERMISSION */}
+          {/* VIEW STORAGE STATS */}
           {(isSuperAdmin || userPerms.can_view_storage) && (
             <button
               onClick={() => setActiveTab('storage')}
@@ -543,7 +845,7 @@ export const AdminDashboardContent: React.FC = () => {
             </button>
           )}
 
-          {/* DEDICATED DESIGNER LINK TAB (DESIGN BY) */}
+          {/* DESIGNER LINK TAB (DESIGN BY) */}
           {(isSuperAdmin || userPerms.can_manage_about) && (
             <button
               onClick={() => setActiveTab('footer_designer')}
@@ -556,7 +858,7 @@ export const AdminDashboardContent: React.FC = () => {
             </button>
           )}
 
-          {/* CO-HOSTS MANAGEMENT - ONLY SUPER ADMIN */}
+          {/* CO-HOSTS MANAGEMENT */}
           {isSuperAdmin && (
             <button
               onClick={() => setActiveTab('cohosts')}
@@ -571,33 +873,502 @@ export const AdminDashboardContent: React.FC = () => {
         </div>
       </div>
 
-      {/* ABOUT US & SITE SETTINGS TAB CONTENT */}
-      {activeTab === 'about' && (isSuperAdmin || userPerms.can_manage_about) && (
+      {/* ARTICLES TAB */}
+      {activeTab === 'articles' && userPerms.can_manage_articles && (
         <div className="space-y-6">
-          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] p-6 rounded-3xl space-y-4">
-            <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
-              <Info className="w-5 h-5 text-[#1B889A]" />
-              <span>ویرایش بیانیه و ماموریت «درباره ما»</span>
-            </h2>
-            <form onSubmit={handleSaveAboutUs} className="space-y-4">
-              <textarea
-                rows={5}
-                value={aboutInputText}
-                onChange={(e) => setAboutInputText(e.target.value)}
-                className="w-full p-4 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-2xl text-sm text-[var(--text-primary)] leading-relaxed focus:outline-none focus:border-[#1B889A]"
-              ></textarea>
-              <button
-                type="submit"
-                className="px-5 py-2.5 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs"
-              >
-                ذخیره بیانیه در پیش‌نویس
-              </button>
+          <div className="flex items-center justify-between bg-[var(--card-bg)] p-6 border border-[var(--card-border)] rounded-3xl">
+            <div>
+              <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">مدیریت مقالات علمی و تحلیل‌ها</h2>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">افزودن، ویرایش و مدیریت تمامی مقالات نشریه</p>
+            </div>
+            <button
+              onClick={openAddArticle}
+              className="px-5 py-2.5 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white text-xs font-bold flex items-center gap-2 shadow-md active:scale-95 transition-all"
+            >
+              <Plus className="w-4 h-4" />
+              <span>افزودن مقاله جدید</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3">
+            {articles.map(art => (
+              <div key={art.id} className="p-4 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] flex items-center justify-between gap-4 hover:border-[#1B889A] transition-all">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 rounded-md bg-[#1B889A]/10 text-[#1B889A] font-bold text-[10px]">{art.category_fa}</span>
+                    <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">{art.title_fa}</h4>
+                  </div>
+                  <p className="text-xs text-[var(--text-secondary)]">نویسنده: {art.author_name_fa} | زمان مطالعه: {art.read_time_fa} | تاریخ: {art.published_at}</p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button onClick={() => openEditArticle(art)} className="p-2 rounded-lg bg-[var(--bg-color)] text-[var(--text-secondary)] hover:text-[#1B889A] border border-[var(--card-border)] transition-all">
+                    <Edit className="w-4 h-4" />
+                  </button>
+                  <button onClick={() => deleteArticle(art.id)} className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-all">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* MAGAZINES TAB */}
+      {activeTab === 'magazines' && userPerms.can_manage_magazines && (
+        <div className="space-y-6">
+          <div className="flex items-center justify-between bg-[var(--card-bg)] p-6 border border-[var(--card-border)] rounded-3xl">
+            <div>
+              <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">مدیریت شماره‌های مجله (نسخه‌های PDF)</h2>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">آپدیت و افزودن فایل‌های PDF مجله مهدویت</p>
+            </div>
+            <button
+              onClick={openAddMagazine}
+              className="px-5 py-2.5 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white text-xs font-bold flex items-center gap-2 shadow-md active:scale-95 transition-all"
+            >
+              <Plus className="w-4 h-4" />
+              <span>افزودن شماره جدید مجله</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {magazineIssues.map(mag => (
+              <div key={mag.id} className="p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] space-y-3 hover:border-[#1B889A] transition-all">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="space-y-1">
+                    <span className="px-2.5 py-0.5 rounded-md bg-[#1B889A]/15 text-[#1B889A] font-extrabold text-xs">شماره {mag.issue_number}</span>
+                    <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">{mag.title_fa}</h4>
+                    <p className="text-xs text-[var(--text-secondary)] line-clamp-2">{mag.description_fa}</p>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button onClick={() => openEditMagazine(mag)} className="p-2 rounded-lg bg-[var(--bg-color)] text-[var(--text-secondary)] hover:text-[#1B889A] border border-[var(--card-border)]">
+                      <Edit className="w-3.5 h-3.5" />
+                    </button>
+                    <button onClick={() => deleteMagazineIssue(mag.id)} className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20">
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between text-xs pt-2 border-t border-[var(--card-border)] text-[var(--text-secondary)] font-mono">
+                  <span>دانلودها: {mag.download_count}</span>
+                  <span>تاریخ: {mag.publish_date_fa}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* VIDEOS TAB */}
+      {activeTab === 'videos' && userPerms.can_manage_videos && (
+        <div className="space-y-6">
+          <div className="flex items-center justify-between bg-[var(--card-bg)] p-6 border border-[var(--card-border)] rounded-3xl">
+            <div>
+              <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">مدیریت ویدیوها و نشریات تصویری</h2>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">آپدیت و آپلود ویدیوهای تحلیلی در دیتابیس</p>
+            </div>
+            <button
+              onClick={openAddVideo}
+              className="px-5 py-2.5 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white text-xs font-bold flex items-center gap-2 shadow-md active:scale-95 transition-all"
+            >
+              <Plus className="w-4 h-4" />
+              <span>افزودن ویدیو جدید</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {videos.map(vid => (
+              <div key={vid.id} className="p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] space-y-3 hover:border-[#1B889A] transition-all">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="space-y-1">
+                    <span className="px-2.5 py-0.5 rounded-md bg-[#1B889A]/15 text-[#1B889A] font-extrabold text-xs">{vid.category_fa}</span>
+                    <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">{vid.title_fa}</h4>
+                    <p className="text-xs text-[var(--text-secondary)]">سخنران: {vid.speaker_fa} | مدت: {vid.duration_fa}</p>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button onClick={() => openEditVideo(vid)} className="p-2 rounded-lg bg-[var(--bg-color)] text-[var(--text-secondary)] hover:text-[#1B889A] border border-[var(--card-border)]">
+                      <Edit className="w-3.5 h-3.5" />
+                    </button>
+                    <button onClick={() => deleteVideo(vid.id)} className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20">
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* AUDIOS TAB */}
+      {activeTab === 'audios' && userPerms.can_manage_audios && (
+        <div className="space-y-6">
+          <div className="flex items-center justify-between bg-[var(--card-bg)] p-6 border border-[var(--card-border)] rounded-3xl">
+            <div>
+              <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">مدیریت پادکست‌ها و فایل‌های صوتی</h2>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">افزودن و ویرایش پادکست‌های شناختی مهدویت</p>
+            </div>
+            <button
+              onClick={openAddAudio}
+              className="px-5 py-2.5 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white text-xs font-bold flex items-center gap-2 shadow-md active:scale-95 transition-all"
+            >
+              <Plus className="w-4 h-4" />
+              <span>افزودن پادکست جدید</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {audios.map(aud => (
+              <div key={aud.id} className="p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] space-y-3 hover:border-[#1B889A] transition-all">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="space-y-1">
+                    <span className="px-2.5 py-0.5 rounded-md bg-[#1B889A]/15 text-[#1B889A] font-extrabold text-xs">{aud.category_fa}</span>
+                    <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">{aud.title_fa}</h4>
+                    <p className="text-xs text-[var(--text-secondary)]">گوینده: {aud.speaker_fa} | زمان: {aud.duration_fa}</p>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button onClick={() => openEditAudio(aud)} className="p-2 rounded-lg bg-[var(--bg-color)] text-[var(--text-secondary)] hover:text-[#1B889A] border border-[var(--card-border)]">
+                      <Edit className="w-3.5 h-3.5" />
+                    </button>
+                    <button onClick={() => deleteAudio(aud.id)} className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20">
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* TEAM MEMBERS TAB */}
+      {activeTab === 'team' && userPerms.can_manage_team && (
+        <div className="space-y-6">
+          <div className="flex items-center justify-between bg-[var(--card-bg)] p-6 border border-[var(--card-border)] rounded-3xl">
+            <div>
+              <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">مدیریت اعضای تیم و نویسندگان</h2>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">افزودن و ویرایش اطلاعات نویسندگان آزاد</p>
+            </div>
+            <button
+              onClick={openAddTeam}
+              className="px-5 py-2.5 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white text-xs font-bold flex items-center gap-2 shadow-md active:scale-95 transition-all"
+            >
+              <UserPlus className="w-4 h-4" />
+              <span>افزودن عضو جدید تیم</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {teamMembers.map(tm => (
+              <div key={tm.id} className="p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] flex items-center justify-between gap-4 hover:border-[#1B889A] transition-all">
+                <div className="flex items-center gap-3">
+                  <img src={tm.avatar_url} alt={tm.name_fa} className="w-12 h-12 rounded-xl object-cover border border-[var(--card-border)]" />
+                  <div>
+                    <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">{tm.name_fa}</h4>
+                    <p className="text-xs text-[var(--text-secondary)]">{tm.role_fa} | {tm.specialization_fa}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <button onClick={() => openEditTeam(tm)} className="p-2 rounded-lg bg-[var(--bg-color)] text-[var(--text-secondary)] hover:text-[#1B889A] border border-[var(--card-border)]">
+                    <Edit className="w-3.5 h-3.5" />
+                  </button>
+                  <button onClick={() => deleteTeamMember(tm.id)} className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20">
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* MESSAGES TAB */}
+      {activeTab === 'messages' && userPerms.can_manage_messages && (
+        <div className="space-y-6">
+          <div className="bg-[var(--card-bg)] p-6 border border-[var(--card-border)] rounded-3xl">
+            <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">پیام‌های دریافتی از کاربران و مخاطبان</h2>
+            <p className="text-xs text-[var(--text-secondary)] mt-1">مشاهده و رسیدگی به پیام‌ها و مقالات ارسالی مخاطبان</p>
+          </div>
+
+          {contactMessages.length === 0 ? (
+            <div className="p-12 text-center text-xs text-[var(--text-secondary)] bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl">
+              هیچ پیامی یافت نشد.
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {contactMessages.map(msg => (
+                <div key={msg.id} className={`p-5 rounded-2xl border transition-all ${msg.status === 'unread' ? 'bg-[#1B889A]/10 border-[#1B889A]' : 'bg-[var(--card-bg)] border-[var(--card-border)]'}`}>
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-sm text-[var(--text-primary)] font-serif-persian">{msg.sender_name}</span>
+                        <span className="text-xs text-[var(--text-secondary)] font-mono">({msg.sender_email || msg.email})</span>
+                      </div>
+                      <h5 className="text-xs font-bold text-[#1B889A]">{msg.subject}</h5>
+                      <p className="text-xs text-[var(--text-primary)] leading-relaxed pt-1">{msg.message_text || msg.message}</p>
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0">
+                      {msg.status === 'unread' && (
+                        <button onClick={() => markContactRead(msg.id)} className="px-3 py-1.5 rounded-lg bg-emerald-600 text-white font-bold text-xs">
+                          خوانده شد
+                        </button>
+                      )}
+                      <button onClick={() => deleteContactMessage(msg.id)} className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* MODAL FOR ARTICLES */}
+      {showArticleModal && (
+        <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 max-w-xl w-full space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
+              <h3 className="text-base font-bold text-[var(--text-primary)] font-serif-persian">{editingArticle ? 'ویرایش مقاله' : 'افزودن مقاله جدید'}</h3>
+              <button onClick={() => setShowArticleModal(false)}><X className="w-5 h-5 text-[var(--text-secondary)]" /></button>
+            </div>
+            <form onSubmit={handleSaveArticle} className="space-y-3 text-xs">
+              <div>
+                <label className="block font-bold mb-1">عنوان مقاله:</label>
+                <input type="text" value={artTitle} onChange={e => setArtTitle(e.target.value)} required className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+              </div>
+              <div>
+                <label className="block font-bold mb-1">چکیده / خلاصه:</label>
+                <textarea rows={2} value={artExcerpt} onChange={e => setArtExcerpt(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+              </div>
+              <div>
+                <label className="block font-bold mb-1">متن کامل مقاله:</label>
+                <textarea rows={6} value={artContent} onChange={e => setArtContent(e.target.value)} required className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold mb-1">دسته بندی:</label>
+                  <select value={artCategory} onChange={e => setArtCategory(e.target.value as any)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl">
+                    <option value="سرمقاله‌ها">سرمقاله‌ها</option>
+                    <option value="تحلیل‌ها">تحلیل‌ها</option>
+                    <option value="نقد مکاتب">نقد مکاتب</option>
+                    <option value="شناخت مهدویت">شناخت مهدویت</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-bold mb-1">نام نویسنده:</label>
+                  <input type="text" value={artAuthor} onChange={e => setArtAuthor(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+                </div>
+              </div>
+              <div>
+                <label className="block font-bold mb-1">لینک تصویر مقاله:</label>
+                <input type="text" value={artImage} onChange={e => setArtImage(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono" />
+              </div>
+              <div className="flex justify-end gap-2 pt-3 border-t border-[var(--card-border)]">
+                <button type="button" onClick={() => setShowArticleModal(false)} className="px-4 py-2 rounded-xl border border-[var(--card-border)]">انصراف</button>
+                <button type="submit" className="px-5 py-2 rounded-xl bg-[#1B889A] text-white font-bold">ثبت مقاله در دیتابیس</button>
+              </div>
             </form>
           </div>
         </div>
       )}
 
-      {/* DEDICATED DESIGN BY FOOTER LINK MANAGEMENT VIEW */}
+      {/* MODAL FOR MAGAZINES */}
+      {showMagModal && (
+        <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 max-w-lg w-full space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
+              <h3 className="text-base font-bold text-[var(--text-primary)] font-serif-persian">{editingMag ? 'ویرایش شماره مجله' : 'افزودن شماره جدید مجله'}</h3>
+              <button onClick={() => setShowMagModal(false)}><X className="w-5 h-5 text-[var(--text-secondary)]" /></button>
+            </div>
+            <form onSubmit={handleSaveMagazine} className="space-y-3 text-xs">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold mb-1">شماره نشریه:</label>
+                  <input type="number" value={magNumber} onChange={e => setMagNumber(Number(e.target.value))} required className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+                </div>
+                <div>
+                  <label className="block font-bold mb-1">تاریخ انتشار:</label>
+                  <input type="text" value={magPublishDate} onChange={e => setMagPublishDate(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+                </div>
+              </div>
+              <div>
+                <label className="block font-bold mb-1">عنوان شماره مجله:</label>
+                <input type="text" value={magTitle} onChange={e => setMagTitle(e.target.value)} required className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+              </div>
+              <div>
+                <label className="block font-bold mb-1">توضیحات مجله:</label>
+                <textarea rows={3} value={magDesc} onChange={e => setMagDesc(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+              </div>
+              <div>
+                <label className="block font-bold mb-1">لینک تصویر روی جلد (Cover Image):</label>
+                <input type="text" value={magCoverImage} onChange={e => setMagCoverImage(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono" />
+              </div>
+              <div>
+                <label className="block font-bold mb-1">لینک دانلود فایل PDF مجله:</label>
+                <input type="text" value={magPdfUrl} onChange={e => setMagPdfUrl(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono" />
+              </div>
+              <div className="flex justify-end gap-2 pt-3 border-t border-[var(--card-border)]">
+                <button type="button" onClick={() => setShowMagModal(false)} className="px-4 py-2 rounded-xl border border-[var(--card-border)]">انصراف</button>
+                <button type="submit" className="px-5 py-2 rounded-xl bg-[#1B889A] text-white font-bold">ثبت شماره مجله در دیتابیس</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL FOR VIDEOS */}
+      {showVidModal && (
+        <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 max-w-lg w-full space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
+              <h3 className="text-base font-bold text-[var(--text-primary)] font-serif-persian">{editingVid ? 'ویرایش ویدیو' : 'افزودن ویدیو جدید'}</h3>
+              <button onClick={() => setShowVidModal(false)}><X className="w-5 h-5 text-[var(--text-secondary)]" /></button>
+            </div>
+            <form onSubmit={handleSaveVideo} className="space-y-3 text-xs">
+              <div>
+                <label className="block font-bold mb-1">عنوان ویدیو:</label>
+                <input type="text" value={vidTitle} onChange={e => setVidTitle(e.target.value)} required className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold mb-1">سخنران / ارائه دهنده:</label>
+                  <input type="text" value={vidSpeaker} onChange={e => setVidSpeaker(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+                </div>
+                <div>
+                  <label className="block font-bold mb-1">مدت زمان:</label>
+                  <input type="text" value={vidDuration} onChange={e => setVidDuration(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+                </div>
+              </div>
+              <div>
+                <label className="block font-bold mb-1">لینک پخش ویدیو (Video Embed URL):</label>
+                <input type="text" value={vidUrl} onChange={e => setVidUrl(e.target.value)} required className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono" />
+              </div>
+              <div>
+                <label className="block font-bold mb-1">لینک تصویر کاور/پوستر ویدیو:</label>
+                <input type="text" value={vidThumb} onChange={e => setVidThumb(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono" />
+              </div>
+              <div>
+                <label className="block font-bold mb-1">توضیحات کامل ویدیو:</label>
+                <textarea rows={3} value={vidDesc} onChange={e => setVidDesc(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+              </div>
+              <div className="flex justify-end gap-2 pt-3 border-t border-[var(--card-border)]">
+                <button type="button" onClick={() => setShowVidModal(false)} className="px-4 py-2 rounded-xl border border-[var(--card-border)]">انصراف</button>
+                <button type="submit" className="px-5 py-2 rounded-xl bg-[#1B889A] text-white font-bold">ثبت ویدیو در دیتابیس</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL FOR AUDIOS */}
+      {showAudModal && (
+        <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 max-w-lg w-full space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
+              <h3 className="text-base font-bold text-[var(--text-primary)] font-serif-persian">{editingAud ? 'ویرایش پادکست صوتی' : 'افزودن پادکست جدید'}</h3>
+              <button onClick={() => setShowAudModal(false)}><X className="w-5 h-5 text-[var(--text-secondary)]" /></button>
+            </div>
+            <form onSubmit={handleSaveAudio} className="space-y-3 text-xs">
+              <div>
+                <label className="block font-bold mb-1">عنوان پادکست / فایل صوتی:</label>
+                <input type="text" value={audTitle} onChange={e => setAudTitle(e.target.value)} required className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold mb-1">گوینده / سخنران:</label>
+                  <input type="text" value={audSpeaker} onChange={e => setAudSpeaker(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+                </div>
+                <div>
+                  <label className="block font-bold mb-1">مدت زمان:</label>
+                  <input type="text" value={audDuration} onChange={e => setAudDuration(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+                </div>
+              </div>
+              <div>
+                <label className="block font-bold mb-1">لینک مستقیم فایل MP3 صوتی:</label>
+                <input type="text" value={audUrl} onChange={e => setAudUrl(e.target.value)} required className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono" />
+              </div>
+              <div>
+                <label className="block font-bold mb-1">عکس کاور پادکست:</label>
+                <input type="text" value={audCover} onChange={e => setAudCover(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono" />
+              </div>
+              <div>
+                <label className="block font-bold mb-1">توضیحات صوتی:</label>
+                <textarea rows={3} value={audDesc} onChange={e => setAudDesc(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+              </div>
+              <div className="flex justify-end gap-2 pt-3 border-t border-[var(--card-border)]">
+                <button type="button" onClick={() => setShowAudModal(false)} className="px-4 py-2 rounded-xl border border-[var(--card-border)]">انصراف</button>
+                <button type="submit" className="px-5 py-2 rounded-xl bg-[#1B889A] text-white font-bold">ثبت پادکست در دیتابیس</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL FOR TEAM MEMBERS */}
+      {showTeamModal && (
+        <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 max-w-lg w-full space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
+              <h3 className="text-base font-bold text-[var(--text-primary)] font-serif-persian">{editingTeam ? 'ویرایش عضو تیم' : 'افزودن عضو جدید تیم'}</h3>
+              <button onClick={() => setShowTeamModal(false)}><X className="w-5 h-5 text-[var(--text-secondary)]" /></button>
+            </div>
+            <form onSubmit={handleSaveTeam} className="space-y-3 text-xs">
+              <div>
+                <label className="block font-bold mb-1">نام و تخلص عضو:</label>
+                <input type="text" value={teamName} onChange={e => setTeamName(e.target.value)} required className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold mb-1">سمت / نقش:</label>
+                  <input type="text" value={teamRole} onChange={e => setTeamRole(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+                </div>
+                <div>
+                  <label className="block font-bold mb-1">تخصص / حوزه پژوهش:</label>
+                  <input type="text" value={teamSpec} onChange={e => setTeamSpec(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+                </div>
+              </div>
+              <div>
+                <label className="block font-bold mb-1">عکس پروفایل (Avatar URL):</label>
+                <input type="text" value={teamAvatar} onChange={e => setTeamAvatar(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono" />
+              </div>
+              <div>
+                <label className="block font-bold mb-1">بیوگرافی / سوابق:</label>
+                <textarea rows={3} value={teamBio} onChange={e => setTeamBio(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+              </div>
+              <div className="flex justify-end gap-2 pt-3 border-t border-[var(--card-border)]">
+                <button type="button" onClick={() => setShowTeamModal(false)} className="px-4 py-2 rounded-xl border border-[var(--card-border)]">انصراف</button>
+                <button type="submit" className="px-5 py-2 rounded-xl bg-[#1B889A] text-white font-bold">ثبت عضو جدید در دیتابیس</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* STORAGE STATS TAB */}
+      {activeTab === 'storage' && (isSuperAdmin || userPerms.can_view_storage) && (
+        <div className="space-y-6">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] p-6 rounded-3xl space-y-4">
+            <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
+              <HardDrive className="w-5 h-5 text-[#1B889A]" />
+              <span>وضعیت دیتابیس و حجم داده‌های ذخیره‌شده</span>
+            </h2>
+            <div className="space-y-2">
+              <div className="flex justify-between text-xs font-bold text-[var(--text-primary)]">
+                <span>حجم اشغال شده در دیتابیس Supabase:</span>
+                <span>{(storageUsedBytes / 1024).toFixed(2)} KB</span>
+              </div>
+              <div className="w-full h-3 bg-[var(--bg-color)] rounded-full overflow-hidden border border-[var(--card-border)]">
+                <div className="h-full bg-[#1B889A] transition-all" style={{ width: `${Math.max(storagePercentage, 2)}%` }}></div>
+              </div>
+              <p className="text-[11px] text-[var(--text-secondary)]">دیتابیس ابری Supabase آماده پذیرش نامحدود مقالات، مجلات و پادکست‌های شما می‌باشد.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* FOOTER DESIGNER LINK TAB */}
       {activeTab === 'footer_designer' && (isSuperAdmin || userPerms.can_manage_about) && (
         <div className="space-y-6">
           <div className="bg-gradient-to-br from-[#1B889A]/15 via-[var(--card-bg)] to-[var(--bg-color)] border-2 border-[#1B889A] p-6 sm:p-8 rounded-3xl space-y-6 shadow-xl modern-card">
@@ -677,25 +1448,6 @@ export const AdminDashboardContent: React.FC = () => {
               </button>
             </div>
 
-          </div>
-        </div>
-      )}
-
-      {/* STORAGE STATS TAB CONTENT */}
-      {activeTab === 'storage' && (isSuperAdmin || userPerms.can_view_storage) && (
-        <div className="bg-[var(--card-bg)] border border-[var(--card-border)] p-6 rounded-3xl space-y-4">
-          <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
-            <HardDrive className="w-5 h-5 text-[#1B889A]" />
-            <span>آمار مصرفی فضای دیتابیس و حافظه</span>
-          </h2>
-          <div className="p-4 bg-[var(--bg-color)] rounded-2xl border border-[var(--card-border)] space-y-2 text-xs">
-            <div className="flex justify-between">
-              <span>حجم دیتابیس فعلی:</span>
-              <span className="font-bold font-mono text-[#1B889A]">{(storageUsedBytes / 1024).toFixed(1)} KB</span>
-            </div>
-            <div className="w-full h-2 rounded-full bg-slate-700 overflow-hidden">
-              <div className="h-full bg-[#1B889A]" style={{ width: `${Math.max(storagePercentage, 2)}%` }}></div>
-            </div>
           </div>
         </div>
       )}
@@ -888,7 +1640,7 @@ export const AdminDashboardContent: React.FC = () => {
         </div>
       )}
 
-      {/* CO-HOST MODAL WITH ALL PERMISSION TOGGLES */}
+      {/* CO-HOST MODAL */}
       {showCoHostModal && (
         <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 max-w-lg w-full space-y-5 modern-card shadow-2xl">
@@ -1000,38 +1752,6 @@ export const AdminDashboardContent: React.FC = () => {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
-
-      {/* ARTICLES TAB */}
-      {activeTab === 'articles' && userPerms.can_manage_articles && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-[var(--text-primary)] font-serif-persian">مدیریت مقالات</h2>
-            <button
-              onClick={() => { setEditingArticle(null); setShowArticleModal(true); }}
-              className="px-4 py-2 rounded-xl bg-[#1B889A] text-white text-xs font-bold flex items-center gap-1.5"
-            >
-              <Plus className="w-4 h-4" />
-              <span>افزودن مقاله جدید</span>
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 gap-3">
-            {articles.map(art => (
-              <div key={art.id} className="p-4 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] flex items-center justify-between gap-4">
-                <div>
-                  <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">{art.title_fa}</h4>
-                  <p className="text-xs text-[var(--text-secondary)]">{art.author_name_fa} | {art.category_fa}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button onClick={() => deleteArticle(art.id)} className="p-2 rounded-lg text-red-400 hover:bg-red-500/10">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       )}

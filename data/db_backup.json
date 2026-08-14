@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-13T21:23:08.814Z",
+  "timestamp": "2026-08-14T10:14:29.655Z",
   "articles": [],
   "magazineIssues": [
     {
@@ -133,6 +133,32 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "log-1786658377872",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "نقد و بررسی ماتریالیسم تاریخی از منظر حکمت اسلامی",
+      "item_type": "مقاله",
+      "timestamp": "۱۴۰۵/۵/۲۲ - ۲۳:۵۹",
+      "time_only": "۲۳:۵۹",
+      "device_info": "Android Mobile (Chrome)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786658374331",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "تبیین مفاهیم بنیادین معرفت‌شناختی در عصر غیبت",
+      "item_type": "مقاله",
+      "timestamp": "۱۴۰۵/۵/۲۲ - ۲۳:۵۹",
+      "time_only": "۲۳:۵۹",
+      "device_info": "Android Mobile (Chrome)",
+      "status_note": null,
+      "created_at": null
+    },
     {
       "id": "log-1",
       "user_name": "M. Nazir Yosuf",
