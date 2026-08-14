@@ -402,90 +402,81 @@ export const AdminDashboardContent: React.FC = () => {
     e.preventDefault();
     if (!magTitle.trim()) return;
 
-    const currentCover = magCoverImage;
-    const currentPdf = magPdfUrl;
-    const currentCoverFile = coverFile;
-    const currentPdfFile = pdfFile;
-    const isEdit = !!editingMag;
-    const targetId = editingMag?.id;
-    const numberVal = magNumber;
-    const titleVal = magTitle;
-    const descVal = magDesc;
-    const pubDateVal = magPublishDate;
-    const coverPosVal = magCoverPosition;
-    const authorNameVal = magAuthorName;
-    const authorTitleVal = magAuthorTitle;
-    const pageCountVal = magPageCount;
-    const tagsVal = magTags;
+    setIsSavingMagazine(true);
+    setUploadStatusMsg('در حال آماده‌سازی فایل‌ها برای آپلود...');
+    setSaveToast({ msg: 'در حال آماده‌سازی و آپلود فایل‌ها...', type: 'loading' });
 
-    // 1. Close Modal INSTANTLY (0 ms) so UI never hangs
-    setShowMagModal(false);
-    setCoverFile(null);
-    setPdfFile(null);
-    setIsSavingMagazine(false);
+    try {
+      let finalCoverUrl = magCoverImage;
+      let finalPdfUrl = magPdfUrl;
 
-    // 2. Show floating status notification toast
-    setSaveToast({ 
-      msg: currentCoverFile || currentPdfFile ? 'در حال ثبت اطلاعات و آپلود فایل‌ها به حافظه ابری...' : 'در حال بروزرسانی اطلاعات مجله در دیتابیس ابری...', 
-      type: 'loading' 
-    });
-
-    // 3. Background Async Upload & Upsert
-    (async () => {
-      try {
-        let finalCoverUrl = currentCover;
-        let finalPdfUrl = currentPdf;
-
-        if (currentCoverFile) {
-          finalCoverUrl = await uploadMagazineFile(currentCoverFile, 'covers');
-        }
-
-        if (currentPdfFile) {
-          finalPdfUrl = await uploadMagazineFile(currentPdfFile, 'pdfs');
-        }
-
-        const parsedTags = parseTagsInput(tagsVal);
-
-        if (isEdit && targetId) {
-          await updateMagazineIssue(targetId, {
-            issue_number: numberVal,
-            title_fa: titleVal,
-            description_fa: descVal,
-            publish_date_fa: pubDateVal,
-            cover_image: finalCoverUrl,
-            cover_position: coverPosVal,
-            pdf_url: finalPdfUrl,
-            author_name_fa: authorNameVal,
-            author_title_fa: authorTitleVal,
-            page_count_fa: pageCountVal,
-            tags: parsedTags,
-          });
-        } else {
-          await addMagazineIssue({
-            issue_number: numberVal,
-            title_fa: titleVal,
-            description_fa: descVal,
-            publish_date_fa: pubDateVal,
-            cover_image: finalCoverUrl,
-            cover_position: coverPosVal,
-            pdf_url: finalPdfUrl,
-            author_name_fa: authorNameVal,
-            author_title_fa: authorTitleVal,
-            page_count_fa: pageCountVal,
-            tags: parsedTags,
-            pages: [],
-            featured: true,
-          });
-        }
-
-        setSaveToast({ msg: '✅ شماره مجله با موفقیت ذخیره و در سایت منتشر گردید!', type: 'success' });
-        setTimeout(() => setSaveToast(null), 4000);
-      } catch (err: any) {
-        console.error('Error saving magazine issue:', err);
-        setSaveToast({ msg: `❌ خطا در ذخیره‌سازی: ${err?.message || 'مشکلی رخ داد'}`, type: 'error' });
-        setTimeout(() => setSaveToast(null), 5000);
+      // 1. Upload Cover Image to Supabase Storage if binary file selected
+      if (coverFile) {
+        setUploadStatusMsg('در حال آپلود تصویر کاور به حافظه ابری Supabase...');
+        setSaveToast({ msg: 'در حال آپلود تصویر کاور به حافظه ابری...', type: 'loading' });
+        finalCoverUrl = await uploadMagazineFile(coverFile, 'covers');
       }
-    })();
+
+      // 2. Upload PDF file to Supabase Storage if binary file selected
+      if (pdfFile) {
+        setUploadStatusMsg('در حال آپلود فایل PDF مجله به حافظه ابری Supabase (لطفاً منتظر بمانید)...');
+        setSaveToast({ msg: 'در حال آپلود فایل PDF مجله (لطفاً منتظر بمانید)...', type: 'loading' });
+        finalPdfUrl = await uploadMagazineFile(pdfFile, 'pdfs');
+      }
+
+      // 3. Isolated Single-Row Upsert into Supabase & Zustand
+      setUploadStatusMsg('در حال ثبت نهایی اطلاعات شماره مجله در دیتابیس...');
+      setSaveToast({ msg: 'در حال ثبت نهایی اطلاعات مجله در دیتابیس...', type: 'loading' });
+
+      const parsedTags = parseTagsInput(magTags);
+
+      if (editingMag) {
+        await updateMagazineIssue(editingMag.id, {
+          issue_number: magNumber,
+          title_fa: magTitle,
+          description_fa: magDesc,
+          publish_date_fa: magPublishDate,
+          cover_image: finalCoverUrl,
+          cover_position: magCoverPosition,
+          pdf_url: finalPdfUrl,
+          author_name_fa: magAuthorName,
+          author_title_fa: magAuthorTitle,
+          page_count_fa: magPageCount,
+          tags: parsedTags,
+        });
+      } else {
+        await addMagazineIssue({
+          issue_number: magNumber,
+          title_fa: magTitle,
+          description_fa: magDesc,
+          publish_date_fa: magPublishDate,
+          cover_image: finalCoverUrl,
+          cover_position: magCoverPosition,
+          pdf_url: finalPdfUrl,
+          author_name_fa: magAuthorName,
+          author_title_fa: magAuthorTitle,
+          page_count_fa: magPageCount,
+          tags: parsedTags,
+          pages: [],
+          featured: true,
+        });
+      }
+
+      // 4. Success: Close modal and notify
+      setShowMagModal(false);
+      setCoverFile(null);
+      setPdfFile(null);
+      setSaveToast({ msg: '✅ شماره مجله با موفقیت ذخیره و در سایت منتشر گردید!', type: 'success' });
+      setTimeout(() => setSaveToast(null), 4000);
+    } catch (err: any) {
+      console.error('Error in handleSaveMagazine:', err);
+      const errMsg = err?.message || 'خطا در ثبت و آپلود فایل مجله';
+      setSaveToast({ msg: `❌ خطا: ${errMsg}`, type: 'error' });
+      alert(`خطا در ذخیره‌سازی مجله:\n${errMsg}`);
+    } finally {
+      setIsSavingMagazine(false);
+      setUploadStatusMsg('');
+    }
   };
 
   // Video Modal State
