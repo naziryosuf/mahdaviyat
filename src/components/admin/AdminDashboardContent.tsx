@@ -131,10 +131,21 @@ export const AdminDashboardContent: React.FC = () => {
 
   const handleGlobalSave = async () => {
     setIsSaving(true);
-    await saveAllChangesToLive();
-    setIsSaving(false);
-    setShowSaveToast(true);
-    setTimeout(() => setShowSaveToast(false), 4000);
+    setSaveToast({ msg: 'در حال ذخیره و انتشار کل اطلاعات در دیتابیس ابری...', type: 'loading' });
+
+    (async () => {
+      try {
+        await saveAllChangesToLive();
+        setIsSaving(false);
+        setSaveToast({ msg: '✅ تمام تغییرات با موفقیت در سرور ابری همگام‌سازی و منتشر گردید!', type: 'success' });
+        setTimeout(() => setSaveToast(null), 3500);
+      } catch (err: any) {
+        setIsSaving(false);
+        console.error('Error in handleGlobalSave:', err);
+        setSaveToast({ msg: `❌ خطا در انتشار: ${err?.message || 'مشکلی رخ داد'}`, type: 'error' });
+        setTimeout(() => setSaveToast(null), 5000);
+      }
+    })();
   };
 
   // Co-Host Modal State

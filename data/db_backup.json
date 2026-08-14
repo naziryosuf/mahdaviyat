@@ -1,82 +1,6 @@
 {
-  "timestamp": "2026-08-14T12:53:27.076Z",
-  "articles": [
-    {
-      "id": "art-issue1-1",
-      "title_fa": "چرا ایدئولوژی مهدویت؟ (یادداشت سردبیر)",
-      "slug": "why-ideology-of-mahdism-editorial",
-      "excerpt_fa": "در روزگاری که انسان معاصر زیر بار سنگین بی‌عدالتی کمر خم کرده و سیستم‌های بشری از پاسخ به نیازهای معنوی عاجزند، ایدئولوژی مهدویت دریچه‌ای نو به سوی آینده‌ای روشن می‌گشاید.",
-      "content_fa": "بنام خدای عادل جل جلاله، که فریاد مستضعفان را می‌شنود و وعده داده است تا سردمداری و رهبری زمین را به بندگان مؤمن و صالح‌اش بسپارد و جهان را بر پایه‌ی عدالت، برادری و برابری برای همه‌ی ساکنانش برقرار سازد.\n\nدر روزگاری که انسان معاصر، زیر بار سنگین بی‌عدالتی، ظلم و فریب کمر خم کرده و به دنبال پناهگاهی برای آسایش مادی و آرامش معنوی، عدالت اجتماعی و امیدی برای فرداهای روشن است؛ در زمانی که او احساس می‌کند هیچ یک از نظام‌ها و ایدئولوژی‌های موجود بشری توان پاسخگویی به نیازهای عمیق مادی، معنوی، فردی و اجتماعی‌اش را ندارند؛ ما در جایگاه مسلمانان و انسان‌هایی رسالتمند، اهل گفت‌وگو و دغدغه‌مند برای سرنوشت مشترک بشریت امروزی؛ تصمیم گرفتیم، دریچه‌ای نو بگشاییم.\n\nاین دریچه، نام خود را از مفهومی برگرفته است که هم در اعماق تاریخ دینی-سیاسی جهان ما جای دارد و هم در افق آینده‌های روشن برای بشر شوریده‌سر امروزی از اهمیت فوق‌العاده‌ای برخوردار است: **ایدئولوژی مهدویت!**\n\n### عهدی نو برای بیداری شناختی\nمجله‌ای که اکنون نخستین شماره‌ی آن را ورق می‌زنید، با هدف تبیین و بازاندیشی در باره‌ی این مفهوم عمیق تأسیس شده است. ایده‌ی این نشریه در دل همین بحران‌های موجود و فراگیر جهانی، در میان دود و خاکستر جنگ‌های روانی و فیزیکی علیه بشریت مظلوم امروزی شکل گرفته است.\n\nایدئولوژی مهدویت در نگاه ما صرفاً روایتی از آینده‌ای مبهم و دور نیست که تنها با دعا و زاری منتظر ظهور ناجی باشیم. این ایده‌ی مقدس در اصل و ذات خود یک دعوت است؛ دعوت به تحول، بیداری و بازسازی اخلاق، فردی و اجتماعی؛ فراخوانی برای برپایی نظام انسانی در سطح جهانی که در آن سلامت، عدالت، صلح و همزیستی بر همه‌جا و همه‌کس حاکم باشد.\n\nحضرت مهدی (علیه‌السلام)، در این نگاه، نه تنها رهبر دینی برای گروهی خاص، بلکه نماینده‌ی اراده‌ی الهی برای بازگرداندن تعادل به حیات بشر و تحقق یک ساختار جهانی آرام و انسانی بر مبنای عدالت است.",
-      "category_fa": "سرمقاله‌ها",
-      "author_name_fa": "میر الهام الدین سادات",
-      "author_title_fa": "سردبیر و پژوهشگر ارشد مهدویت",
-      "author_avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
-      "read_time_fa": "۶ دقیقه",
-      "published_at": "تابستان ۱۴۰۴ خورشیدی",
-      "image_url": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80",
-      "image_position": null,
-      "audio_url": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-      "audio_speaker_fa": null,
-      "views": 3100,
-      "featured": true,
-      "status": "published",
-      "submitted_by_name": null,
-      "submitted_at": null,
-      "submitted_device": null,
-      "tags": [],
-      "created_at": "2026-08-14T12:52:26.247935+00:00"
-    },
-    {
-      "id": "art-issue1-2",
-      "title_fa": "رهبریت در اسلام؛ اصول، مبانی و مسئولیت‌ها",
-      "slug": "leadership-in-islam",
-      "excerpt_fa": "رهبریت در اسلام جایگاهی الهی و مسئولیتی سنگین به شمار می‌آید که بر مبنای تقوا، عدالت و شایستگی استوار است. بررسی جایگاه رهبری از منظر قرآن و سنت نبوی.",
-      "content_fa": "رهبریت در اسلام جایگاهی الهی و مسئولیتی سنگین به شمار می‌آید که بر مبنای تقوا، عدالت و شایستگی استوار است. قرآن کریم و سنت پیامبر اکرم (ص) رهبری را وسیله‌ای برای هدایت مردم به سوی خیر و صلاح معرفی می‌کنند.\n\nدر اندیشه اسلامی، اطاعت از رهبر عادل، اطاعت از خداوند تلقی می‌شود. هدف نهایی رهبری در اسلام، تحقق عدالت، رشد معنوی، حفظ وحدت امت اسلامی و حاکمیت دین در روی زمین است.\n\n### ۱. رهبریت از منظر قرآن:\n- **متابعت از پیامبر (ص) نماد محبت الهی:** «قُلْ إِن کُنتُمْ تُحِبُّونَ اللَّهَ فَاتَّبِعُونِی یُحْبِبْکُمُ اللَّهُ» (آل عمران، ۳۱).\n- **اطاعت از پیامبر، اطاعت از خداست:** «مَّن یُطِعِ الرَّسُولَ فَقَدْ أَطَاعَ اللَّهَ» (نساء، ۸۰).\n- **تبعیت از اولی‌الامر:** «أَطِیعُوا اللَّهَ وَأَطِیعُوا الرَّسُولَ وَأُولِی الْأَمْرِ مِنکُمْ» (نساء، ۵۹).",
-      "category_fa": "تحلیل‌ها",
-      "author_name_fa": "عبدالظهور مدبر",
-      "author_title_fa": null,
-      "author_avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
-      "read_time_fa": "۱۰ دقیقه",
-      "published_at": "تابستان ۱۴۰۴ خورشیدی",
-      "image_url": "https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=1200&q=80",
-      "image_position": null,
-      "audio_url": null,
-      "audio_speaker_fa": null,
-      "views": 2420,
-      "featured": true,
-      "status": "published",
-      "submitted_by_name": null,
-      "submitted_at": null,
-      "submitted_device": null,
-      "tags": [],
-      "created_at": "2026-08-14T12:52:26.247935+00:00"
-    },
-    {
-      "id": "art-issue1-3",
-      "title_fa": "داشتن رهبری سلیم پس از توحید بزرگترین نعمت خداست",
-      "slug": "honest-leadership-greatest-blessing",
-      "excerpt_fa": "میزان محبت یک رهبر سلیم نسبت به رعیت مانند دلسوزی پدر نسبت به فرزندان است. نقد بی‌کفایتی زعمای دنیاطلب و ضرورت شعور سیاسی جمعی.",
-      "content_fa": "میزان محبت یک رهبر سلیم نسبت به رعیت به اندازه محبت، دلسوزی و مراقبت یک پدر نسبت به فرزندان است؛ با این تفاوت که اکثراً پدران توجه به تربیت و رشد ظاهری فرزندان کنند اما رهبران سلیم عنایت جدی به رشد ظاهری و باطنی رعیت در قلمرو خود می‌داشته باشند.\n\nبدرستی که نقش رهبر در جامعه مانند روح است که آسایش و آرامش جامعه بستگی به موجودیت رهبران آزاده، سلیم، خبیر و خردمند دارد. چنانچه در نبود روح، جسد پوسیده و گندیده می‌شود، در نبود زعیم سلیم و وطن‌خواه، جامعه رو به فساد و پوسیدگی می‌گراید.\n\n*شهی که پاس رعیت نگاه می‌دارد / حلال باد خراجش که مزد چوپانی ست*\n*وگرنه راعی خلق ست زهرمارش باد / که هرچه می‌خورد او جزیت مسلمانی ست (سعدی)*",
-      "category_fa": "نقد مکاتب",
-      "author_name_fa": "حبیب الله شریفی",
-      "author_title_fa": null,
-      "author_avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
-      "read_time_fa": "۵ دقیقه",
-      "published_at": "تابستان ۱۴۰۴ خورشیدی",
-      "image_url": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1200&q=80",
-      "image_position": null,
-      "audio_url": null,
-      "audio_speaker_fa": null,
-      "views": 1890,
-      "featured": false,
-      "status": "published",
-      "submitted_by_name": null,
-      "submitted_at": null,
-      "submitted_device": null,
-      "tags": [],
-      "created_at": "2026-08-14T12:52:26.247935+00:00"
-    }
-  ],
+  "timestamp": "2026-08-14T13:00:18.895Z",
+  "articles": [],
   "magazineIssues": [
     {
       "id": "mag-1786702957642",
@@ -154,183 +78,9 @@
       "cover_position": "center"
     }
   ],
-  "videos": [
-    {
-      "id": "vid-yt-user-1",
-      "title_fa": "نشست تصویری ویژه: ایدئولوژی مهدویت و پاسخ به پرسش‌های شناختی",
-      "description_fa": "ویدیو اختصاصی منتشرشده در یوتیوب با موضوع تبیین جهان‌بینی مهدوی و نقد شبهات معاصر.",
-      "video_url": "https://youtu.be/Xbc0i8B6FEs",
-      "thumbnail_url": "https://img.youtube.com/vi/Xbc0i8B6FEs/hqdefault.jpg",
-      "duration_fa": "۱۵ دقیقه",
-      "category_fa": "وبینارها",
-      "speaker_fa": "میر الهام الدین سادات & هیئت تحریریه",
-      "published_at": "تابستان ۱۴۰۴",
-      "views": 4800,
-      "featured": true,
-      "status": "published",
-      "submitted_by_name": null,
-      "submitted_at": null,
-      "submitted_device": null,
-      "download_url": "https://youtu.be/Xbc0i8B6FEs",
-      "transcript_fa": "بسم‌الله الرحمن الرحیم. در این ویدیوی یوتیوبی به تبیین محتوای شماره نخست مجله ایدئولوژی مهدویت می‌پردازیم...",
-      "timestamps": [
-        {
-          "time": "00:00",
-          "label_fa": "معرفی مجله و ضرورت ایدئولوژی مهدویت"
-        },
-        {
-          "time": "05:00",
-          "label_fa": "تحلیل مقاله رهبریت در اسلام"
-        },
-        {
-          "time": "10:00",
-          "label_fa": "جمع‌بندی و پرسش‌های بینندگان"
-        }
-      ],
-      "tags": [],
-      "created_at": "2026-08-14T12:52:28.991463+00:00"
-    },
-    {
-      "id": "vid-webinar-1",
-      "title_fa": "وبینار تخصصی: تبیین ابعاد عقلانی ایدئولوژی مهدویت",
-      "description_fa": "سمینار آنلاین و وبینار تخصصی با حضور استاد میر الهام الدین سادات و دکتر مدبر در خصوص تبیین ضرورت عقلانی مهدویت و پاسخ به شبهات مکاتب غرب.",
-      "video_url": "https://www.w3schools.com/html/mov_bbb.mp4",
-      "thumbnail_url": "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=80",
-      "duration_fa": "۴۵ دقیقه",
-      "category_fa": "وبینارها",
-      "speaker_fa": "میر الهام الدین سادات & عبدالظهور مدبر",
-      "published_at": "تابستان ۱۴۰۴",
-      "views": 4100,
-      "featured": false,
-      "status": "published",
-      "submitted_by_name": null,
-      "submitted_at": null,
-      "submitted_device": null,
-      "download_url": "#",
-      "transcript_fa": "بسم‌الله الرحمن الرحیم. با سلام خدمت شرکت‌کنندگان عزیز در وبینار تخصصی تبیین ایدئولوژی مهدویت...",
-      "timestamps": [
-        {
-          "time": "00:00",
-          "label_fa": "افتتاحیه وبینار و تبیین مسئله"
-        },
-        {
-          "time": "10:15",
-          "label_fa": "نقد پوزیتیویسم و اومانیسم"
-        },
-        {
-          "time": "25:30",
-          "label_fa": "پرسش و پاسخ شرکت‌کنندگان وبینار"
-        }
-      ],
-      "tags": [],
-      "created_at": "2026-08-14T12:52:28.991463+00:00"
-    },
-    {
-      "id": "vid-lecture-1",
-      "title_fa": "درس‌گفتار تصویری: نقد اومانیسم و فلسفه‌های مادی",
-      "description_fa": "تحلیل تصویری و درس‌گفتار استاد عبدالظهور مدبر در مورد ریشه‌های بحران انسان معاصر و راهکار مهدوی.",
-      "video_url": "https://www.w3schools.com/html/mov_bbb.mp4",
-      "thumbnail_url": "https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&w=1200&q=80",
-      "duration_fa": "۳۰ دقیقه",
-      "category_fa": "درس‌گفتارها",
-      "speaker_fa": "استاد عبدالظهور مدبر",
-      "published_at": "تابستان ۱۴۰۴",
-      "views": 2900,
-      "featured": false,
-      "status": "published",
-      "submitted_by_name": null,
-      "submitted_at": null,
-      "submitted_device": null,
-      "download_url": null,
-      "transcript_fa": "در این درس‌گفتار به تبیین نقد تفکر اومانیسم و جایگاه توحید پرداخته می‌شود...",
-      "timestamps": [
-        {
-          "time": "00:00",
-          "label_fa": "مقدمه درس‌گفتار"
-        },
-        {
-          "time": "15:00",
-          "label_fa": "تحلیل فلسفه مادی"
-        }
-      ],
-      "tags": [],
-      "created_at": "2026-08-14T12:52:28.991463+00:00"
-    }
-  ],
-  "audios": [
-    {
-      "id": "aud-rahbar-salim",
-      "title_fa": "پادکست شماره ۱: پادکست، رهبر سلیم",
-      "speaker_fa": "دکتر حبیب الله شریفی & سردبیری",
-      "audio_url": "/audios/01-podcast-rahbar-salim.mp3",
-      "duration_fa": "۱۰ دقیقه",
-      "description_fa": "قرائت صوتی و تحلیل تخصصی مقاله «داشتن رهبری سلیم پس از توحید بزرگترین نعمت خداست» برگرفته از شماره نخست مجله ایدئولوژی مهدویت.",
-      "published_at": "تابستان ۱۴۰۴",
-      "category_fa": "پادکست‌ها",
-      "cover_image": "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=800&q=80",
-      "plays": 3410,
-      "featured": false,
-      "status": "published",
-      "submitted_by_name": null,
-      "submitted_at": null,
-      "submitted_device": null,
-      "tags": [],
-      "created_at": "2026-08-14T12:52:29.310039+00:00"
-    },
-    {
-      "id": "aud-lecture-1",
-      "title_fa": "درس‌گفتار صوتی ۱: تبیین اصول رهبریت در اسلام",
-      "speaker_fa": "استاد عبدالظهور مدبر",
-      "audio_url": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-      "duration_fa": "۳۵ دقیقه",
-      "description_fa": "ارائه صوتی اختصاصی درس‌گفتار مبانی رهبری اسلامی و مسئولیت‌های اجتماعی زعمای عادل.",
-      "published_at": "تابستان ۱۴۰۴",
-      "category_fa": "درس‌گفتارها",
-      "cover_image": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=80",
-      "plays": 2890,
-      "featured": false,
-      "status": "published",
-      "submitted_by_name": null,
-      "submitted_at": null,
-      "submitted_device": null,
-      "tags": [],
-      "created_at": "2026-08-14T12:52:29.310039+00:00"
-    },
-    {
-      "id": "aud-webinar-audio-1",
-      "title_fa": "پادکست شماره ۲: نسخه صوتی وبینار وحدت امت و اخوت اسلامی",
-      "speaker_fa": "بیژن بهزاد & نخبگان علمی",
-      "audio_url": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-      "duration_fa": "۴۰ دقیقه",
-      "description_fa": "نسخه صوتی وبینار بین‌المللی تحلیل راهکارهای سه گانه وحدت امت و اخوت اسلامی.",
-      "published_at": "تابستان ۱۴۰۴",
-      "category_fa": "وبینارها",
-      "cover_image": "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=800&q=80",
-      "plays": 2150,
-      "featured": false,
-      "status": "published",
-      "submitted_by_name": null,
-      "submitted_at": null,
-      "submitted_device": null,
-      "tags": [],
-      "created_at": "2026-08-14T12:52:29.310039+00:00"
-    }
-  ],
-  "teamMembers": [
-    {
-      "id": "team-1",
-      "name_fa": "M. Nazir Yosuf",
-      "role_fa": "سردبیر ارشد و مدیر مسئول",
-      "bio_fa": "پژوهشگر معارف دینی و شناختی با تمرکز بر تبیین عقلانیت مهدویت.",
-      "avatar_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&auto=format&fit=crop&q=80",
-      "specialization_fa": "مدیریت محتوا و تحریریه",
-      "status": "published",
-      "submitted_by_name": null,
-      "submitted_at": null,
-      "submitted_device": null,
-      "created_at": "2026-08-14T11:53:58.852498+00:00"
-    }
-  ],
+  "videos": [],
+  "audios": [],
+  "teamMembers": [],
   "coHosts": [
     {
       "id": "cohost-super-admin",
@@ -830,6 +580,45 @@
       "device_info": "Windows Desktop (Edge)",
       "status_note": null,
       "created_at": "2026-08-14T12:50:25.291948+00:00"
+    },
+    {
+      "id": "log-1786712076607",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "وبینار تخصصی: تبیین ابعاد عقلانی ایدئولوژی مهدویت",
+      "item_type": "ویدیو",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۴:۵۴",
+      "time_only": "۱۴:۵۴",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-14T12:54:33.434901+00:00"
+    },
+    {
+      "id": "log-1786712076807",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "درس‌گفتار تصویری: نقد اومانیسم و فلسفه‌های مادی",
+      "item_type": "ویدیو",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۴:۵۴",
+      "time_only": "۱۴:۵۴",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-14T12:54:33.612764+00:00"
+    },
+    {
+      "id": "log-1786712078623",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "نشست تصویری ویژه: ایدئولوژی مهدویت و پاسخ به پرسش‌های شناختی",
+      "item_type": "ویدیو",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۴:۵۴",
+      "time_only": "۱۴:۵۴",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-14T12:54:35.426635+00:00"
     },
     {
       "id": "log-1786709174316",

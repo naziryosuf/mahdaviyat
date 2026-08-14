@@ -1065,13 +1065,13 @@ export const useStore = create<AppState>((set, get) => ({
     try {
       // 1. Articles
       const { data: supaArticles, error: artErr } = await supabase.from('articles').select('*').order('created_at', { ascending: false });
-      if (!artErr && supaArticles && supaArticles.length > 0) {
-        set({ articles: supaArticles });
+      if (!artErr) {
+        set({ articles: supaArticles || [] });
       }
 
       // 2. Magazine Issues
       const { data: supaMagazines, error: magErr } = await supabase.from('magazine_issues').select('*').order('issue_number', { ascending: true });
-      if (!magErr && supaMagazines && supaMagazines.length > 0) {
+      if (!magErr && supaMagazines) {
         const stopWords = ['در', 'به', 'از', 'با', 'و', 'یا', 'بر', 'که', 'را', 'ان', 'این'];
         const sanitizedMags = supaMagazines.map((mag: MagazineIssue) => {
           const isBadCover = !mag.cover_image || mag.cover_image.startsWith('file://') || mag.cover_image.trim() === '';
@@ -1091,20 +1091,20 @@ export const useStore = create<AppState>((set, get) => ({
 
       // 3. Videos
       const { data: supaVideos, error: vidErr } = await supabase.from('video_items').select('*');
-      if (!vidErr && supaVideos && supaVideos.length > 0) {
-        set({ videos: supaVideos });
+      if (!vidErr) {
+        set({ videos: supaVideos || [] });
       }
 
       // 4. Audios
       const { data: supaAudios, error: audErr } = await supabase.from('audio_items').select('*');
-      if (!audErr && supaAudios && supaAudios.length > 0) {
-        set({ audios: supaAudios });
+      if (!audErr) {
+        set({ audios: supaAudios || [] });
       }
 
       // 5. Team Members
       const { data: supaTeam, error: teamErr } = await supabase.from('team_members').select('*');
-      if (!teamErr && supaTeam && supaTeam.length > 0) {
-        set({ teamMembers: supaTeam });
+      if (!teamErr) {
+        set({ teamMembers: supaTeam || [] });
       }
 
       // 6. Contact Messages
