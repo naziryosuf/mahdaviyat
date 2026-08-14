@@ -131,21 +131,20 @@ export const AdminDashboardContent: React.FC = () => {
 
   const handleGlobalSave = async () => {
     setIsSaving(true);
-    setSaveToast({ msg: 'در حال ذخیره و انتشار کل اطلاعات در دیتابیس ابری...', type: 'loading' });
+    setSaveToast({ msg: 'در حال ذخیره و همگام‌سازی اطلاعات در دیتابیس ابری...', type: 'loading' });
 
-    (async () => {
-      try {
-        await saveAllChangesToLive();
-        setIsSaving(false);
-        setSaveToast({ msg: '✅ تمام تغییرات با موفقیت در سرور ابری همگام‌سازی و منتشر گردید!', type: 'success' });
-        setTimeout(() => setSaveToast(null), 3500);
-      } catch (err: any) {
-        setIsSaving(false);
-        console.error('Error in handleGlobalSave:', err);
-        setSaveToast({ msg: `❌ خطا در انتشار: ${err?.message || 'مشکلی رخ داد'}`, type: 'error' });
-        setTimeout(() => setSaveToast(null), 5000);
-      }
-    })();
+    try {
+      await saveAllChangesToLive();
+      setSaveToast({ msg: '✅ تمام تغییرات با موفقیت در دیتابیس ابری منتشر گردید!', type: 'success' });
+      setTimeout(() => setSaveToast(null), 3500);
+    } catch (err: any) {
+      console.error('Error in handleGlobalSave:', err);
+      setSaveToast({ msg: `❌ خطا در همگام‌سازی: ${err?.message || 'مشکلی رخ داد'}`, type: 'error' });
+      setTimeout(() => setSaveToast(null), 5000);
+    } finally {
+      setIsSaving(false);
+      discardStagedChanges(); // Force reset queue to zero
+    }
   };
 
   // Co-Host Modal State
@@ -808,11 +807,14 @@ export const AdminDashboardContent: React.FC = () => {
         <div className="flex items-center gap-3 w-full md:w-auto justify-end">
           
           <div className="flex items-center gap-2">
-            {hasUnsavedChanges && (
+            {(hasUnsavedChanges || stagedChangesCount > 0) && (
               <button
-                onClick={discardStagedChanges}
+                onClick={() => {
+                  setIsSaving(false);
+                  discardStagedChanges();
+                }}
                 className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-500 hover:bg-amber-500/20 text-xs font-bold flex items-center gap-1.5 transition-all"
-                title="لغو تغییرات ذخیره‌نشده"
+                title="لغو تغییرات و ریست صف ذخیره‌سازی"
               >
                 <RotateCcw className="w-4 h-4" />
                 <span className="hidden sm:inline">انصراف</span>
@@ -821,9 +823,14 @@ export const AdminDashboardContent: React.FC = () => {
 
             <button
               onClick={handleGlobalSave}
+              onDoubleClick={() => {
+                setIsSaving(false);
+                discardStagedChanges();
+              }}
               disabled={isSaving}
+              title="دوبار کلیک جهت پاک‌سازی اضطراری صف ذخیره‌سازی"
               className={`px-5 py-3 rounded-2xl text-xs font-extrabold flex items-center gap-2 transition-all shadow-lg active:scale-95 ${
-                hasUnsavedChanges
+                hasUnsavedChanges || stagedChangesCount > 0
                   ? 'bg-emerald-600 hover:bg-emerald-700 text-white animate-pulse shadow-emerald-600/30'
                   : 'bg-[#1B889A] hover:bg-[#156d7b] text-white shadow-[#1B889A]/30'
               }`}

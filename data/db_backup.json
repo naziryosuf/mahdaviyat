@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-14T14:06:34.021Z",
+  "timestamp": "2026-08-14T15:04:59.732Z",
   "articles": [],
   "magazineIssues": [
     {
@@ -347,6 +347,19 @@
       "device_info": "Windows Desktop (Chrome)",
       "status_note": "تایید مستقیم توسط ادمین کل",
       "created_at": "2026-08-13T21:20:05.518538+00:00"
+    },
+    {
+      "id": "log-1786716520601",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "شماره سوم مجلۀ دیجیتالی ایدئولوژی مهدویت ",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۶:۰۸",
+      "time_only": "۱۶:۰۸",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-14T14:08:37.515867+00:00"
     },
     {
       "id": "log-1786708142544",

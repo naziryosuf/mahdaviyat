@@ -48,6 +48,7 @@ interface AppState {
   // Staged Unsaved Changes (Global Save Button)
   stagedChangesCount: number;
   hasUnsavedChanges: boolean;
+  isSaving?: boolean;
   saveAllChangesToLive: () => Promise<void>;
   discardStagedChanges: () => void;
 
@@ -276,14 +277,14 @@ export const useStore = create<AppState>((set, get) => ({
     } catch (e) {
       console.log('Supabase Save Sync Error:', e);
     } finally {
-      // ALWAYS reset staged count in all scenarios (success, partial error, or exception)
-      set({ stagedChangesCount: 0, hasUnsavedChanges: false });
+      // FORCEFULLY reset all save and queue flags in all scenarios (success, partial error, or exception)
+      set({ stagedChangesCount: 0, isSaving: false, hasUnsavedChanges: false });
     }
   },
 
   discardStagedChanges: () => {
+    set({ stagedChangesCount: 0, isSaving: false, hasUnsavedChanges: false });
     get().fetchFromBackend();
-    set({ stagedChangesCount: 0, hasUnsavedChanges: false });
   },
 
   isAdminLoggedIn: false,
@@ -552,8 +553,8 @@ export const useStore = create<AppState>((set, get) => ({
 
     set((state) => ({ 
       articles: [newArticle, ...state.articles],
-      stagedChangesCount: state.stagedChangesCount + 1,
-      hasUnsavedChanges: true
+      stagedChangesCount: 0,
+      hasUnsavedChanges: false
     }));
 
     try {
@@ -592,8 +593,8 @@ export const useStore = create<AppState>((set, get) => ({
         }
         return art;
       }),
-      stagedChangesCount: state.stagedChangesCount + 1,
-      hasUnsavedChanges: true
+      stagedChangesCount: 0,
+      hasUnsavedChanges: false
     }));
 
     if (updatedArt) {
@@ -660,8 +661,8 @@ export const useStore = create<AppState>((set, get) => ({
 
     set((state) => ({ 
       magazineIssues: [newIssue, ...state.magazineIssues],
-      stagedChangesCount: state.stagedChangesCount + 1,
-      hasUnsavedChanges: true
+      stagedChangesCount: 0,
+      hasUnsavedChanges: false
     }));
 
     const dbPayload: Record<string, any> = {
@@ -735,8 +736,8 @@ export const useStore = create<AppState>((set, get) => ({
         }
         return iss;
       }),
-      stagedChangesCount: state.stagedChangesCount + 1,
-      hasUnsavedChanges: true
+      stagedChangesCount: 0,
+      hasUnsavedChanges: false
     }));
 
     if (updatedMag) {
@@ -793,8 +794,8 @@ export const useStore = create<AppState>((set, get) => ({
     const target = get().magazineIssues.find(m => m.id === id);
     set((state) => ({
       magazineIssues: state.magazineIssues.filter((iss) => iss.id !== id),
-      stagedChangesCount: state.stagedChangesCount + 1,
-      hasUnsavedChanges: true
+      stagedChangesCount: 0,
+      hasUnsavedChanges: false
     }));
     supabase.from('magazine_issues').delete().eq('id', id).then(() => {});
     if (target) {
