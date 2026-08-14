@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-14T10:36:46.025Z",
+  "timestamp": "2026-08-14T10:44:20.293Z",
   "articles": [],
   "magazineIssues": [
     {
@@ -23,7 +23,21 @@
   ],
   "videos": [],
   "audios": [],
-  "teamMembers": [],
+  "teamMembers": [
+    {
+      "id": "team-1",
+      "name_fa": "M. Nazir Yosuf",
+      "role_fa": "سردبیر ارشد و مدیر مسئول",
+      "bio_fa": "پژوهشگر معارف دینی و شناختی با تمرکز بر تبیین عقلانیت مهدویت.",
+      "avatar_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&auto=format&fit=crop&q=80",
+      "specialization_fa": "مدیریت محتوا و تحریریه",
+      "status": "published",
+      "submitted_by_name": null,
+      "submitted_at": null,
+      "submitted_device": null,
+      "created_at": "2026-08-14T10:40:39.184009+00:00"
+    }
+  ],
   "coHosts": [
     {
       "id": "cohost-super-admin",
@@ -67,71 +81,6 @@
     }
   ],
   "auditLogs": [
-    {
-      "id": "log-1786702958021",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "افزودن",
-      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
-      "item_type": "مجله",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۲۲",
-      "time_only": "۱۲:۲۲",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": "انتشار مستقیم",
-      "created_at": null
-    },
-    {
-      "id": "log-1786702628505",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "حذف",
-      "target_title": "شماره نخست: عقلانیت، معرفت و بیداری معنوی",
-      "item_type": "مجله",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۱۷",
-      "time_only": "۱۲:۱۷",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
-    {
-      "id": "log-1786702588690",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "حذف",
-      "target_title": "تبیین عقلانی انتظار و تحول جوامع بشری",
-      "item_type": "ویدیو",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۱۶",
-      "time_only": "۱۲:۱۶",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
-    {
-      "id": "log-1786702585010",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "حذف",
-      "target_title": "M. Nazir Yosuf",
-      "item_type": "عضو تیم",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۱۶",
-      "time_only": "۱۲:۱۶",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
-    {
-      "id": "log-1786702573818",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "حذف",
-      "target_title": "پادکست شناختی: جایگاه انسان در هستی‌شناسی مهدوی",
-      "item_type": "صوتی",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۱۶",
-      "time_only": "۱۲:۱۶",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
     {
       "id": "log-1786658377872",
       "user_name": "M. Nazir Yosuf",
@@ -196,6 +145,84 @@
       "device_info": "Windows Desktop (Edge)",
       "status_note": null,
       "created_at": "2026-08-13T21:20:03.894183+00:00"
+    },
+    {
+      "id": "log-1786704040225",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۴۰",
+      "time_only": "۱۲:۴۰",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786702958021",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "افزودن",
+      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۲۲",
+      "time_only": "۱۲:۲۲",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": "انتشار مستقیم",
+      "created_at": null
+    },
+    {
+      "id": "log-1786702628505",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "شماره نخست: عقلانیت، معرفت و بیداری معنوی",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۱۷",
+      "time_only": "۱۲:۱۷",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786702588690",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "تبیین عقلانی انتظار و تحول جوامع بشری",
+      "item_type": "ویدیو",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۱۶",
+      "time_only": "۱۲:۱۶",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786702585010",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "M. Nazir Yosuf",
+      "item_type": "عضو تیم",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۱۶",
+      "time_only": "۱۲:۱۶",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786702573818",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "پادکست شناختی: جایگاه انسان در هستی‌شناسی مهدوی",
+      "item_type": "صوتی",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۱۶",
+      "time_only": "۱۲:۱۶",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
     }
   ],
   "contactMessages": []
