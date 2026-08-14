@@ -37,6 +37,11 @@ import {
 import { calculateReadingTimeFa } from '@/utils/readingTime';
 import { Article, MagazineIssue, VideoItem, AudioItem, TeamMember, ContactMessage, CoHostUser } from '@/types';
 
+const parseTagsInput = (str: string): string[] => {
+  if (!str || !str.trim()) return [];
+  return str.split(/[,،\s]+/).map(t => t.trim().replace(/^#/, '')).filter(Boolean).map(t => `#${t}`);
+};
+
 export const AdminDashboardContent: React.FC = () => {
   const { 
     isAdminLoggedIn, 
@@ -212,6 +217,7 @@ export const AdminDashboardContent: React.FC = () => {
   const [artAuthor, setArtAuthor] = useState('M. Nazir Yosuf');
   const [artReadTime, setArtReadTime] = useState('۷ دقیقه');
   const [artImage, setArtImage] = useState('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80');
+  const [artTags, setArtTags] = useState('#معرفت‌شناسی, #مهدویت');
 
   useEffect(() => {
     if (artContent) {
@@ -227,6 +233,7 @@ export const AdminDashboardContent: React.FC = () => {
     setArtCategory('تحلیل‌ها');
     setArtAuthor(currentUser?.name_fa || 'M. Nazir Yosuf');
     setArtImage('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80');
+    setArtTags('#معرفت‌شناسی, #مهدویت');
     setShowArticleModal(true);
   };
 
@@ -238,12 +245,15 @@ export const AdminDashboardContent: React.FC = () => {
     setArtCategory(art.category_fa || 'تحلیل‌ها');
     setArtAuthor(art.author_name_fa || 'M. Nazir Yosuf');
     setArtImage(art.image_url || '');
+    setArtTags(art.tags ? art.tags.join(', ') : '#معرفت‌شناسی, #مهدویت');
     setShowArticleModal(true);
   };
 
   const handleSaveArticle = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!artTitle.trim()) return;
+
+    const parsedTags = parseTagsInput(artTags);
 
     if (editingArticle) {
       await updateArticle(editingArticle.id, {
@@ -254,6 +264,7 @@ export const AdminDashboardContent: React.FC = () => {
         author_name_fa: artAuthor,
         image_url: artImage,
         read_time_fa: artReadTime,
+        tags: parsedTags,
       });
     } else {
       await addArticle({
@@ -267,6 +278,7 @@ export const AdminDashboardContent: React.FC = () => {
         read_time_fa: artReadTime,
         published_at: new Date().toLocaleDateString('fa-IR'),
         image_url: artImage,
+        tags: parsedTags,
         featured: false,
       });
     }
@@ -285,6 +297,7 @@ export const AdminDashboardContent: React.FC = () => {
   const [magPdfUrl, setMagPdfUrl] = useState('/downloads/mahdism_issue_1.pdf');
   const [magAuthorName, setMagAuthorName] = useState('M. Nazir Yosufi');
   const [magAuthorTitle, setMagAuthorTitle] = useState('سردبیر ارشد');
+  const [magTags, setMagTags] = useState('#نشریه_کامل, #شماره_یک');
 
   const handleCoverFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -323,6 +336,7 @@ export const AdminDashboardContent: React.FC = () => {
     setMagPdfUrl('/downloads/mahdism_issue_1.pdf');
     setMagAuthorName(currentUser?.name_fa || 'M. Nazir Yosufi');
     setMagAuthorTitle(currentUser?.role_fa || 'سردبیر ارشد');
+    setMagTags('#نشریه_کامل, #شماره_یک');
     setShowMagModal(true);
   };
 
@@ -337,12 +351,15 @@ export const AdminDashboardContent: React.FC = () => {
     setMagPdfUrl(mag.pdf_url);
     setMagAuthorName(mag.author_name_fa || 'M. Nazir Yosufi');
     setMagAuthorTitle(mag.author_title_fa || 'سردبیر ارشد');
+    setMagTags(mag.tags ? mag.tags.join(', ') : '#نشریه_کامل, #شماره_یک');
     setShowMagModal(true);
   };
 
   const handleSaveMagazine = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!magTitle.trim()) return;
+
+    const parsedTags = parseTagsInput(magTags);
 
     if (editingMag) {
       updateMagazineIssue(editingMag.id, {
@@ -355,6 +372,7 @@ export const AdminDashboardContent: React.FC = () => {
         pdf_url: magPdfUrl,
         author_name_fa: magAuthorName,
         author_title_fa: magAuthorTitle,
+        tags: parsedTags,
       });
     } else {
       await addMagazineIssue({
@@ -367,6 +385,7 @@ export const AdminDashboardContent: React.FC = () => {
         pdf_url: magPdfUrl,
         author_name_fa: magAuthorName,
         author_title_fa: magAuthorTitle,
+        tags: parsedTags,
         pages: [],
         featured: true,
       });
@@ -1203,8 +1222,18 @@ export const AdminDashboardContent: React.FC = () => {
                 </div>
               </div>
               <div>
-                <label className="block font-bold mb-1">لینک تصویر مقاله:</label>
-                <input type="text" value={artImage} onChange={e => setArtImage(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono" />
+                <label className="block font-bold mb-1 text-[var(--text-primary)]">لینک تصویر مقاله:</label>
+                <input type="text" value={artImage} onChange={e => setArtImage(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono text-[var(--text-primary)]" />
+              </div>
+              <div>
+                <label className="block font-bold mb-1 text-[var(--text-primary)]">کلمات کلیدی و هشتگ‌ها (#هشتگ با کاما جدا کنید):</label>
+                <input
+                  type="text"
+                  value={artTags}
+                  onChange={e => setArtTags(e.target.value)}
+                  placeholder="مثلا: #معرفت‌شناسی, #مهدویت, #سرمقاله"
+                  className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-[var(--text-primary)] dir-ltr text-left font-mono"
+                />
               </div>
               <div className="flex justify-end gap-2 pt-3 border-t border-[var(--card-border)]">
                 <button type="button" onClick={() => setShowArticleModal(false)} className="px-4 py-2 rounded-xl border border-[var(--card-border)]">انصراف</button>
@@ -1356,6 +1385,18 @@ export const AdminDashboardContent: React.FC = () => {
                   onChange={e => setMagPdfUrl(e.target.value)}
                   placeholder="آدرس لینک فایل PDF یا انتخاب مستقیم از دیوایس"
                   className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl font-mono text-[var(--text-primary)] dir-ltr text-left"
+                />
+              </div>
+
+              {/* HASHTAGS & KEYWORDS FIELD */}
+              <div>
+                <label className="block font-bold text-[var(--text-primary)] mb-1">کلمات کلیدی و هشتگ‌ها (#هشتگ با کاما جدا کنید):</label>
+                <input
+                  type="text"
+                  value={magTags}
+                  onChange={e => setMagTags(e.target.value)}
+                  placeholder="مثلا: #نشریه_کامل, #شماره_یک, #عقلانیت"
+                  className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-[var(--text-primary)] dir-ltr text-left font-mono"
                 />
               </div>
 
