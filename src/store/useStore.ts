@@ -254,28 +254,31 @@ export const useStore = create<AppState>((set, get) => ({
       localStorage.setItem('mahdism_designer_url', state.designerWebsiteUrl);
     }
 
-    // Sync permanently to Supabase Cloud Database
     try {
-      await Promise.all([
-        supabase.from('articles').upsert(state.articles),
-        supabase.from('magazine_issues').upsert(state.magazineIssues),
-        supabase.from('video_items').upsert(state.videos),
-        supabase.from('audio_items').upsert(state.audios),
-        supabase.from('team_members').upsert(state.teamMembers),
-        supabase.from('co_hosts').upsert(state.coHosts),
-        supabase.from('site_settings').upsert([
-          { key: 'designer_name', value: state.designerName },
-          { key: 'designer_url', value: state.designerWebsiteUrl },
-          { key: 'about_mission', value: state.aboutUsMission }
-        ]),
-        supabase.from('audit_logs').upsert(state.auditLogs)
-      ]);
+      // Sync non-empty tables to Supabase Cloud Database
+      const promises: Promise<any>[] = [];
+      if (state.articles.length > 0) promises.push(Promise.resolve(supabase.from('articles').upsert(state.articles)));
+      if (state.magazineIssues.length > 0) promises.push(Promise.resolve(supabase.from('magazine_issues').upsert(state.magazineIssues)));
+      if (state.videos.length > 0) promises.push(Promise.resolve(supabase.from('video_items').upsert(state.videos)));
+      if (state.audios.length > 0) promises.push(Promise.resolve(supabase.from('audio_items').upsert(state.audios)));
+      if (state.teamMembers.length > 0) promises.push(Promise.resolve(supabase.from('team_members').upsert(state.teamMembers)));
+      if (state.coHosts.length > 0) promises.push(Promise.resolve(supabase.from('co_hosts').upsert(state.coHosts)));
+
+      promises.push(Promise.resolve(supabase.from('site_settings').upsert([
+        { key: 'designer_name', value: state.designerName },
+        { key: 'designer_url', value: state.designerWebsiteUrl },
+        { key: 'about_mission', value: state.aboutUsMission }
+      ])));
+
+      if (state.auditLogs.length > 0) promises.push(Promise.resolve(supabase.from('audit_logs').upsert(state.auditLogs)));
+
+      await Promise.allSettled(promises);
     } catch (e) {
       console.log('Supabase Save Sync Error:', e);
+    } finally {
+      // ALWAYS reset staged count in all scenarios (success, partial error, or exception)
+      set({ stagedChangesCount: 0, hasUnsavedChanges: false });
     }
-
-    // Reset staged count
-    set({ stagedChangesCount: 0, hasUnsavedChanges: false });
   },
 
   discardStagedChanges: () => {

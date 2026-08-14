@@ -24,15 +24,13 @@ interface Props {
 
 export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [viewerMode, setViewerMode] = useState<'mozilla' | 'native'>('mozilla');
+  const [viewerMode, setViewerMode] = useState<'native' | 'gdocs'>('native');
 
   const pdfUrl = issue.pdf_url || '/downloads/mahdism_issue_1.pdf';
   const isHttpUrl = pdfUrl.startsWith('http://') || pdfUrl.startsWith('https://');
 
-  // Fast, zero-download HTML5 Canvas PDF reader powered by Mozilla PDF.js
-  const mozillaPdfViewerUrl = isHttpUrl || pdfUrl.startsWith('/')
-    ? `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}`
-    : pdfUrl;
+  // Google Docs Viewer fallback for remote URLs
+  const gdocsViewerUrl = `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(pdfUrl)}`;
 
   const handleDownloadPDF = () => {
     confetti({ particleCount: 50, spread: 70, origin: { y: 0.7 } });
@@ -88,30 +86,35 @@ export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
           {/* Mode Switcher */}
           <div className="flex items-center p-1 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] text-xs">
             <button
-              onClick={() => setViewerMode('mozilla')}
-              className={`px-3 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1 ${viewerMode === 'mozilla' ? 'bg-[#1B889A] text-white shadow-sm' : 'text-[var(--text-secondary)]'}`}
+              onClick={() => setViewerMode('native')}
+              className={`px-3 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1 ${
+                viewerMode === 'native' ? 'bg-[#1B889A] text-white shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+              }`}
             >
-              <Zap className="w-3.5 h-3.5 text-yellow-300" />
-              <span>مطالعه سریع (HTML5)</span>
+              <Zap className="w-3.5 h-3.5" />
+              <span>نمایشگر اصلی</span>
             </button>
             <button
-              onClick={() => setViewerMode('native')}
-              className={`px-3 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1 ${viewerMode === 'native' ? 'bg-[#1B889A] text-white shadow-sm' : 'text-[var(--text-secondary)]'}`}
+              onClick={() => setViewerMode('gdocs')}
+              className={`px-3 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1 ${
+                viewerMode === 'gdocs' ? 'bg-[#1B889A] text-white shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+              }`}
             >
               <BookOpen className="w-3.5 h-3.5" />
-              <span>نمایشگر اصلی مرورگر</span>
+              <span>نمایشگر کمکی</span>
             </button>
           </div>
 
+          {/* Fullscreen Mode Toggle */}
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] text-[var(--text-primary)] text-xs font-bold transition-all active:scale-95 shadow-sm"
-            title="حالت تمام صفحه"
+            className="p-2.5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] text-[var(--text-primary)] transition-all active:scale-95 shadow-sm"
+            title={isFullscreen ? 'خروج از حالت تمام صفحه' : 'حالت تمام صفحه'}
           >
             {isFullscreen ? <Minimize2 className="w-4 h-4 text-[#1B889A]" /> : <Maximize2 className="w-4 h-4 text-[#1B889A]" />}
-            <span className="hidden sm:inline">{isFullscreen ? 'خروج از تمام‌صفحه' : 'تمام‌صفحه'}</span>
           </button>
 
+          {/* Open Direct URL */}
           <a
             href={pdfUrl}
             target="_blank"
@@ -142,24 +145,18 @@ export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
           isFullscreen ? 'h-[calc(100vh-90px)] rounded-none border-0' : 'h-[600px] sm:h-[880px]'
         }`}
       >
-        {viewerMode === 'mozilla' ? (
+        {viewerMode === 'native' ? (
           <iframe
-            src={mozillaPdfViewerUrl}
+            src={`${pdfUrl}#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
             title={issue.title_fa}
             className="w-full h-full border-0 rounded-2xl bg-stone-900"
           />
         ) : (
-          <object
-            data={`${pdfUrl}#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
-            type="application/pdf"
+          <iframe
+            src={gdocsViewerUrl}
+            title={issue.title_fa}
             className="w-full h-full border-0 rounded-2xl bg-stone-900"
-          >
-            <embed
-              src={`${pdfUrl}#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
-              type="application/pdf"
-              className="w-full h-full border-0 rounded-2xl bg-stone-900"
-            />
-          </object>
+          />
         )}
       </div>
 
