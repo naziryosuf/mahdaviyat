@@ -23,9 +23,9 @@ interface Props {
 
 export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [viewerMode, setViewerMode] = useState<'native' | 'google'>('native');
+  const [viewerMode, setViewerMode] = useState<'native' | 'google'>('google');
 
-  const pdfUrl = issue.pdf_url || '/magazines/issue-1-mahdaviyat.pdf';
+  const pdfUrl = issue.pdf_url || '/downloads/mahdism_issue_1.pdf';
   const isDataUrl = pdfUrl.startsWith('data:') || pdfUrl.startsWith('blob:');
   const isHttpUrl = pdfUrl.startsWith('http://') || pdfUrl.startsWith('https://');
 
