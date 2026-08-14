@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-14T10:54:25.066Z",
+  "timestamp": "2026-08-14T10:59:07.374Z",
   "articles": [],
   "magazineIssues": [
     {
@@ -16,7 +16,10 @@
       "submitted_by_name": "M. Nazir Yosuf",
       "submitted_at": "۱۴۰۵/۵/۲۳",
       "submitted_device": "Windows Desktop (Edge)",
-      "tags": [],
+      "tags": [
+        "#شماره_نخست",
+        "#ایدئولوژی_مهدویت"
+      ],
       "pages": [],
       "created_at": "2026-08-14T10:22:34.701835+00:00"
     }
@@ -104,15 +107,28 @@
   ],
   "auditLogs": [
     {
-      "id": "log-1786658377872",
+      "id": "log-1786704965347",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۵۶",
+      "time_only": "۱۲:۵۶",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786702585010",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
       "action_type": "حذف",
-      "target_title": "نقد و بررسی ماتریالیسم تاریخی از منظر حکمت اسلامی",
-      "item_type": "مقاله",
-      "timestamp": "۱۴۰۵/۵/۲۲ - ۲۳:۵۹",
-      "time_only": "۲۳:۵۹",
-      "device_info": "Android Mobile (Chrome)",
+      "target_title": "M. Nazir Yosuf",
+      "item_type": "عضو تیم",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۱۶",
+      "time_only": "۱۲:۱۶",
+      "device_info": "Windows Desktop (Edge)",
       "status_note": null,
       "created_at": null
     },
@@ -221,6 +237,19 @@
       "created_at": null
     },
     {
+      "id": "log-1786658377872",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "نقد و بررسی ماتریالیسم تاریخی از منظر حکمت اسلامی",
+      "item_type": "مقاله",
+      "timestamp": "۱۴۰۵/۵/۲۲ - ۲۳:۵۹",
+      "time_only": "۲۳:۵۹",
+      "device_info": "Android Mobile (Chrome)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
       "id": "log-1",
       "user_name": "M. Nazir Yosuf",
       "user_role": "سردبیر ارشد",
@@ -258,19 +287,6 @@
       "device_info": "Windows Desktop (Edge)",
       "status_note": null,
       "created_at": "2026-08-13T21:20:03.894183+00:00"
-    },
-    {
-      "id": "log-1786702585010",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "حذف",
-      "target_title": "M. Nazir Yosuf",
-      "item_type": "عضو تیم",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۱۶",
-      "time_only": "۱۲:۱۶",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
     }
   ],
   "contactMessages": []

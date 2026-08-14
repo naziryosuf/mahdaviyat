@@ -1,21 +1,37 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useStore } from '@/store/useStore';
-import { FileText, Search, Clock, ArrowLeft, Bookmark, Sparkles, Headphones } from 'lucide-react';
+import { FileText, Search, Clock, ArrowLeft, Bookmark, Sparkles, Headphones, Tag } from 'lucide-react';
 
-export default function ContentCatalogPage() {
+function ContentCatalogInner() {
   const { articles, bookmarkedArticles, toggleBookmark } = useStore();
-  const [searchQuery, setSearchQuery] = useState('');
+  const searchParams = useSearchParams();
+  const initialSearch = searchParams.get('search') || '';
+
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [selectedCategory, setSelectedCategory] = useState<string>('همه');
+
+  useEffect(() => {
+    const s = searchParams.get('search');
+    if (s) {
+      setSearchQuery(s);
+    }
+  }, [searchParams]);
 
   const categories = ['همه', 'سرمقاله‌ها', 'مقالات', 'تحلیل‌ها', 'تبصره‌ها', 'اشعار', 'و غیره...'];
 
   const filtered = articles.filter((art) => {
     const matchesCategory = selectedCategory === 'همه' || art.category_fa === selectedCategory;
-    const matchesSearch = art.title_fa.includes(searchQuery) || art.content_fa.includes(searchQuery);
-    return matchesCategory && matchesSearch;
+    const q = searchQuery.trim().toLowerCase().replace(/^#/, '');
+    if (!q) return matchesCategory;
+    const matchesTitle = art.title_fa.toLowerCase().includes(q);
+    const matchesContent = art.content_fa.toLowerCase().includes(q);
+    const matchesTags = art.tags?.some((t) => t.toLowerCase().includes(q));
+    const matchesCategoryName = art.category_fa.toLowerCase().includes(q);
+    return matchesCategory && (matchesTitle || matchesContent || matchesTags || matchesCategoryName);
   });
 
   return (
@@ -40,7 +56,7 @@ export default function ContentCatalogPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="جستجو در مقالات و سایر متون..."
+            placeholder="جستجو در مقالات، هشتگ‌ها و متون..."
             className="w-full pl-12 pr-4 py-3 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-2xl text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:border-[#1B889A] transition-colors shadow-inner"
           />
           <Search className="w-5 h-5 text-slate-400 absolute left-4 top-3.5" />
@@ -68,9 +84,11 @@ export default function ContentCatalogPage() {
       {filtered.length === 0 ? (
         <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-8 sm:p-12 text-center space-y-4 modern-card">
           <FileText className="w-12 h-12 text-[#1B889A] mx-auto opacity-70" />
-          <h3 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">هنوز مقاله‌ای ثبت نگردیده است</h3>
+          <h3 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">
+            {searchQuery ? `هیچ مقاله‌ای با عنوان یا هشتگ «${searchQuery}» یافت نشد` : 'هنوز مقاله‌ای ثبت نگردیده است'}
+          </h3>
           <p className="text-xs sm:text-sm text-[var(--text-secondary)] max-w-md mx-auto">
-            می‌توانید با ورود به پنل مدیریت، مقالات و متون جدید را انتشار دهید.
+            می‌توانید عبارات جستجو را تغییر دهید یا از پنل مدیریت مقالات جدید انتشار دهید.
           </p>
         </div>
       ) : (
@@ -100,63 +118,60 @@ export default function ContentCatalogPage() {
                           : 'text-stone-400 hover:text-[#1B889A]'
                       }`}
                     >
-                      <Bookmark className="w-4 h-4 fill-current" />
+                      <Bookmark className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
 
-                {art.image_url ? (
-                  <div className="relative rounded-2xl overflow-hidden aspect-[16/9] w-full border border-[var(--card-border)] bg-stone-900 shadow-sm group-hover:shadow-md transition-all">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={art.image_url}
-                      alt={art.title_fa}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      style={{ objectPosition: art.image_position || 'center' }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60" />
-                  </div>
-                ) : null}
+                <div className="space-y-2">
+                  <h3 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors leading-snug">
+                    {art.title_fa}
+                  </h3>
+                  <p className="text-xs text-[var(--text-secondary)] line-clamp-3 leading-relaxed font-serif-persian">
+                    {art.excerpt_fa}
+                  </p>
+                </div>
 
-                <h3 className="text-xl font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors leading-snug">
-                  <Link href={`/content/${art.id}`}>{art.title_fa}</Link>
-                </h3>
-
-                <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-serif-persian line-clamp-3">
-                  {art.excerpt_fa}
-                </p>
-
-                {/* Clickable Tags Chips (Max 3) */}
+                {/* Hashtags display */}
                 {art.tags && art.tags.length > 0 && (
-                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                    {art.tags.slice(0, 3).map((tag, idx) => (
-                      <Link
+                  <div className="flex flex-wrap gap-1.5 pt-2 border-t border-[var(--card-border)]">
+                    {art.tags.map((t, idx) => (
+                      <span
                         key={idx}
-                        href={`/?search=${encodeURIComponent(tag)}`}
-                        className="px-2.5 py-0.5 rounded-full bg-[#1B889A]/10 border border-[#1B889A]/30 text-[#1B889A] hover:bg-[#1B889A] hover:text-white text-[11px] font-bold transition-all shadow-sm"
+                        onClick={() => setSearchQuery(t.replace('#', ''))}
+                        className="px-2 py-0.5 rounded-full bg-[#1B889A]/10 text-[#1B889A] hover:bg-[#1B889A] hover:text-white font-mono text-[10px] font-bold cursor-pointer transition-all"
                       >
-                        #{tag}
-                      </Link>
+                        {t.startsWith('#') ? t : `#${t}`}
+                      </span>
                     ))}
                   </div>
                 )}
               </div>
 
-              <div className="pt-6 mt-6 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
-                <span>نویسنده: <strong className="text-[var(--text-primary)]">{art.author_name_fa}</strong> {art.author_title_fa && <span className="text-[#1B889A] font-semibold text-[11px] mr-1">({art.author_title_fa})</span>}</span>
+              <div className="pt-4 mt-4 border-t border-[var(--card-border)] flex items-center justify-between">
+                <span className="text-xs text-[var(--text-secondary)] font-serif-persian">
+                  نویسنده: {art.author_name_fa || 'M. Nazir Yosuf'}
+                </span>
                 <Link
                   href={`/content/${art.id}`}
-                  className="flex items-center gap-1 text-[#1B889A] font-bold hover:underline"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1B889A] hover:gap-2 transition-all"
                 >
-                  <span>مطالعه کامل</span>
-                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>مطالعه مقاله</span>
+                  <ArrowLeft className="w-3.5 h-3.5 dir-rtl-rotate" />
                 </Link>
               </div>
             </article>
           ))}
         </div>
       )}
-
     </div>
+  );
+}
+
+export default function ContentCatalogPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-xs text-[var(--text-secondary)]">در حال بارگذاری مقالات...</div>}>
+      <ContentCatalogInner />
+    </Suspense>
   );
 }

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FlipBookViewer } from '@/components/magazine/FlipBookViewer';
 import { useStore } from '@/store/useStore';
 import { MagazineIssue } from '@/types';
@@ -22,6 +23,7 @@ import { translations } from '@/data/translations';
 
 export default function MagazinePage() {
   const { magazineIssues, language } = useStore();
+  const router = useRouter();
   const t = translations[language] || translations.fa;
 
   const [selectedIssue, setSelectedIssue] = useState<MagazineIssue | null>(null);
@@ -67,6 +69,10 @@ export default function MagazinePage() {
     );
   });
 
+  const handleHashtagClick = (tag: string) => {
+    setSelectedTag(tag);
+  };
+
   return (
     <div className="space-y-12 py-6">
       
@@ -99,7 +105,15 @@ export default function MagazinePage() {
                 <span className="text-[var(--text-secondary)]">({filteredIssues.length} شماره مجله یافت شد)</span>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <Link
+                  href={`/content?search=${encodeURIComponent(selectedTag.replace('#', ''))}`}
+                  className="px-3 py-1.5 rounded-xl bg-[#1B889A] text-white hover:bg-[#156d7b] text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
+                >
+                  <Search className="w-3.5 h-3.5" />
+                  <span>جستجو در کل مقالات سایت</span>
+                </Link>
+
                 <button
                   onClick={() => setSelectedTag(null)}
                   className="px-3 py-1.5 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-bold flex items-center gap-1 transition-all"
@@ -134,6 +148,10 @@ export default function MagazinePage() {
             ) : (
               filteredIssues.map((issue) => {
                 const toc = getTocForIssue(issue.issue_number);
+                const coverImageSrc = issue.cover_image && issue.cover_image.trim() !== '' 
+                  ? issue.cover_image 
+                  : 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80';
+
                 return (
                   <div
                     key={issue.id}
@@ -141,40 +159,22 @@ export default function MagazinePage() {
                   >
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
                       
-                      {/* 1. بخش تصویر مجله به همراه هشتگ‌های روی کاور */}
+                      {/* 1. بخش تصویر مجله (کاور بدون هشتگ روی عکس مطابق درخواست) */}
                       <div className="lg:col-span-5 space-y-3">
                         <div className="relative rounded-2xl overflow-hidden border-2 border-[#1B889A]/30 aspect-[16/9] sm:aspect-[3/4] max-w-sm mx-auto w-full bg-stone-900 shadow-2xl group">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
-                            src={issue.cover_image || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80'}
+                            src={coverImageSrc}
                             alt={issue.title_fa}
                             onError={(e) => {
                               e.currentTarget.src = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80';
                             }}
                             className={`w-full h-full object-${issue.cover_position || 'cover'} group-hover:scale-105 transition-transform duration-500`}
                           />
-
-                          {/* HASHTAGS OVERLAY ON COVER IMAGE */}
-                          {issue.tags && issue.tags.length > 0 && (
-                            <div className="absolute bottom-3 right-3 left-3 flex flex-wrap gap-1.5 z-10 dir-rtl">
-                              {issue.tags.map((tag, tIdx) => (
-                                <button
-                                  key={tIdx}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setSelectedTag(tag);
-                                  }}
-                                  className="px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-white font-mono text-[10px] font-extrabold shadow-lg hover:bg-[#1B889A] hover:border-[#1B889A] transition-all active:scale-95 flex items-center gap-1"
-                                >
-                                  <span>{tag.startsWith('#') ? tag : `#${tag}`}</span>
-                                </button>
-                              ))}
-                            </div>
-                          )}
                         </div>
                       </div>
 
-                      {/* 2. مشخصات و فهرست مطالب مجله */}
+                      {/* 2. مشخصات و توضیحات مجله (سمت چپ) */}
                       <div className="lg:col-span-7 space-y-5">
                         
                         {/* بج و مشخصات دسکتاپ */}
@@ -209,23 +209,32 @@ export default function MagazinePage() {
                             {issue.description_fa}
                           </p>
 
-                          {/* HASHTAGS SECTION AT THE END OF BOTTOM DESCRIPTION */}
+                          {/* HASHTAGS SECTION ONLY IN THE LEFT DETAILS COLUMN */}
                           {issue.tags && issue.tags.length > 0 && (
                             <div className="pt-3 border-t border-[var(--card-border)] flex flex-wrap items-center gap-2">
                               <span className="text-xs font-bold text-[var(--text-secondary)] flex items-center gap-1 font-serif-persian">
                                 <Tag className="w-3.5 h-3.5 text-[#1B889A]" />
                                 کلمات کلیدی و هشتگ‌ها:
                               </span>
-                              {issue.tags.map((tag, idx) => (
-                                <button
-                                  key={idx}
-                                  onClick={() => setSelectedTag(tag)}
-                                  className="px-3 py-1 rounded-full bg-[#1B889A]/10 border border-[#1B889A]/30 text-[#1B889A] hover:bg-[#1B889A] hover:text-white font-mono text-xs font-extrabold transition-all shadow-sm active:scale-95 flex items-center gap-1"
-                                >
-                                  <span>{tag.startsWith('#') ? tag : `#${tag}`}</span>
-                                  <Search className="w-3 h-3 opacity-60" />
-                                </button>
-                              ))}
+                              {issue.tags.map((tag, idx) => {
+                                const cleanTagName = tag.startsWith('#') ? tag : `#${tag}`;
+                                const isSelected = selectedTag === cleanTagName;
+                                return (
+                                  <button
+                                    key={idx}
+                                    type="button"
+                                    onClick={() => handleHashtagClick(cleanTagName)}
+                                    className={`px-3 py-1.5 rounded-full font-mono text-xs font-extrabold transition-all shadow-sm active:scale-95 flex items-center gap-1.5 cursor-pointer ${
+                                      isSelected
+                                        ? 'bg-[#1B889A] text-white shadow-md'
+                                        : 'bg-[#1B889A]/15 border border-[#1B889A]/40 text-[#1B889A] hover:bg-[#1B889A] hover:text-white'
+                                    }`}
+                                  >
+                                    <span>{cleanTagName}</span>
+                                    <Search className="w-3 h-3 opacity-70" />
+                                  </button>
+                                );
+                              })}
                             </div>
                           )}
                         </div>
@@ -261,7 +270,7 @@ export default function MagazinePage() {
                           </button>
 
                           <a
-                            href={issue.pdf_url || '/magazines/issue-1-mahdaviyat.pdf'}
+                            href={issue.pdf_url || '/downloads/mahdism_issue_1.pdf'}
                             download={`مجله_ایدئولوژی_مهدویت_شماره_${issue.issue_number}.pdf`}
                             target="_blank"
                             rel="noreferrer"
