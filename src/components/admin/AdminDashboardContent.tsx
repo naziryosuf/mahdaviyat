@@ -313,6 +313,7 @@ export const AdminDashboardContent: React.FC = () => {
   const [magPdfUrl, setMagPdfUrl] = useState('/downloads/mahdism_issue_1.pdf');
   const [magAuthorName, setMagAuthorName] = useState('M. Nazir Yosufi');
   const [magAuthorTitle, setMagAuthorTitle] = useState('سردبیر ارشد');
+  const [magPageCount, setMagPageCount] = useState('۴۵ صفحه (قطع A4)');
   const [magTags, setMagTags] = useState('#نشریه_کامل, #شماره_یک');
 
   // Binary File objects for Storage Upload
@@ -353,6 +354,7 @@ export const AdminDashboardContent: React.FC = () => {
     setMagPdfUrl('/downloads/mahdism_issue_1.pdf');
     setMagAuthorName(currentUser?.name_fa || 'M. Nazir Yosufi');
     setMagAuthorTitle(currentUser?.role_fa || 'سردبیر ارشد');
+    setMagPageCount('۴۵ صفحه (قطع A4)');
     setMagTags('#نشریه_کامل, #شماره_یک');
     setCoverFile(null);
     setPdfFile(null);
@@ -371,6 +373,7 @@ export const AdminDashboardContent: React.FC = () => {
     setMagPdfUrl(mag.pdf_url);
     setMagAuthorName(mag.author_name_fa || 'M. Nazir Yosufi');
     setMagAuthorTitle(mag.author_title_fa || 'سردبیر ارشد');
+    setMagPageCount(mag.page_count_fa || '۴۵ صفحه (قطع A4)');
     setMagTags(mag.tags ? mag.tags.join(', ') : '#نشریه_کامل, #شماره_یک');
     setCoverFile(null);
     setPdfFile(null);
@@ -415,6 +418,7 @@ export const AdminDashboardContent: React.FC = () => {
           pdf_url: finalPdfUrl,
           author_name_fa: magAuthorName,
           author_title_fa: magAuthorTitle,
+          page_count_fa: magPageCount,
           tags: parsedTags,
         });
       } else {
@@ -428,6 +432,7 @@ export const AdminDashboardContent: React.FC = () => {
           pdf_url: finalPdfUrl,
           author_name_fa: magAuthorName,
           author_title_fa: magAuthorTitle,
+          page_count_fa: magPageCount,
           tags: parsedTags,
           pages: [],
           featured: true,
@@ -1311,7 +1316,7 @@ export const AdminDashboardContent: React.FC = () => {
             
             <form onSubmit={handleSaveMagazine} className="space-y-4 text-xs">
               
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 <div>
                   <label className="block font-bold text-[var(--text-primary)] mb-1">شماره نشریه:</label>
                   <input type="number" value={magNumber} onChange={e => setMagNumber(Number(e.target.value))} required className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-[var(--text-primary)]" />
@@ -1319,6 +1324,10 @@ export const AdminDashboardContent: React.FC = () => {
                 <div>
                   <label className="block font-bold text-[var(--text-primary)] mb-1">تاریخ انتشار:</label>
                   <input type="text" value={magPublishDate} onChange={e => setMagPublishDate(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-[var(--text-primary)]" />
+                </div>
+                <div>
+                  <label className="block font-bold text-[var(--text-primary)] mb-1">تعداد صفحات:</label>
+                  <input type="text" value={magPageCount} onChange={e => setMagPageCount(e.target.value)} placeholder="مثلا: ۴۵ صفحه" className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-[var(--text-primary)] font-serif-persian" />
                 </div>
               </div>
 

@@ -42,6 +42,7 @@ export interface MagazineIssue {
   download_count: number;
   author_name_fa?: string;
   author_title_fa?: string;
+  page_count_fa?: string;
   pages: MagazinePageItem[];
   featured?: boolean;
   tags?: string[];

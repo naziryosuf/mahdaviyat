@@ -60,6 +60,7 @@ export const initialMagazineIssues: MagazineIssue[] = [
     download_count: 1240,
     author_name_fa: 'M. Nazir Yosufi',
     author_title_fa: 'سردبیر ارشد',
+    page_count_fa: '۴۵ صفحه (قطع A4)',
     pages: [],
     featured: true,
     status: 'published',
