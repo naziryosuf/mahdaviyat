@@ -321,6 +321,7 @@ export const AdminDashboardContent: React.FC = () => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [isSavingMagazine, setIsSavingMagazine] = useState(false);
   const [uploadStatusMsg, setUploadStatusMsg] = useState('');
+  const [saveToast, setSaveToast] = useState<{ msg: string; type: 'loading' | 'success' | 'error' } | null>(null);
 
   const handleCoverFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -390,70 +391,90 @@ export const AdminDashboardContent: React.FC = () => {
     e.preventDefault();
     if (!magTitle.trim()) return;
 
-    setIsSavingMagazine(true);
-    setUploadStatusMsg('در حال آماده‌سازی و آپلود فایل‌ها به حافظه ابری Supabase...');
+    const currentCover = magCoverImage;
+    const currentPdf = magPdfUrl;
+    const currentCoverFile = coverFile;
+    const currentPdfFile = pdfFile;
+    const isEdit = !!editingMag;
+    const targetId = editingMag?.id;
+    const numberVal = magNumber;
+    const titleVal = magTitle;
+    const descVal = magDesc;
+    const pubDateVal = magPublishDate;
+    const coverPosVal = magCoverPosition;
+    const authorNameVal = magAuthorName;
+    const authorTitleVal = magAuthorTitle;
+    const pageCountVal = magPageCount;
+    const tagsVal = magTags;
 
-    try {
-      let finalCoverUrl = magCoverImage;
-      let finalPdfUrl = magPdfUrl;
+    // 1. Close Modal INSTANTLY (0 ms) so UI never hangs
+    setShowMagModal(false);
+    setCoverFile(null);
+    setPdfFile(null);
+    setIsSavingMagazine(false);
 
-      // 1. Upload binary Cover Image to Supabase Storage bucket 'magazines'
-      if (coverFile) {
-        setUploadStatusMsg('در حال آپلود تصویر کاور به حافظه ابری...');
-        finalCoverUrl = await uploadMagazineFile(coverFile, 'covers');
+    // 2. Show floating status notification toast
+    setSaveToast({ 
+      msg: currentCoverFile || currentPdfFile ? 'در حال ثبت اطلاعات و آپلود فایل‌ها به حافظه ابری...' : 'در حال بروزرسانی اطلاعات مجله در دیتابیس ابری...', 
+      type: 'loading' 
+    });
+
+    // 3. Background Async Upload & Upsert
+    (async () => {
+      try {
+        let finalCoverUrl = currentCover;
+        let finalPdfUrl = currentPdf;
+
+        if (currentCoverFile) {
+          finalCoverUrl = await uploadMagazineFile(currentCoverFile, 'covers');
+        }
+
+        if (currentPdfFile) {
+          finalPdfUrl = await uploadMagazineFile(currentPdfFile, 'pdfs');
+        }
+
+        const parsedTags = parseTagsInput(tagsVal);
+
+        if (isEdit && targetId) {
+          await updateMagazineIssue(targetId, {
+            issue_number: numberVal,
+            title_fa: titleVal,
+            description_fa: descVal,
+            publish_date_fa: pubDateVal,
+            cover_image: finalCoverUrl,
+            cover_position: coverPosVal,
+            pdf_url: finalPdfUrl,
+            author_name_fa: authorNameVal,
+            author_title_fa: authorTitleVal,
+            page_count_fa: pageCountVal,
+            tags: parsedTags,
+          });
+        } else {
+          await addMagazineIssue({
+            issue_number: numberVal,
+            title_fa: titleVal,
+            description_fa: descVal,
+            publish_date_fa: pubDateVal,
+            cover_image: finalCoverUrl,
+            cover_position: coverPosVal,
+            pdf_url: finalPdfUrl,
+            author_name_fa: authorNameVal,
+            author_title_fa: authorTitleVal,
+            page_count_fa: pageCountVal,
+            tags: parsedTags,
+            pages: [],
+            featured: true,
+          });
+        }
+
+        setSaveToast({ msg: '✅ شماره مجله با موفقیت ذخیره و در سایت منتشر گردید!', type: 'success' });
+        setTimeout(() => setSaveToast(null), 4000);
+      } catch (err: any) {
+        console.error('Error saving magazine issue:', err);
+        setSaveToast({ msg: `❌ خطا در ذخیره‌سازی: ${err?.message || 'مشکلی رخ داد'}`, type: 'error' });
+        setTimeout(() => setSaveToast(null), 5000);
       }
-
-      // 2. Upload binary PDF File to Supabase Storage bucket 'magazines'
-      if (pdfFile) {
-        setUploadStatusMsg('در حال آپلود فایل PDF به حافظه ابری...');
-        finalPdfUrl = await uploadMagazineFile(pdfFile, 'pdfs');
-      }
-
-      setUploadStatusMsg('در حال ثبت اطلاعات شماره مجله در دیتابیس...');
-      const parsedTags = parseTagsInput(magTags);
-
-      if (editingMag) {
-        await updateMagazineIssue(editingMag.id, {
-          issue_number: magNumber,
-          title_fa: magTitle,
-          description_fa: magDesc,
-          publish_date_fa: magPublishDate,
-          cover_image: finalCoverUrl,
-          cover_position: magCoverPosition,
-          pdf_url: finalPdfUrl,
-          author_name_fa: magAuthorName,
-          author_title_fa: magAuthorTitle,
-          page_count_fa: magPageCount,
-          tags: parsedTags,
-        });
-      } else {
-        await addMagazineIssue({
-          issue_number: magNumber,
-          title_fa: magTitle,
-          description_fa: magDesc,
-          publish_date_fa: magPublishDate,
-          cover_image: finalCoverUrl,
-          cover_position: magCoverPosition,
-          pdf_url: finalPdfUrl,
-          author_name_fa: magAuthorName,
-          author_title_fa: magAuthorTitle,
-          page_count_fa: magPageCount,
-          tags: parsedTags,
-          pages: [],
-          featured: true,
-        });
-      }
-
-      setShowMagModal(false);
-      setCoverFile(null);
-      setPdfFile(null);
-    } catch (err: any) {
-      console.error('Error saving magazine issue:', err);
-      alert(`خطا در ذخیره‌سازی مجله: ${err?.message || 'مشکلی رخ داد'}`);
-    } finally {
-      setIsSavingMagazine(false);
-      setUploadStatusMsg('');
-    }
+    })();
   };
 
   // Video Modal State
@@ -826,6 +847,29 @@ export const AdminDashboardContent: React.FC = () => {
         </div>
 
       </div>
+
+      {/* FLOATING STATUS TOAST FOR INSTANT NON-BLOCKING SAVING */}
+      {saveToast && (
+        <div className={`p-4 rounded-2xl border flex items-center justify-between gap-3 text-xs font-bold shadow-xl animate-in slide-in-from-top-4 duration-300 ${
+          saveToast.type === 'loading'
+            ? 'bg-[#1B889A]/15 border-[#1B889A]/50 text-[#1B889A] animate-pulse'
+            : saveToast.type === 'success'
+            ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-400'
+            : 'bg-red-500/15 border-red-500/50 text-red-400'
+        }`}>
+          <div className="flex items-center gap-2">
+            {saveToast.type === 'loading' && (
+              <div className="w-4 h-4 border-2 border-[#1B889A] border-t-transparent rounded-full animate-spin shrink-0" />
+            )}
+            <span>{saveToast.msg}</span>
+          </div>
+          {saveToast.type !== 'loading' && (
+            <button onClick={() => setSaveToast(null)} className="p-1 hover:opacity-70">
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      )}
 
       {/* NAVIGATION TABS FILTER BAR */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--card-border)] pb-4">
