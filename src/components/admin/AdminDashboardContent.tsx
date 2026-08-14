@@ -339,7 +339,12 @@ export const AdminDashboardContent: React.FC = () => {
     const file = e.target.files?.[0];
     if (file) {
       setPdfFile(file);
-      setMagPdfUrl(`فایل انتخاب شد: ${file.name}`);
+      try {
+        const previewBlobUrl = URL.createObjectURL(file);
+        setMagPdfUrl(previewBlobUrl);
+      } catch (err) {
+        console.error('Error creating PDF blob preview:', err);
+      }
     }
   };
 

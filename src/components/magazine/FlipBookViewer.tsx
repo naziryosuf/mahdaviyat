@@ -148,17 +148,11 @@ export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
             className="w-full h-full border-0 rounded-2xl bg-stone-900"
           />
         ) : (
-          <object
-            data={pdfUrl}
-            type="application/pdf"
+          <iframe
+            src={pdfUrl}
+            title={issue.title_fa}
             className="w-full h-full border-0 rounded-2xl bg-stone-900"
-          >
-            <iframe
-              src={`${pdfUrl}#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
-              title={issue.title_fa}
-              className="w-full h-full border-0 rounded-2xl bg-stone-900"
-            />
-          </object>
+          />
         )}
       </div>
 
