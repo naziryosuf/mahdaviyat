@@ -146,8 +146,11 @@ export default function MagazinePage() {
                         <div className="relative rounded-2xl overflow-hidden border-2 border-[#1B889A]/30 aspect-[16/9] sm:aspect-[3/4] max-w-sm mx-auto w-full bg-stone-900 shadow-2xl group">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
-                            src={issue.cover_image}
+                            src={issue.cover_image || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80'}
                             alt={issue.title_fa}
+                            onError={(e) => {
+                              e.currentTarget.src = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80';
+                            }}
                             className={`w-full h-full object-${issue.cover_position || 'cover'} group-hover:scale-105 transition-transform duration-500`}
                           />
 

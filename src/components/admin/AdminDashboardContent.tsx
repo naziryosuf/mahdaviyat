@@ -35,6 +35,7 @@ import {
   Download
 } from 'lucide-react';
 import { calculateReadingTimeFa } from '@/utils/readingTime';
+import { compressImageFile } from '@/utils/imageCompressor';
 import { Article, MagazineIssue, VideoItem, AudioItem, TeamMember, ContactMessage, CoHostUser } from '@/types';
 
 const parseTagsInput = (str: string): string[] => {
@@ -313,16 +314,15 @@ export const AdminDashboardContent: React.FC = () => {
   const [magAuthorTitle, setMagAuthorTitle] = useState('سردبیر ارشد');
   const [magTags, setMagTags] = useState('#نشریه_کامل, #شماره_یک');
 
-  const handleCoverFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCoverFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setMagCoverImage(event.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
+      try {
+        const compressed = await compressImageFile(file);
+        setMagCoverImage(compressed);
+      } catch (err) {
+        console.error('Error compressing image:', err);
+      }
     }
   };
 
