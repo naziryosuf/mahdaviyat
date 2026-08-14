@@ -8,11 +8,12 @@ import {
   Maximize2, 
   Minimize2,
   ExternalLink,
-  Sparkles,
   FileText,
   UserCheck,
   Eye,
-  AlertCircle
+  AlertCircle,
+  Zap,
+  BookOpen
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -23,14 +24,14 @@ interface Props {
 
 export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [viewerMode, setViewerMode] = useState<'native' | 'google'>('google');
+  const [viewerMode, setViewerMode] = useState<'mozilla' | 'native'>('mozilla');
 
   const pdfUrl = issue.pdf_url || '/downloads/mahdism_issue_1.pdf';
-  const isDataUrl = pdfUrl.startsWith('data:') || pdfUrl.startsWith('blob:');
   const isHttpUrl = pdfUrl.startsWith('http://') || pdfUrl.startsWith('https://');
 
-  const googleDocsViewerUrl = isHttpUrl 
-    ? `https://docs.google.com/gview?url=${encodeURIComponent(pdfUrl)}&embedded=true` 
+  // Fast, zero-download HTML5 Canvas PDF reader powered by Mozilla PDF.js
+  const mozillaPdfViewerUrl = isHttpUrl || pdfUrl.startsWith('/')
+    ? `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}`
     : pdfUrl;
 
   const handleDownloadPDF = () => {
@@ -81,26 +82,26 @@ export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
           </div>
         </div>
 
-        {/* Action Controls & Viewer Mode Switching */}
+        {/* Action Controls & Speed Viewer Switching */}
         <div className="flex items-center gap-2.5 flex-wrap">
           
-          {/* Mode Switcher if HTTP URL */}
-          {isHttpUrl && (
-            <div className="flex items-center p-1 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] text-xs">
-              <button
-                onClick={() => setViewerMode('native')}
-                className={`px-3 py-1.5 rounded-xl font-bold transition-all ${viewerMode === 'native' ? 'bg-[#1B889A] text-white shadow-sm' : 'text-[var(--text-secondary)]'}`}
-              >
-                مرورگر اصلی
-              </button>
-              <button
-                onClick={() => setViewerMode('google')}
-                className={`px-3 py-1.5 rounded-xl font-bold transition-all ${viewerMode === 'google' ? 'bg-[#1B889A] text-white shadow-sm' : 'text-[var(--text-secondary)]'}`}
-              >
-                نمایشگر آنلاین گوگل
-              </button>
-            </div>
-          )}
+          {/* Mode Switcher */}
+          <div className="flex items-center p-1 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] text-xs">
+            <button
+              onClick={() => setViewerMode('mozilla')}
+              className={`px-3 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1 ${viewerMode === 'mozilla' ? 'bg-[#1B889A] text-white shadow-sm' : 'text-[var(--text-secondary)]'}`}
+            >
+              <Zap className="w-3.5 h-3.5 text-yellow-300" />
+              <span>مطالعه سریع (HTML5)</span>
+            </button>
+            <button
+              onClick={() => setViewerMode('native')}
+              className={`px-3 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1 ${viewerMode === 'native' ? 'bg-[#1B889A] text-white shadow-sm' : 'text-[var(--text-secondary)]'}`}
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>نمایشگر اصلی مرورگر</span>
+            </button>
+          </div>
 
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
@@ -135,24 +136,30 @@ export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
 
       </div>
 
-      {/* 2. DEDICATED PDF DISPLAY STAGE */}
+      {/* 2. INSTANT ZERO-DOWNLOAD HTML5 PDF DISPLAY STAGE */}
       <div 
         className={`w-full bg-[var(--card-bg)] border-2 border-[#1B889A]/40 rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 relative ${
-          isFullscreen ? 'h-[calc(100vh-90px)] rounded-none border-0' : 'h-[550px] sm:h-[850px]'
+          isFullscreen ? 'h-[calc(100vh-90px)] rounded-none border-0' : 'h-[600px] sm:h-[880px]'
         }`}
       >
-        {viewerMode === 'google' && isHttpUrl ? (
+        {viewerMode === 'mozilla' ? (
           <iframe
-            src={googleDocsViewerUrl}
+            src={mozillaPdfViewerUrl}
             title={issue.title_fa}
             className="w-full h-full border-0 rounded-2xl bg-stone-900"
           />
         ) : (
-          <iframe
-            src={pdfUrl}
-            title={issue.title_fa}
+          <object
+            data={`${pdfUrl}#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
+            type="application/pdf"
             className="w-full h-full border-0 rounded-2xl bg-stone-900"
-          />
+          >
+            <embed
+              src={`${pdfUrl}#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
+              type="application/pdf"
+              className="w-full h-full border-0 rounded-2xl bg-stone-900"
+            />
+          </object>
         )}
       </div>
 
@@ -160,7 +167,7 @@ export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
       <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2 text-[var(--text-secondary)]">
           <AlertCircle className="w-4 h-4 text-[#1B889A] shrink-0" />
-          <span>اگر فایل PDF در کادر بالا نمایش داده نشد، می‌توانید فایل را مستقیماً باز کرده یا دانلود نمایید.</span>
+          <span>اگر مایل به دریافت فایل مجله هستید، از دکمه «دانلود PDF» در بالا استفاده نمایید.</span>
         </div>
         <a
           href={pdfUrl}
