@@ -638,6 +638,8 @@ export const useStore = create<AppState>((set, get) => ({
     const newIssue: MagazineIssue = {
       ...issueData,
       id: `mag-${Date.now()}`,
+      cover_image: issueData.cover_image && issueData.cover_image.trim() !== '' ? issueData.cover_image : 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80',
+      pdf_url: issueData.pdf_url && issueData.pdf_url.trim() !== '' ? issueData.pdf_url : '/downloads/mahdism_issue_1.pdf',
       download_count: 0,
       status: initialStatus,
       submitted_by_name: currentUser?.name_fa || 'M. Nazir Yosuf',
@@ -675,6 +677,8 @@ export const useStore = create<AppState>((set, get) => ({
           updatedMag = { 
             ...iss, 
             ...issueData,
+            cover_image: issueData.cover_image && issueData.cover_image.trim() !== '' ? issueData.cover_image : (iss.cover_image || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80'),
+            pdf_url: issueData.pdf_url && issueData.pdf_url.trim() !== '' ? issueData.pdf_url : (iss.pdf_url || '/downloads/mahdism_issue_1.pdf'),
             status: nextStatus
           };
           return updatedMag;
@@ -979,7 +983,16 @@ export const useStore = create<AppState>((set, get) => ({
       // 2. Magazine Issues
       const { data: supaMagazines, error: magErr } = await supabase.from('magazine_issues').select('*').order('issue_number', { ascending: true });
       if (!magErr && supaMagazines && supaMagazines.length > 0) {
-        set({ magazineIssues: supaMagazines });
+        const stopWords = ['در', 'به', 'از', 'با', 'و', 'یا', 'بر', 'که', 'را', 'ان', 'این'];
+        const sanitizedMags = supaMagazines.map((mag: MagazineIssue) => ({
+          ...mag,
+          cover_image: mag.cover_image && mag.cover_image.trim() !== '' ? mag.cover_image : 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80',
+          pdf_url: mag.pdf_url && mag.pdf_url.trim() !== '' ? mag.pdf_url : '/downloads/mahdism_issue_1.pdf',
+          tags: Array.isArray(mag.tags) 
+            ? mag.tags.map((t: string) => String(t).trim().replace(/^#/, '')).filter((t: string) => t.length > 1 && !stopWords.includes(t)).map((t: string) => `#${t}`)
+            : ['#شماره_نخست', '#ایدئولوژی_مهدویت']
+        }));
+        set({ magazineIssues: sanitizedMags });
       }
 
       // 3. Videos

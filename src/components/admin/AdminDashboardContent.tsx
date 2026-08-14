@@ -39,7 +39,21 @@ import { Article, MagazineIssue, VideoItem, AudioItem, TeamMember, ContactMessag
 
 const parseTagsInput = (str: string): string[] => {
   if (!str || !str.trim()) return [];
-  return str.split(/[,،\s]+/).map(t => t.trim().replace(/^#/, '')).filter(Boolean).map(t => `#${t}`);
+  const stopWords = ['در', 'به', 'از', 'با', 'و', 'یا', 'بر', 'که', 'را', 'ان', 'این'];
+  
+  if (str.includes('#')) {
+    return str
+      .split('#')
+      .map(t => t.trim().replace(/[,،]/g, ''))
+      .filter(t => t.length > 1 && !stopWords.includes(t))
+      .map(t => `#${t}`);
+  }
+  
+  return str
+    .split(/[,،]+/)
+    .map(t => t.trim().replace(/^#/, ''))
+    .filter(t => t.length > 1 && !stopWords.includes(t))
+    .map(t => `#${t}`);
 };
 
 export const AdminDashboardContent: React.FC = () => {

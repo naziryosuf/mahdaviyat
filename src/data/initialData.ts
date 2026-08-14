@@ -55,12 +55,15 @@ export const initialMagazineIssues: MagazineIssue[] = [
     description_fa: 'نخستین شماره رسمی مجله ایدئولوژی مهدویت متمرکز بر تبیین جهان‌بینی توحیدی و نقد ماتریالیسم.',
     publish_date_fa: 'مرداد ۱۴۰۴',
     cover_image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80',
+    cover_position: 'center',
     pdf_url: '/downloads/mahdism_issue_1.pdf',
     download_count: 1240,
+    author_name_fa: 'M. Nazir Yosufi',
+    author_title_fa: 'سردبیر ارشد',
     pages: [],
     featured: true,
     status: 'published',
-    tags: ['شماره_۱', 'نشریه_کامل']
+    tags: ['#شماره_نخست', '#ایدئولوژی_مهدویت']
   }
 ];
 
