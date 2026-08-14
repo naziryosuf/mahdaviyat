@@ -9,7 +9,10 @@ import {
   Minimize2,
   ExternalLink,
   Sparkles,
-  FileText
+  FileText,
+  UserCheck,
+  Eye,
+  AlertCircle
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -20,8 +23,15 @@ interface Props {
 
 export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [viewerMode, setViewerMode] = useState<'native' | 'google'>('native');
 
   const pdfUrl = issue.pdf_url || '/magazines/issue-1-mahdaviyat.pdf';
+  const isDataUrl = pdfUrl.startsWith('data:') || pdfUrl.startsWith('blob:');
+  const isHttpUrl = pdfUrl.startsWith('http://') || pdfUrl.startsWith('https://');
+
+  const googleDocsViewerUrl = isHttpUrl 
+    ? `https://docs.google.com/gview?url=${encodeURIComponent(pdfUrl)}&embedded=true` 
+    : pdfUrl;
 
   const handleDownloadPDF = () => {
     confetti({ particleCount: 50, spread: 70, origin: { y: 0.7 } });
@@ -40,7 +50,7 @@ export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
       {/* 1. Header Toolbar */}
       <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 shadow-lg modern-card">
         
-        {/* Back to Catalog & Issue Title */}
+        {/* Back to Catalog & Issue Details */}
         <div className="flex items-center gap-3">
           {onBackToCatalog && (
             <button
@@ -54,20 +64,44 @@ export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
           )}
 
           <div>
-            <h3 className="text-base font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
+            <h3 className="text-base font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2 flex-wrap">
               <span>{issue.title_fa}</span>
               <span className="px-3 py-0.5 rounded-full teal-badge text-[10px] font-bold flex items-center gap-1">
                 <FileText className="w-3.5 h-3.5 text-[#1B889A]" />
-                نمایشگر مستقیم PDF
+                شماره {issue.issue_number}
               </span>
             </h3>
-            <p className="text-xs text-[var(--text-secondary)]">مطالعه مستقیم صفحات چاپی A4 • شماره {issue.issue_number}</p>
+            
+            {(issue.author_name_fa || issue.author_title_fa) && (
+              <p className="text-xs text-[#1B889A] font-bold mt-1 flex items-center gap-1.5 font-serif-persian">
+                <UserCheck className="w-3.5 h-3.5 shrink-0" />
+                <span>نویسنده / صاحب اثر: {issue.author_name_fa} {issue.author_title_fa ? `(${issue.author_title_fa})` : ''}</span>
+              </p>
+            )}
           </div>
         </div>
 
-        {/* Action Controls */}
-        <div className="flex items-center gap-2.5">
+        {/* Action Controls & Viewer Mode Switching */}
+        <div className="flex items-center gap-2.5 flex-wrap">
           
+          {/* Mode Switcher if HTTP URL */}
+          {isHttpUrl && (
+            <div className="flex items-center p-1 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] text-xs">
+              <button
+                onClick={() => setViewerMode('native')}
+                className={`px-3 py-1.5 rounded-xl font-bold transition-all ${viewerMode === 'native' ? 'bg-[#1B889A] text-white shadow-sm' : 'text-[var(--text-secondary)]'}`}
+              >
+                مرورگر اصلی
+              </button>
+              <button
+                onClick={() => setViewerMode('google')}
+                className={`px-3 py-1.5 rounded-xl font-bold transition-all ${viewerMode === 'google' ? 'bg-[#1B889A] text-white shadow-sm' : 'text-[var(--text-secondary)]'}`}
+              >
+                نمایشگر آنلاین گوگل
+              </button>
+            </div>
+          )}
+
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
             className="flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] text-[var(--text-primary)] text-xs font-bold transition-all active:scale-95 shadow-sm"
@@ -85,7 +119,7 @@ export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
             title="باز کردن PDF در تب جدید"
           >
             <ExternalLink className="w-4 h-4 text-[#1B889A]" />
-            <span className="hidden sm:inline">تب جدید</span>
+            <span className="hidden sm:inline">باز کردن مستقیم</span>
           </a>
 
           {/* Download PDF Button */}
@@ -101,17 +135,48 @@ export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
 
       </div>
 
-      {/* 2. DEDICATED PDF STAGE (CLEAN & WITHOUT FLOATING OPTION BAR) */}
+      {/* 2. DEDICATED PDF DISPLAY STAGE */}
       <div 
         className={`w-full bg-[var(--card-bg)] border-2 border-[#1B889A]/40 rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 relative ${
-          isFullscreen ? 'h-[calc(100vh-90px)] rounded-none border-0' : 'h-[520px] sm:h-[820px]'
+          isFullscreen ? 'h-[calc(100vh-90px)] rounded-none border-0' : 'h-[550px] sm:h-[850px]'
         }`}
       >
-        <iframe
-          src={`${pdfUrl}#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
-          title={issue.title_fa}
-          className="w-full h-full border-0 rounded-2xl bg-stone-900"
-        />
+        {viewerMode === 'google' && isHttpUrl ? (
+          <iframe
+            src={googleDocsViewerUrl}
+            title={issue.title_fa}
+            className="w-full h-full border-0 rounded-2xl bg-stone-900"
+          />
+        ) : (
+          <object
+            data={pdfUrl}
+            type="application/pdf"
+            className="w-full h-full border-0 rounded-2xl bg-stone-900"
+          >
+            <iframe
+              src={`${pdfUrl}#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
+              title={issue.title_fa}
+              className="w-full h-full border-0 rounded-2xl bg-stone-900"
+            />
+          </object>
+        )}
+      </div>
+
+      {/* Fallback Help Banner */}
+      <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+        <div className="flex items-center gap-2 text-[var(--text-secondary)]">
+          <AlertCircle className="w-4 h-4 text-[#1B889A] shrink-0" />
+          <span>اگر فایل PDF در کادر بالا نمایش داده نشد، می‌توانید فایل را مستقیماً باز کرده یا دانلود نمایید.</span>
+        </div>
+        <a
+          href={pdfUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="px-4 py-2 rounded-xl bg-[#1B889A]/15 text-[#1B889A] hover:bg-[#1B889A] hover:text-white font-bold transition-all shrink-0 flex items-center gap-1.5"
+        >
+          <Eye className="w-4 h-4" />
+          <span>مشاهده مستقیم فایل PDF</span>
+        </a>
       </div>
 
     </div>

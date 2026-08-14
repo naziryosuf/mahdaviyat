@@ -100,7 +100,7 @@ export default function MagazinePage() {
                           <img
                             src={issue.cover_image}
                             alt={issue.title_fa}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            className={`w-full h-full object-${issue.cover_position || 'cover'} group-hover:scale-105 transition-transform duration-500`}
                           />
                         </div>
                       </div>
@@ -113,6 +113,11 @@ export default function MagazinePage() {
                           <span className="px-3.5 py-1 rounded-full teal-badge text-xs font-extrabold shadow-sm">
                             شماره {issue.issue_number} - {issue.publish_date_fa}
                           </span>
+                          {issue.author_name_fa && (
+                            <span className="text-xs font-bold text-[#1B889A] bg-[#1B889A]/10 px-3 py-1 rounded-full">
+                              نویسنده: {issue.author_name_fa} {issue.author_title_fa ? `(${issue.author_title_fa})` : ''}
+                            </span>
+                          )}
                           <div className="flex items-center gap-4 text-xs text-[var(--text-secondary)]">
                             <span className="flex items-center gap-1 font-bold">
                               <FileText className="w-4 h-4 text-[#1B889A]" />
@@ -126,6 +131,11 @@ export default function MagazinePage() {
                           <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] font-serif-persian leading-snug">
                             {issue.title_fa}
                           </h2>
+                          {issue.author_name_fa && (
+                            <p className="text-xs font-bold text-[#1B889A] sm:hidden">
+                              نویسنده: {issue.author_name_fa} {issue.author_title_fa ? `(${issue.author_title_fa})` : ''}
+                            </p>
+                          )}
                           <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed font-serif-persian">
                             {issue.description_fa}
                           </p>

@@ -281,7 +281,36 @@ export const AdminDashboardContent: React.FC = () => {
   const [magDesc, setMagDesc] = useState('');
   const [magPublishDate, setMagPublishDate] = useState('مرداد ۱۴۰۴');
   const [magCoverImage, setMagCoverImage] = useState('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80');
+  const [magCoverPosition, setMagCoverPosition] = useState<string>('center');
   const [magPdfUrl, setMagPdfUrl] = useState('/downloads/mahdism_issue_1.pdf');
+  const [magAuthorName, setMagAuthorName] = useState('M. Nazir Yosufi');
+  const [magAuthorTitle, setMagAuthorTitle] = useState('سردبیر ارشد');
+
+  const handleCoverFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setMagCoverImage(event.target.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handlePdfFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setMagPdfUrl(event.target.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const openAddMagazine = () => {
     setEditingMag(null);
@@ -290,7 +319,10 @@ export const AdminDashboardContent: React.FC = () => {
     setMagDesc('توضیحات شماره جدید مجله ایدئولوژی مهدویت');
     setMagPublishDate(new Date().toLocaleDateString('fa-IR'));
     setMagCoverImage('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80');
+    setMagCoverPosition('center');
     setMagPdfUrl('/downloads/mahdism_issue_1.pdf');
+    setMagAuthorName(currentUser?.name_fa || 'M. Nazir Yosufi');
+    setMagAuthorTitle(currentUser?.role_fa || 'سردبیر ارشد');
     setShowMagModal(true);
   };
 
@@ -301,7 +333,10 @@ export const AdminDashboardContent: React.FC = () => {
     setMagDesc(mag.description_fa);
     setMagPublishDate(mag.publish_date_fa);
     setMagCoverImage(mag.cover_image);
+    setMagCoverPosition(mag.cover_position || 'center');
     setMagPdfUrl(mag.pdf_url);
+    setMagAuthorName(mag.author_name_fa || 'M. Nazir Yosufi');
+    setMagAuthorTitle(mag.author_title_fa || 'سردبیر ارشد');
     setShowMagModal(true);
   };
 
@@ -316,7 +351,10 @@ export const AdminDashboardContent: React.FC = () => {
         description_fa: magDesc,
         publish_date_fa: magPublishDate,
         cover_image: magCoverImage,
+        cover_position: magCoverPosition,
         pdf_url: magPdfUrl,
+        author_name_fa: magAuthorName,
+        author_title_fa: magAuthorTitle,
       });
     } else {
       await addMagazineIssue({
@@ -325,7 +363,10 @@ export const AdminDashboardContent: React.FC = () => {
         description_fa: magDesc,
         publish_date_fa: magPublishDate,
         cover_image: magCoverImage,
+        cover_position: magCoverPosition,
         pdf_url: magPdfUrl,
+        author_name_fa: magAuthorName,
+        author_title_fa: magAuthorTitle,
         pages: [],
         featured: true,
       });
@@ -1177,41 +1218,150 @@ export const AdminDashboardContent: React.FC = () => {
       {/* MODAL FOR MAGAZINES */}
       {showMagModal && (
         <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 max-w-lg w-full space-y-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 max-w-xl w-full space-y-4 max-h-[90vh] overflow-y-auto modern-card shadow-2xl">
             <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
-              <h3 className="text-base font-bold text-[var(--text-primary)] font-serif-persian">{editingMag ? 'ویرایش شماره مجله' : 'افزودن شماره جدید مجله'}</h3>
-              <button onClick={() => setShowMagModal(false)}><X className="w-5 h-5 text-[var(--text-secondary)]" /></button>
+              <h3 className="text-base font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
+                <Newspaper className="w-5 h-5 text-[#1B889A]" />
+                <span>{editingMag ? 'ویرایش شماره مجله' : 'افزودن شماره جدید مجله'}</span>
+              </h3>
+              <button onClick={() => setShowMagModal(false)}><X className="w-5 h-5 text-[var(--text-secondary)] hover:text-white" /></button>
             </div>
-            <form onSubmit={handleSaveMagazine} className="space-y-3 text-xs">
+            
+            <form onSubmit={handleSaveMagazine} className="space-y-4 text-xs">
+              
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold mb-1">شماره نشریه:</label>
-                  <input type="number" value={magNumber} onChange={e => setMagNumber(Number(e.target.value))} required className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+                  <label className="block font-bold text-[var(--text-primary)] mb-1">شماره نشریه:</label>
+                  <input type="number" value={magNumber} onChange={e => setMagNumber(Number(e.target.value))} required className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-[var(--text-primary)]" />
                 </div>
                 <div>
-                  <label className="block font-bold mb-1">تاریخ انتشار:</label>
-                  <input type="text" value={magPublishDate} onChange={e => setMagPublishDate(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+                  <label className="block font-bold text-[var(--text-primary)] mb-1">تاریخ انتشار:</label>
+                  <input type="text" value={magPublishDate} onChange={e => setMagPublishDate(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-[var(--text-primary)]" />
                 </div>
               </div>
+
               <div>
-                <label className="block font-bold mb-1">عنوان شماره مجله:</label>
-                <input type="text" value={magTitle} onChange={e => setMagTitle(e.target.value)} required className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+                <label className="block font-bold text-[var(--text-primary)] mb-1">عنوان شماره مجله:</label>
+                <input type="text" value={magTitle} onChange={e => setMagTitle(e.target.value)} required className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-[var(--text-primary)]" />
               </div>
+
+              {/* AUTHOR NAME AND TITLE / ROLE FIELDS */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)]">
+                <div>
+                  <label className="block font-bold text-[var(--text-primary)] mb-1">نام نویسنده / صاحب اثر:</label>
+                  <input
+                    type="text"
+                    value={magAuthorName}
+                    onChange={e => setMagAuthorName(e.target.value)}
+                    placeholder="مثلا: M. Nazir Yosufi"
+                    className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-[var(--text-primary)] font-serif-persian"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-[var(--text-primary)] mb-1">لقب / عنوان نویسنده:</label>
+                  <input
+                    type="text"
+                    value={magAuthorTitle}
+                    onChange={e => setMagAuthorTitle(e.target.value)}
+                    placeholder="مثلا: سردبیر ارشد / پژوهشگر"
+                    className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-[var(--text-primary)] font-serif-persian"
+                  />
+                </div>
+              </div>
+
               <div>
-                <label className="block font-bold mb-1">توضیحات مجله:</label>
-                <textarea rows={3} value={magDesc} onChange={e => setMagDesc(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+                <label className="block font-bold text-[var(--text-primary)] mb-1">توضیحات مجله:</label>
+                <textarea rows={3} value={magDesc} onChange={e => setMagDesc(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-[var(--text-primary)]" />
               </div>
-              <div>
-                <label className="block font-bold mb-1">لینک تصویر روی جلد (Cover Image):</label>
-                <input type="text" value={magCoverImage} onChange={e => setMagCoverImage(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono" />
+
+              {/* COVER IMAGE & DEVICE UPLOAD & POSITION SELECTOR */}
+              <div className="space-y-3 p-3.5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)]">
+                <div className="flex items-center justify-between">
+                  <label className="font-bold text-[var(--text-primary)]">تصویر روی جلد (Cover Image):</label>
+                  
+                  {/* File Upload Button from Device */}
+                  <label className="px-3 py-1.5 rounded-xl bg-[#1B889A]/15 text-[#1B889A] hover:bg-[#1B889A] hover:text-white font-bold cursor-pointer transition-all flex items-center gap-1.5">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>انتخاب فایل از دیوایس</span>
+                    <input type="file" accept="image/*" onChange={handleCoverFileUpload} className="hidden" />
+                  </label>
+                </div>
+
+                <input
+                  type="text"
+                  value={magCoverImage}
+                  onChange={e => setMagCoverImage(e.target.value)}
+                  placeholder="یا لینک تصویر اینترنتی را پیست نمایید..."
+                  className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl font-mono text-[var(--text-primary)] dir-ltr text-left"
+                />
+
+                {/* COVER FOCUS / POSITION SELECTOR (مشخص کردن بخش مورد نظر تصویر در کاور) */}
+                <div className="space-y-2 pt-2 border-t border-[var(--card-border)]">
+                  <span className="block font-bold text-[#1B889A]">مشخص کردن بخش مورد نظر تصویر در کاور (ترازش و برش):</span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {[
+                      { id: 'cover', label: 'کاور کامل (Cover)' },
+                      { id: 'top', label: 'بالای تصویر (Top)' },
+                      { id: 'center', label: 'مرکز تصویر (Center)' },
+                      { id: 'bottom', label: 'پایین تصویر (Bottom)' },
+                      { id: 'contain', label: 'فیت کامل (Contain)' },
+                    ].map(pos => (
+                      <button
+                        key={pos.id}
+                        type="button"
+                        onClick={() => setMagCoverPosition(pos.id)}
+                        className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all ${
+                          magCoverPosition === pos.id
+                            ? 'bg-[#1B889A] text-white shadow-md'
+                            : 'bg-[var(--card-bg)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:border-[#1B889A]'
+                        }`}
+                      >
+                        {pos.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Real-time Cover Position Preview */}
+                  {magCoverImage && (
+                    <div className="pt-2 flex items-center gap-3">
+                      <span className="text-[11px] text-[var(--text-secondary)] shrink-0">پیش‌نمایش برش:</span>
+                      <div className="w-24 h-32 rounded-xl overflow-hidden border-2 border-[#1B889A]/40 bg-stone-900 shadow-md relative">
+                        <img
+                          src={magCoverImage}
+                          alt="Preview"
+                          className={`w-full h-full object-${magCoverPosition || 'cover'}`}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div>
-                <label className="block font-bold mb-1">لینک دانلود فایل PDF مجله:</label>
-                <input type="text" value={magPdfUrl} onChange={e => setMagPdfUrl(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono" />
+
+              {/* PDF FILE URL & DEVICE UPLOAD */}
+              <div className="space-y-2.5 p-3.5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)]">
+                <div className="flex items-center justify-between">
+                  <label className="font-bold text-[var(--text-primary)]">فایل PDF مجله (مطالعه آنلاین & دانلود):</label>
+                  
+                  {/* PDF Upload Button from Device */}
+                  <label className="px-3 py-1.5 rounded-xl bg-[#1B889A]/15 text-[#1B889A] hover:bg-[#1B889A] hover:text-white font-bold cursor-pointer transition-all flex items-center gap-1.5">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>انتخاب PDF از دیوایس</span>
+                    <input type="file" accept="application/pdf,.pdf" onChange={handlePdfFileUpload} className="hidden" />
+                  </label>
+                </div>
+
+                <input
+                  type="text"
+                  value={magPdfUrl}
+                  onChange={e => setMagPdfUrl(e.target.value)}
+                  placeholder="آدرس لینک فایل PDF یا انتخاب مستقیم از دیوایس"
+                  className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl font-mono text-[var(--text-primary)] dir-ltr text-left"
+                />
               </div>
+
               <div className="flex justify-end gap-2 pt-3 border-t border-[var(--card-border)]">
-                <button type="button" onClick={() => setShowMagModal(false)} className="px-4 py-2 rounded-xl border border-[var(--card-border)]">انصراف</button>
-                <button type="submit" className="px-5 py-2 rounded-xl bg-[#1B889A] text-white font-bold">ثبت شماره مجله در دیتابیس</button>
+                <button type="button" onClick={() => setShowMagModal(false)} className="px-4 py-2 rounded-xl border border-[var(--card-border)] text-[var(--text-secondary)] font-bold">انصراف</button>
+                <button type="submit" className="px-5 py-2 rounded-xl bg-[#1B889A] text-white font-bold hover:bg-[#156d7b] shadow-md">ثبت شماره مجله در دیتابیس</button>
               </div>
             </form>
           </div>

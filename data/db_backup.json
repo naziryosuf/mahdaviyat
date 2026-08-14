@@ -1,95 +1,29 @@
 {
-  "timestamp": "2026-08-14T10:14:29.655Z",
+  "timestamp": "2026-08-14T10:29:35.496Z",
   "articles": [],
   "magazineIssues": [
     {
-      "id": "issue-1",
+      "id": "mag-1786702957642",
       "issue_number": 1,
-      "title_fa": "شماره نخست: عقلانیت، معرفت و بیداری معنوی",
-      "description_fa": "نخستین شماره رسمی مجله ایدئولوژی مهدویت متمرکز بر تبیین جهان‌بینی توحیدی و نقد ماتریالیسم.",
-      "publish_date_fa": "مرداد ۱۴۰۴",
-      "cover_image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80",
-      "pdf_url": "/downloads/mahdism_issue_1.pdf",
-      "download_count": 1240,
+      "title_fa": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "description_fa": "شماره نخست، تابستان 1404 هجری خورشیدی \nتعداد صفحات: ۴۵ صفحه (قطع A4)\nدر شمارهٔ نخست، سردبیر مجله یادداشتی زیر عنوان «چرا ایدئولوژی مهدویت؟»، نوشته اند که به تبیین ضرورت بازگشت به رهنمودهای قرآن‌کریم و سنت نبی یتیم(ص) برای رهایی از بحران‌های فکری عصر حاضر پرداخته و معرفی کوتاهی فلسفهٔ ایجاد، اهداف و برنامه‌های مجله ارائه کرده اند. \nاین مجموعه شامل مقالات وزینی چون «رهبریت در اسلام» در بررسی صفات حاکم عادل، «بزرگترین نعمت پس از توحید» در اهمیت نبوت، «اخوت اسلامی و وحدت امت» و «اتصال به اصل» پیرامون بازگشت به هویت واقعی انسان ارائه شده است؛ همچنین عناوینی نظیر «روشنگری چیست و روشنگر کیست؟»، «معیّت خدا (ج) با انسان»، «تفسیر آیه بسم الله الرحمن الرحیم»، و «محیط زیست و تدابیر بهبود آن» این شماره را غنی‌تر کرده و در کنار ۸ مقالهٔ اصلی، بخش‌هایی چون «حکمت و اندیشه»، یادداشت‌های تحلیلی و اشعار معنوی مجموعهٔ جامع را برای بیداری فکری و اخلاقی جامعه فراهم کرده است.",
+      "publish_date_fa": "سال: ۱۴۰۴ خورشیدی",
+      "cover_image": "file:///C:/Users/0731g/Downloads/photo_2025-08-07_16-54-26.jpg",
+      "pdf_url": "file:///C:/Users/0731g/Downloads/Telegram%20Desktop/%D8%A7%DB%8C%D8%AF%D8%A6%D9%88%D9%84%D9%88%DA%98%DB%8C_%D9%85%D9%87%D8%AF%D9%88%DB%8C%D8%AA%D8%8C_%D8%B4%D9%85%D8%A7%D8%B1%D9%87_%D9%86%D8%AE%D8%B3%D8%AA%D8%8C_%D8%AA%D8%A7%D8%A8%D8%B3%D8%AA%D8%A7%D9%86_1404_%D8%AE%D9%88%D8%B1%D8%B4%DB%8C%D8%AF%DB%8C.pdf",
+      "download_count": 0,
       "featured": true,
       "status": "published",
-      "submitted_by_name": null,
-      "submitted_at": null,
-      "submitted_device": null,
-      "tags": [
-        "شماره_۱",
-        "نشریه_کامل"
-      ],
+      "submitted_by_name": "M. Nazir Yosuf",
+      "submitted_at": "۱۴۰۵/۵/۲۳",
+      "submitted_device": "Windows Desktop (Edge)",
+      "tags": [],
       "pages": [],
-      "created_at": "2026-08-13T20:05:17.297944+00:00"
+      "created_at": "2026-08-14T10:22:34.701835+00:00"
     }
   ],
-  "videos": [
-    {
-      "id": "vid-1",
-      "title_fa": "تبیین عقلانی انتظار و تحول جوامع بشری",
-      "description_fa": "نشست تحلیلی و تخصصی پیرامون دلالت‌های عقلانی مهدویت در جهان معاصر.",
-      "video_url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
-      "thumbnail_url": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80",
-      "duration_fa": "۲۴:۱۵",
-      "category_fa": "تحلیل رسانه‌ای",
-      "speaker_fa": "دکتر علوی",
-      "published_at": "۱۴۰۴/۰۵/۱۵",
-      "views": 890,
-      "featured": true,
-      "status": "published",
-      "submitted_by_name": null,
-      "submitted_at": null,
-      "submitted_device": null,
-      "download_url": null,
-      "transcript_fa": null,
-      "timestamps": [],
-      "tags": [
-        "سخنرانی",
-        "تحلیل"
-      ],
-      "created_at": "2026-08-13T20:05:17.382879+00:00"
-    }
-  ],
-  "audios": [
-    {
-      "id": "aud-1",
-      "title_fa": "پادکست شناختی: جایگاه انسان در هستی‌شناسی مهدوی",
-      "speaker_fa": "استاد حسینی",
-      "audio_url": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-      "duration_fa": "۱۸:۴۵",
-      "description_fa": "مباحثه تخصصی پیرامون کرامت انسانی و نقش بیداری معنوی در تمدن‌سازی.",
-      "published_at": "۱۴۰۴/۰۵/۲۱",
-      "category_fa": "پادکست صوتی",
-      "cover_image": "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=600&auto=format&fit=crop&q=80",
-      "plays": 620,
-      "featured": true,
-      "status": "published",
-      "submitted_by_name": null,
-      "submitted_at": null,
-      "submitted_device": null,
-      "tags": [
-        "پادکست",
-        "خودشناسی"
-      ],
-      "created_at": "2026-08-13T20:05:17.4679+00:00"
-    }
-  ],
-  "teamMembers": [
-    {
-      "id": "team-1",
-      "name_fa": "M. Nazir Yosuf",
-      "role_fa": "سردبیر ارشد و مدیر مسئول",
-      "bio_fa": "پژوهشگر معارف دینی و شناختی با تمرکز بر تبیین عقلانیت مهدویت.",
-      "avatar_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&auto=format&fit=crop&q=80",
-      "specialization_fa": "مدیریت محتوا و تحریریه",
-      "status": "published",
-      "submitted_by_name": null,
-      "submitted_at": null,
-      "submitted_device": null,
-      "created_at": "2026-08-13T20:05:17.539752+00:00"
-    }
-  ],
+  "videos": [],
+  "audios": [],
+  "teamMembers": [],
   "coHosts": [
     {
       "id": "cohost-super-admin",
@@ -133,6 +67,71 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "log-1786702958021",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "افزودن",
+      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۲۲",
+      "time_only": "۱۲:۲۲",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": "انتشار مستقیم",
+      "created_at": null
+    },
+    {
+      "id": "log-1786702628505",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "شماره نخست: عقلانیت، معرفت و بیداری معنوی",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۱۷",
+      "time_only": "۱۲:۱۷",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786702588690",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "تبیین عقلانی انتظار و تحول جوامع بشری",
+      "item_type": "ویدیو",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۱۶",
+      "time_only": "۱۲:۱۶",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786702585010",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "M. Nazir Yosuf",
+      "item_type": "عضو تیم",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۱۶",
+      "time_only": "۱۲:۱۶",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786702573818",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "پادکست شناختی: جایگاه انسان در هستی‌شناسی مهدوی",
+      "item_type": "صوتی",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۱۶",
+      "time_only": "۱۲:۱۶",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
     {
       "id": "log-1786658377872",
       "user_name": "M. Nazir Yosuf",

@@ -37,8 +37,11 @@ export interface MagazineIssue {
   description_fa: string;
   publish_date_fa: string;
   cover_image: string;
+  cover_position?: string;
   pdf_url: string;
   download_count: number;
+  author_name_fa?: string;
+  author_title_fa?: string;
   pages: MagazinePageItem[];
   featured?: boolean;
   tags?: string[];
