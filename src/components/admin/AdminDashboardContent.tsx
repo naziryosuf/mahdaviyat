@@ -241,6 +241,7 @@ export const AdminDashboardContent: React.FC = () => {
   const [artContent, setArtContent] = useState('');
   const [artCategory, setArtCategory] = useState<string>('تحلیل‌ها');
   const [artAuthor, setArtAuthor] = useState('M. Nazir Yosuf');
+  const [artAuthorTitle, setArtAuthorTitle] = useState('سردبیر ارشد / پژوهشگر');
   const [artReadTime, setArtReadTime] = useState('۷ دقیقه');
   const [artImage, setArtImage] = useState('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80');
   const [artTags, setArtTags] = useState('#معرفت‌شناسی, #مهدویت');
@@ -258,6 +259,7 @@ export const AdminDashboardContent: React.FC = () => {
     setArtContent('');
     setArtCategory('تحلیل‌ها');
     setArtAuthor(currentUser?.name_fa || 'M. Nazir Yosuf');
+    setArtAuthorTitle(currentUser?.role_fa || 'سردبیر ارشد / پژوهشگر');
     setArtImage('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80');
     setArtTags('#معرفت‌شناسی, #مهدویت');
     setShowArticleModal(true);
@@ -270,6 +272,7 @@ export const AdminDashboardContent: React.FC = () => {
     setArtContent(art.content_fa || '');
     setArtCategory(art.category_fa || 'تحلیل‌ها');
     setArtAuthor(art.author_name_fa || 'M. Nazir Yosuf');
+    setArtAuthorTitle(art.author_title_fa || 'سردبیر ارشد / پژوهشگر');
     setArtImage(art.image_url || '');
     setArtTags(art.tags ? art.tags.join(', ') : '#معرفت‌شناسی, #مهدویت');
     setShowArticleModal(true);
@@ -288,6 +291,7 @@ export const AdminDashboardContent: React.FC = () => {
         content_fa: artContent,
         category_fa: artCategory,
         author_name_fa: artAuthor,
+        author_title_fa: artAuthorTitle,
         image_url: artImage,
         read_time_fa: artReadTime,
         tags: parsedTags,
@@ -300,6 +304,7 @@ export const AdminDashboardContent: React.FC = () => {
         content_fa: artContent,
         category_fa: artCategory,
         author_name_fa: artAuthor,
+        author_title_fa: artAuthorTitle,
         author_avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
         read_time_fa: artReadTime,
         published_at: new Date().toLocaleDateString('fa-IR'),
@@ -1361,9 +1366,27 @@ export const AdminDashboardContent: React.FC = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="block font-bold mb-1">نام نویسنده:</label>
-                  <input type="text" value={artAuthor} onChange={e => setArtAuthor(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+                  <label className="block font-bold mb-1 text-[var(--text-primary)]">نام نویسنده:</label>
+                  <input
+                    type="text"
+                    value={artAuthor}
+                    onChange={e => setArtAuthor(e.target.value)}
+                    placeholder="مثلاً: الهام الدین سادات"
+                    className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-[var(--text-primary)] font-serif-persian"
+                  />
                 </div>
+              </div>
+
+              {/* DEDICATED AUTHOR TITLE / POSITION (موقف) FIELD */}
+              <div>
+                <label className="block font-bold mb-1 text-[var(--text-primary)]">موقف / سمت نویسنده (مثلاً: سردبیر ارشد / پژوهشگر):</label>
+                <input
+                  type="text"
+                  value={artAuthorTitle}
+                  onChange={e => setArtAuthorTitle(e.target.value)}
+                  placeholder="مثلاً: سردبیر ارشد، استاد دانشگاه، نویسنده آزاد..."
+                  className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-[var(--text-primary)] font-serif-persian"
+                />
               </div>
               <div>
                 <label className="block font-bold mb-1 text-[var(--text-primary)]">لینک تصویر مقاله:</label>
