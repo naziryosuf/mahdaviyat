@@ -239,7 +239,7 @@ export const AdminDashboardContent: React.FC = () => {
   const [artTitle, setArtTitle] = useState('');
   const [artExcerpt, setArtExcerpt] = useState('');
   const [artContent, setArtContent] = useState('');
-  const [artCategory, setArtCategory] = useState<'سرمقاله‌ها' | 'تحلیل‌ها' | 'نقد مکاتب' | 'شناخت مهدویت'>('تحلیل‌ها');
+  const [artCategory, setArtCategory] = useState<string>('تحلیل‌ها');
   const [artAuthor, setArtAuthor] = useState('M. Nazir Yosuf');
   const [artReadTime, setArtReadTime] = useState('۷ دقیقه');
   const [artImage, setArtImage] = useState('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80');
@@ -1324,13 +1324,41 @@ export const AdminDashboardContent: React.FC = () => {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold mb-1">دسته بندی:</label>
-                  <select value={artCategory} onChange={e => setArtCategory(e.target.value as any)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl">
-                    <option value="سرمقاله‌ها">سرمقاله‌ها</option>
-                    <option value="تحلیل‌ها">تحلیل‌ها</option>
-                    <option value="نقد مکاتب">نقد مکاتب</option>
-                    <option value="شناخت مهدویت">شناخت مهدویت</option>
-                  </select>
+                  <label className="block font-bold mb-1">دسته بندی (تایپ دلخواه یا انتخاب):</label>
+                  <input
+                    type="text"
+                    list="article-categories-list"
+                    value={artCategory}
+                    onChange={e => setArtCategory(e.target.value)}
+                    placeholder="تایپ یا انتخاب دسته‌بندی..."
+                    className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-[var(--text-primary)]"
+                  />
+                  <datalist id="article-categories-list">
+                    <option value="سرمقاله‌ها" />
+                    <option value="تحلیل‌ها" />
+                    <option value="نقد مکاتب" />
+                    <option value="شناخت مهدویت" />
+                    <option value="پژوهش‌های تاریخی" />
+                    <option value="یادداشت‌ها" />
+                  </datalist>
+
+                  {/* Quick Category Suggestion Badges */}
+                  <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                    {['سرمقاله‌ها', 'تحلیل‌ها', 'نقد مکاتب', 'شناخت مهدویت'].map((catName) => (
+                      <button
+                        key={catName}
+                        type="button"
+                        onClick={() => setArtCategory(catName)}
+                        className={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition-all ${
+                          artCategory === catName
+                            ? 'bg-[#1B889A] text-white shadow-xs'
+                            : 'bg-[var(--bg-color)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:border-[#1B889A]'
+                        }`}
+                      >
+                        {catName}
+                      </button>
+                    ))}
+                  </div>
                 </div>
                 <div>
                   <label className="block font-bold mb-1">نام نویسنده:</label>

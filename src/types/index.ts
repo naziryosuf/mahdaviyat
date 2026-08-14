@@ -4,7 +4,7 @@ export interface Article {
   slug: string;
   excerpt_fa: string;
   content_fa: string;
-  category_fa: 'سرمقاله‌ها' | 'تحلیل‌ها' | 'نقد مکاتب' | 'شناخت مهدویت';
+  category_fa: string;
   author_name_fa: string;
   author_title_fa?: string;
   author_avatar: string;
