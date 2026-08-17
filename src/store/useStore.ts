@@ -678,7 +678,7 @@ export const useStore = create<AppState>((set, get) => ({
       status: newIssue.status,
       submitted_by_name: newIssue.submitted_by_name,
       submitted_at: newIssue.submitted_at,
-      submitted_device: newIssue.submitted_device,
+      submitted_device: `PAGECOUNT:${newIssue.page_count_fa || '۴۵ صفحه (قطع A4)'}||${newIssue.submitted_device || getDeviceDetails()}`,
       tags: newIssue.tags,
       pages: newIssue.pages
     };
@@ -739,28 +739,29 @@ export const useStore = create<AppState>((set, get) => ({
     }));
 
     if (updatedMag) {
+      const targetMag = updatedMag as MagazineIssue;
       const dbPayload: Record<string, any> = {
-        id: (updatedMag as MagazineIssue).id,
-        issue_number: (updatedMag as MagazineIssue).issue_number,
-        title_fa: (updatedMag as MagazineIssue).title_fa,
-        description_fa: (updatedMag as MagazineIssue).description_fa,
-        publish_date_fa: (updatedMag as MagazineIssue).publish_date_fa,
-        cover_image: (updatedMag as MagazineIssue).cover_image,
-        pdf_url: (updatedMag as MagazineIssue).pdf_url,
-        download_count: (updatedMag as MagazineIssue).download_count,
-        featured: (updatedMag as MagazineIssue).featured,
-        status: (updatedMag as MagazineIssue).status,
-        submitted_by_name: (updatedMag as MagazineIssue).submitted_by_name,
-        submitted_at: (updatedMag as MagazineIssue).submitted_at,
-        submitted_device: (updatedMag as MagazineIssue).submitted_device,
-        tags: (updatedMag as MagazineIssue).tags,
-        pages: (updatedMag as MagazineIssue).pages
+        id: targetMag.id,
+        issue_number: targetMag.issue_number,
+        title_fa: targetMag.title_fa,
+        description_fa: targetMag.description_fa,
+        publish_date_fa: targetMag.publish_date_fa,
+        cover_image: targetMag.cover_image,
+        pdf_url: targetMag.pdf_url,
+        download_count: targetMag.download_count,
+        featured: targetMag.featured,
+        status: targetMag.status,
+        submitted_by_name: targetMag.submitted_by_name,
+        submitted_at: targetMag.submitted_at,
+        submitted_device: `PAGECOUNT:${targetMag.page_count_fa || '۴۵ صفحه (قطع A4)'}||${targetMag.submitted_device || getDeviceDetails()}`,
+        tags: targetMag.tags,
+        pages: targetMag.pages
       };
 
-      if ((updatedMag as MagazineIssue).cover_position) dbPayload.cover_position = (updatedMag as MagazineIssue).cover_position;
-      if ((updatedMag as MagazineIssue).author_name_fa) dbPayload.author_name_fa = (updatedMag as MagazineIssue).author_name_fa;
-      if ((updatedMag as MagazineIssue).author_title_fa) dbPayload.author_title_fa = (updatedMag as MagazineIssue).author_title_fa;
-      if ((updatedMag as MagazineIssue).page_count_fa) dbPayload.page_count_fa = (updatedMag as MagazineIssue).page_count_fa;
+      if (targetMag.cover_position) dbPayload.cover_position = targetMag.cover_position;
+      if (targetMag.author_name_fa) dbPayload.author_name_fa = targetMag.author_name_fa;
+      if (targetMag.author_title_fa) dbPayload.author_title_fa = targetMag.author_title_fa;
+      if (targetMag.page_count_fa) dbPayload.page_count_fa = targetMag.page_count_fa;
 
       try {
         let { error } = await supabase.from('magazine_issues').upsert(dbPayload);
@@ -1080,8 +1081,29 @@ export const useStore = create<AppState>((set, get) => ({
           const isBadCover = !mag.cover_image || mag.cover_image.startsWith('file://') || mag.cover_image.trim() === '';
           const isBadPdf = !mag.pdf_url || mag.pdf_url.startsWith('file://') || mag.pdf_url.includes('فایل انتخاب شد') || mag.pdf_url.trim() === '';
 
+          let pageCount = mag.page_count_fa;
+          if (!pageCount && mag.submitted_device && mag.submitted_device.includes('PAGECOUNT:')) {
+            const match = mag.submitted_device.match(/PAGECOUNT:(.*?)(?:\|\||$)/);
+            if (match && match[1]) pageCount = match[1].trim();
+          }
+          if (!pageCount && mag.description_fa && mag.description_fa.includes('تعداد صفحات:')) {
+            const lines = mag.description_fa.split('\n');
+            for (const line of lines) {
+              if (line.includes('تعداد صفحات:')) {
+                const val = line.split('تعداد صفحات:')[1].trim();
+                if (val) {
+                  pageCount = val;
+                  break;
+                }
+              }
+            }
+          }
+
           return {
             ...mag,
+            author_name_fa: mag.author_name_fa || 'نذیر یوسف',
+            author_title_fa: mag.author_title_fa || 'سردبیر ارشد / نویسنده',
+            page_count_fa: pageCount || '۴۵ صفحه (قطع A4)',
             cover_image: isBadCover ? 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80' : mag.cover_image,
             pdf_url: isBadPdf ? '/downloads/mahdism_issue_1.pdf' : mag.pdf_url,
             tags: Array.isArray(mag.tags) 

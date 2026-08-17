@@ -376,16 +376,16 @@ export const AdminDashboardContent: React.FC = () => {
   const openAddMagazine = () => {
     setEditingMag(null);
     setMagNumber(magazineIssues.length + 1);
-    setMagTitle(`شماره ${magazineIssues.length + 1}: عقلانیت و معرفت‌شناسی`);
-    setMagDesc('توضیحات شماره جدید مجله ایدئولوژی مهدویت');
-    setMagPublishDate(new Date().toLocaleDateString('fa-IR'));
-    setMagCoverImage('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80');
+    setMagTitle('');
+    setMagDesc('');
+    setMagPublishDate(`سال: ${new Date().toLocaleDateString('fa-IR', { year: 'numeric' })} _ ماه: ${new Date().toLocaleDateString('fa-IR', { month: 'long' })}`);
+    setMagCoverImage('');
     setMagCoverPosition('center');
-    setMagPdfUrl('/downloads/mahdism_issue_1.pdf');
-    setMagAuthorName(currentUser?.name_fa || 'M. Nazir Yosufi');
-    setMagAuthorTitle(currentUser?.role_fa || 'سردبیر ارشد');
-    setMagPageCount('۴۵ صفحه (قطع A4)');
-    setMagTags('#نشریه_کامل, #شماره_یک');
+    setMagPdfUrl('');
+    setMagAuthorName('نذیر یوسف');
+    setMagAuthorTitle('سردبیر ارشد / نویسنده');
+    setMagPageCount('');
+    setMagTags('#نشریه_کامل, #ایدئولوژی_مهدویت');
     setCoverFile(null);
     setPdfFile(null);
     setUploadStatusMsg('');
@@ -401,9 +401,9 @@ export const AdminDashboardContent: React.FC = () => {
     setMagCoverImage(mag.cover_image);
     setMagCoverPosition(mag.cover_position || 'center');
     setMagPdfUrl(mag.pdf_url);
-    setMagAuthorName(mag.author_name_fa || 'M. Nazir Yosufi');
-    setMagAuthorTitle(mag.author_title_fa || 'سردبیر ارشد');
-    setMagPageCount(mag.page_count_fa || '۴۵ صفحه (قطع A4)');
+    setMagAuthorName(mag.author_name_fa || 'نذیر یوسف');
+    setMagAuthorTitle(mag.author_title_fa || 'سردبیر ارشد / نویسنده');
+    setMagPageCount(mag.page_count_fa || '');
     setMagTags(mag.tags ? mag.tags.join(', ') : '#نشریه_کامل, #شماره_یک');
     setCoverFile(null);
     setPdfFile(null);
