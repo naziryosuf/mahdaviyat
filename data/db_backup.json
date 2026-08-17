@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-17T16:49:07.784Z",
+  "timestamp": "2026-08-17T16:54:43.702Z",
   "articles": [
     {
       "id": "art-1786722593050",
@@ -521,6 +521,19 @@
       "created_at": null
     },
     {
+      "id": "log-1786985454624",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "شماره دوم مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۶ - ۱۸:۵۰",
+      "time_only": "۱۸:۵۰",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-17T16:50:45.79823+00:00"
+    },
+    {
       "id": "log-1786707356253",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
@@ -662,6 +675,19 @@
       "device_info": "Windows Desktop (Edge)",
       "status_note": null,
       "created_at": "2026-08-14T12:50:25.291948+00:00"
+    },
+    {
+      "id": "log-1786985475086",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": " شماره سوم مجلۀ دیجیتالی ایدئولوژی مهدویت ",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۶ - ۱۸:۵۱",
+      "time_only": "۱۸:۵۱",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-17T16:51:06.256438+00:00"
     },
     {
       "id": "log-1786982354963",

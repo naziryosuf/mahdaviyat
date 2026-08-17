@@ -1065,8 +1065,11 @@ export const useStore = create<AppState>((set, get) => ({
     try {
       // 1. Articles
       const { data: supaArticles, error: artErr } = await supabase.from('articles').select('*').order('created_at', { ascending: false });
-      if (!artErr) {
-        set({ articles: supaArticles || [] });
+      if (!artErr && supaArticles) {
+        set({ articles: supaArticles });
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('mahdism_articles', JSON.stringify(supaArticles));
+        }
       }
 
       // 2. Magazine Issues
@@ -1087,24 +1090,33 @@ export const useStore = create<AppState>((set, get) => ({
           };
         });
         set({ magazineIssues: sanitizedMags });
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('mahdism_magazines', JSON.stringify(sanitizedMags));
+        }
       }
 
       // 3. Videos
       const { data: supaVideos, error: vidErr } = await supabase.from('video_items').select('*');
-      if (!vidErr) {
-        set({ videos: supaVideos || [] });
+      if (!vidErr && supaVideos) {
+        set({ videos: supaVideos });
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('mahdism_videos', JSON.stringify(supaVideos));
+        }
       }
 
       // 4. Audios
       const { data: supaAudios, error: audErr } = await supabase.from('audio_items').select('*');
-      if (!audErr) {
-        set({ audios: supaAudios || [] });
+      if (!audErr && supaAudios) {
+        set({ audios: supaAudios });
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('mahdism_audios', JSON.stringify(supaAudios));
+        }
       }
 
       // 5. Team Members
       const { data: supaTeam, error: teamErr } = await supabase.from('team_members').select('*');
-      if (!teamErr) {
-        set({ teamMembers: supaTeam || [] });
+      if (!teamErr && supaTeam) {
+        set({ teamMembers: supaTeam });
       }
 
       // 6. Contact Messages
