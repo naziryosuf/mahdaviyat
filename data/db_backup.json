@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-17T19:07:41.608Z",
+  "timestamp": "2026-08-17T19:18:40.955Z",
   "articles": [
     {
       "id": "art-1786988507566",
@@ -109,28 +109,6 @@
   ],
   "videos": [
     {
-      "id": "vid-1786991169122",
-      "title_fa": " ارزش خودشناسی | انسان با قرآن",
-      "description_fa": "",
-      "video_url": "https://youtu.be/9CUS2dKCoUc?si=I1SJe36cQaoEmVyW",
-      "thumbnail_url": "",
-      "duration_fa": "",
-      "category_fa": "نشست تحلیلی",
-      "speaker_fa": "",
-      "published_at": "۱۴۰۵/۵/۲۶",
-      "views": 1,
-      "featured": true,
-      "status": "published",
-      "submitted_by_name": "M. Nazir Yosuf",
-      "submitted_at": "۱۴۰۵/۵/۲۶",
-      "submitted_device": "Windows Desktop (Edge)",
-      "download_url": null,
-      "transcript_fa": null,
-      "timestamps": null,
-      "tags": null,
-      "created_at": null
-    },
-    {
       "id": "vid-1786991025198",
       "title_fa": "تاریکی های باطنی ",
       "description_fa": "\nتاریکی های باطنی | انسان با قرآن",
@@ -151,6 +129,28 @@
       "timestamps": [],
       "tags": [],
       "created_at": "2026-08-17T18:23:36.414184+00:00"
+    },
+    {
+      "id": "vid-1786991169122",
+      "title_fa": " ارزش خودشناسی | انسان با قرآن",
+      "description_fa": "",
+      "video_url": "https://youtu.be/9CUS2dKCoUc?si=I1SJe36cQaoEmVyW",
+      "thumbnail_url": "https://img.youtube.com/vi/9CUS2dKCoUc/hqdefault.jpg",
+      "duration_fa": "",
+      "category_fa": "نشست تحلیلی",
+      "speaker_fa": "",
+      "published_at": "۱۴۰۵/۵/۲۶",
+      "views": 1,
+      "featured": true,
+      "status": "published",
+      "submitted_by_name": "M. Nazir Yosuf",
+      "submitted_at": "۱۴۰۵/۵/۲۶",
+      "submitted_device": "Windows Desktop (Edge)",
+      "download_url": null,
+      "transcript_fa": null,
+      "timestamps": null,
+      "tags": null,
+      "created_at": null
     }
   ],
   "audios": [],
@@ -1122,6 +1122,19 @@
       "device_info": "Windows Desktop (Edge)",
       "status_note": "انتشار مستقیم",
       "created_at": "2026-08-14T12:27:04.581287+00:00"
+    },
+    {
+      "id": "log-1786994003409",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": " ارزش خودشناسی | انسان با قرآن",
+      "item_type": "ویدیو",
+      "timestamp": "۱۴۰۵/۵/۲۶ - ۲۱:۱۳",
+      "time_only": "۲۱:۱۳",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-17T19:13:14.581634+00:00"
     },
     {
       "id": "log-1786991169232",

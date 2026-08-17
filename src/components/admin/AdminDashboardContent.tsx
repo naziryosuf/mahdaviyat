@@ -542,8 +542,14 @@ export const AdminDashboardContent: React.FC = () => {
     return toPersianDigits(formatted);
   };
 
-  // Helper to extract duration from File or URL using HTML5 Video
+  // Helper to extract duration from File or Direct URL using HTML5 Video
   const extractDurationFromMedia = (source: File | string) => {
+    if (typeof source === 'string' && (source.includes('youtube.com') || source.includes('youtu.be') || source.includes('aparat.com'))) {
+      // For YouTube/Aparat, analyze metadata via oEmbed
+      handleAnalyzeYouTubeUrl(source);
+      return;
+    }
+
     try {
       const video = document.createElement('video');
       video.preload = 'metadata';
@@ -553,9 +559,16 @@ export const AdminDashboardContent: React.FC = () => {
         if (typeof source !== 'string') {
           URL.revokeObjectURL(mediaUrl);
         }
-        if (video.duration && !isNaN(video.duration)) {
+        if (video.duration && !isNaN(video.duration) && isFinite(video.duration)) {
           const persianDuration = formatSecondsToPersianDuration(video.duration);
           setVidDuration(persianDuration);
+          setSaveToast({ msg: `⏱️ مدت زمان ویدیو محاسبه شد: ${persianDuration}`, type: 'success' });
+          setTimeout(() => setSaveToast(null), 3000);
+        }
+      };
+      video.onerror = () => {
+        if (typeof source !== 'string') {
+          URL.revokeObjectURL(mediaUrl);
         }
       };
     } catch (err) {
@@ -585,6 +598,11 @@ export const AdminDashboardContent: React.FC = () => {
           if (data?.title && !vidTitle) {
             setVidTitle(data.title);
           }
+          if (data?.author_name && (!vidSpeaker || vidSpeaker === 'استاد علوی')) {
+            setVidSpeaker(data.author_name);
+          }
+          setSaveToast({ msg: '⚡ اطلاعات ویدیو از یوتیوب استخراج گردید!', type: 'success' });
+          setTimeout(() => setSaveToast(null), 3000);
         })
         .catch(() => {});
     }
@@ -1800,6 +1818,24 @@ export const AdminDashboardContent: React.FC = () => {
                     </button>
                   </div>
                   <input type="text" value={vidDuration} onChange={e => setVidDuration(e.target.value)} placeholder="مثلا: ۰۵:۳۰ یا ۱۰ دقیقه" className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono text-center font-bold" />
+                  
+                  {/* Quick Duration Preset Chips */}
+                  <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                    {['۰۳:۰۰', '۰۵:۰۰', '۱۰:۰۰', '۱۵:۰۰', '۲۰:۰۰', '۳۰:۰۰'].map((durPreset) => (
+                      <button
+                        key={durPreset}
+                        type="button"
+                        onClick={() => setVidDuration(durPreset)}
+                        className={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition-all border ${
+                          vidDuration === durPreset
+                            ? 'bg-[#1B889A] text-white border-[#1B889A]'
+                            : 'bg-[var(--bg-color)] text-[var(--text-secondary)] border-[var(--card-border)] hover:border-[#1B889A]'
+                        }`}
+                      >
+                        {durPreset}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
               {/* DUAL VIDEO SOURCE SELECTOR (LINK VS UPLOAD) */}
