@@ -284,36 +284,45 @@ export const AdminDashboardContent: React.FC = () => {
 
     const parsedTags = parseTagsInput(artTags);
 
-    if (editingArticle) {
-      await updateArticle(editingArticle.id, {
-        title_fa: artTitle,
-        excerpt_fa: artExcerpt,
-        content_fa: artContent,
-        category_fa: artCategory,
-        author_name_fa: artAuthor,
-        author_title_fa: artAuthorTitle,
-        image_url: artImage,
-        read_time_fa: artReadTime,
-        tags: parsedTags,
-      });
-    } else {
-      await addArticle({
-        title_fa: artTitle,
-        slug: `art-${Date.now()}`,
-        excerpt_fa: artExcerpt,
-        content_fa: artContent,
-        category_fa: artCategory,
-        author_name_fa: artAuthor,
-        author_title_fa: artAuthorTitle,
-        author_avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
-        read_time_fa: artReadTime,
-        published_at: new Date().toLocaleDateString('fa-IR'),
-        image_url: artImage,
-        tags: parsedTags,
-        featured: false,
-      });
+    try {
+      if (editingArticle) {
+        await updateArticle(editingArticle.id, {
+          title_fa: artTitle,
+          excerpt_fa: artExcerpt,
+          content_fa: artContent,
+          category_fa: artCategory,
+          author_name_fa: artAuthor,
+          author_title_fa: artAuthorTitle,
+          image_url: artImage,
+          read_time_fa: artReadTime,
+          tags: parsedTags,
+        });
+        setSaveToast({ msg: '✅ مقاله با موفقیت بروزرسانی شد!', type: 'success' });
+      } else {
+        await addArticle({
+          title_fa: artTitle,
+          slug: `art-${Date.now()}`,
+          excerpt_fa: artExcerpt,
+          content_fa: artContent,
+          category_fa: artCategory,
+          author_name_fa: artAuthor,
+          author_title_fa: artAuthorTitle,
+          author_avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
+          read_time_fa: artReadTime,
+          published_at: new Date().toLocaleDateString('fa-IR'),
+          image_url: artImage,
+          tags: parsedTags,
+          featured: false,
+        });
+        setSaveToast({ msg: '✅ مقاله جدید با موفقیت منتشر گردید!', type: 'success' });
+      }
+      setTimeout(() => setSaveToast(null), 3000);
+      setShowArticleModal(false);
+    } catch (err: any) {
+      console.error('Error saving article:', err);
+      setSaveToast({ msg: `❌ خطا در ذخیره مقاله: ${err?.message || 'مشکلی رخ داد'}`, type: 'error' });
+      setTimeout(() => setSaveToast(null), 4000);
     }
-    setShowArticleModal(false);
   };
 
   // Magazine Modal State
@@ -518,34 +527,43 @@ export const AdminDashboardContent: React.FC = () => {
     setShowVidModal(true);
   };
 
-  const handleSaveVideo = (e: React.FormEvent) => {
+  const handleSaveVideo = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!vidTitle.trim()) return;
 
-    if (editingVid) {
-      updateVideo(editingVid.id, {
-        title_fa: vidTitle,
-        description_fa: vidDesc,
-        video_url: vidUrl,
-        thumbnail_url: vidThumb,
-        duration_fa: vidDuration,
-        category_fa: vidCategory,
-        speaker_fa: vidSpeaker,
-      });
-    } else {
-      addVideo({
-        title_fa: vidTitle,
-        description_fa: vidDesc,
-        video_url: vidUrl,
-        thumbnail_url: vidThumb,
-        duration_fa: vidDuration,
-        category_fa: vidCategory,
-        speaker_fa: vidSpeaker,
-        published_at: new Date().toLocaleDateString('fa-IR'),
-        featured: true,
-      });
+    try {
+      if (editingVid) {
+        await updateVideo(editingVid.id, {
+          title_fa: vidTitle,
+          description_fa: vidDesc,
+          video_url: vidUrl,
+          thumbnail_url: vidThumb,
+          duration_fa: vidDuration,
+          category_fa: vidCategory,
+          speaker_fa: vidSpeaker,
+        });
+        setSaveToast({ msg: '✅ ویدیو با موفقیت بروزرسانی شد!', type: 'success' });
+      } else {
+        await addVideo({
+          title_fa: vidTitle,
+          description_fa: vidDesc,
+          video_url: vidUrl,
+          thumbnail_url: vidThumb,
+          duration_fa: vidDuration,
+          category_fa: vidCategory,
+          speaker_fa: vidSpeaker,
+          published_at: new Date().toLocaleDateString('fa-IR'),
+          featured: true,
+        });
+        setSaveToast({ msg: '✅ ویدیو جدید با موفقیت ثبت شد!', type: 'success' });
+      }
+      setTimeout(() => setSaveToast(null), 3000);
+      setShowVidModal(false);
+    } catch (err: any) {
+      console.error('Error saving video:', err);
+      setSaveToast({ msg: `❌ خطا در ذخیره ویدیو: ${err?.message || 'مشکلی رخ داد'}`, type: 'error' });
+      setTimeout(() => setSaveToast(null), 4000);
     }
-    setShowVidModal(false);
   };
 
   // Audio Modal State
@@ -583,34 +601,43 @@ export const AdminDashboardContent: React.FC = () => {
     setShowAudModal(true);
   };
 
-  const handleSaveAudio = (e: React.FormEvent) => {
+  const handleSaveAudio = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!audTitle.trim()) return;
 
-    if (editingAud) {
-      updateAudio(editingAud.id, {
-        title_fa: audTitle,
-        speaker_fa: audSpeaker,
-        audio_url: audUrl,
-        duration_fa: audDuration,
-        description_fa: audDesc,
-        category_fa: audCategory,
-        cover_image: audCover,
-      });
-    } else {
-      addAudio({
-        title_fa: audTitle,
-        speaker_fa: audSpeaker,
-        audio_url: audUrl,
-        duration_fa: audDuration,
-        description_fa: audDesc,
-        published_at: new Date().toLocaleDateString('fa-IR'),
-        category_fa: audCategory,
-        cover_image: audCover,
-        featured: true,
-      });
+    try {
+      if (editingAud) {
+        await updateAudio(editingAud.id, {
+          title_fa: audTitle,
+          speaker_fa: audSpeaker,
+          audio_url: audUrl,
+          duration_fa: audDuration,
+          description_fa: audDesc,
+          category_fa: audCategory,
+          cover_image: audCover,
+        });
+        setSaveToast({ msg: '✅ پادکست/فایل صوتی با موفقیت بروزرسانی شد!', type: 'success' });
+      } else {
+        await addAudio({
+          title_fa: audTitle,
+          speaker_fa: audSpeaker,
+          audio_url: audUrl,
+          duration_fa: audDuration,
+          description_fa: audDesc,
+          published_at: new Date().toLocaleDateString('fa-IR'),
+          category_fa: audCategory,
+          cover_image: audCover,
+          featured: true,
+        });
+        setSaveToast({ msg: '✅ پادکست جدید با موفقیت منتشر گردید!', type: 'success' });
+      }
+      setTimeout(() => setSaveToast(null), 3000);
+      setShowAudModal(false);
+    } catch (err: any) {
+      console.error('Error saving audio:', err);
+      setSaveToast({ msg: `❌ خطا در ذخیره پادکست: ${err?.message || 'مشکلی رخ داد'}`, type: 'error' });
+      setTimeout(() => setSaveToast(null), 4000);
     }
-    setShowAudModal(false);
   };
 
   // Team Modal State

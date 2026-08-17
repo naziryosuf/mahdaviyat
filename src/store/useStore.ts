@@ -85,23 +85,23 @@ interface AppState {
   deleteArticle: (id: string) => Promise<void>;
 
   addMagazineIssue: (issue: Omit<MagazineIssue, 'id' | 'download_count'>) => Promise<void>;
-  updateMagazineIssue: (id: string, issue: Partial<MagazineIssue>) => void;
-  deleteMagazineIssue: (id: string) => void;
+  updateMagazineIssue: (id: string, issue: Partial<MagazineIssue>) => Promise<void>;
+  deleteMagazineIssue: (id: string) => Promise<void>;
 
-  addVideo: (video: Omit<VideoItem, 'id' | 'views'>) => void;
-  updateVideo: (id: string, video: Partial<VideoItem>) => void;
-  deleteVideo: (id: string) => void;
+  addVideo: (video: Omit<VideoItem, 'id' | 'views'>) => Promise<void>;
+  updateVideo: (id: string, video: Partial<VideoItem>) => Promise<void>;
+  deleteVideo: (id: string) => Promise<void>;
 
-  addAudio: (audio: Omit<AudioItem, 'id' | 'plays'>) => void;
-  updateAudio: (id: string, audio: Partial<AudioItem>) => void;
-  deleteAudio: (id: string) => void;
+  addAudio: (audio: Omit<AudioItem, 'id' | 'plays'>) => Promise<void>;
+  updateAudio: (id: string, audio: Partial<AudioItem>) => Promise<void>;
+  deleteAudio: (id: string) => Promise<void>;
 
-  addInfographic: (infographic: Omit<InfographicItem, 'id'>) => void;
-  deleteInfographic: (id: string) => void;
+  addInfographic: (infographic: Omit<InfographicItem, 'id'>) => Promise<void>;
+  deleteInfographic: (id: string) => Promise<void>;
 
-  addTeamMember: (member: Omit<TeamMember, 'id'>) => void;
-  updateTeamMember: (id: string, member: Partial<TeamMember>) => void;
-  deleteTeamMember: (id: string) => void;
+  addTeamMember: (member: Omit<TeamMember, 'id'>) => Promise<void>;
+  updateTeamMember: (id: string, member: Partial<TeamMember>) => Promise<void>;
+  deleteTeamMember: (id: string) => Promise<void>;
 
   addContactMessage: (msg: Omit<ContactMessage, 'id' | 'created_at' | 'status'>) => Promise<void>;
   markContactRead: (id: string) => void;
@@ -790,20 +790,20 @@ export const useStore = create<AppState>((set, get) => ({
     }
   },
 
-  deleteMagazineIssue: (id) => {
+  deleteMagazineIssue: async (id) => {
     const target = get().magazineIssues.find(m => m.id === id);
     set((state) => ({
       magazineIssues: state.magazineIssues.filter((iss) => iss.id !== id),
       stagedChangesCount: 0,
       hasUnsavedChanges: false
     }));
-    supabase.from('magazine_issues').delete().eq('id', id).then(() => {});
+    await supabase.from('magazine_issues').delete().eq('id', id);
     if (target) {
       get().addAuditLog('حذف', target.title_fa, 'مجله');
     }
   },
 
-  addVideo: (videoData) => {
+  addVideo: async (videoData) => {
     const currentUser = get().currentUser;
     const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
     const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
@@ -820,10 +820,10 @@ export const useStore = create<AppState>((set, get) => ({
     };
     set((state) => ({ 
       videos: [newVid, ...state.videos],
-      stagedChangesCount: state.stagedChangesCount + 1,
-      hasUnsavedChanges: true
+      stagedChangesCount: 0,
+      hasUnsavedChanges: false
     }));
-    supabase.from('video_items').upsert(newVid).then(() => {});
+    await supabase.from('video_items').upsert(newVid);
     get().addAuditLog(
       'افزودن', 
       newVid.title_fa, 
@@ -832,7 +832,7 @@ export const useStore = create<AppState>((set, get) => ({
     );
   },
 
-  updateVideo: (id, videoData) => {
+  updateVideo: async (id, videoData) => {
     const currentUser = get().currentUser;
     const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
     const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
@@ -851,11 +851,11 @@ export const useStore = create<AppState>((set, get) => ({
         }
         return v;
       }),
-      stagedChangesCount: state.stagedChangesCount + 1,
-      hasUnsavedChanges: true
+      stagedChangesCount: 0,
+      hasUnsavedChanges: false
     }));
     if (updatedVid) {
-      supabase.from('video_items').upsert(updatedVid).then(() => {});
+      await supabase.from('video_items').upsert(updatedVid);
     }
     const target = get().videos.find(v => v.id === id);
     if (target) {
@@ -863,20 +863,20 @@ export const useStore = create<AppState>((set, get) => ({
     }
   },
 
-  deleteVideo: (id) => {
+  deleteVideo: async (id) => {
     const target = get().videos.find(v => v.id === id);
     set((state) => ({
       videos: state.videos.filter((v) => v.id !== id),
-      stagedChangesCount: state.stagedChangesCount + 1,
-      hasUnsavedChanges: true
+      stagedChangesCount: 0,
+      hasUnsavedChanges: false
     }));
-    supabase.from('video_items').delete().eq('id', id).then(() => {});
+    await supabase.from('video_items').delete().eq('id', id);
     if (target) {
       get().addAuditLog('حذف', target.title_fa, 'ویدیو');
     }
   },
 
-  addAudio: (audioData) => {
+  addAudio: async (audioData) => {
     const currentUser = get().currentUser;
     const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
     const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
@@ -893,10 +893,10 @@ export const useStore = create<AppState>((set, get) => ({
     };
     set((state) => ({ 
       audios: [newAud, ...state.audios],
-      stagedChangesCount: state.stagedChangesCount + 1,
-      hasUnsavedChanges: true
+      stagedChangesCount: 0,
+      hasUnsavedChanges: false
     }));
-    supabase.from('audio_items').upsert(newAud).then(() => {});
+    await supabase.from('audio_items').upsert(newAud);
     get().addAuditLog(
       'افزودن', 
       newAud.title_fa, 
@@ -905,7 +905,7 @@ export const useStore = create<AppState>((set, get) => ({
     );
   },
 
-  updateAudio: (id, audioData) => {
+  updateAudio: async (id, audioData) => {
     const currentUser = get().currentUser;
     const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
     const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
@@ -924,11 +924,11 @@ export const useStore = create<AppState>((set, get) => ({
         }
         return a;
       }),
-      stagedChangesCount: state.stagedChangesCount + 1,
-      hasUnsavedChanges: true
+      stagedChangesCount: 0,
+      hasUnsavedChanges: false
     }));
     if (updatedAud) {
-      supabase.from('audio_items').upsert(updatedAud).then(() => {});
+      await supabase.from('audio_items').upsert(updatedAud);
     }
     const target = get().audios.find(a => a.id === id);
     if (target) {
@@ -936,42 +936,42 @@ export const useStore = create<AppState>((set, get) => ({
     }
   },
 
-  deleteAudio: (id) => {
+  deleteAudio: async (id) => {
     const target = get().audios.find(a => a.id === id);
     set((state) => ({
       audios: state.audios.filter((a) => a.id !== id),
-      stagedChangesCount: state.stagedChangesCount + 1,
-      hasUnsavedChanges: true
+      stagedChangesCount: 0,
+      hasUnsavedChanges: false
     }));
-    supabase.from('audio_items').delete().eq('id', id).then(() => {});
+    await supabase.from('audio_items').delete().eq('id', id);
     if (target) {
       get().addAuditLog('حذف', target.title_fa, 'صوتی');
     }
   },
 
-  addInfographic: (infoData) => {
+  addInfographic: async (infoData) => {
     const newInfo: InfographicItem = {
       ...infoData,
       id: `info-${Date.now()}`,
     };
     set((state) => ({ 
       infographics: [newInfo, ...state.infographics],
-      stagedChangesCount: state.stagedChangesCount + 1,
-      hasUnsavedChanges: true
+      stagedChangesCount: 0,
+      hasUnsavedChanges: false
     }));
-    supabase.from('infographic_items').upsert(newInfo).then(() => {});
+    await supabase.from('infographic_items').upsert(newInfo);
   },
 
-  deleteInfographic: (id) => {
+  deleteInfographic: async (id) => {
     set((state) => ({
       infographics: state.infographics.filter((i) => i.id !== id),
-      stagedChangesCount: state.stagedChangesCount + 1,
-      hasUnsavedChanges: true
+      stagedChangesCount: 0,
+      hasUnsavedChanges: false
     }));
-    supabase.from('infographic_items').delete().eq('id', id).then(() => {});
+    await supabase.from('infographic_items').delete().eq('id', id);
   },
 
-  addTeamMember: (memberData) => {
+  addTeamMember: async (memberData) => {
     const currentUser = get().currentUser;
     const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
     const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
@@ -987,10 +987,10 @@ export const useStore = create<AppState>((set, get) => ({
     };
     set((state) => ({ 
       teamMembers: [...state.teamMembers, newMember],
-      stagedChangesCount: state.stagedChangesCount + 1,
-      hasUnsavedChanges: true
+      stagedChangesCount: 0,
+      hasUnsavedChanges: false
     }));
-    supabase.from('team_members').upsert(newMember).then(() => {});
+    await supabase.from('team_members').upsert(newMember);
     get().addAuditLog(
       'افزودن', 
       newMember.name_fa, 
@@ -999,7 +999,7 @@ export const useStore = create<AppState>((set, get) => ({
     );
   },
 
-  updateTeamMember: (id, memberData) => {
+  updateTeamMember: async (id, memberData) => {
     let updatedMember: TeamMember | null = null;
     set((state) => ({
       teamMembers: state.teamMembers.map((m) => {
@@ -1009,11 +1009,11 @@ export const useStore = create<AppState>((set, get) => ({
         }
         return m;
       }),
-      stagedChangesCount: state.stagedChangesCount + 1,
-      hasUnsavedChanges: true
+      stagedChangesCount: 0,
+      hasUnsavedChanges: false
     }));
     if (updatedMember) {
-      supabase.from('team_members').upsert(updatedMember).then(() => {});
+      await supabase.from('team_members').upsert(updatedMember);
     }
     const target = get().teamMembers.find(t => t.id === id);
     if (target) {
@@ -1021,14 +1021,14 @@ export const useStore = create<AppState>((set, get) => ({
     }
   },
 
-  deleteTeamMember: (id) => {
+  deleteTeamMember: async (id) => {
     const target = get().teamMembers.find(t => t.id === id);
     set((state) => ({
       teamMembers: state.teamMembers.filter((m) => m.id !== id),
-      stagedChangesCount: state.stagedChangesCount + 1,
-      hasUnsavedChanges: true
+      stagedChangesCount: 0,
+      hasUnsavedChanges: false
     }));
-    supabase.from('team_members').delete().eq('id', id).then(() => {});
+    await supabase.from('team_members').delete().eq('id', id);
     if (target) {
       get().addAuditLog('حذف', target.name_fa, 'عضو تیم');
     }
