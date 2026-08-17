@@ -245,6 +245,20 @@ export const AdminDashboardContent: React.FC = () => {
   const [artReadTime, setArtReadTime] = useState('۷ دقیقه');
   const [artImage, setArtImage] = useState('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80');
   const [artTags, setArtTags] = useState('#معرفت‌شناسی, #مهدویت');
+  const [articleCoverFile, setArticleCoverFile] = useState<File | null>(null);
+
+  const handleArticleCoverFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setArticleCoverFile(file);
+      try {
+        const compressed = await compressImageFile(file);
+        setArtImage(compressed);
+      } catch (err) {
+        console.error('Error creating article image preview:', err);
+      }
+    }
+  };
 
   useEffect(() => {
     if (artContent) {
@@ -262,6 +276,7 @@ export const AdminDashboardContent: React.FC = () => {
     setArtAuthorTitle(currentUser?.role_fa || 'سردبیر ارشد / پژوهشگر');
     setArtImage('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80');
     setArtTags('#معرفت‌شناسی, #مهدویت');
+    setArticleCoverFile(null);
     setShowArticleModal(true);
   };
 
@@ -275,6 +290,7 @@ export const AdminDashboardContent: React.FC = () => {
     setArtAuthorTitle(art.author_title_fa || 'سردبیر ارشد / پژوهشگر');
     setArtImage(art.image_url || '');
     setArtTags(art.tags ? art.tags.join(', ') : '#معرفت‌شناسی, #مهدویت');
+    setArticleCoverFile(null);
     setShowArticleModal(true);
   };
 
@@ -282,9 +298,17 @@ export const AdminDashboardContent: React.FC = () => {
     e.preventDefault();
     if (!artTitle.trim()) return;
 
-    const parsedTags = parseTagsInput(artTags);
+    setSaveToast({ msg: 'در حال آماده‌سازی و پردازش مقاله...', type: 'loading' });
 
     try {
+      let finalImageUrl = artImage;
+      if (articleCoverFile) {
+        setSaveToast({ msg: 'در حال آپلود کاور مقاله به حافظه ابری Supabase...', type: 'loading' });
+        finalImageUrl = await uploadMagazineFile(articleCoverFile, 'covers');
+      }
+
+      const parsedTags = parseTagsInput(artTags);
+
       if (editingArticle) {
         await updateArticle(editingArticle.id, {
           title_fa: artTitle,
@@ -293,7 +317,7 @@ export const AdminDashboardContent: React.FC = () => {
           category_fa: artCategory,
           author_name_fa: artAuthor,
           author_title_fa: artAuthorTitle,
-          image_url: artImage,
+          image_url: finalImageUrl,
           read_time_fa: artReadTime,
           tags: parsedTags,
         });
@@ -310,7 +334,7 @@ export const AdminDashboardContent: React.FC = () => {
           author_avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
           read_time_fa: artReadTime,
           published_at: new Date().toLocaleDateString('fa-IR'),
-          image_url: artImage,
+          image_url: finalImageUrl,
           tags: parsedTags,
           featured: false,
         });
@@ -1415,9 +1439,26 @@ export const AdminDashboardContent: React.FC = () => {
                   className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-[var(--text-primary)] font-serif-persian"
                 />
               </div>
-              <div>
-                <label className="block font-bold mb-1 text-[var(--text-primary)]">لینک تصویر مقاله:</label>
-                <input type="text" value={artImage} onChange={e => setArtImage(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono text-[var(--text-primary)]" />
+              {/* ARTICLE COVER IMAGE & DEVICE UPLOAD */}
+              <div className="space-y-2 p-3 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)]">
+                <div className="flex items-center justify-between">
+                  <label className="font-bold text-[var(--text-primary)]">تصویر کاور مقاله (Cover Image):</label>
+                  
+                  {/* File Upload Button from Device */}
+                  <label className="px-3 py-1.5 rounded-xl bg-[#1B889A]/15 text-[#1B889A] hover:bg-[#1B889A] hover:text-white font-bold cursor-pointer transition-all flex items-center gap-1.5 text-xs">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>انتخاب فایل از دیوایس</span>
+                    <input type="file" accept="image/*" onChange={handleArticleCoverFileUpload} className="hidden" />
+                  </label>
+                </div>
+
+                <input
+                  type="text"
+                  value={artImage}
+                  onChange={e => setArtImage(e.target.value)}
+                  placeholder="یا لینک تصویر اینترنتی را پیست نمایید..."
+                  className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl font-mono text-[var(--text-primary)] dir-ltr text-left"
+                />
               </div>
               <div>
                 <label className="block font-bold mb-1 text-[var(--text-primary)]">کلمات کلیدی و هشتگ‌ها (#هشتگ با کاما جدا کنید):</label>
