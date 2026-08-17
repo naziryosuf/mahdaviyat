@@ -189,21 +189,17 @@ export default function MagazinePage() {
                             </span>
                             {issue.tags.map((tag, idx) => {
                               const cleanTagName = tag.startsWith('#') ? tag : `#${tag}`;
-                              const isSelected = selectedTag === cleanTagName;
+                              const searchKeyword = tag.replace(/^#/, '').trim();
                               return (
-                                <button
+                                <Link
                                   key={idx}
-                                  type="button"
-                                  onClick={() => handleHashtagClick(cleanTagName)}
-                                  className={`px-3 py-1.5 rounded-full font-mono text-xs font-extrabold transition-all shadow-sm active:scale-95 flex items-center gap-1.5 cursor-pointer ${
-                                    isSelected
-                                      ? 'bg-[#1B889A] text-white shadow-md'
-                                      : 'bg-[#1B889A]/15 border border-[#1B889A]/40 text-[#1B889A] hover:bg-[#1B889A] hover:text-white'
-                                  }`}
+                                  href={`/?search=${encodeURIComponent(searchKeyword)}`}
+                                  className="px-3 py-1.5 rounded-full font-mono text-xs font-extrabold transition-all shadow-sm active:scale-95 flex items-center gap-1.5 cursor-pointer bg-[#1B889A]/15 border border-[#1B889A]/40 text-[#1B889A] hover:bg-[#1B889A] hover:text-white"
+                                  title={`جستجوی هشتگ ${cleanTagName} در صفحه اصلی`}
                                 >
                                   <span>{cleanTagName}</span>
                                   <Search className="w-3 h-3 opacity-70" />
-                                </button>
+                                </Link>
                               );
                             })}
                           </div>

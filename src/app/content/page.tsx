@@ -136,13 +136,14 @@ function ContentCatalogInner() {
                 {art.tags && art.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 pt-2 border-t border-[var(--card-border)]">
                     {art.tags.map((t, idx) => (
-                      <span
+                      <Link
                         key={idx}
-                        onClick={() => setSearchQuery(t.replace('#', ''))}
+                        href={`/?search=${encodeURIComponent(t.replace(/^#/, ''))}`}
                         className="px-2 py-0.5 rounded-full bg-[#1B889A]/10 text-[#1B889A] hover:bg-[#1B889A] hover:text-white font-mono text-[10px] font-bold cursor-pointer transition-all"
+                        title={`جستجوی هشتگ ${t} در صفحه اصلی`}
                       >
                         {t.startsWith('#') ? t : `#${t}`}
-                      </span>
+                      </Link>
                     ))}
                   </div>
                 )}

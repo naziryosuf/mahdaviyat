@@ -366,15 +366,19 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
               🏷️ کلمات کلیدی و تگ‌های مرتبط:
             </span>
             <div className="flex flex-wrap items-center gap-2">
-              {article.tags.map((tag, idx) => (
-                <Link
-                  key={idx}
-                  href={`/?search=${encodeURIComponent(tag)}`}
-                  className="px-3 py-1 rounded-full bg-[#1B889A]/10 border border-[#1B889A]/30 text-[#1B889A] hover:bg-[#1B889A] hover:text-white text-xs font-bold transition-all shadow-sm"
-                >
-                  #{tag}
-                </Link>
-              ))}
+              {article.tags.map((tag, idx) => {
+                const clean = tag.replace(/^#/, '').trim();
+                return (
+                  <Link
+                    key={idx}
+                    href={`/?search=${encodeURIComponent(clean)}`}
+                    className="px-3 py-1 rounded-full bg-[#1B889A]/10 border border-[#1B889A]/30 text-[#1B889A] hover:bg-[#1B889A] hover:text-white text-xs font-bold transition-all shadow-sm"
+                    title={`جستجوی هشتگ ${clean} در صفحه اصلی`}
+                  >
+                    #{clean}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         )}
