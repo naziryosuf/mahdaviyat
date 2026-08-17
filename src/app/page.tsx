@@ -298,7 +298,18 @@ function HomeContent() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {filteredArticles.map((art) => (
-                      <article key={art.id} className="p-4 sm:p-5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] transition-all space-y-3">
+                      <article key={art.id} className="p-4 sm:p-5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] transition-all space-y-3 overflow-hidden group">
+                        {art.image_url && !art.image_url.startsWith('file://') && art.image_url.trim() !== '' && (
+                          <div className="relative w-full h-40 -mx-4 sm:-mx-5 -mt-4 sm:-mt-5 mb-3 overflow-hidden border-b border-[var(--card-border)] bg-stone-900">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={art.image_url}
+                              alt={art.title_fa}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                          </div>
+                        )}
                         <div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
                           <span className="px-2.5 py-0.5 rounded-full teal-badge text-[11px] font-bold">{art.category_fa}</span>
                           <span className="text-[#1B889A] font-bold">{art.read_time_fa}</span>
@@ -404,7 +415,18 @@ function HomeContent() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {articles.filter(art => art.featured).map(art => (
-                  <article key={art.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm group">
+                  <article key={art.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm overflow-hidden group">
+                    {art.image_url && !art.image_url.startsWith('file://') && art.image_url.trim() !== '' && (
+                      <div className="relative w-full h-36 -mx-4 -mt-4 mb-2.5 overflow-hidden border-b border-[var(--card-border)] bg-stone-900">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={art.image_url}
+                          alt={art.title_fa}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                      </div>
+                    )}
                     <div className="flex items-center justify-between text-xs">
                       <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
                         <Pin className="w-3 h-3 fill-current" />

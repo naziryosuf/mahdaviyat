@@ -96,8 +96,21 @@ function ContentCatalogInner() {
           {filtered.map((art) => (
             <article
               key={art.id}
-              className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 hover:border-[#1B889A] transition-all duration-300 shadow-xl flex flex-col justify-between modern-card group"
+              className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 hover:border-[#1B889A] transition-all duration-300 shadow-xl flex flex-col justify-between modern-card group overflow-hidden"
             >
+              {/* ARTICLE COVER IMAGE DISPLAY */}
+              {art.image_url && !art.image_url.startsWith('file://') && art.image_url.trim() !== '' && (
+                <div className="relative w-full h-44 sm:h-52 -mx-6 -mt-6 mb-4 overflow-hidden border-b border-[var(--card-border)] bg-stone-900">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={art.image_url}
+                    alt={art.title_fa}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                </div>
+              )}
+
               <div className="space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
