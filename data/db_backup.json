@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-17T16:27:23.694Z",
+  "timestamp": "2026-08-17T16:49:07.784Z",
   "articles": [
     {
       "id": "art-1786722593050",
@@ -52,9 +52,9 @@
       ],
       "pages": [],
       "created_at": "2026-08-14T10:22:34.701835+00:00",
-      "author_name_fa": "نذیر یوسف ",
-      "author_title_fa": "سردبیر ارشد",
-      "cover_position": "top"
+      "author_name_fa": "نذیر یوسف",
+      "author_title_fa": "سردبیر ارشد / نویسنده",
+      "cover_position": "test"
     },
     {
       "id": "mag-1786982354398",
@@ -77,8 +77,33 @@
       ],
       "pages": [],
       "created_at": "2026-08-17T15:59:06.017361+00:00",
-      "author_name_fa": null,
-      "author_title_fa": null,
+      "author_name_fa": "نذیر یوسف",
+      "author_title_fa": "سردبیر ارشد / نویسنده",
+      "cover_position": "center"
+    },
+    {
+      "id": "mag-1786984567048",
+      "issue_number": 3,
+      "title_fa": " شماره سوم مجلۀ دیجیتالی ایدئولوژی مهدویت ",
+      "description_fa": "\nشماره سوم، زمستان ۱۴۰۴ هجری خورشیدی\n\nتعداد صفحات: ۶۴ صفحه (قطع A4)\n\nدر شمارهٔ سوم، سردبیر مجله یادداشتی زیر عنوان «آینده اسلام چه خواهد شد؟» نگاشته‌اند که به بررسی روندها و چشم‌انداز آینده اسلام می‌پردازد.\n\nاین مجموعه شامل مقالات و مطالب متنوعی چون «اندیشه آسمانی، موهبت ربانی» نوشتهٔ عبدالظهور مدیر، «بازگشت انسانیت به اصل خویش» اثر دکتر آرش نعمت، و «ارزش سلامت انسان از منظر مکتب قرآن» نوشتهٔ فهد الرحمن صمدی و محمد شبیر شریفی است؛ همچنین عناوینی نظیر «موفقیت در حیات فردی و اجتماعی» به قلم محبوب مهران نجرابی، «اغواگری‌های شیطان از منظر قرآن» اثر عزت‌الله قانع، «د قلب پاکی» به قلم حفیظ‌الله رحیمی، «خیانت به جوانی» نوشتهٔ محمود محمودی، و «جایگاه روزهٔ ماه مبارک رمضان و نقش آن در بهبود زندگی مادی و معنوی مسلمانان» به قلم محقق محمد نذیر محمدی این شماره را غنی‌تر ساخته‌اند.\n\nدر کنار این مقالات، بخش‌های دیگری همچون «نیاز و اهمیت دعوت اسلامی» نوشتهٔ دکتر فرجام جاهد، «باران دعوت و مسیر اصلاح انسان» اثر سید حبیب حبیبی، «سیمای منافقان در آیینه آیات و روایات» به قلم دکتر عبدالباسط فائت، «پرتوی از اسرار خدا جل‌جلاله در دل اولیاءالله» اثر نورالدین نیکجو، «فرزند خاک، ذین‌دار ملت» نوشتهٔ محمد شهیر شریفی، و «پناه دل‌های شکسته / انسان تا انسان» به قلم سید حفیظ سادات و محمد ظریف بهرامی مجموعهٔ جامع را برای بیداری فکری و اخلاقی جامعه فراهم کرده است.",
+      "publish_date_fa": "سال: ۱۴۰۴ خورشیدی _ فصل: زمستان",
+      "cover_image": "https://abimnaqtmcgoslealmoh.supabase.co/storage/v1/object/public/magazines/covers/cover_1786984564688_0yrxo.jpg",
+      "pdf_url": "https://abimnaqtmcgoslealmoh.supabase.co/storage/v1/object/public/magazines/pdfs/issue_1786984565241_jjd0u.pdf",
+      "download_count": 0,
+      "featured": true,
+      "status": "published",
+      "submitted_by_name": "M. Nazir Yosuf",
+      "submitted_at": "۱۴۰۵/۵/۲۶",
+      "submitted_device": "Windows Desktop (Edge)",
+      "tags": [
+        "#آینده اسلام",
+        "#سیمای منافقان در آیینه قرآن",
+        "#دعوت اسلامی"
+      ],
+      "pages": [],
+      "created_at": "2026-08-17T16:35:58.305436+00:00",
+      "author_name_fa": "نذیر یوسف",
+      "author_title_fa": "سردبیر ارشد / نویسنده",
       "cover_position": "center"
     }
   ],
@@ -145,16 +170,16 @@
   ],
   "auditLogs": [
     {
-      "id": "log-1786713260408",
+      "id": "log-1786984567225",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "ویرایش",
-      "target_title": " شماره دوم مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "action_type": "افزودن",
+      "target_title": " شماره سوم مجلۀ دیجیتالی ایدئولوژی مهدویت ",
       "item_type": "مجله",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۵:۱۴",
-      "time_only": "۱۵:۱۴",
+      "timestamp": "۱۴۰۵/۵/۲۶ - ۱۸:۳۶",
+      "time_only": "۱۸:۳۶",
       "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
+      "status_note": "انتشار مستقیم",
       "created_at": null
     },
     {
@@ -309,6 +334,19 @@
       "item_type": "عضو تیم",
       "timestamp": "۱۴۰۵/۵/۲۳ - ۱۵:۱۲",
       "time_only": "۱۵:۱۲",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786713260408",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": " شماره دوم مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۵:۱۴",
+      "time_only": "۱۵:۱۴",
       "device_info": "Windows Desktop (Edge)",
       "status_note": null,
       "created_at": null
@@ -509,6 +547,58 @@
       "created_at": null
     },
     {
+      "id": "log-1786713162826",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": " شماره دوم مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۵:۱۲",
+      "time_only": "۱۵:۱۲",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786708439718",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "افزودن",
+      "target_title": " شماره دوم مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۵۳",
+      "time_only": "۱۳:۵۳",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": "انتشار مستقیم",
+      "created_at": null
+    },
+    {
+      "id": "log-1786707282595",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۳۴",
+      "time_only": "۱۳:۳۴",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786706926278",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۲۸",
+      "time_only": "۱۳:۲۸",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
       "id": "log-1786722593872",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
@@ -572,58 +662,6 @@
       "device_info": "Windows Desktop (Edge)",
       "status_note": null,
       "created_at": "2026-08-14T12:50:25.291948+00:00"
-    },
-    {
-      "id": "log-1786713162826",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "ویرایش",
-      "target_title": " شماره دوم مجلۀ دیجیتالی ایدئولوژی مهدویت",
-      "item_type": "مجله",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۵:۱۲",
-      "time_only": "۱۵:۱۲",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
-    {
-      "id": "log-1786708439718",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "افزودن",
-      "target_title": " شماره دوم مجلۀ دیجیتالی ایدئولوژی مهدویت",
-      "item_type": "مجله",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۵۳",
-      "time_only": "۱۳:۵۳",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": "انتشار مستقیم",
-      "created_at": null
-    },
-    {
-      "id": "log-1786707282595",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "ویرایش",
-      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
-      "item_type": "مجله",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۳۴",
-      "time_only": "۱۳:۳۴",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
-    {
-      "id": "log-1786706926278",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "ویرایش",
-      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
-      "item_type": "مجله",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۲۸",
-      "time_only": "۱۳:۲۸",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
     },
     {
       "id": "log-1786982354963",
@@ -795,19 +833,6 @@
       "created_at": "2026-08-14T12:27:04.581287+00:00"
     },
     {
-      "id": "log-1786983257276",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "ویرایش",
-      "target_title": "شماره دوم مجلۀ دیجیتالی ایدئولوژی مهدویت",
-      "item_type": "مجله",
-      "timestamp": "۱۴۰۵/۵/۲۶ - ۱۸:۱۴",
-      "time_only": "۱۸:۱۴",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
-    {
       "id": "log-1786982153306",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
@@ -816,6 +841,19 @@
       "item_type": "مجله",
       "timestamp": "۱۴۰۵/۵/۲۶ - ۱۷:۵۵",
       "time_only": "۱۷:۵۵",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786983257276",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "شماره دوم مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۶ - ۱۸:۱۴",
+      "time_only": "۱۸:۱۴",
       "device_info": "Windows Desktop (Edge)",
       "status_note": null,
       "created_at": null

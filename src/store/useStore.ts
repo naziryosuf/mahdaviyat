@@ -691,9 +691,7 @@ export const useStore = create<AppState>((set, get) => ({
     try {
       let { error } = await supabase.from('magazine_issues').upsert(dbPayload);
       if (error && error.code === 'PGRST204') {
-        delete dbPayload.author_name_fa;
-        delete dbPayload.author_title_fa;
-        delete dbPayload.cover_position;
+        // Only delete page_count_fa if column missing in Supabase schema
         delete dbPayload.page_count_fa;
         const retryRes = await supabase.from('magazine_issues').upsert(dbPayload);
         error = retryRes.error;
@@ -767,9 +765,7 @@ export const useStore = create<AppState>((set, get) => ({
       try {
         let { error } = await supabase.from('magazine_issues').upsert(dbPayload);
         if (error && error.code === 'PGRST204') {
-          delete dbPayload.author_name_fa;
-          delete dbPayload.author_title_fa;
-          delete dbPayload.cover_position;
+          // Only delete page_count_fa if column missing in Supabase schema
           delete dbPayload.page_count_fa;
           const retryRes = await supabase.from('magazine_issues').upsert(dbPayload);
           error = retryRes.error;
