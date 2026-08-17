@@ -24,13 +24,12 @@ interface Props {
 
 export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [viewerMode, setViewerMode] = useState<'native' | 'gdocs'>('native');
+  const [viewerMode, setViewerMode] = useState<'gdocs' | 'native'>('gdocs');
 
   const pdfUrl = issue.pdf_url || '/downloads/mahdism_issue_1.pdf';
-  const isHttpUrl = pdfUrl.startsWith('http://') || pdfUrl.startsWith('https://');
 
-  // Google Docs Viewer fallback for remote URLs
-  const gdocsViewerUrl = `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(pdfUrl)}`;
+  // Google Docs Embedded Viewer URL - Bypasses browser direct download hooks & IDM
+  const gdocsViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`;
 
   const handleDownloadPDF = () => {
     confetti({ particleCount: 50, spread: 70, origin: { y: 0.7 } });
@@ -86,22 +85,24 @@ export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
           {/* Mode Switcher */}
           <div className="flex items-center p-1 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] text-xs">
             <button
-              onClick={() => setViewerMode('native')}
-              className={`px-3 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1 ${
-                viewerMode === 'native' ? 'bg-[#1B889A] text-white shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-              }`}
-            >
-              <Zap className="w-3.5 h-3.5" />
-              <span>نمایشگر اصلی</span>
-            </button>
-            <button
               onClick={() => setViewerMode('gdocs')}
               className={`px-3 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1 ${
                 viewerMode === 'gdocs' ? 'bg-[#1B889A] text-white shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
+              title="مطالعه آنلاین مستقیم بدون دانلود"
             >
               <BookOpen className="w-3.5 h-3.5" />
-              <span>نمایشگر کمکی</span>
+              <span>مطالعه آنلاین</span>
+            </button>
+            <button
+              onClick={() => setViewerMode('native')}
+              className={`px-3 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1 ${
+                viewerMode === 'native' ? 'bg-[#1B889A] text-white shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+              }`}
+              title="نمایشگر مرورگر دستگاه"
+            >
+              <Zap className="w-3.5 h-3.5" />
+              <span>مرورگر دستگاه</span>
             </button>
           </div>
 
