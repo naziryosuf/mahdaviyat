@@ -38,7 +38,7 @@ function HomeContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSearch, setActiveSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('همه');
-  const searchResultsRef = useRef<HTMLElement>(null);
+  const searchResultsRef = useRef<HTMLDivElement>(null);
 
   const categories = ['همه', 'سرمقاله‌ها', 'تحلیل‌ها', 'نقد مکاتب', 'شناخت مهدویت'];
 
@@ -49,9 +49,12 @@ function HomeContent() {
     if (trimmed) {
       setTimeout(() => {
         if (searchResultsRef.current) {
-          searchResultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const yOffset = -90; // Offset for sticky navbar / header
+          const element = searchResultsRef.current;
+          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
         }
-      }, 100);
+      }, 150);
     }
   };
 
