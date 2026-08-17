@@ -256,222 +256,323 @@ function HomeContent() {
 
       </motion.section>
 
-      {/* PINNED CONTENT SHOWCASE SECTION */}
-      {(articles.some(a => a.featured) || magazineIssues.some(m => m.featured) || videos.some(v => v.featured) || audios.some(au => au.featured)) && (
-        <section className="bg-gradient-to-br from-[#1B889A]/15 via-[var(--card-bg)] to-[var(--bg-color)] border-2 border-[#1B889A] rounded-2xl sm:rounded-3xl p-4 sm:p-7 space-y-5 shadow-2xl modern-card">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="w-10 h-10 rounded-2xl bg-[#1B889A] text-white flex items-center justify-center font-bold shadow-md shrink-0">
-                <Pin className="w-5 h-5 fill-current" />
-              </div>
-              <div className="min-w-0">
-                <h2 className="text-sm sm:text-lg font-extrabold text-[var(--text-primary)] font-serif-persian leading-snug">
-                  مطالب پین‌شده و ویژه
-                </h2>
-                <p className="text-[11px] sm:text-xs text-[var(--text-secondary)] leading-relaxed">
-                  برگزیده متون، مجلات و رسانه‌ها در صفحه اول
-                </p>
-              </div>
-            </div>
-            <span className="self-start sm:self-center px-3 py-1 rounded-full bg-[#1B889A]/20 text-[#1B889A] text-[11px] font-extrabold border border-[#1B889A]/40 whitespace-nowrap shrink-0">
-              منتخب تحریریه 🌟
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {articles.filter(art => art.featured).map(art => (
-              <article key={art.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm group">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
-                    <Pin className="w-3 h-3 fill-current" />
-                    <span>مقاله پین‌شده</span>
-                  </span>
-                  <span className="text-[#1B889A] font-bold text-[11px]">{art.read_time_fa}</span>
+      {/* DYNAMICALLY REORDERED SECTIONS BASED ON ACTIVE SEARCH STATE */}
+      {queryToMatch ? (
+        <>
+          {/* 1. SEARCH RESULTS SECTION (PLACED AT TOP WHEN SEARCH IS ACTIVE) */}
+          <section ref={searchResultsRef} className="bg-[var(--card-bg)] border-2 border-[#1B889A] rounded-2xl sm:rounded-3xl p-4 sm:p-8 space-y-6 shadow-2xl modern-card scroll-mt-24">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--card-border)] pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#1B889A] text-white flex items-center justify-center font-bold shadow-md shrink-0">
+                  <Search className="w-5 h-5" />
                 </div>
-
-                <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors leading-snug">
-                  <Link href={`/content/${art.id}`}>{art.title_fa}</Link>
-                </h3>
-
-                <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">{art.excerpt_fa}</p>
-                
-                <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
-                  <span className="truncate">نویسنده: {art.author_name_fa}</span>
-                  <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
-                    <span>مطالعه</span>
-                    <ArrowLeft className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </article>
-            ))}
-
-            {magazineIssues.filter(iss => iss.featured).map(iss => (
-              <div key={iss.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
-                    <Pin className="w-3 h-3 fill-current" />
-                    <span>شماره مجله پین‌شده</span>
-                  </span>
-                  <span className="text-[#1B889A] font-bold text-[11px]">{iss.publish_date_fa}</span>
-                </div>
-
-                <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate">{iss.title_fa}</h3>
-                <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">{iss.description_fa}</p>
-
-                <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
-                  <span>شماره {iss.issue_number}</span>
-                  <Link href="/magazine" className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
-                    <span>ورق زدن آنلاین</span>
-                    <ArrowLeft className="w-3.5 h-3.5" />
-                  </Link>
+                <div>
+                  <h2 className="text-lg sm:text-xl font-extrabold text-[var(--text-primary)] font-serif-persian">
+                    نتایج جستجوی کلمه: «<span className="text-[#1B889A]">{activeSearch}</span>»
+                  </h2>
+                  <p className="text-[11px] sm:text-xs text-[var(--text-secondary)]">
+                    مجموعاً {filteredArticles.length + filteredAudios.length + filteredVideos.length} مورد متناسب در بخش‌های مختلف یافت گردید.
+                  </p>
                 </div>
               </div>
-            ))}
 
-            {videos.filter(vid => vid.featured).map(vid => (
-              <div key={vid.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
-                    <Pin className="w-3 h-3 fill-current" />
-                    <span>ویدیو پین‌شده</span>
-                  </span>
-                  <span className="text-[#1B889A] font-bold text-[11px]">{vid.duration_fa}</span>
-                </div>
-
-                <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate">{vid.title_fa}</h3>
-                <p className="text-xs text-[var(--text-secondary)] line-clamp-1">{vid.speaker_fa}</p>
-
-                <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
-                  <span>{vid.category_fa}</span>
-                  <Link href="/media?tab=videos" className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
-                    <span>مشاهده</span>
-                    <ArrowLeft className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* SEARCH RESULTS SECTION */}
-      {queryToMatch && (
-        <section ref={searchResultsRef} className="bg-[var(--card-bg)] border-2 border-[#1B889A] rounded-2xl sm:rounded-3xl p-4 sm:p-8 space-y-6 shadow-2xl modern-card scroll-mt-24">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--card-border)] pb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#1B889A] text-white flex items-center justify-center font-bold shadow-md shrink-0">
-                <Search className="w-5 h-5" />
-              </div>
-              <div>
-                <h2 className="text-lg sm:text-xl font-extrabold text-[var(--text-primary)] font-serif-persian">
-                  نتایج جستجوی کلمه: «<span className="text-[#1B889A]">{activeSearch}</span>»
-                </h2>
-                <p className="text-[11px] sm:text-xs text-[var(--text-secondary)]">
-                  مجموعاً {filteredArticles.length + filteredAudios.length + filteredVideos.length} مورد متناسب در بخش‌های مختلف یافت گردید.
-                </p>
-              </div>
+              <button
+                onClick={clearSearch}
+                className="px-4 py-2 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] text-xs text-[var(--text-secondary)] hover:text-white hover:border-[#A32838] transition-colors flex items-center gap-1.5 w-fit"
+              >
+                <X className="w-4 h-4 text-[#A32838]" />
+                <span>بستن نتایج جستجو</span>
+              </button>
             </div>
 
-            <button
-              onClick={clearSearch}
-              className="px-4 py-2 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] text-xs text-[var(--text-secondary)] hover:text-white hover:border-[#A32838] transition-colors flex items-center gap-1.5 w-fit"
-            >
-              <X className="w-4 h-4 text-[#A32838]" />
-              <span>بستن نتایج جستجو</span>
-            </button>
-          </div>
+            <div className="space-y-8">
+              {filteredArticles.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-sm font-bold text-[#1B889A] flex items-center gap-2 border-b border-[var(--card-border)] pb-2">
+                    <FileText className="w-4 h-4" />
+                    <span>مقالات و متون یافته‌شده ({filteredArticles.length})</span>
+                  </h3>
 
-          <div className="space-y-8">
-            {filteredArticles.length > 0 && (
-              <div className="space-y-4">
-                <h3 className="text-sm font-bold text-[#1B889A] flex items-center gap-2 border-b border-[var(--card-border)] pb-2">
-                  <FileText className="w-4 h-4" />
-                  <span>مقالات و متون یافته‌شده ({filteredArticles.length})</span>
-                </h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {filteredArticles.map((art) => (
-                    <article key={art.id} className="p-4 sm:p-5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] transition-all space-y-3">
-                      <div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
-                        <span className="px-2.5 py-0.5 rounded-full teal-badge text-[11px] font-bold">{art.category_fa}</span>
-                        <span className="text-[#1B889A] font-bold">{art.read_time_fa}</span>
-                      </div>
-                      <h4 className="text-base font-bold text-[var(--text-primary)] font-serif-persian">
-                        <Link href={`/content/${art.id}`} className="hover:text-[#1B889A] transition-colors">{art.title_fa}</Link>
-                      </h4>
-                      <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">{art.excerpt_fa}</p>
-                      <div className="pt-2 flex items-center justify-between text-xs">
-                        <span className="text-[var(--text-secondary)] truncate max-w-[180px]">نویسنده: {art.author_name_fa}</span>
-                        <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
-                          <span>مطالعه کامل</span>
-                          <ArrowLeft className="w-3.5 h-3.5" />
-                        </Link>
-                      </div>
-                    </article>
-                  ))}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {filteredArticles.map((art) => (
+                      <article key={art.id} className="p-4 sm:p-5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] transition-all space-y-3">
+                        <div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
+                          <span className="px-2.5 py-0.5 rounded-full teal-badge text-[11px] font-bold">{art.category_fa}</span>
+                          <span className="text-[#1B889A] font-bold">{art.read_time_fa}</span>
+                        </div>
+                        <h4 className="text-base font-bold text-[var(--text-primary)] font-serif-persian">
+                          <Link href={`/content/${art.id}`} className="hover:text-[#1B889A] transition-colors">{art.title_fa}</Link>
+                        </h4>
+                        <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">{art.excerpt_fa}</p>
+                        <div className="pt-2 flex items-center justify-between text-xs">
+                          <span className="text-[var(--text-secondary)] truncate max-w-[180px]">نویسنده: {art.author_name_fa}</span>
+                          <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                            <span>مطالعه کامل</span>
+                            <ArrowLeft className="w-3.5 h-3.5" />
+                          </Link>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {filteredAudios.length > 0 && (
-              <div className="space-y-4">
-                <h3 className="text-sm font-bold text-[#1B889A] flex items-center gap-2 border-b border-[var(--card-border)] pb-2">
-                  <Volume2 className="w-4 h-4" />
-                  <span>پادکست‌ها و شنیدنی‌های یافته‌شده ({filteredAudios.length})</span>
-                </h3>
+              {filteredAudios.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-sm font-bold text-[#1B889A] flex items-center gap-2 border-b border-[var(--card-border)] pb-2">
+                    <Volume2 className="w-4 h-4" />
+                    <span>پادکست‌ها و شنیدنی‌های یافته‌شده ({filteredAudios.length})</span>
+                  </h3>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {filteredAudios.map((aud) => (
-                    <div key={aud.id} className="p-3.5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] flex items-center justify-between gap-3">
-                      <div className="min-w-0">
-                        <h4 className="text-xs font-bold text-[var(--text-primary)] truncate">{aud.title_fa}</h4>
-                        <p className="text-[11px] text-[var(--text-secondary)] mt-1">{aud.speaker_fa} • {aud.duration_fa}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {filteredAudios.map((aud) => (
+                      <div key={aud.id} className="p-3.5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] flex items-center justify-between gap-3">
+                        <div className="min-w-0">
+                          <h4 className="text-xs font-bold text-[var(--text-primary)] truncate">{aud.title_fa}</h4>
+                          <p className="text-[11px] text-[var(--text-secondary)] mt-1">{aud.speaker_fa} • {aud.duration_fa}</p>
+                        </div>
+                        <button
+                          onClick={() => playAudio(aud)}
+                          className="w-9 h-9 rounded-xl bg-[#1B889A] text-white flex items-center justify-center shrink-0 shadow-md hover:bg-[#156d7b] transition-colors"
+                        >
+                          <Play className="w-4 h-4 fill-current" />
+                        </button>
                       </div>
-                      <button
-                        onClick={() => playAudio(aud)}
-                        className="w-9 h-9 rounded-xl bg-[#1B889A] text-white flex items-center justify-center shrink-0 shadow-md hover:bg-[#156d7b] transition-colors"
-                      >
-                        <Play className="w-4 h-4 fill-current" />
-                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {filteredVideos.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-sm font-bold text-[#A32838] flex items-center gap-2 border-b border-[var(--card-border)] pb-2">
+                    <Video className="w-4 h-4" />
+                    <span>ویدیوها و درس‌گفتارهای یافته‌شده ({filteredVideos.length})</span>
+                  </h3>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {filteredVideos.map((vid) => (
+                      <Link key={vid.id} href="/media?tab=videos" className="p-3 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] flex items-center gap-3 hover:border-[#A32838] transition-colors">
+                        <div className="w-16 h-12 rounded-xl overflow-hidden shrink-0 bg-stone-900 border border-[var(--card-border)]">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={vid.thumbnail_url} alt="" className="w-full h-full object-cover" />
+                        </div>
+                        <div className="min-w-0">
+                          <h4 className="text-xs font-bold text-[var(--text-primary)] truncate">{vid.title_fa}</h4>
+                          <p className="text-[11px] text-[var(--text-secondary)] mt-1">{vid.speaker_fa} • {vid.duration_fa}</p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {filteredArticles.length === 0 && filteredAudios.length === 0 && filteredVideos.length === 0 && (
+                <div className="p-8 text-center text-xs text-[var(--text-secondary)] space-y-2">
+                  <p>هیچ موردی متناسب با عبارت <strong>«{activeSearch}»</strong> در وب‌سایت یافت نشد.</p>
+                  <p className="text-[11px] text-[#1B889A]">لطفاً کلمات کلیدی دیگری مانند «انسان»، «جامعه»، «تاریخ»، «هستی» یا «خالق هستی» را امتحان نمایید.</p>
+                </div>
+              )}
+
+            </div>
+          </section>
+
+          {/* 2. PINNED CONTENT SHOWCASE SECTION (PLACED BELOW SEARCH RESULTS WHEN SEARCH IS ACTIVE) */}
+          {(articles.some(a => a.featured) || magazineIssues.some(m => m.featured) || videos.some(v => v.featured) || audios.some(au => au.featured)) && (
+            <section className="bg-gradient-to-br from-[#1B889A]/15 via-[var(--card-bg)] to-[var(--bg-color)] border-2 border-[#1B889A] rounded-2xl sm:rounded-3xl p-4 sm:p-7 space-y-5 shadow-2xl modern-card">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-2xl bg-[#1B889A] text-white flex items-center justify-center font-bold shadow-md shrink-0">
+                    <Pin className="w-5 h-5 fill-current" />
+                  </div>
+                  <div className="min-w-0">
+                    <h2 className="text-sm sm:text-lg font-extrabold text-[var(--text-primary)] font-serif-persian leading-snug">
+                      مطالب پین‌شده و ویژه
+                    </h2>
+                    <p className="text-[11px] sm:text-xs text-[var(--text-secondary)] leading-relaxed">
+                      برگزیده متون، مجلات و رسانه‌ها در صفحه اول
+                    </p>
+                  </div>
+                </div>
+                <span className="self-start sm:self-center px-3 py-1 rounded-full bg-[#1B889A]/20 text-[#1B889A] text-[11px] font-extrabold border border-[#1B889A]/40 whitespace-nowrap shrink-0">
+                  منتخب تحریریه 🌟
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {articles.filter(art => art.featured).map(art => (
+                  <article key={art.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm group">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
+                        <Pin className="w-3 h-3 fill-current" />
+                        <span>مقاله پین‌شده</span>
+                      </span>
+                      <span className="text-[#1B889A] font-bold text-[11px]">{art.read_time_fa}</span>
                     </div>
-                  ))}
+
+                    <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors leading-snug">
+                      <Link href={`/content/${art.id}`}>{art.title_fa}</Link>
+                    </h3>
+
+                    <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">{art.excerpt_fa}</p>
+                    
+                    <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
+                      <span className="truncate">نویسنده: {art.author_name_fa}</span>
+                      <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                        <span>مطالعه</span>
+                        <ArrowLeft className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </article>
+                ))}
+
+                {magazineIssues.filter(iss => iss.featured).map(iss => (
+                  <div key={iss.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
+                        <Pin className="w-3 h-3 fill-current" />
+                        <span>شماره مجله پین‌شده</span>
+                      </span>
+                      <span className="text-[#1B889A] font-bold text-[11px]">{iss.publish_date_fa}</span>
+                    </div>
+
+                    <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate">{iss.title_fa}</h3>
+                    <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">{iss.description_fa}</p>
+
+                    <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
+                      <span>شماره {iss.issue_number}</span>
+                      <Link href="/magazine" className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                        <span>ورق زدن آنلاین</span>
+                        <ArrowLeft className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+
+                {videos.filter(vid => vid.featured).map(vid => (
+                  <div key={vid.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
+                        <Pin className="w-3 h-3 fill-current" />
+                        <span>ویدیو پین‌شده</span>
+                      </span>
+                      <span className="text-[#1B889A] font-bold text-[11px]">{vid.duration_fa}</span>
+                    </div>
+
+                    <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate">{vid.title_fa}</h3>
+                    <p className="text-xs text-[var(--text-secondary)] line-clamp-1">{vid.speaker_fa}</p>
+
+                    <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
+                      <span>{vid.category_fa}</span>
+                      <Link href="/media?tab=videos" className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                        <span>مشاهده</span>
+                        <ArrowLeft className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+        </>
+      ) : (
+        /* DEFAULT ORDER: PINNED SECTION FIRST WHEN NO SEARCH ACTIVE */
+        (articles.some(a => a.featured) || magazineIssues.some(m => m.featured) || videos.some(v => v.featured) || audios.some(au => au.featured)) && (
+          <section className="bg-gradient-to-br from-[#1B889A]/15 via-[var(--card-bg)] to-[var(--bg-color)] border-2 border-[#1B889A] rounded-2xl sm:rounded-3xl p-4 sm:p-7 space-y-5 shadow-2xl modern-card">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-10 h-10 rounded-2xl bg-[#1B889A] text-white flex items-center justify-center font-bold shadow-md shrink-0">
+                  <Pin className="w-5 h-5 fill-current" />
+                </div>
+                <div className="min-w-0">
+                  <h2 className="text-sm sm:text-lg font-extrabold text-[var(--text-primary)] font-serif-persian leading-snug">
+                    مطالب پین‌شده و ویژه
+                  </h2>
+                  <p className="text-[11px] sm:text-xs text-[var(--text-secondary)] leading-relaxed">
+                    برگزیده متون، مجلات و رسانه‌ها در صفحه اول
+                  </p>
                 </div>
               </div>
-            )}
+              <span className="self-start sm:self-center px-3 py-1 rounded-full bg-[#1B889A]/20 text-[#1B889A] text-[11px] font-extrabold border border-[#1B889A]/40 whitespace-nowrap shrink-0">
+                منتخب تحریریه 🌟
+              </span>
+            </div>
 
-            {filteredVideos.length > 0 && (
-              <div className="space-y-4">
-                <h3 className="text-sm font-bold text-[#A32838] flex items-center gap-2 border-b border-[var(--card-border)] pb-2">
-                  <Video className="w-4 h-4" />
-                  <span>ویدیوها و درس‌گفتارهای یافته‌شده ({filteredVideos.length})</span>
-                </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {articles.filter(art => art.featured).map(art => (
+                <article key={art.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm group">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
+                      <Pin className="w-3 h-3 fill-current" />
+                      <span>مقاله پین‌شده</span>
+                    </span>
+                    <span className="text-[#1B889A] font-bold text-[11px]">{art.read_time_fa}</span>
+                  </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {filteredVideos.map((vid) => (
-                    <Link key={vid.id} href="/media?tab=videos" className="p-3 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] flex items-center gap-3 hover:border-[#A32838] transition-colors">
-                      <div className="w-16 h-12 rounded-xl overflow-hidden shrink-0 bg-stone-900 border border-[var(--card-border)]">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={vid.thumbnail_url} alt="" className="w-full h-full object-cover" />
-                      </div>
-                      <div className="min-w-0">
-                        <h4 className="text-xs font-bold text-[var(--text-primary)] truncate">{vid.title_fa}</h4>
-                        <p className="text-[11px] text-[var(--text-secondary)] mt-1">{vid.speaker_fa} • {vid.duration_fa}</p>
-                      </div>
+                  <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors leading-snug">
+                    <Link href={`/content/${art.id}`}>{art.title_fa}</Link>
+                  </h3>
+
+                  <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">{art.excerpt_fa}</p>
+                  
+                  <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
+                    <span className="truncate">نویسنده: {art.author_name_fa}</span>
+                    <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                      <span>مطالعه</span>
+                      <ArrowLeft className="w-3.5 h-3.5" />
                     </Link>
-                  ))}
+                  </div>
+                </article>
+              ))}
+
+              {magazineIssues.filter(iss => iss.featured).map(iss => (
+                <div key={iss.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
+                      <Pin className="w-3 h-3 fill-current" />
+                      <span>شماره مجله پین‌شده</span>
+                    </span>
+                    <span className="text-[#1B889A] font-bold text-[11px]">{iss.publish_date_fa}</span>
+                  </div>
+
+                  <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate">{iss.title_fa}</h3>
+                  <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">{iss.description_fa}</p>
+
+                  <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
+                    <span>شماره {iss.issue_number}</span>
+                    <Link href="/magazine" className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                      <span>ورق زدن آنلاین</span>
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            )}
+              ))}
 
-            {filteredArticles.length === 0 && filteredAudios.length === 0 && filteredVideos.length === 0 && (
-              <div className="p-8 text-center text-xs text-[var(--text-secondary)] space-y-2">
-                <p>هیچ موردی متناسب با عبارت <strong>«{activeSearch}»</strong> در وب‌سایت یافت نشد.</p>
-                <p className="text-[11px] text-[#1B889A]">لطفاً کلمات کلیدی دیگری مانند «انسان»، «جامعه»، «تاریخ»، «هستی» یا «خالق هستی» را امتحان نمایید.</p>
-              </div>
-            )}
+              {videos.filter(vid => vid.featured).map(vid => (
+                <div key={vid.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
+                      <Pin className="w-3 h-3 fill-current" />
+                      <span>ویدیو پین‌شده</span>
+                    </span>
+                    <span className="text-[#1B889A] font-bold text-[11px]">{vid.duration_fa}</span>
+                  </div>
 
-          </div>
-        </section>
+                  <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate">{vid.title_fa}</h3>
+                  <p className="text-xs text-[var(--text-secondary)] line-clamp-1">{vid.speaker_fa}</p>
+
+                  <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
+                    <span>{vid.category_fa}</span>
+                    <Link href="/media?tab=videos" className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                      <span>مشاهده</span>
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )
       )}
 
       {/* HIGHLIGHT SHOWCASE SECTION */}
