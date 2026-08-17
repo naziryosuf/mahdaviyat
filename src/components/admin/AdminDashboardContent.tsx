@@ -34,7 +34,8 @@ import {
   Eye,
   Download,
   Zap,
-  Sparkles
+  Sparkles,
+  Clock
 } from 'lucide-react';
 import { calculateReadingTimeFa } from '@/utils/readingTime';
 import { compressImageFile } from '@/utils/imageCompressor';
@@ -531,8 +532,46 @@ export const AdminDashboardContent: React.FC = () => {
   const [vidSourceType, setVidSourceType] = useState<'link' | 'upload'>('link');
   const [isUploadingVidFile, setIsUploadingVidFile] = useState(false);
 
+  // Helper to format seconds into Persian MM:SS format
+  const formatSecondsToPersianDuration = (totalSeconds: number): string => {
+    if (!totalSeconds || isNaN(totalSeconds) || totalSeconds <= 0) return '۰۵:۰۰';
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = Math.floor(totalSeconds % 60);
+    const toPersianDigits = (str: string) => str.replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[parseInt(d)]);
+    const formatted = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    return toPersianDigits(formatted);
+  };
+
+  // Helper to extract duration from File or URL using HTML5 Video
+  const extractDurationFromMedia = (source: File | string) => {
+    try {
+      const video = document.createElement('video');
+      video.preload = 'metadata';
+      const mediaUrl = typeof source === 'string' ? source : URL.createObjectURL(source);
+      video.src = mediaUrl;
+      video.onloadedmetadata = () => {
+        if (typeof source !== 'string') {
+          URL.revokeObjectURL(mediaUrl);
+        }
+        if (video.duration && !isNaN(video.duration)) {
+          const persianDuration = formatSecondsToPersianDuration(video.duration);
+          setVidDuration(persianDuration);
+        }
+      };
+    } catch (err) {
+      console.warn('Auto duration extraction error:', err);
+    }
+  };
+
   const handleAnalyzeYouTubeUrl = (url: string) => {
     if (!url) return;
+
+    // Check if direct file link or uploaded video
+    if (url.endsWith('.mp4') || url.endsWith('.webm') || url.includes('supabase.co')) {
+      extractDurationFromMedia(url);
+      return;
+    }
+
     const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
     if (ytMatch && ytMatch[1]) {
       const videoId = ytMatch[1];
@@ -555,12 +594,15 @@ export const AdminDashboardContent: React.FC = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Extract exact duration from file immediately
+    extractDurationFromMedia(file);
+
     try {
       setIsUploadingVidFile(true);
       setUploadStatusMsg('در حال آپلود فایل ویدیو به حافظه ابری دیتابیس (Supabase)...');
       const publicUrl = await uploadMagazineFile(file, 'videos');
       setVidUrl(publicUrl);
-      setSaveToast({ msg: '✅ فایل ویدیو با موفقیت آپلود شد!', type: 'success' });
+      setSaveToast({ msg: '✅ فایل ویدیو با موفقیت آپلود و زمان آن محاسبه شد!', type: 'success' });
       setTimeout(() => setSaveToast(null), 3000);
     } catch (err: any) {
       console.error('Error uploading video file:', err);
@@ -1745,8 +1787,19 @@ export const AdminDashboardContent: React.FC = () => {
                   <input type="text" value={vidSpeaker} onChange={e => setVidSpeaker(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
                 </div>
                 <div>
-                  <label className="block font-bold mb-1">مدت زمان:</label>
-                  <input type="text" value={vidDuration} onChange={e => setVidDuration(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block font-bold">مدت زمان:</label>
+                    <button
+                      type="button"
+                      onClick={() => vidUrl && extractDurationFromMedia(vidUrl)}
+                      className="text-[10px] font-bold text-[#1B889A] hover:underline flex items-center gap-1"
+                      title="محاسبه خودکار طول ویدیو"
+                    >
+                      <Clock className="w-3 h-3 text-[#1B889A]" />
+                      <span>محاسبه خودکار ⏱️</span>
+                    </button>
+                  </div>
+                  <input type="text" value={vidDuration} onChange={e => setVidDuration(e.target.value)} placeholder="مثلا: ۰۵:۳۰ یا ۱۰ دقیقه" className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono text-center font-bold" />
                 </div>
               </div>
               {/* DUAL VIDEO SOURCE SELECTOR (LINK VS UPLOAD) */}
