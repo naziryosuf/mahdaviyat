@@ -300,15 +300,15 @@ function HomeContent() {
                     {filteredArticles.map((art) => (
                       <article key={art.id} className="p-4 sm:p-5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] transition-all space-y-3 overflow-hidden group">
                         {art.image_url && !art.image_url.startsWith('file://') && art.image_url.trim() !== '' && (
-                          <div className="relative w-full h-40 -mx-4 sm:-mx-5 -mt-4 sm:-mt-5 mb-3 overflow-hidden border-b border-[var(--card-border)] bg-stone-900">
+                          <Link href={`/content/${art.id}`} className="block relative w-full h-40 -mx-4 sm:-mx-5 -mt-4 sm:-mt-5 mb-3 overflow-hidden border-b border-[var(--card-border)] bg-stone-900 group/img cursor-pointer">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src={art.image_url}
                               alt={art.title_fa}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                          </div>
+                          </Link>
                         )}
                         <div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
                           <span className="px-2.5 py-0.5 rounded-full teal-badge text-[11px] font-bold">{art.category_fa}</span>
@@ -417,15 +417,15 @@ function HomeContent() {
                 {articles.filter(art => art.featured).map(art => (
                   <article key={art.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm overflow-hidden group">
                     {art.image_url && !art.image_url.startsWith('file://') && art.image_url.trim() !== '' && (
-                      <div className="relative w-full h-36 -mx-4 -mt-4 mb-2.5 overflow-hidden border-b border-[var(--card-border)] bg-stone-900">
+                      <Link href={`/content/${art.id}`} className="block relative w-full h-36 -mx-4 -mt-4 mb-2.5 overflow-hidden border-b border-[var(--card-border)] bg-stone-900 group/img cursor-pointer">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={art.image_url}
                           alt={art.title_fa}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                      </div>
+                      </Link>
                     )}
                     <div className="flex items-center justify-between text-xs">
                       <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
@@ -452,7 +452,18 @@ function HomeContent() {
                 ))}
 
                 {magazineIssues.filter(iss => iss.featured).map(iss => (
-                  <div key={iss.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm">
+                  <div key={iss.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm overflow-hidden group">
+                    {iss.cover_image && !iss.cover_image.startsWith('file://') && iss.cover_image.trim() !== '' && (
+                      <Link href="/magazine" className="block relative w-full h-36 -mx-4 -mt-4 mb-2.5 overflow-hidden border-b border-[var(--card-border)] bg-stone-900 group/img cursor-pointer">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={iss.cover_image}
+                          alt={iss.title_fa}
+                          className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                      </Link>
+                    )}
                     <div className="flex items-center justify-between text-xs">
                       <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
                         <Pin className="w-3 h-3 fill-current" />
@@ -461,7 +472,9 @@ function HomeContent() {
                       <span className="text-[#1B889A] font-bold text-[11px]">{iss.publish_date_fa}</span>
                     </div>
 
-                    <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate">{iss.title_fa}</h3>
+                    <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate">
+                      <Link href="/magazine" className="hover:text-[#1B889A] transition-colors">{iss.title_fa}</Link>
+                    </h3>
                     <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">{iss.description_fa}</p>
 
                     <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
@@ -475,7 +488,18 @@ function HomeContent() {
                 ))}
 
                 {videos.filter(vid => vid.featured).map(vid => (
-                  <div key={vid.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm">
+                  <div key={vid.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm overflow-hidden group">
+                    {vid.thumbnail_url && !vid.thumbnail_url.startsWith('file://') && vid.thumbnail_url.trim() !== '' && (
+                      <Link href="/media?tab=videos" className="block relative w-full h-36 -mx-4 -mt-4 mb-2.5 overflow-hidden border-b border-[var(--card-border)] bg-stone-900 group/img cursor-pointer">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={vid.thumbnail_url}
+                          alt={vid.title_fa}
+                          className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                      </Link>
+                    )}
                     <div className="flex items-center justify-between text-xs">
                       <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
                         <Pin className="w-3 h-3 fill-current" />
@@ -484,7 +508,9 @@ function HomeContent() {
                       <span className="text-[#1B889A] font-bold text-[11px]">{vid.duration_fa}</span>
                     </div>
 
-                    <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate">{vid.title_fa}</h3>
+                    <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate">
+                      <Link href="/media?tab=videos" className="hover:text-[#1B889A] transition-colors">{vid.title_fa}</Link>
+                    </h3>
                     <p className="text-xs text-[var(--text-secondary)] line-clamp-1">{vid.speaker_fa}</p>
 
                     <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">

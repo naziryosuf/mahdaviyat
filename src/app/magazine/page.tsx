@@ -130,9 +130,13 @@ export default function MagazinePage() {
                   >
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
                       
-                      {/* 1. بخش تصویر مجله */}
+                      {/* 1. بخش تصویر مجله (کلیک روی عکس مطالعه آنلاین را باز می‌کند) */}
                       <div className="lg:col-span-5 space-y-3">
-                        <div className="relative rounded-2xl overflow-hidden border-2 border-[#1B889A]/30 aspect-[16/9] sm:aspect-[3/4] max-w-sm mx-auto w-full bg-stone-900 shadow-2xl group">
+                        <div 
+                          onClick={() => setSelectedIssue(issue)}
+                          className="relative rounded-2xl overflow-hidden border-2 border-[#1B889A]/30 hover:border-[#1B889A] aspect-[16/9] sm:aspect-[3/4] max-w-sm mx-auto w-full bg-stone-900 shadow-2xl group cursor-pointer transition-all active:scale-[0.98]"
+                          title="برای مطالعه آنلاین مجله کلیک نمایید"
+                        >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={coverImageSrc}
@@ -142,6 +146,12 @@ export default function MagazinePage() {
                             }}
                             className={`w-full h-full object-${issue.cover_position || 'cover'} group-hover:scale-105 transition-transform duration-500`}
                           />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span className="px-4 py-2 rounded-xl bg-[#1B889A] text-white font-extrabold text-xs shadow-lg flex items-center gap-2">
+                              <BookOpen className="w-4 h-4" />
+                              <span>مطالعه آنلاین مجله</span>
+                            </span>
+                          </div>
                         </div>
                       </div>
 
@@ -167,8 +177,11 @@ export default function MagazinePage() {
                           )}
                         </div>
 
-                        {/* عنوان مجله */}
-                        <h2 className="text-xl sm:text-2xl font-extrabold text-[var(--text-primary)] font-serif-persian leading-snug">
+                        {/* عنوان مجله (کلیک روی عنوان نیز مطالعه آنلاین را باز می‌کند) */}
+                        <h2 
+                          onClick={() => setSelectedIssue(issue)}
+                          className="text-xl sm:text-2xl font-extrabold text-[var(--text-primary)] font-serif-persian leading-snug cursor-pointer hover:text-[#1B889A] transition-colors"
+                        >
                           {issue.title_fa}
                         </h2>
 

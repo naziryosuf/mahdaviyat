@@ -98,17 +98,21 @@ function ContentCatalogInner() {
               key={art.id}
               className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 hover:border-[#1B889A] transition-all duration-300 shadow-xl flex flex-col justify-between modern-card group overflow-hidden"
             >
-              {/* ARTICLE COVER IMAGE DISPLAY */}
+              {/* ARTICLE COVER IMAGE DISPLAY (CLICKABLE LINK) */}
               {art.image_url && !art.image_url.startsWith('file://') && art.image_url.trim() !== '' && (
-                <div className="relative w-full h-44 sm:h-52 -mx-6 -mt-6 mb-4 overflow-hidden border-b border-[var(--card-border)] bg-stone-900">
+                <Link
+                  href={`/content/${art.id}`}
+                  className="block relative w-full h-44 sm:h-52 -mx-6 -mt-6 mb-4 overflow-hidden border-b border-[var(--card-border)] bg-stone-900 group/img cursor-pointer"
+                  title="برای مطالعه مقاله کلیک کنید"
+                >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={art.image_url}
                     alt={art.title_fa}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                </div>
+                </Link>
               )}
 
               <div className="space-y-4">
@@ -138,7 +142,9 @@ function ContentCatalogInner() {
 
                 <div className="space-y-2">
                   <h3 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors leading-snug">
-                    {art.title_fa}
+                    <Link href={`/content/${art.id}`} className="hover:text-[#1B889A] transition-colors">
+                      {art.title_fa}
+                    </Link>
                   </h3>
                   <p className="text-xs text-[var(--text-secondary)] line-clamp-3 leading-relaxed font-serif-persian">
                     {art.excerpt_fa}

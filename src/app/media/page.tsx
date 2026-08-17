@@ -136,7 +136,11 @@ export default function MediaPage() {
                     <span className="px-2.5 py-0.5 rounded-full teal-badge text-[10px] font-bold">
                       {aud.category_fa}
                     </span>
-                    <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate mt-1">
+                    <h3 
+                      onClick={() => playAudio(aud)}
+                      className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate mt-1 cursor-pointer hover:text-[#1B889A] transition-colors"
+                      title="پخش پادکست"
+                    >
                       {aud.title_fa}
                     </h3>
                     <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{aud.speaker_fa}</p>
