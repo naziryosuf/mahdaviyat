@@ -296,16 +296,16 @@ function HomeContent() {
                     <span>مقالات و متون یافته‌شده ({filteredArticles.length})</span>
                   </h3>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {filteredArticles.map((art) => (
                       <article key={art.id} className="p-4 sm:p-5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] transition-all space-y-3 overflow-hidden group">
                         {art.image_url && !art.image_url.startsWith('file://') && art.image_url.trim() !== '' && (
-                          <Link href={`/content/${art.id}`} className="block relative w-full h-40 -mx-4 sm:-mx-5 -mt-4 sm:-mt-5 mb-3 overflow-hidden border-b border-[var(--card-border)] bg-stone-900 group/img cursor-pointer">
+                          <Link href={`/content/${art.id}`} className="block relative w-full aspect-video -mx-4 sm:-mx-5 -mt-4 sm:-mt-5 mb-3 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800 border-b border-[var(--card-border)] group/img cursor-pointer flex items-center justify-center">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src={art.image_url}
                               alt={art.title_fa}
-                              className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                              className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-300"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                           </Link>
@@ -338,7 +338,7 @@ function HomeContent() {
                     <span>پادکست‌ها و شنیدنی‌های یافته‌شده ({filteredAudios.length})</span>
                   </h3>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {filteredAudios.map((aud) => (
                       <div key={aud.id} className="p-3.5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] flex items-center justify-between gap-3">
                         <div className="min-w-0">
@@ -364,12 +364,12 @@ function HomeContent() {
                     <span>ویدیوها و درس‌گفتارهای یافته‌شده ({filteredVideos.length})</span>
                   </h3>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {filteredVideos.map((vid) => (
                       <Link key={vid.id} href="/media?tab=videos" className="p-3 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] flex items-center gap-3 hover:border-[#A32838] transition-colors">
-                        <div className="w-16 h-12 rounded-xl overflow-hidden shrink-0 bg-stone-900 border border-[var(--card-border)]">
+                        <div className="w-20 aspect-video rounded-xl overflow-hidden shrink-0 bg-slate-100 dark:bg-slate-800 border border-[var(--card-border)] flex items-center justify-center">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={vid.thumbnail_url} alt="" className="w-full h-full object-cover" />
+                          <img src={vid.thumbnail_url} alt="" className="w-full h-full object-cover object-center" />
                         </div>
                         <div className="min-w-0">
                           <h4 className="text-xs font-bold text-[var(--text-primary)] truncate">{vid.title_fa}</h4>
@@ -417,12 +417,12 @@ function HomeContent() {
                 {articles.filter(art => art.featured).map(art => (
                   <article key={art.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm overflow-hidden group">
                     {art.image_url && !art.image_url.startsWith('file://') && art.image_url.trim() !== '' && (
-                      <Link href={`/content/${art.id}`} className="block relative w-full h-36 -mx-4 -mt-4 mb-2.5 overflow-hidden border-b border-[var(--card-border)] bg-stone-900 group/img cursor-pointer">
+                      <Link href={`/content/${art.id}`} className="block relative w-full aspect-video -mx-4 -mt-4 mb-2.5 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800 border-b border-[var(--card-border)] group/img cursor-pointer flex items-center justify-center">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={art.image_url}
                           alt={art.title_fa}
-                          className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                          className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-300"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                       </Link>
@@ -454,12 +454,12 @@ function HomeContent() {
                 {magazineIssues.filter(iss => iss.featured).map(iss => (
                   <div key={iss.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm overflow-hidden group">
                     {iss.cover_image && !iss.cover_image.startsWith('file://') && iss.cover_image.trim() !== '' && (
-                      <Link href="/magazine" className="block relative w-full h-36 -mx-4 -mt-4 mb-2.5 overflow-hidden border-b border-[var(--card-border)] bg-stone-900 group/img cursor-pointer">
+                      <Link href="/magazine" className="block relative w-full aspect-video -mx-4 -mt-4 mb-2.5 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800 border-b border-[var(--card-border)] group/img cursor-pointer flex items-center justify-center">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={iss.cover_image}
                           alt={iss.title_fa}
-                          className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                          className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-300"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                       </Link>
@@ -490,12 +490,12 @@ function HomeContent() {
                 {videos.filter(vid => vid.featured).map(vid => (
                   <div key={vid.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm overflow-hidden group">
                     {vid.thumbnail_url && !vid.thumbnail_url.startsWith('file://') && vid.thumbnail_url.trim() !== '' && (
-                      <Link href="/media?tab=videos" className="block relative w-full h-36 -mx-4 -mt-4 mb-2.5 overflow-hidden border-b border-[var(--card-border)] bg-stone-900 group/img cursor-pointer">
+                      <Link href="/media?tab=videos" className="block relative w-full aspect-video -mx-4 -mt-4 mb-2.5 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800 border-b border-[var(--card-border)] group/img cursor-pointer flex items-center justify-center">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={vid.thumbnail_url}
                           alt={vid.title_fa}
-                          className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                          className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-300"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                       </Link>

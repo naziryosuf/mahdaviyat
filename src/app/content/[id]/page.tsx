@@ -330,15 +330,14 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
         </div>
       </header>
 
-      {/* Main Image Banner */}
+      {/* Main Image Banner (Responsive 16:9 Aspect Ratio) */}
       {article.image_url ? (
-        <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden aspect-[21/9] border border-[var(--card-border)] shadow-xl bg-stone-900 printable-area">
+        <div className="relative w-full max-w-4xl mx-auto aspect-video rounded-2xl overflow-hidden border border-[var(--card-border)] shadow-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center printable-area">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={article.image_url}
             alt={article.title_fa}
-            className="w-full h-full object-cover"
-            style={{ objectPosition: article.image_position || 'center' }}
+            className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 no-print" />
         </div>

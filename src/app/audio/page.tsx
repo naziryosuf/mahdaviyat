@@ -135,7 +135,7 @@ export default function AudioPage() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredAudios.map((aud) => {
             const isCurrent = currentAudio?.id === aud.id;
             const isPlayingThis = isCurrent && isPlayingAudio;
@@ -143,13 +143,33 @@ export default function AudioPage() {
             return (
               <div
                 key={aud.id}
-                className={`p-5 rounded-3xl bg-[var(--card-bg)] border transition-all modern-card shadow-md flex flex-col justify-between space-y-4 ${
+                className={`p-5 rounded-3xl bg-[var(--card-bg)] border transition-all modern-card shadow-md flex flex-col justify-between space-y-4 overflow-hidden group ${
                   isCurrent 
                     ? 'border-[#1B889A] ring-2 ring-[#1B889A]/30' 
                     : 'border-[var(--card-border)] hover:border-[#1B889A]'
                 }`}
               >
                 <div className="space-y-3">
+                  {/* PODCAST COVER THUMBNAIL (STRICT 16:9 HD RATIO) */}
+                  {aud.cover_image && (
+                    <div 
+                      onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
+                      className="relative w-full aspect-video -mx-5 -mt-5 mb-3 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center cursor-pointer group/cover"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={aud.cover_image}
+                        alt={aud.title_fa}
+                        className="w-full h-full object-cover object-center group-hover/cover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover/cover:bg-black/50 transition-colors">
+                        <div className="w-10 h-10 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-lg">
+                          {isPlayingThis ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current" />}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="flex items-center justify-between text-xs">
                     <span className="px-2.5 py-0.5 rounded-full teal-badge text-[11px] font-bold">
                       {aud.category_fa}
@@ -157,7 +177,10 @@ export default function AudioPage() {
                     <span className="text-xs text-[var(--text-secondary)] font-bold">{aud.duration_fa}</span>
                   </div>
 
-                  <h3 className="text-base font-bold text-[var(--text-primary)] font-serif-persian line-clamp-2">
+                  <h3 
+                    onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
+                    className="text-base font-bold text-[var(--text-primary)] font-serif-persian line-clamp-2 cursor-pointer hover:text-[#1B889A] transition-colors"
+                  >
                     {aud.title_fa}
                   </h3>
 

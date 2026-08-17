@@ -1459,6 +1459,11 @@ export const AdminDashboardContent: React.FC = () => {
                   placeholder="یا لینک تصویر اینترنتی را پیست نمایید..."
                   className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl font-mono text-[var(--text-primary)] dir-ltr text-left"
                 />
+
+                <div className="text-xs text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/40 p-2 rounded-lg border border-teal-200/50 mt-1.5 flex items-center gap-1.5 font-bold">
+                  <Info className="w-4 h-4 shrink-0 text-[#1B889A]" />
+                  <span>سایز پیشنهادی و استاندارد: ۱۲۸۰ × ۷۲۰ پیکسل (نسبت 16:9 کیفیت HD - تنظیم خودکار و بدون کشیدگی در موبایل و کامپیوتر)</span>
+                </div>
               </div>
               <div>
                 <label className="block font-bold mb-1 text-[var(--text-primary)]">کلمات کلیدی و هشتگ‌ها (#هشتگ با کاما جدا کنید):</label>
@@ -1562,6 +1567,11 @@ export const AdminDashboardContent: React.FC = () => {
                   placeholder="یا لینک تصویر اینترنتی را پیست نمایید..."
                   className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl font-mono text-[var(--text-primary)] dir-ltr text-left"
                 />
+
+                <div className="text-xs text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/40 p-2 rounded-lg border border-teal-200/50 mt-1.5 flex items-center gap-1.5 font-bold">
+                  <Info className="w-4 h-4 shrink-0 text-[#1B889A]" />
+                  <span>سایز پیشنهادی و استاندارد: ۱۲۸۰ × ۷۲۰ پیکسل (نسبت 16:9 کیفیت HD - تنظیم خودکار و بدون کشیدگی در موبایل و کامپیوتر)</span>
+                </div>
 
                 {/* COVER FOCUS / POSITION SELECTOR (مشخص کردن بخش مورد نظر تصویر در کاور) */}
                 <div className="space-y-2 pt-2 border-t border-[var(--card-border)]">
@@ -1699,6 +1709,10 @@ export const AdminDashboardContent: React.FC = () => {
               <div>
                 <label className="block font-bold mb-1">لینک تصویر کاور/پوستر ویدیو:</label>
                 <input type="text" value={vidThumb} onChange={e => setVidThumb(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono" />
+                <div className="text-xs text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/40 p-2 rounded-lg border border-teal-200/50 mt-1.5 flex items-center gap-1.5 font-bold">
+                  <Info className="w-4 h-4 shrink-0 text-[#1B889A]" />
+                  <span>سایز پیشنهادی و استاندارد: ۱۲۸۰ × ۷۲۰ پیکسل (نسبت 16:9 کیفیت HD - تنظیم خودکار و بدون کشیدگی در موبایل و کامپیوتر)</span>
+                </div>
               </div>
               <div>
                 <label className="block font-bold mb-1">توضیحات کامل ویدیو:</label>
@@ -1743,6 +1757,10 @@ export const AdminDashboardContent: React.FC = () => {
               <div>
                 <label className="block font-bold mb-1">عکس کاور پادکست:</label>
                 <input type="text" value={audCover} onChange={e => setAudCover(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono" />
+                <div className="text-xs text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/40 p-2 rounded-lg border border-teal-200/50 mt-1.5 flex items-center gap-1.5 font-bold">
+                  <Info className="w-4 h-4 shrink-0 text-[#1B889A]" />
+                  <span>سایز پیشنهادی و استاندارد: ۱۲۸۰ × ۷۲۰ پیکسل (نسبت 16:9 کیفیت HD - تنظیم خودکار و بدون کشیدگی در موبایل و کامپیوتر)</span>
+                </div>
               </div>
               <div>
                 <label className="block font-bold mb-1">توضیحات صوتی:</label>

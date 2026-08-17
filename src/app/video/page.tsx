@@ -44,7 +44,7 @@ export default function VideoLibraryPage() {
           </h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {videos.map((vid) => {
             const isSelected = vid.id === activeVideo?.id;
             return (
@@ -60,12 +60,12 @@ export default function VideoLibraryPage() {
                     : 'border-slate-800 hover:border-slate-700'
                 }`}
               >
-                <div className="relative aspect-video bg-slate-950 overflow-hidden">
+                <div className="relative w-full aspect-video bg-slate-100 dark:bg-slate-800 overflow-hidden rounded-xl flex items-center justify-center">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={vid.thumbnail_url}
                     alt={vid.title_fa}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-slate-950/30 flex items-center justify-center">
                     <div className="w-10 h-10 rounded-full bg-[#1B889A]/90 text-white flex items-center justify-center shadow-lg">

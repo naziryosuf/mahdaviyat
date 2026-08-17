@@ -134,7 +134,7 @@ export default function MagazinePage() {
                       <div className="lg:col-span-5 space-y-3">
                         <div 
                           onClick={() => setSelectedIssue(issue)}
-                          className="relative rounded-2xl overflow-hidden border-2 border-[#1B889A]/30 hover:border-[#1B889A] aspect-[16/9] sm:aspect-[3/4] max-w-sm mx-auto w-full bg-stone-900 shadow-2xl group cursor-pointer transition-all active:scale-[0.98]"
+                          className="relative w-full aspect-video overflow-hidden rounded-xl border-2 border-[#1B889A]/30 hover:border-[#1B889A] max-w-sm mx-auto bg-stone-900 shadow-2xl group cursor-pointer transition-all active:scale-[0.98] flex items-center justify-center"
                           title="برای مطالعه آنلاین مجله کلیک نمایید"
                         >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -144,7 +144,7 @@ export default function MagazinePage() {
                             onError={(e) => {
                               e.currentTarget.src = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80';
                             }}
-                            className={`w-full h-full object-${issue.cover_position || 'cover'} group-hover:scale-105 transition-transform duration-500`}
+                            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                           />
                           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                             <span className="px-4 py-2 rounded-xl bg-[#1B889A] text-white font-extrabold text-xs shadow-lg flex items-center gap-2">

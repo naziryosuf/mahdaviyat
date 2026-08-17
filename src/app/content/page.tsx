@@ -92,24 +92,24 @@ function ContentCatalogInner() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((art) => (
             <article
               key={art.id}
               className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 hover:border-[#1B889A] transition-all duration-300 shadow-xl flex flex-col justify-between modern-card group overflow-hidden"
             >
-              {/* ARTICLE COVER IMAGE DISPLAY (CLICKABLE LINK) */}
+              {/* ARTICLE COVER IMAGE DISPLAY (STRICT 16:9 HD RATIO) */}
               {art.image_url && !art.image_url.startsWith('file://') && art.image_url.trim() !== '' && (
                 <Link
                   href={`/content/${art.id}`}
-                  className="block relative w-full h-44 sm:h-52 -mx-6 -mt-6 mb-4 overflow-hidden border-b border-[var(--card-border)] bg-stone-900 group/img cursor-pointer"
+                  className="block relative w-full aspect-video -mx-6 -mt-6 mb-4 overflow-hidden rounded-xl border-b border-[var(--card-border)] bg-slate-100 dark:bg-slate-800 group/img cursor-pointer flex items-center justify-center"
                   title="برای مطالعه مقاله کلیک کنید"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={art.image_url}
                     alt={art.title_fa}
-                    className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 </Link>

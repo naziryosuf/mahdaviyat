@@ -3,7 +3,7 @@
  * Resizes large photos to a max dimension of 1200px and converts to optimized JPEG Data URL.
  * Keeps file size under ~120KB so it saves safely in Supabase DB text columns.
  */
-export const compressImageFile = (file: File, maxDimension: number = 1200, quality: number = 0.85): Promise<string> => {
+export const compressImageFile = (file: File, maxDimension: number = 1600, quality: number = 0.88): Promise<string> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () => reject(new Error('Failed to read file'));
