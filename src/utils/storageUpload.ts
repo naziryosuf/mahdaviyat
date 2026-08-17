@@ -6,11 +6,13 @@ import { compressImageFile } from './imageCompressor';
  * Returns the permanent public HTTPS URL of the uploaded file.
  * Features a 45-second strict timeout, ASCII filename sanitization, and explicit error handling.
  */
-export async function uploadMagazineFile(file: File, folder: 'covers' | 'pdfs'): Promise<string> {
-  const ext = file.name.split('.').pop()?.toLowerCase() || (folder === 'covers' ? 'jpg' : 'pdf');
+export async function uploadMagazineFile(file: File, folder: 'covers' | 'pdfs' | 'videos' | 'media'): Promise<string> {
+  const ext = file.name.split('.').pop()?.toLowerCase() || (folder === 'covers' ? 'jpg' : folder === 'videos' ? 'mp4' : 'pdf');
   const randomSuffix = Math.random().toString(36).substring(2, 7);
   const cleanFileName = folder === 'covers' 
     ? `cover_${Date.now()}_${randomSuffix}.${ext}` 
+    : folder === 'videos' || folder === 'media'
+    ? `video_${Date.now()}_${randomSuffix}.${ext}`
     : `issue_${Date.now()}_${randomSuffix}.${ext}`;
   const filePath = `${folder}/${cleanFileName}`;
 

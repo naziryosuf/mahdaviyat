@@ -17,9 +17,12 @@ import {
   Layers,
   BookOpenCheck,
   MonitorPlay,
-  ArrowLeft
+  ArrowLeft,
+  X
 } from 'lucide-react';
 import { AudioItem, VideoItem, InfographicItem } from '@/types';
+import { VideoPlayerWithDescription } from '@/components/video/VideoPlayerWithDescription';
+import { parseVideoUrl } from '@/utils/videoEmbed';
 
 export default function MediaPage() {
   const { audios, videos, infographics, playAudio, currentAudio, isPlayingAudio } = useStore();
@@ -182,7 +185,7 @@ export default function MediaPage() {
         </section>
       )}
 
-      {/* VIDEO SECTION */}
+      {/* VIDEO SECTION (INTERACTIVE GRID GALLERY - NO INITIAL AUTO-PLAY) */}
       {(activeTab === 'all' || activeTab === 'videos') && (
         <section className="space-y-6">
           <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
@@ -195,52 +198,76 @@ export default function MediaPage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredVideos.map((vid) => (
-              <div
-                key={vid.id}
-                onClick={() => setActiveDisplayVideo(vid)}
-                className={`p-4 rounded-3xl bg-[var(--card-bg)] border transition-all modern-card shadow-md space-y-3 cursor-pointer group ${
-                  currentDisplayVideo?.id === vid.id ? 'border-[#1B889A] ring-2 ring-[#1B889A]/30' : 'border-[var(--card-border)]'
-                }`}
-              >
-                <div className="relative rounded-2xl overflow-hidden aspect-video bg-stone-900 border border-[var(--card-border)]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={vid.thumbnail_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                    <div className="w-10 h-10 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-lg">
-                      <Play className="w-5 h-5 fill-current" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredVideos.map((vid) => {
+              const ytEmbed = parseVideoUrl(vid.video_url);
+              const thumbUrl = vid.thumbnail_url || ytEmbed.thumbnailUrl || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80';
+
+              return (
+                <div
+                  key={vid.id}
+                  onClick={() => setActiveDisplayVideo(vid)}
+                  className="p-4 rounded-3xl bg-[var(--card-bg)] border border-[var(--card-border)] hover:border-[#1B889A] transition-all modern-card shadow-md space-y-3 cursor-pointer group flex flex-col justify-between"
+                >
+                  <div className="space-y-3">
+                    {/* 16:9 HD THUMBNAIL CONTAINER */}
+                    <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-900 border border-[var(--card-border)] flex items-center justify-center">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={thumbUrl}
+                        alt={vid.title_fa}
+                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                        onError={(e) => {
+                          e.currentTarget.src = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80';
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+                          <Play className="w-6 h-6 fill-current ml-0.5" />
+                        </div>
+                      </div>
+                      <span className="absolute bottom-2.5 left-2.5 px-2.5 py-0.5 bg-black/80 rounded-lg text-[10px] font-mono text-white dir-ltr font-bold border border-white/10">
+                        {vid.duration_fa}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className="px-2.5 py-0.5 rounded-full teal-badge text-[10px] font-bold block w-fit mb-1.5">
+                        {vid.category_fa}
+                      </span>
+                      <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors leading-snug line-clamp-2">
+                        {vid.title_fa}
+                      </h3>
+                      <p className="text-xs text-[var(--text-secondary)] mt-1 font-serif-persian">سخنران: {vid.speaker_fa}</p>
+
+                      {/* Clickable Tags Chips (Max 3) */}
+                      {vid.tags && vid.tags.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-1.5 pt-2">
+                          {vid.tags.slice(0, 3).map((tag, idx) => (
+                            <Link
+                              key={idx}
+                              href={`/?search=${encodeURIComponent(tag)}`}
+                              onClick={(e) => e.stopPropagation()}
+                              className="px-2 py-0.5 rounded-full bg-[#1B889A]/10 border border-[#1B889A]/30 text-[#1B889A] hover:bg-[#1B889A] hover:text-white text-[10px] font-bold transition-all shadow-sm"
+                            >
+                              #{tag}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
 
-                <div>
-                  <span className="px-2 py-0.5 rounded-full teal-badge text-[10px] font-bold block w-fit mb-1">
-                    {vid.category_fa}
-                  </span>
-                  <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors">
-                    {vid.title_fa}
-                  </h3>
-                  <p className="text-xs text-[var(--text-secondary)] mt-1">{vid.speaker_fa} • {vid.duration_fa}</p>
-
-                  {/* Clickable Tags Chips (Max 3) */}
-                  {vid.tags && vid.tags.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-1.5 pt-2">
-                      {vid.tags.slice(0, 3).map((tag, idx) => (
-                        <Link
-                          key={idx}
-                          href={`/?search=${encodeURIComponent(tag)}`}
-                          onClick={(e) => e.stopPropagation()}
-                          className="px-2 py-0.5 rounded-full bg-[#1B889A]/10 border border-[#1B889A]/30 text-[#1B889A] hover:bg-[#1B889A] hover:text-white text-[10px] font-bold transition-all shadow-sm"
-                        >
-                          #{tag}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
+                  <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between">
+                    <span className="text-[11px] text-[var(--text-secondary)]">درس‌گفتار تصویری</span>
+                    <button className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#1B889A] text-white text-xs font-bold shadow-md hover:bg-[#156d7b] transition-colors">
+                      <Play className="w-3.5 h-3.5 fill-current" />
+                      <span>پخش ویدیو</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
       )}
@@ -278,6 +305,28 @@ export default function MediaPage() {
             ))}
           </div>
         </section>
+      )}
+
+      {/* VIDEO PLAYBACK LIGHTBOX MODAL */}
+      {activeDisplayVideo && (
+        <div className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl space-y-0 relative max-h-[95vh] overflow-y-auto">
+            <div className="p-4 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#1B889A] animate-pulse shrink-0" />
+                <h3 className="font-bold text-sm sm:text-base truncate font-serif-persian">{activeDisplayVideo.title_fa}</h3>
+              </div>
+              <button
+                onClick={() => setActiveDisplayVideo(null)}
+                className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+                title="بستن ویدیودان"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <VideoPlayerWithDescription video={activeDisplayVideo} />
+          </div>
+        </div>
       )}
 
     </div>
