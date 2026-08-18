@@ -135,7 +135,9 @@ function AboutContent() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {teamMembers.map((member) => (
+          {[...teamMembers]
+            .sort((a, b) => (a.order_index || 99) - (b.order_index || 99))
+            .map((member) => (
             <div
               key={member.id}
               onClick={() => setSelectedMember(member)}

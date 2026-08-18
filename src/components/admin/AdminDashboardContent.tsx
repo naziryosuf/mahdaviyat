@@ -36,7 +36,9 @@ import {
   Zap,
   Sparkles,
   Clock,
-  UserCheck
+  UserCheck,
+  ChevronUp,
+  ChevronDown
 } from 'lucide-react';
 import { calculateReadingTimeFa } from '@/utils/readingTime';
 import { compressImageFile } from '@/utils/imageCompressor';
@@ -781,6 +783,7 @@ export const AdminDashboardContent: React.FC = () => {
   const [teamBio, setTeamBio] = useState('');
   const [teamAvatar, setTeamAvatar] = useState('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&auto=format&fit=crop&q=80');
   const [teamSpec, setTeamSpec] = useState('تحریریه');
+  const [teamOrderIndex, setTeamOrderIndex] = useState<number>(1);
 
   const openAddTeam = () => {
     setEditingTeam(null);
@@ -789,6 +792,7 @@ export const AdminDashboardContent: React.FC = () => {
     setTeamBio('پژوهشگر حوزه مهدویت و حکمت اسلامی');
     setTeamAvatar('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&auto=format&fit=crop&q=80');
     setTeamSpec('تحریریه');
+    setTeamOrderIndex(teamMembers.length + 1);
     setShowTeamModal(true);
   };
 
@@ -799,6 +803,7 @@ export const AdminDashboardContent: React.FC = () => {
     setTeamBio(tm.bio_fa);
     setTeamAvatar(tm.avatar_url);
     setTeamSpec(tm.specialization_fa);
+    setTeamOrderIndex(tm.order_index || 1);
     setShowTeamModal(true);
   };
 
@@ -813,7 +818,9 @@ export const AdminDashboardContent: React.FC = () => {
         bio_fa: teamBio,
         avatar_url: teamAvatar,
         specialization_fa: teamSpec,
+        order_index: teamOrderIndex,
       });
+      setSaveToast({ msg: '✅ اطلاعات نویسنده با موفقیت بروزرسانی شد!', type: 'success' });
     } else {
       addTeamMember({
         name_fa: teamName,
@@ -821,9 +828,30 @@ export const AdminDashboardContent: React.FC = () => {
         bio_fa: teamBio,
         avatar_url: teamAvatar,
         specialization_fa: teamSpec,
+        order_index: teamOrderIndex,
       });
+      setSaveToast({ msg: '✅ نویسنده جدید با موفقیت اضافه شد!', type: 'success' });
     }
+    setTimeout(() => setSaveToast(null), 3000);
     setShowTeamModal(false);
+  };
+
+  const handleMoveTeamMember = (index: number, direction: 'up' | 'down') => {
+    const list = [...teamMembers].sort((a, b) => (a.order_index || 99) - (b.order_index || 99));
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= list.length) return;
+
+    const currentItem = list[index];
+    const targetItem = list[targetIndex];
+
+    const tempOrder = currentItem.order_index || (index + 1);
+    const newTargetOrder = targetItem.order_index || (targetIndex + 1);
+
+    updateTeamMember(currentItem.id, { order_index: newTargetOrder });
+    updateTeamMember(targetItem.id, { order_index: tempOrder });
+
+    setSaveToast({ msg: `✅ اولویت نویسنده «${currentItem.name_fa}» جابجا شد!`, type: 'success' });
+    setTimeout(() => setSaveToast(null), 3000);
   };
 
   // Pending items count calculation
@@ -1400,25 +1428,56 @@ export const AdminDashboardContent: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {teamMembers.map(tm => (
-              <div key={tm.id} className="p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] flex items-center justify-between gap-4 hover:border-[#1B889A] transition-all">
-                <div className="flex items-center gap-3">
-                  <img src={tm.avatar_url} alt={tm.name_fa} className="w-12 h-12 rounded-xl object-cover border border-[var(--card-border)]" />
-                  <div>
-                    <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">{tm.name_fa}</h4>
-                    <p className="text-xs text-[var(--text-secondary)]">{tm.role_fa} | {tm.specialization_fa}</p>
+            {[...teamMembers]
+              .sort((a, b) => (a.order_index || 99) - (b.order_index || 99))
+              .map((tm, idx, sortedArr) => (
+                <div key={tm.id} className="p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] flex items-center justify-between gap-4 hover:border-[#1B889A] transition-all">
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={tm.avatar_url} alt={tm.name_fa} className="w-12 h-12 rounded-full object-cover border border-[#1B889A]" />
+                      <span className="absolute -top-1 -right-1 px-1.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[9px] font-mono font-bold shadow-xs">
+                        #{tm.order_index || idx + 1}
+                      </span>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">{tm.name_fa}</h4>
+                      <p className="text-xs text-[var(--text-secondary)]">{tm.role_fa} | {tm.specialization_fa}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {/* Up / Down Re-ordering Buttons */}
+                    <div className="flex flex-col gap-0.5 bg-[var(--bg-color)] p-0.5 rounded-xl border border-[var(--card-border)]">
+                      <button
+                        type="button"
+                        disabled={idx === 0}
+                        onClick={() => handleMoveTeamMember(idx, 'up')}
+                        className="p-1 rounded-md text-[var(--text-secondary)] hover:text-[#1B889A] hover:bg-[#1B889A]/10 disabled:opacity-30 disabled:hover:text-[var(--text-secondary)] transition-colors"
+                        title="انتقال به بالاتر (اولویت بالاتر)"
+                      >
+                        <ChevronUp className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={idx === sortedArr.length - 1}
+                        onClick={() => handleMoveTeamMember(idx, 'down')}
+                        className="p-1 rounded-md text-[var(--text-secondary)] hover:text-[#1B889A] hover:bg-[#1B889A]/10 disabled:opacity-30 disabled:hover:text-[var(--text-secondary)] transition-colors"
+                        title="انتقال به پایین‌تر (اولویت پایین‌تر)"
+                      >
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    <button onClick={() => openEditTeam(tm)} className="p-2 rounded-lg bg-[var(--bg-color)] text-[var(--text-secondary)] hover:text-[#1B889A] border border-[var(--card-border)]" title="ویرایش">
+                      <Edit className="w-3.5 h-3.5" />
+                    </button>
+                    <button onClick={() => deleteTeamMember(tm.id)} className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20" title="حذف">
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center gap-1 shrink-0">
-                  <button onClick={() => openEditTeam(tm)} className="p-2 rounded-lg bg-[var(--bg-color)] text-[var(--text-secondary)] hover:text-[#1B889A] border border-[var(--card-border)]">
-                    <Edit className="w-3.5 h-3.5" />
-                  </button>
-                  <button onClick={() => deleteTeamMember(tm.id)} className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20">
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       )}
@@ -2099,14 +2158,18 @@ export const AdminDashboardContent: React.FC = () => {
                 <label className="block font-bold mb-1">نام و تخلص عضو:</label>
                 <input type="text" value={teamName} onChange={e => setTeamName(e.target.value)} required className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 <div>
                   <label className="block font-bold mb-1">سمت / نقش:</label>
                   <input type="text" value={teamRole} onChange={e => setTeamRole(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
                 </div>
                 <div>
-                  <label className="block font-bold mb-1">تخصص / حوزه پژوهش:</label>
+                  <label className="block font-bold mb-1">تخصص / پژوهش:</label>
                   <input type="text" value={teamSpec} onChange={e => setTeamSpec(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
+                </div>
+                <div>
+                  <label className="block font-bold mb-1">ترتیب / اولویت (#):</label>
+                  <input type="number" min={1} value={teamOrderIndex} onChange={e => setTeamOrderIndex(parseInt(e.target.value) || 1)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-center font-bold font-mono" />
                 </div>
               </div>
               <div>
