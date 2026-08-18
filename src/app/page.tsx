@@ -709,10 +709,25 @@ function HomeContent() {
                   {featuredArticle.excerpt_fa}
                 </p>
 
-                <div className="flex items-center gap-3 p-3 bg-[var(--bg-color)] rounded-2xl border border-[var(--card-border)] text-xs text-[var(--text-secondary)]">
-                  <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-[#1B889A] shrink-0 shadow-md">
+                {/* Article Cover Image Banner */}
+                {featuredArticle.image_url && !featuredArticle.image_url.startsWith('file://') && featuredArticle.image_url.trim() !== '' && (
+                  <Link href={`/content/${featuredArticle.id}`} className="block relative w-full aspect-video rounded-2xl overflow-hidden border border-[var(--card-border)] bg-slate-900 shadow-md group/img cursor-pointer">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={featuredArticle.author_avatar} alt="" className="w-full h-full object-cover filter grayscale contrast-125" />
+                    <img src={featuredArticle.image_url} alt={featuredArticle.title_fa} className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  </Link>
+                )}
+
+                <div className="flex items-center gap-3 p-3 bg-[var(--bg-color)] rounded-2xl border border-[var(--card-border)] text-xs text-[var(--text-secondary)]">
+                  <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-[#1B889A] shrink-0 shadow-md bg-slate-800 flex items-center justify-center">
+                    {featuredArticle.author_avatar && !featuredArticle.author_avatar.includes('unsplash.com') ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={featuredArticle.author_avatar} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full bg-[#1B889A] text-white flex items-center justify-center font-bold text-sm font-serif-persian">
+                        {featuredArticle.author_name_fa ? featuredArticle.author_name_fa.trim().charAt(0) : 'ن'}
+                      </div>
+                    )}
                   </div>
                   <div className="min-w-0">
                     <span className="font-bold text-[var(--text-primary)] block truncate">{featuredArticle.author_name_fa}</span>
@@ -781,8 +796,19 @@ function HomeContent() {
               .map((art) => (
                 <article
                   key={art.id}
-                  className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-4 sm:p-5 hover:border-[#1B889A] transition-all modern-card space-y-3 shadow-sm"
+                  className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-4 sm:p-5 hover:border-[#1B889A] transition-all modern-card space-y-3 shadow-sm group"
                 >
+                  {art.image_url && !art.image_url.startsWith('file://') && art.image_url.trim() !== '' && (
+                    <Link href={`/content/${art.id}`} className="block relative w-full aspect-video -mx-4 sm:-mx-5 -mt-4 sm:-mt-5 mb-3 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800 border-b border-[var(--card-border)] group/img cursor-pointer flex items-center justify-center">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={art.image_url}
+                        alt={art.title_fa}
+                        className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    </Link>
+                  )}
                   <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--text-secondary)]">
                     <div className="flex items-center gap-2">
                       <span className="px-2.5 py-0.5 rounded-full teal-badge text-[11px] sm:text-xs font-bold">
