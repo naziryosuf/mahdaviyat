@@ -708,21 +708,59 @@ export const AdminDashboardContent: React.FC = () => {
   const [editingAud, setEditingAud] = useState<AudioItem | null>(null);
   const [audTitle, setAudTitle] = useState('');
   const [audSpeaker, setAudSpeaker] = useState('استاد حسینی');
-  const [audUrl, setAudUrl] = useState('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
+  const [audUrl, setAudUrl] = useState('');
   const [audDuration, setAudDuration] = useState('۱۵ دقیقه');
   const [audDesc, setAudDesc] = useState('');
   const [audCategory, setAudCategory] = useState('پادکست صوتی');
   const [audCover, setAudCover] = useState('https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=600&auto=format&fit=crop&q=80');
+  const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [audioCoverFile, setAudioCoverFile] = useState<File | null>(null);
+
+  const handleAudioFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setAudioFile(file);
+      try {
+        const previewUrl = URL.createObjectURL(file);
+        setAudUrl(previewUrl);
+        const tempAudio = document.createElement('audio');
+        tempAudio.src = previewUrl;
+        tempAudio.onloadedmetadata = () => {
+          if (tempAudio.duration && isFinite(tempAudio.duration)) {
+            const formatted = formatSecondsToPersianDuration(tempAudio.duration);
+            setAudDuration(formatted);
+          }
+        };
+      } catch (err) {
+        console.error('Error creating audio blob preview:', err);
+      }
+    }
+  };
+
+  const handleAudioCoverFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setAudioCoverFile(file);
+      try {
+        const compressed = await compressImageFile(file);
+        setAudCover(compressed);
+      } catch (err) {
+        console.error('Error creating audio cover preview:', err);
+      }
+    }
+  };
 
   const openAddAudio = () => {
     setEditingAud(null);
     setAudTitle('');
     setAudSpeaker('استاد حسینی');
-    setAudUrl('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
+    setAudUrl('');
     setAudDuration('۱۵ دقیقه');
     setAudDesc('');
     setAudCategory('پادکست صوتی');
     setAudCover('https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=600&auto=format&fit=crop&q=80');
+    setAudioFile(null);
+    setAudioCoverFile(null);
     setShowAudModal(true);
   };
 
@@ -735,6 +773,8 @@ export const AdminDashboardContent: React.FC = () => {
     setAudDesc(aud.description_fa);
     setAudCategory(aud.category_fa);
     setAudCover(aud.cover_image);
+    setAudioFile(null);
+    setAudioCoverFile(null);
     setShowAudModal(true);
   };
 
@@ -742,34 +782,53 @@ export const AdminDashboardContent: React.FC = () => {
     e.preventDefault();
     if (!audTitle.trim()) return;
 
+    setSaveToast({ msg: 'در حال پردازش و ثبت پادکست...', type: 'loading' });
+
     try {
+      let finalAudioUrl = audUrl;
+      let finalCoverUrl = audCover;
+
+      if (audioCoverFile) {
+        setSaveToast({ msg: 'در حال آپلود کاور پادکست به حافظه ابری Supabase...', type: 'loading' });
+        finalCoverUrl = await uploadMagazineFile(audioCoverFile, 'covers');
+      }
+
+      if (audioFile) {
+        setSaveToast({ msg: 'در حال آپلود فایل صوتی پادکست به حافظه ابری Supabase (لطفاً منتظر بمانید)...', type: 'loading' });
+        finalAudioUrl = await uploadMagazineFile(audioFile, 'audios');
+      }
+
+      setSaveToast({ msg: 'در حال ثبت نهایی اطلاعات پادکست در دیتابیس...', type: 'loading' });
+
       if (editingAud) {
         await updateAudio(editingAud.id, {
           title_fa: audTitle,
           speaker_fa: audSpeaker,
-          audio_url: audUrl,
+          audio_url: finalAudioUrl,
           duration_fa: audDuration,
           description_fa: audDesc,
           category_fa: audCategory,
-          cover_image: audCover,
+          cover_image: finalCoverUrl,
         });
         setSaveToast({ msg: '✅ پادکست/فایل صوتی با موفقیت بروزرسانی شد!', type: 'success' });
       } else {
         await addAudio({
           title_fa: audTitle,
           speaker_fa: audSpeaker,
-          audio_url: audUrl,
+          audio_url: finalAudioUrl,
           duration_fa: audDuration,
           description_fa: audDesc,
           published_at: new Date().toLocaleDateString('fa-IR'),
           category_fa: audCategory,
-          cover_image: audCover,
+          cover_image: finalCoverUrl,
           featured: true,
         });
         setSaveToast({ msg: '✅ پادکست جدید با موفقیت منتشر گردید!', type: 'success' });
       }
       setTimeout(() => setSaveToast(null), 3000);
       setShowAudModal(false);
+      setAudioFile(null);
+      setAudioCoverFile(null);
     } catch (err: any) {
       console.error('Error saving audio:', err);
       setSaveToast({ msg: `❌ خطا در ذخیره پادکست: ${err?.message || 'مشکلی رخ داد'}`, type: 'error' });
@@ -2232,13 +2291,75 @@ export const AdminDashboardContent: React.FC = () => {
                   <input type="text" value={audDuration} onChange={e => setAudDuration(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
                 </div>
               </div>
-              <div>
-                <label className="block font-bold mb-1">لینک مستقیم فایل MP3 صوتی:</label>
-                <input type="text" value={audUrl} onChange={e => setAudUrl(e.target.value)} required className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono" />
+              {/* AUDIO MP3 FILE & DEVICE UPLOAD */}
+              <div className="space-y-2 p-3 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)]">
+                <div className="flex items-center justify-between">
+                  <label className="font-bold text-[var(--text-primary)]">فایل صوتی پادکست (MP3 / WAV / M4A):</label>
+                  
+                  {/* File Upload Button from Device */}
+                  <label className="px-3 py-1.5 rounded-xl bg-[#1B889A]/15 text-[#1B889A] hover:bg-[#1B889A] hover:text-white font-bold cursor-pointer transition-all flex items-center gap-1.5 text-xs">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>آپلود فایل صوتی از دیوایس</span>
+                    <input type="file" accept="audio/*" onChange={handleAudioFileUpload} className="hidden" />
+                  </label>
+                </div>
+
+                <input
+                  type="text"
+                  value={audUrl}
+                  onChange={e => setAudUrl(e.target.value)}
+                  placeholder="یا لینک مستقیم فایل MP3 صوتی را پیست نمایید..."
+                  className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl font-mono text-[var(--text-primary)] dir-ltr text-left"
+                />
+
+                {audioFile && (
+                  <div className="text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 p-2 rounded-lg border border-emerald-200/50 flex items-center justify-between font-bold">
+                    <span>فایل انتخاب شده: {audioFile.name} ({(audioFile.size / (1024 * 1024)).toFixed(2)} MB)</span>
+                    <span className="text-[#1B889A]">مدت: {audDuration}</span>
+                  </div>
+                )}
               </div>
-              <div>
-                <label className="block font-bold mb-1">عکس کاور پادکست:</label>
-                <input type="text" value={audCover} onChange={e => setAudCover(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono" />
+
+              {/* PODCAST COVER IMAGE & DEVICE UPLOAD */}
+              <div className="space-y-2 p-3 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)]">
+                <div className="flex items-center justify-between">
+                  <label className="font-bold text-[var(--text-primary)]">تصویر کاور پادکست (Cover Image):</label>
+                  
+                  {/* File Upload Button from Device */}
+                  <label className="px-3 py-1.5 rounded-xl bg-[#1B889A]/15 text-[#1B889A] hover:bg-[#1B889A] hover:text-white font-bold cursor-pointer transition-all flex items-center gap-1.5 text-xs">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>آپلود کاور از دیوایس</span>
+                    <input type="file" accept="image/*" onChange={handleAudioCoverFileUpload} className="hidden" />
+                  </label>
+                </div>
+
+                <input
+                  type="text"
+                  value={audCover}
+                  onChange={e => setAudCover(e.target.value)}
+                  placeholder="یا لینک تصویر اینترنتی کاور را پیست نمایید..."
+                  className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl font-mono text-[var(--text-primary)] dir-ltr text-left"
+                />
+
+                {/* 16:9 Cover Image Preview Box */}
+                {audCover && (
+                  <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-[var(--card-border)] bg-slate-900 shadow-md">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={audCover}
+                      alt="پیش‌نمایش کاور پادکست"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=800&auto=format&fit=crop&q=80';
+                      }}
+                    />
+                    <div className="absolute top-2 right-2 px-2 py-1 rounded-md bg-black/70 text-white font-mono text-[10px] flex items-center gap-1">
+                      <Sparkles className="w-3 h-3 text-[#1B889A]" />
+                      <span>پیش‌نمایش کاور ۱۶:۹ HD</span>
+                    </div>
+                  </div>
+                )}
+
                 <div className="text-xs text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/40 p-2 rounded-lg border border-teal-200/50 mt-1.5 flex items-center gap-1.5 font-bold">
                   <Info className="w-4 h-4 shrink-0 text-[#1B889A]" />
                   <span>سایز پیشنهادی و استاندارد: ۱۲۸۰ × ۷۲۰ پیکسل (نسبت 16:9 کیفیت HD - تنظیم خودکار و بدون کشیدگی در موبایل و کامپیوتر)</span>

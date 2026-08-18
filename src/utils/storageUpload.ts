@@ -4,15 +4,17 @@ import { compressImageFile } from './imageCompressor';
 /**
  * Direct & Fast Upload helper for Supabase Storage bucket 'magazines'.
  * Returns the permanent public HTTPS URL of the uploaded file.
- * Features a 45-second strict timeout, ASCII filename sanitization, and explicit error handling.
+ * Features a 120-second strict timeout, ASCII filename sanitization, and explicit error handling.
  */
-export async function uploadMagazineFile(file: File, folder: 'covers' | 'pdfs' | 'videos' | 'media'): Promise<string> {
-  const ext = file.name.split('.').pop()?.toLowerCase() || (folder === 'covers' ? 'jpg' : folder === 'videos' ? 'mp4' : 'pdf');
+export async function uploadMagazineFile(file: File, folder: 'covers' | 'pdfs' | 'videos' | 'media' | 'audios' | 'podcasts'): Promise<string> {
+  const ext = file.name.split('.').pop()?.toLowerCase() || (folder === 'covers' ? 'jpg' : folder === 'videos' ? 'mp4' : folder === 'audios' || folder === 'podcasts' ? 'mp3' : 'pdf');
   const randomSuffix = Math.random().toString(36).substring(2, 7);
   const cleanFileName = folder === 'covers' 
     ? `cover_${Date.now()}_${randomSuffix}.${ext}` 
     : folder === 'videos' || folder === 'media'
     ? `video_${Date.now()}_${randomSuffix}.${ext}`
+    : folder === 'audios' || folder === 'podcasts'
+    ? `audio_${Date.now()}_${randomSuffix}.${ext}`
     : `issue_${Date.now()}_${randomSuffix}.${ext}`;
   const filePath = `${folder}/${cleanFileName}`;
 
@@ -37,7 +39,13 @@ export async function uploadMagazineFile(file: File, folder: 'covers' | 'pdfs' |
     .upload(filePath, uploadBody, {
       cacheControl: '3600',
       upsert: true,
-      contentType: folder === 'covers' ? (file.type || 'image/jpeg') : 'application/pdf'
+      contentType: folder === 'covers' 
+        ? (file.type || 'image/jpeg') 
+        : folder === 'videos' || folder === 'media' 
+        ? (file.type || 'video/mp4') 
+        : folder === 'audios' || folder === 'podcasts'
+        ? (file.type || 'audio/mpeg')
+        : 'application/pdf'
     });
 
   const timeoutPromise = new Promise<{ data: null; error: { message: string } }>((_, reject) =>
