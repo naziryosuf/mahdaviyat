@@ -25,18 +25,31 @@ import {
   MessageCircle,
   Copy,
   Mail,
-  Globe
+  Globe,
+  UserCheck,
+  Award,
+  BookMarked,
+  FileText,
+  Volume2,
+  Video
 } from 'lucide-react';
 import { parseVideoUrl } from '@/utils/videoEmbed';
+import { TeamMember } from '@/types';
 
 export default function ArticleDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const { articles, bookmarkedArticles, toggleBookmark, playAudio, currentAudio, isPlayingAudio, pauseAudio } = useStore();
+  const { articles, teamMembers, audios, videos, bookmarkedArticles, toggleBookmark, playAudio, currentAudio, isPlayingAudio, pauseAudio } = useStore();
   const [fontSize, setFontSize] = useState<number>(17); // optimal mobile/desktop reading font size
   const [toastMessage, setToastMessage] = useState<string>('');
   const [showShareModal, setShowShareModal] = useState<boolean>(false);
+  const [selectedAuthorMember, setSelectedAuthorMember] = useState<TeamMember | null>(null);
 
   const article = articles.find((a) => a.id === id) || articles[0];
+
+  const authorMember = teamMembers.find((m) => 
+    m.name_fa.toLowerCase().includes(article.author_name_fa.toLowerCase()) ||
+    article.author_name_fa.toLowerCase().includes(m.name_fa.toLowerCase())
+  );
 
   const isBookmarked = bookmarkedArticles.includes(article.id);
   const isPlayingThisAudio = currentAudio?.id === article.id && isPlayingAudio;
@@ -315,10 +328,28 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
 
         <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--card-border)] text-xs text-[var(--text-secondary)]">
           <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1.5">
-              <User className="w-4 h-4 text-[#1B889A]" />
-              <span>نویسنده: <strong className="text-[var(--text-primary)]">{article.author_name_fa}</strong> {article.author_title_fa && <span className="text-[#1B889A] font-semibold mr-1">({article.author_title_fa})</span>}</span>
-            </span>
+            <div
+              onClick={() => setSelectedAuthorMember(authorMember || {
+                id: 'author_temp',
+                name_fa: article.author_name_fa,
+                role_fa: article.author_title_fa || 'پژوهشگر / نویسنده',
+                bio_fa: `نویسنده و پژوهشگر مقاله‌های علمی - شناختی مجله ایدئولوژی مهدویت.\nعنوان مقاله: ${article.title_fa}`,
+                avatar_url: article.author_avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80',
+                specialization_fa: article.category_fa || 'نویسنده'
+              })}
+              className="flex items-center gap-2 cursor-pointer group hover:bg-[#1B889A]/10 px-2.5 py-1 rounded-xl transition-all border border-transparent hover:border-[#1B889A]/30"
+              title="مشاهده پروفایل و بیوگرافی نویسنده"
+            >
+              {authorMember?.avatar_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={authorMember.avatar_url} alt="" className="w-6 h-6 rounded-full object-cover border border-[#1B889A] shrink-0 group-hover:scale-110 transition-transform" />
+              ) : (
+                <User className="w-4 h-4 text-[#1B889A]" />
+              )}
+              <span className="text-xs">
+                نویسنده: <strong className="text-[var(--text-primary)] group-hover:text-[#1B889A] underline decoration-dotted font-bold">@{article.author_name_fa}</strong> {article.author_title_fa && <span className="text-[#1B889A] font-semibold mr-1">({article.author_title_fa})</span>}
+              </span>
+            </div>
             <span>•</span>
             <span className="flex items-center gap-1">
               <Clock className="w-4 h-4 text-[#1B889A]" />
@@ -407,6 +438,80 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
           </div>
         </div>
       </div>
+
+      {/* Author Lightbox Profile Modal */}
+      {selectedAuthorMember && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-opacity duration-300 animate-in fade-in no-print">
+          <div className="bg-[var(--card-bg)] border-2 border-[#1B889A] rounded-3xl p-6 sm:p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto space-y-6 shadow-2xl modern-card relative transition-all duration-300 animate-in zoom-in-95 fade-in slide-in-from-bottom-4">
+            
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedAuthorMember(null)}
+              className="absolute top-5 left-5 p-2.5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] text-[var(--text-secondary)] hover:text-white hover:bg-[#1B889A] transition-all shadow-md active:scale-95"
+              title="بستن پنجره"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Profile Header Box */}
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 border-b border-[var(--card-border)] pb-6 text-center sm:text-right">
+              {/* CIRCULAR ROUNDED PROFILE IMAGE */}
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-[#1B889A] shrink-0 shadow-2xl ring-4 ring-[#1B889A]/20">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src={selectedAuthorMember.avatar_url} 
+                  alt={selectedAuthorMember.name_fa} 
+                  className="w-full h-full object-cover" 
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80';
+                  }}
+                />
+              </div>
+              <div className="space-y-2 flex-1">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-[var(--text-primary)] font-serif-persian">
+                    {selectedAuthorMember.name_fa}
+                  </h3>
+                  <span className="px-3 py-1 rounded-full teal-badge text-xs font-bold">
+                    {selectedAuthorMember.role_fa}
+                  </span>
+                </div>
+                
+                {selectedAuthorMember.specialization_fa && (
+                  <p className="text-xs sm:text-sm text-[#1B889A] font-bold flex items-center justify-center sm:justify-start gap-1.5 font-serif-persian">
+                    <Award className="w-4 h-4 text-[#1B889A]" />
+                    <span>تخصص: {selectedAuthorMember.specialization_fa}</span>
+                  </p>
+                )}
+
+                <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-3 text-xs font-bold">
+                  <Link
+                    href={`/about?author=${encodeURIComponent(selectedAuthorMember.name_fa)}`}
+                    className="px-3.5 py-1.5 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white flex items-center gap-1.5 shadow-md transition-all active:scale-95"
+                  >
+                    <UserCheck className="w-3.5 h-3.5" />
+                    <span>پروفایل کامل و تمام آثار در «درباره ما» ↗</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Detailed Biography Box */}
+            <div className="space-y-3">
+              <h4 className="text-sm sm:text-base font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
+                <UserCheck className="w-5 h-5 text-[#1B889A]" />
+                <span>بیوگرافی و معرفی جامع</span>
+              </h4>
+              <div className="bg-[var(--bg-color)] p-5 sm:p-6 rounded-2xl border border-[var(--card-border)] space-y-3 shadow-inner">
+                <p className="text-xs sm:text-sm text-[var(--text-primary)] leading-loose font-serif-persian whitespace-pre-line tracking-wide leading-relaxed">
+                  {selectedAuthorMember.bio_fa}
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
 
     </div>
   );

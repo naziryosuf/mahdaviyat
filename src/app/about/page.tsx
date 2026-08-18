@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useStore } from '@/store/useStore';
 import { 
   Sparkles, 
@@ -22,9 +23,23 @@ import {
 } from 'lucide-react';
 import { TeamMember } from '@/types';
 
-export default function AboutPage() {
+function AboutContent() {
+  const searchParams = useSearchParams();
+  const authorQuery = searchParams.get('author') || searchParams.get('member');
   const { teamMembers, articles, audios, videos, playAudio, aboutUsMission } = useStore();
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+
+  useEffect(() => {
+    if (authorQuery && teamMembers.length > 0) {
+      const match = teamMembers.find(m => 
+        m.name_fa.toLowerCase().includes(authorQuery.toLowerCase()) ||
+        authorQuery.toLowerCase().includes(m.name_fa.toLowerCase())
+      );
+      if (match) {
+        setSelectedMember(match);
+      }
+    }
+  }, [authorQuery, teamMembers]);
 
   // Filter authored content for the selected team member
   const getMemberArticles = (name: string) => {
@@ -301,5 +316,13 @@ export default function AboutPage() {
       )}
 
     </div>
+  );
+}
+
+export default function AboutPage() {
+  return (
+    <Suspense fallback={<div className="text-center py-12 text-slate-400 font-serif-persian">در حال بارگذاری صفحه درباره ما...</div>}>
+      <AboutContent />
+    </Suspense>
   );
 }
