@@ -110,6 +110,7 @@ export interface TeamMember {
   avatar_url: string;
   specialization_fa: string;
   order_index?: number;
+  featured?: boolean;
   status?: 'published' | 'pending_approval';
   submitted_by_name?: string;
   submitted_at?: string;

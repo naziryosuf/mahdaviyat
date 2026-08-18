@@ -38,7 +38,9 @@ import {
   Clock,
   UserCheck,
   ChevronUp,
-  ChevronDown
+  ChevronDown,
+  Pin,
+  PinOff
 } from 'lucide-react';
 import { calculateReadingTimeFa } from '@/utils/readingTime';
 import { compressImageFile } from '@/utils/imageCompressor';
@@ -1265,16 +1267,38 @@ export const AdminDashboardContent: React.FC = () => {
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="px-2 py-0.5 rounded-md bg-[#1B889A]/10 text-[#1B889A] font-bold text-[10px]">{art.category_fa}</span>
+                    {art.featured && (
+                      <span className="px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400 font-extrabold text-[10px] flex items-center gap-1">
+                        <Pin className="w-3 h-3 fill-current" />
+                        <span>پین‌شده</span>
+                      </span>
+                    )}
                     <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">{art.title_fa}</h4>
                   </div>
                   <p className="text-xs text-[var(--text-secondary)]">نویسنده: {art.author_name_fa} | زمان مطالعه: {art.read_time_fa} | تاریخ: {art.published_at}</p>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <button onClick={() => openEditArticle(art)} className="p-2 rounded-lg bg-[var(--bg-color)] text-[var(--text-secondary)] hover:text-[#1B889A] border border-[var(--card-border)] transition-all">
-                    <Edit className="w-4 h-4" />
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    onClick={() => {
+                      updateArticle(art.id, { featured: !art.featured });
+                      setSaveToast({ msg: !art.featured ? '📌 مقاله در بخش مطالب ویژه صفحه اصلی پین شد!' : '📌 مقاله از پین در آمد', type: 'success' });
+                      setTimeout(() => setSaveToast(null), 3000);
+                    }}
+                    className={`p-2 rounded-xl border transition-all flex items-center gap-1 text-xs font-bold ${
+                      art.featured
+                        ? 'bg-amber-500/15 border-amber-500/40 text-amber-600 dark:text-amber-400 shadow-xs'
+                        : 'bg-[var(--bg-color)] border-[var(--card-border)] text-[var(--text-secondary)] hover:text-[#1B889A]'
+                    }`}
+                    title={art.featured ? 'حذف از مطالب پین‌شده' : 'پین کردن در صفحه اصلی'}
+                  >
+                    <Pin className={`w-3.5 h-3.5 ${art.featured ? 'fill-current' : ''}`} />
+                    <span className="hidden sm:inline">{art.featured ? 'پین‌شده' : 'پین'}</span>
                   </button>
-                  <button onClick={() => deleteArticle(art.id)} className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-all">
-                    <Trash2 className="w-4 h-4" />
+                  <button onClick={() => openEditArticle(art)} className="p-2 rounded-xl bg-[var(--bg-color)] text-[var(--text-secondary)] hover:text-[#1B889A] border border-[var(--card-border)] transition-all" title="ویرایش">
+                    <Edit className="w-3.5 h-3.5" />
+                  </button>
+                  <button onClick={() => deleteArticle(art.id)} className="p-2 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-all" title="حذف">
+                    <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
@@ -1305,15 +1329,39 @@ export const AdminDashboardContent: React.FC = () => {
               <div key={mag.id} className="p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] space-y-3 hover:border-[#1B889A] transition-all">
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-1">
-                    <span className="px-2.5 py-0.5 rounded-md bg-[#1B889A]/15 text-[#1B889A] font-extrabold text-xs">شماره {mag.issue_number}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-md bg-[#1B889A]/15 text-[#1B889A] font-extrabold text-xs">شماره {mag.issue_number}</span>
+                      {mag.featured && (
+                        <span className="px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400 font-extrabold text-[10px] flex items-center gap-1">
+                          <Pin className="w-3 h-3 fill-current" />
+                          <span>پین‌شده</span>
+                        </span>
+                      )}
+                    </div>
                     <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">{mag.title_fa}</h4>
                     <p className="text-xs text-[var(--text-secondary)] line-clamp-2">{mag.description_fa}</p>
                   </div>
-                  <div className="flex items-center gap-1 shrink-0">
-                    <button onClick={() => openEditMagazine(mag)} className="p-2 rounded-lg bg-[var(--bg-color)] text-[var(--text-secondary)] hover:text-[#1B889A] border border-[var(--card-border)]">
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      onClick={() => {
+                        updateMagazineIssue(mag.id, { featured: !mag.featured });
+                        setSaveToast({ msg: !mag.featured ? '📌 شماره مجله در صفحه اصلی پین شد!' : '📌 مجله از پین در آمد', type: 'success' });
+                        setTimeout(() => setSaveToast(null), 3000);
+                      }}
+                      className={`p-2 rounded-xl border transition-all flex items-center gap-1 text-xs font-bold ${
+                        mag.featured
+                          ? 'bg-amber-500/15 border-amber-500/40 text-amber-600 dark:text-amber-400 shadow-xs'
+                          : 'bg-[var(--bg-color)] border-[var(--card-border)] text-[var(--text-secondary)] hover:text-[#1B889A]'
+                      }`}
+                      title={mag.featured ? 'حذف از مجلات پین‌شده' : 'پین کردن مجله در صفحه اصلی'}
+                    >
+                      <Pin className={`w-3.5 h-3.5 ${mag.featured ? 'fill-current' : ''}`} />
+                      <span className="hidden sm:inline">{mag.featured ? 'پین‌شده' : 'پین'}</span>
+                    </button>
+                    <button onClick={() => openEditMagazine(mag)} className="p-2 rounded-xl bg-[var(--bg-color)] text-[var(--text-secondary)] hover:text-[#1B889A] border border-[var(--card-border)]" title="ویرایش">
                       <Edit className="w-3.5 h-3.5" />
                     </button>
-                    <button onClick={() => deleteMagazineIssue(mag.id)} className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20">
+                    <button onClick={() => deleteMagazineIssue(mag.id)} className="p-2 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20" title="حذف">
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -1350,15 +1398,39 @@ export const AdminDashboardContent: React.FC = () => {
               <div key={vid.id} className="p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] space-y-3 hover:border-[#1B889A] transition-all">
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-1">
-                    <span className="px-2.5 py-0.5 rounded-md bg-[#1B889A]/15 text-[#1B889A] font-extrabold text-xs">{vid.category_fa}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-md bg-[#1B889A]/15 text-[#1B889A] font-extrabold text-xs">{vid.category_fa}</span>
+                      {vid.featured && (
+                        <span className="px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400 font-extrabold text-[10px] flex items-center gap-1">
+                          <Pin className="w-3 h-3 fill-current" />
+                          <span>پین‌شده</span>
+                        </span>
+                      )}
+                    </div>
                     <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">{vid.title_fa}</h4>
                     <p className="text-xs text-[var(--text-secondary)]">سخنران: {vid.speaker_fa} | مدت: {vid.duration_fa}</p>
                   </div>
-                  <div className="flex items-center gap-1 shrink-0">
-                    <button onClick={() => openEditVideo(vid)} className="p-2 rounded-lg bg-[var(--bg-color)] text-[var(--text-secondary)] hover:text-[#1B889A] border border-[var(--card-border)]">
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      onClick={() => {
+                        updateVideo(vid.id, { featured: !vid.featured });
+                        setSaveToast({ msg: !vid.featured ? '📌 ویدیو در صفحه اصلی پین شد!' : '📌 ویدیو از پین در آمد', type: 'success' });
+                        setTimeout(() => setSaveToast(null), 3000);
+                      }}
+                      className={`p-2 rounded-xl border transition-all flex items-center gap-1 text-xs font-bold ${
+                        vid.featured
+                          ? 'bg-amber-500/15 border-amber-500/40 text-amber-600 dark:text-amber-400 shadow-xs'
+                          : 'bg-[var(--bg-color)] border-[var(--card-border)] text-[var(--text-secondary)] hover:text-[#1B889A]'
+                      }`}
+                      title={vid.featured ? 'حذف از ویدیوهای پین‌شده' : 'پین کردن ویدیو در صفحه اصلی'}
+                    >
+                      <Pin className={`w-3.5 h-3.5 ${vid.featured ? 'fill-current' : ''}`} />
+                      <span className="hidden sm:inline">{vid.featured ? 'پین‌شده' : 'پین'}</span>
+                    </button>
+                    <button onClick={() => openEditVideo(vid)} className="p-2 rounded-xl bg-[var(--bg-color)] text-[var(--text-secondary)] hover:text-[#1B889A] border border-[var(--card-border)]" title="ویرایش">
                       <Edit className="w-3.5 h-3.5" />
                     </button>
-                    <button onClick={() => deleteVideo(vid.id)} className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20">
+                    <button onClick={() => deleteVideo(vid.id)} className="p-2 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20" title="حذف">
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -1391,15 +1463,39 @@ export const AdminDashboardContent: React.FC = () => {
               <div key={aud.id} className="p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] space-y-3 hover:border-[#1B889A] transition-all">
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-1">
-                    <span className="px-2.5 py-0.5 rounded-md bg-[#1B889A]/15 text-[#1B889A] font-extrabold text-xs">{aud.category_fa}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-md bg-[#1B889A]/15 text-[#1B889A] font-extrabold text-xs">{aud.category_fa}</span>
+                      {aud.featured && (
+                        <span className="px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400 font-extrabold text-[10px] flex items-center gap-1">
+                          <Pin className="w-3 h-3 fill-current" />
+                          <span>پین‌شده</span>
+                        </span>
+                      )}
+                    </div>
                     <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">{aud.title_fa}</h4>
                     <p className="text-xs text-[var(--text-secondary)]">گوینده: {aud.speaker_fa} | زمان: {aud.duration_fa}</p>
                   </div>
-                  <div className="flex items-center gap-1 shrink-0">
-                    <button onClick={() => openEditAudio(aud)} className="p-2 rounded-lg bg-[var(--bg-color)] text-[var(--text-secondary)] hover:text-[#1B889A] border border-[var(--card-border)]">
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      onClick={() => {
+                        updateAudio(aud.id, { featured: !aud.featured });
+                        setSaveToast({ msg: !aud.featured ? '📌 پادکست در صفحه اصلی پین شد!' : '📌 پادکست از پین در آمد', type: 'success' });
+                        setTimeout(() => setSaveToast(null), 3000);
+                      }}
+                      className={`p-2 rounded-xl border transition-all flex items-center gap-1 text-xs font-bold ${
+                        aud.featured
+                          ? 'bg-amber-500/15 border-amber-500/40 text-amber-600 dark:text-amber-400 shadow-xs'
+                          : 'bg-[var(--bg-color)] border-[var(--card-border)] text-[var(--text-secondary)] hover:text-[#1B889A]'
+                      }`}
+                      title={aud.featured ? 'حذف از پادکست‌های پین‌شده' : 'پین کردن پادکست در صفحه اصلی'}
+                    >
+                      <Pin className={`w-3.5 h-3.5 ${aud.featured ? 'fill-current' : ''}`} />
+                      <span className="hidden sm:inline">{aud.featured ? 'پین‌شده' : 'پین'}</span>
+                    </button>
+                    <button onClick={() => openEditAudio(aud)} className="p-2 rounded-xl bg-[var(--bg-color)] text-[var(--text-secondary)] hover:text-[#1B889A] border border-[var(--card-border)]" title="ویرایش">
                       <Edit className="w-3.5 h-3.5" />
                     </button>
-                    <button onClick={() => deleteAudio(aud.id)} className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20">
+                    <button onClick={() => deleteAudio(aud.id)} className="p-2 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20" title="حذف">
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -1469,10 +1565,26 @@ export const AdminDashboardContent: React.FC = () => {
                       </button>
                     </div>
 
-                    <button onClick={() => openEditTeam(tm)} className="p-2 rounded-lg bg-[var(--bg-color)] text-[var(--text-secondary)] hover:text-[#1B889A] border border-[var(--card-border)]" title="ویرایش">
+                    <button
+                      onClick={() => {
+                        updateTeamMember(tm.id, { featured: !tm.featured });
+                        setSaveToast({ msg: !tm.featured ? '📌 نویسنده ویژه شد!' : '📌 نویسنده از حالت ویژه در آمد', type: 'success' });
+                        setTimeout(() => setSaveToast(null), 3000);
+                      }}
+                      className={`p-2 rounded-xl border transition-all flex items-center gap-1 text-xs font-bold ${
+                        tm.featured
+                          ? 'bg-amber-500/15 border-amber-500/40 text-amber-600 dark:text-amber-400 shadow-xs'
+                          : 'bg-[var(--bg-color)] border-[var(--card-border)] text-[var(--text-secondary)] hover:text-[#1B889A]'
+                      }`}
+                      title={tm.featured ? 'حذف از نویسندگان ویژه' : 'ویژه/پین کردن نویسنده'}
+                    >
+                      <Pin className={`w-3.5 h-3.5 ${tm.featured ? 'fill-current' : ''}`} />
+                      <span className="hidden sm:inline">{tm.featured ? 'ویژه' : 'پین'}</span>
+                    </button>
+                    <button onClick={() => openEditTeam(tm)} className="p-2 rounded-xl bg-[var(--bg-color)] text-[var(--text-secondary)] hover:text-[#1B889A] border border-[var(--card-border)]" title="ویرایش">
                       <Edit className="w-3.5 h-3.5" />
                     </button>
-                    <button onClick={() => deleteTeamMember(tm.id)} className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20" title="حذف">
+                    <button onClick={() => deleteTeamMember(tm.id)} className="p-2 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20" title="حذف">
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-18T15:22:02.857Z",
+  "timestamp": "2026-08-18T15:25:50.378Z",
   "articles": [
     {
       "id": "art-1786988507566",
@@ -299,6 +299,19 @@
   ],
   "auditLogs": [
     {
+      "id": "log-1787066592051",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "میر الهام الدین سادات ",
+      "item_type": "عضو تیم",
+      "timestamp": "۱۴۰۵/۵/۲۷ - ۱۷:۲۳",
+      "time_only": "۱۷:۲۳",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-18T15:23:00.683391+00:00"
+    },
+    {
       "id": "log-1786704965347",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
@@ -414,6 +427,32 @@
       "device_info": "Windows Desktop (Edge)",
       "status_note": null,
       "created_at": null
+    },
+    {
+      "id": "log-1787066596422",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "میر الهام الدین سادات ",
+      "item_type": "عضو تیم",
+      "timestamp": "۱۴۰۵/۵/۲۷ - ۱۷:۲۳",
+      "time_only": "۱۷:۲۳",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-18T15:23:05.075523+00:00"
+    },
+    {
+      "id": "log-1787066600008",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "مجتبی عثمانی ",
+      "item_type": "عضو تیم",
+      "timestamp": "۱۴۰۵/۵/۲۷ - ۱۷:۲۳",
+      "time_only": "۱۷:۲۳",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-18T15:23:08.635938+00:00"
     },
     {
       "id": "log-1786704405407",
@@ -544,6 +583,45 @@
       "device_info": "Windows Desktop (Edge)",
       "status_note": null,
       "created_at": null
+    },
+    {
+      "id": "log-1787066592050",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "مجتبی عثمانی ",
+      "item_type": "عضو تیم",
+      "timestamp": "۱۴۰۵/۵/۲۷ - ۱۷:۲۳",
+      "time_only": "۱۷:۲۳",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-18T15:23:00.679562+00:00"
+    },
+    {
+      "id": "log-1787066599281",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "میر الهام الدین سادات ",
+      "item_type": "عضو تیم",
+      "timestamp": "۱۴۰۵/۵/۲۷ - ۱۷:۲۳",
+      "time_only": "۱۷:۲۳",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-18T15:23:07.91558+00:00"
+    },
+    {
+      "id": "log-1787066600983",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "مجتبی عثمانی ",
+      "item_type": "عضو تیم",
+      "timestamp": "۱۴۰۵/۵/۲۷ - ۱۷:۲۳",
+      "time_only": "۱۷:۲۳",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-18T15:23:09.608792+00:00"
     },
     {
       "id": "log-1786708124552",
@@ -728,6 +806,19 @@
       "created_at": null
     },
     {
+      "id": "log-1787066596433",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "محمد نذیر یوسف ",
+      "item_type": "عضو تیم",
+      "timestamp": "۱۴۰۵/۵/۲۷ - ۱۷:۲۳",
+      "time_only": "۱۷:۲۳",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-18T15:23:05.074576+00:00"
+    },
+    {
       "id": "log-1786706926278",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
@@ -778,6 +869,19 @@
       "device_info": "Windows Desktop (Edge)",
       "status_note": "ویرایش و انتشار مستقیم",
       "created_at": null
+    },
+    {
+      "id": "log-1787066600007",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "میر الهام الدین سادات ",
+      "item_type": "عضو تیم",
+      "timestamp": "۱۴۰۵/۵/۲۷ - ۱۷:۲۳",
+      "time_only": "۱۷:۲۳",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-18T15:23:08.638423+00:00"
     },
     {
       "id": "log-1786713104198",
@@ -856,6 +960,19 @@
       "device_info": "Windows Desktop (Edge)",
       "status_note": null,
       "created_at": "2026-08-17T16:50:45.79823+00:00"
+    },
+    {
+      "id": "log-1787066599286",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "مجتبی عثمانی ",
+      "item_type": "عضو تیم",
+      "timestamp": "۱۴۰۵/۵/۲۷ - ۱۷:۲۳",
+      "time_only": "۱۷:۲۳",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-18T15:23:07.935137+00:00"
     },
     {
       "id": "log-1787052267725",
@@ -1025,6 +1142,19 @@
       "device_info": "Windows Desktop (Edge)",
       "status_note": null,
       "created_at": "2026-08-14T13:01:06.997284+00:00"
+    },
+    {
+      "id": "log-1787066600986",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "میر الهام الدین سادات ",
+      "item_type": "عضو تیم",
+      "timestamp": "۱۴۰۵/۵/۲۷ - ۱۷:۲۳",
+      "time_only": "۱۷:۲۳",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-18T15:23:09.615213+00:00"
     },
     {
       "id": "log-1786712437100",
