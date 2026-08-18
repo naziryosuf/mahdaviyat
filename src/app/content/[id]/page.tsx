@@ -334,17 +334,22 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
                 name_fa: article.author_name_fa,
                 role_fa: article.author_title_fa || 'پژوهشگر / نویسنده',
                 bio_fa: `نویسنده و پژوهشگر مقاله‌های علمی - شناختی مجله ایدئولوژی مهدویت.\nعنوان مقاله: ${article.title_fa}`,
-                avatar_url: article.author_avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80',
+                avatar_url: article.author_avatar || '',
                 specialization_fa: article.category_fa || 'نویسنده'
               })}
               className="flex items-center gap-2 cursor-pointer group hover:bg-[#1B889A]/10 px-2.5 py-1 rounded-xl transition-all border border-transparent hover:border-[#1B889A]/30"
               title="مشاهده پروفایل و بیوگرافی نویسنده"
             >
-              {authorMember?.avatar_url ? (
+              {authorMember?.avatar_url && !authorMember.avatar_url.includes('unsplash.com') ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={authorMember.avatar_url} alt="" className="w-6 h-6 rounded-full object-cover border border-[#1B889A] shrink-0 group-hover:scale-110 transition-transform" />
+              ) : article.author_avatar && !article.author_avatar.includes('unsplash.com') ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={article.author_avatar} alt="" className="w-6 h-6 rounded-full object-cover border border-[#1B889A] shrink-0 group-hover:scale-110 transition-transform" />
               ) : (
-                <User className="w-4 h-4 text-[#1B889A]" />
+                <div className="w-6 h-6 rounded-full bg-[#1B889A] text-white flex items-center justify-center font-bold text-[10px] shrink-0">
+                  {article.author_name_fa ? article.author_name_fa.trim().charAt(0) : 'ن'}
+                </div>
               )}
               <span className="text-xs">
                 نویسنده: <strong className="text-[var(--text-primary)] group-hover:text-[#1B889A] underline decoration-dotted font-bold">@{article.author_name_fa}</strong> {article.author_title_fa && <span className="text-[#1B889A] font-semibold mr-1">({article.author_title_fa})</span>}
@@ -374,13 +379,13 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
         </div>
       ) : null}
 
-
-
       {/* Article Full Text Body */}
       <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl p-5 sm:p-10 shadow-xl space-y-6 modern-card printable-area">
-        <p className="text-[var(--text-primary)] font-bold leading-relaxed border-r-4 border-[#1B889A] pr-4 text-sm sm:text-base font-serif-persian">
-          {article.excerpt_fa}
-        </p>
+        {article.excerpt_fa && (
+          <p className="text-[var(--text-primary)] font-bold leading-relaxed border-r-4 border-[#1B889A] pr-4 text-sm sm:text-base font-serif-persian">
+            {article.excerpt_fa}
+          </p>
+        )}
 
         <div 
           className="text-[var(--text-primary)] font-serif-persian leading-loose whitespace-pre-line space-y-4"
@@ -457,15 +462,18 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 border-b border-[var(--card-border)] pb-6 text-center sm:text-right">
               {/* CIRCULAR ROUNDED PROFILE IMAGE */}
               <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-[#1B889A] shrink-0 shadow-2xl ring-4 ring-[#1B889A]/20">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img 
-                  src={selectedAuthorMember.avatar_url} 
-                  alt={selectedAuthorMember.name_fa} 
-                  className="w-full h-full object-cover" 
-                  onError={(e) => {
-                    e.currentTarget.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80';
-                  }}
-                />
+                {selectedAuthorMember.avatar_url && !selectedAuthorMember.avatar_url.includes('unsplash.com') ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img 
+                    src={selectedAuthorMember.avatar_url} 
+                    alt={selectedAuthorMember.name_fa} 
+                    className="w-full h-full object-cover" 
+                  />
+                ) : (
+                  <div className="w-full h-full bg-[#1B889A] text-white flex items-center justify-center font-extrabold text-4xl font-serif-persian">
+                    {selectedAuthorMember.name_fa ? selectedAuthorMember.name_fa.trim().charAt(0) : 'ن'}
+                  </div>
+                )}
               </div>
               <div className="space-y-2 flex-1">
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">

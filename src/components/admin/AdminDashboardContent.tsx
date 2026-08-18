@@ -842,18 +842,33 @@ export const AdminDashboardContent: React.FC = () => {
   const [teamName, setTeamName] = useState('');
   const [teamRole, setTeamRole] = useState('نویسنده و پژوهشگر');
   const [teamBio, setTeamBio] = useState('');
-  const [teamAvatar, setTeamAvatar] = useState('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&auto=format&fit=crop&q=80');
+  const [teamAvatar, setTeamAvatar] = useState('');
   const [teamSpec, setTeamSpec] = useState('تحریریه');
   const [teamOrderIndex, setTeamOrderIndex] = useState<number>(1);
+  const [teamAvatarFile, setTeamAvatarFile] = useState<File | null>(null);
+
+  const handleTeamAvatarFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setTeamAvatarFile(file);
+      try {
+        const compressed = await compressImageFile(file);
+        setTeamAvatar(compressed);
+      } catch (err) {
+        console.error('Error creating team avatar preview:', err);
+      }
+    }
+  };
 
   const openAddTeam = () => {
     setEditingTeam(null);
     setTeamName('');
     setTeamRole('نویسنده و پژوهشگر');
     setTeamBio('پژوهشگر حوزه مهدویت و حکمت اسلامی');
-    setTeamAvatar('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&auto=format&fit=crop&q=80');
+    setTeamAvatar('');
     setTeamSpec('تحریریه');
     setTeamOrderIndex(teamMembers.length + 1);
+    setTeamAvatarFile(null);
     setShowTeamModal(true);
   };
 
@@ -865,36 +880,55 @@ export const AdminDashboardContent: React.FC = () => {
     setTeamAvatar(tm.avatar_url);
     setTeamSpec(tm.specialization_fa);
     setTeamOrderIndex(tm.order_index || 1);
+    setTeamAvatarFile(null);
     setShowTeamModal(true);
   };
 
-  const handleSaveTeam = (e: React.FormEvent) => {
+  const handleSaveTeam = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!teamName.trim()) return;
 
-    if (editingTeam) {
-      updateTeamMember(editingTeam.id, {
-        name_fa: teamName,
-        role_fa: teamRole,
-        bio_fa: teamBio,
-        avatar_url: teamAvatar,
-        specialization_fa: teamSpec,
-        order_index: teamOrderIndex,
-      });
-      setSaveToast({ msg: '✅ اطلاعات نویسنده با موفقیت بروزرسانی شد!', type: 'success' });
-    } else {
-      addTeamMember({
-        name_fa: teamName,
-        role_fa: teamRole,
-        bio_fa: teamBio,
-        avatar_url: teamAvatar,
-        specialization_fa: teamSpec,
-        order_index: teamOrderIndex,
-      });
-      setSaveToast({ msg: '✅ نویسنده جدید با موفقیت اضافه شد!', type: 'success' });
+    setSaveToast({ msg: 'در حال پردازش و ثبت اطلاعات نویسنده...', type: 'loading' });
+
+    try {
+      let finalAvatarUrl = teamAvatar;
+
+      if (teamAvatarFile) {
+        setSaveToast({ msg: 'در حال آپلود عکس پروفایل نویسنده به حافظه ابری Supabase...', type: 'loading' });
+        finalAvatarUrl = await uploadMagazineFile(teamAvatarFile, 'covers');
+      }
+
+      setSaveToast({ msg: 'در حال ثبت نهایی در دیتابیس...', type: 'loading' });
+
+      if (editingTeam) {
+        await updateTeamMember(editingTeam.id, {
+          name_fa: teamName,
+          role_fa: teamRole,
+          bio_fa: teamBio,
+          avatar_url: finalAvatarUrl,
+          specialization_fa: teamSpec,
+          order_index: teamOrderIndex,
+        });
+        setSaveToast({ msg: '✅ اطلاعات نویسنده با موفقیت بروزرسانی شد!', type: 'success' });
+      } else {
+        await addTeamMember({
+          name_fa: teamName,
+          role_fa: teamRole,
+          bio_fa: teamBio,
+          avatar_url: finalAvatarUrl,
+          specialization_fa: teamSpec,
+          order_index: teamOrderIndex,
+        });
+        setSaveToast({ msg: '✅ نویسنده جدید با موفقیت اضافه شد!', type: 'success' });
+      }
+      setTimeout(() => setSaveToast(null), 3000);
+      setShowTeamModal(false);
+      setTeamAvatarFile(null);
+    } catch (err: any) {
+      console.error('Error saving team member:', err);
+      setSaveToast({ msg: `❌ خطا در ذخیره نویسنده: ${err?.message || 'مشکلی رخ داد'}`, type: 'error' });
+      setTimeout(() => setSaveToast(null), 4000);
     }
-    setTimeout(() => setSaveToast(null), 3000);
-    setShowTeamModal(false);
   };
 
   const handleMoveTeamMember = (index: number, direction: 'up' | 'down') => {
@@ -2405,9 +2439,43 @@ export const AdminDashboardContent: React.FC = () => {
                   <input type="number" min={1} value={teamOrderIndex} onChange={e => setTeamOrderIndex(parseInt(e.target.value) || 1)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-center font-bold font-mono" />
                 </div>
               </div>
-              <div>
-                <label className="block font-bold mb-1">عکس پروفایل (Avatar URL):</label>
-                <input type="text" value={teamAvatar} onChange={e => setTeamAvatar(e.target.value)} className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl font-mono" />
+              {/* TEAM MEMBER AVATAR & DEVICE UPLOAD */}
+              <div className="space-y-2 p-3 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)]">
+                <div className="flex items-center justify-between">
+                  <label className="font-bold text-[var(--text-primary)]">عکس پروفایل (Avatar Image):</label>
+                  
+                  {/* File Upload Button from Device */}
+                  <label className="px-3 py-1.5 rounded-xl bg-[#1B889A]/15 text-[#1B889A] hover:bg-[#1B889A] hover:text-white font-bold cursor-pointer transition-all flex items-center gap-1.5 text-xs">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>آپلود عکس از دیوایس</span>
+                    <input type="file" accept="image/*" onChange={handleTeamAvatarFileUpload} className="hidden" />
+                  </label>
+                </div>
+
+                <input
+                  type="text"
+                  value={teamAvatar}
+                  onChange={e => setTeamAvatar(e.target.value)}
+                  placeholder="یا لینک اینترنتی تصویر پروفایل را پیست نمایید..."
+                  className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl font-mono text-[var(--text-primary)] dir-ltr text-left"
+                />
+
+                {/* Avatar Preview Box */}
+                <div className="flex items-center gap-3 pt-1">
+                  <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-[#1B889A] bg-slate-800 shrink-0">
+                    {teamAvatar && !teamAvatar.includes('unsplash.com') ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={teamAvatar} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full bg-[#1B889A] text-white flex items-center justify-center font-bold text-lg font-serif-persian">
+                        {teamName ? teamName.trim().charAt(0) : 'ن'}
+                      </div>
+                    )}
+                  </div>
+                  <span className="text-[11px] text-[var(--text-secondary)] leading-relaxed font-serif-persian">
+                    در صورت عدم آپلود عکس، حروف اول نام به عنوان پروفایل گرد نمایش می‌یابد.
+                  </span>
+                </div>
               </div>
               <div>
                 <label className="block font-bold mb-1">بیوگرافی / سوابق:</label>
