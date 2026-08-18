@@ -124,16 +124,17 @@ export default function AboutPage() {
             <div
               key={member.id}
               onClick={() => setSelectedMember(member)}
-              className="bg-[var(--card-bg)] border border-[var(--card-border)] hover:border-[#1B889A] p-6 rounded-3xl space-y-4 modern-card shadow-md transition-all cursor-pointer group hover:shadow-xl flex flex-col justify-between"
+              className="bg-[var(--card-bg)] border border-[var(--card-border)] hover:border-[#1B889A] p-6 rounded-3xl space-y-4 modern-card shadow-md transition-all duration-300 cursor-pointer group hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between"
             >
               <div className="space-y-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-[#1B889A] shrink-0 shadow-md">
+                  {/* CIRCULAR ROUNDED AVATAR */}
+                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#1B889A] shrink-0 shadow-md ring-2 ring-[#1B889A]/20">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img 
                       src={member.avatar_url} 
                       alt={member.name_fa} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                      className="w-full h-full object-cover group-hover:scale-110 group-hover:rotate-2 transition-transform duration-500" 
                       onError={(e) => {
                         e.currentTarget.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80';
                       }}
@@ -166,10 +167,10 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Member Detail Modal Lightbox */}
+      {/* Member Detail Modal Lightbox with Smooth Spring Scale Animation */}
       {selectedMember && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-[var(--card-bg)] border-2 border-[#1B889A] rounded-3xl p-6 sm:p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto space-y-6 shadow-2xl modern-card relative">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-opacity duration-300 animate-in fade-in">
+          <div className="bg-[var(--card-bg)] border-2 border-[#1B889A] rounded-3xl p-6 sm:p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto space-y-6 shadow-2xl modern-card relative transition-all duration-300 animate-in zoom-in-95 fade-in slide-in-from-bottom-4">
             
             {/* Close Button */}
             <button
@@ -182,7 +183,8 @@ export default function AboutPage() {
 
             {/* Profile Header Box */}
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 border-b border-[var(--card-border)] pb-6 text-center sm:text-right">
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden border-4 border-[#1B889A] shrink-0 shadow-xl">
+              {/* CIRCULAR ROUNDED PROFILE IMAGE IN MODAL */}
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-[#1B889A] shrink-0 shadow-2xl ring-4 ring-[#1B889A]/20">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
                   src={selectedMember.avatar_url} 
