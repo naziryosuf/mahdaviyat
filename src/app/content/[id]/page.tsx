@@ -44,19 +44,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
   const [showShareModal, setShowShareModal] = useState<boolean>(false);
   const [selectedAuthorMember, setSelectedAuthorMember] = useState<TeamMember | null>(null);
 
-  const article = articles.find((a) => a.id === id) || articles[0];
-
-  const authorMember = teamMembers.find((m) => 
-    m.name_fa.toLowerCase().includes(article.author_name_fa.toLowerCase()) ||
-    article.author_name_fa.toLowerCase().includes(m.name_fa.toLowerCase())
-  );
-
-  const isBookmarked = bookmarkedArticles.includes(article.id);
-  const isPlayingThisAudio = currentAudio?.id === article.id && isPlayingAudio;
-
-  const hasAudio = Boolean(article.audio_url && article.audio_url.trim().length > 0);
-  const isYouTubeAudio = hasAudio && (article.audio_url?.includes('youtube.com') || article.audio_url?.includes('youtu.be'));
-  const videoEmbedInfo = hasAudio ? parseVideoUrl(article.audio_url!) : null;
+  const article = articles.find((a) => a.id === id || a.slug === id) || (articles.length > 0 ? articles[0] : null);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -82,6 +70,39 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
       window.print();
     }, 400);
   };
+
+  if (!article) {
+    return (
+      <div className="max-w-4xl mx-auto py-20 text-center space-y-6">
+        <div className="w-14 h-14 border-4 border-[#1B889A] border-t-transparent rounded-full animate-spin mx-auto shadow-lg" />
+        <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">
+          در حال دریافت اطلاعات مقاله...
+        </h2>
+        <p className="text-xs text-[var(--text-secondary)]">لطفاً چند لحظه منتظر بمانید</p>
+        <div className="pt-2">
+          <Link href="/content" className="px-5 py-2.5 rounded-xl bg-[#1B889A] text-white font-bold text-xs shadow-md inline-flex items-center gap-2">
+            <ArrowRight className="w-4 h-4" />
+            <span>بازگشت به آرشیو مقالات</span>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const authorName = article.author_name_fa || '';
+  const authorMember = teamMembers.find((m) => {
+    if (!m?.name_fa || !authorName) return false;
+    const mName = m.name_fa.toLowerCase().trim();
+    const aName = authorName.toLowerCase().trim();
+    return mName.includes(aName) || aName.includes(mName);
+  });
+
+  const isBookmarked = bookmarkedArticles.includes(article.id);
+  const isPlayingThisAudio = currentAudio?.id === article.id && isPlayingAudio;
+
+  const hasAudio = Boolean(article.audio_url && article.audio_url.trim().length > 0);
+  const isYouTubeAudio = hasAudio && (article.audio_url?.includes('youtube.com') || article.audio_url?.includes('youtu.be'));
+  const videoEmbedInfo = hasAudio && article.audio_url ? parseVideoUrl(article.audio_url) : null;
 
   const handleToggleBookmark = () => {
     toggleBookmark(article.id);
