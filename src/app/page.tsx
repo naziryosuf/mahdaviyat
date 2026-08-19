@@ -129,7 +129,7 @@ function HomeContent() {
   // Fallback to top 3 tags: مهدویت, جامعه, انسان
   const displayTop3Tags = computedTop3.length >= 3 ? computedTop3 : ['مهدویت', 'جامعه', 'انسان'];
 
-  const featuredArticle = articles[0];
+  const featuredArticle = articles.find(art => art.is_editorial === true || art.category_fa === 'سرمقاله‌ها' || art.category_fa === 'سرمقاله');
   const sortedMagazines = [...magazineIssues].sort((a, b) => (b.issue_number || 0) - (a.issue_number || 0));
   const latestIssue = sortedMagazines[0] || magazineIssues[0];
 
@@ -966,7 +966,7 @@ function HomeContent() {
                       </div>
                       <div className="min-w-0">
                         <span className="font-bold text-[var(--text-primary)] block truncate">{featuredArticle.author_name_fa}</span>
-                        <span className="text-[11px] text-[#1B889A] font-semibold block truncate">سردبیر مجله ایدئولوژی مهدویت</span>
+                        <span className="text-[11px] text-[#1B889A] font-semibold block truncate">{featuredArticle.author_title_fa || 'نویسنده و پژوهشگر'}</span>
                       </div>
                       <div className="mr-auto flex items-center gap-2 sm:gap-3 shrink-0">
                         <span className="flex items-center gap-1 font-bold text-[#1B889A]">

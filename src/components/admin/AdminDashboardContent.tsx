@@ -253,8 +253,47 @@ export const AdminDashboardContent: React.FC = () => {
   const [artReadTime, setArtReadTime] = useState('۷ دقیقه');
   const [artImage, setArtImage] = useState('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80');
   const [artTags, setArtTags] = useState('#معرفت‌شناسی, #مهدویت');
+  const [artIsEditorial, setArtIsEditorial] = useState(false);
   const [articleCoverFile, setArticleCoverFile] = useState<File | null>(null);
   const [showAuthorDropdown, setShowAuthorDropdown] = useState(false);
+
+  // Dynamic Article Categories State
+  const [articleCategories, setArticleCategories] = useState<string[]>([
+    'سرمقاله‌ها',
+    'تحلیل‌ها',
+    'نقد مکاتب',
+    'شناخت مهدویت',
+    'پژوهش‌های تاریخی',
+    'یادداشت‌ها'
+  ]);
+  const [newCatInput, setNewCatInput] = useState('');
+
+  useEffect(() => {
+    if (articles && articles.length > 0) {
+      const existingCats = Array.from(new Set(articles.map(a => a.category_fa).filter(Boolean)));
+      setArticleCategories(prev => Array.from(new Set([...prev, ...existingCats])));
+    }
+  }, [articles]);
+
+  const handleAddNewCategory = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const trimmed = newCatInput.trim();
+    if (!trimmed) return;
+    if (!articleCategories.includes(trimmed)) {
+      setArticleCategories(prev => [...prev, trimmed]);
+    }
+    setArtCategory(trimmed);
+    setNewCatInput('');
+  };
+
+  const handleDeleteCategory = (catToDelete: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setArticleCategories(prev => prev.filter(c => c !== catToDelete));
+    if (artCategory === catToDelete) {
+      const remaining = articleCategories.filter(c => c !== catToDelete);
+      setArtCategory(remaining[0] || 'عمومی');
+    }
+  };
 
   const handleArticleCoverFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -280,11 +319,12 @@ export const AdminDashboardContent: React.FC = () => {
     setArtTitle('');
     setArtExcerpt('');
     setArtContent('');
-    setArtCategory('تحلیل‌ها');
+    setArtCategory(articleCategories[0] || 'تحلیل‌ها');
     setArtAuthor(currentUser?.name_fa || 'M. Nazir Yosuf');
     setArtAuthorTitle(currentUser?.role_fa || 'سردبیر ارشد / پژوهشگر');
     setArtImage('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80');
     setArtTags('#معرفت‌شناسی, #مهدویت');
+    setArtIsEditorial(false);
     setArticleCoverFile(null);
     setShowArticleModal(true);
   };
@@ -299,6 +339,7 @@ export const AdminDashboardContent: React.FC = () => {
     setArtAuthorTitle(art.author_title_fa || 'سردبیر ارشد / پژوهشگر');
     setArtImage(art.image_url || '');
     setArtTags(art.tags ? art.tags.join(', ') : '#معرفت‌شناسی, #مهدویت');
+    setArtIsEditorial(!!art.is_editorial);
     setArticleCoverFile(null);
     setShowArticleModal(true);
   };
@@ -329,6 +370,7 @@ export const AdminDashboardContent: React.FC = () => {
           image_url: finalImageUrl,
           read_time_fa: artReadTime,
           tags: parsedTags,
+          is_editorial: artIsEditorial,
         });
         setSaveToast({ msg: '✅ مقاله با موفقیت بروزرسانی شد!', type: 'success' });
       } else {
@@ -346,6 +388,7 @@ export const AdminDashboardContent: React.FC = () => {
           image_url: finalImageUrl,
           tags: parsedTags,
           featured: false,
+          is_editorial: artIsEditorial,
         });
         setSaveToast({ msg: '✅ مقاله جدید با موفقیت منتشر گردید!', type: 'success' });
       }
@@ -1360,6 +1403,12 @@ export const AdminDashboardContent: React.FC = () => {
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="px-2 py-0.5 rounded-md bg-[#1B889A]/10 text-[#1B889A] font-bold text-[10px]">{art.category_fa}</span>
+                    {art.is_editorial && (
+                      <span className="px-2 py-0.5 rounded-md bg-[#1B889A] text-white font-extrabold text-[10px] flex items-center gap-1 shadow-xs">
+                        <Sparkles className="w-3 h-3 fill-current" />
+                        <span>سرمقاله</span>
+                      </span>
+                    )}
                     {art.featured && (
                       <span className="px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400 font-extrabold text-[10px] flex items-center gap-1">
                         <Pin className="w-3 h-3 fill-current" />
@@ -1371,6 +1420,26 @@ export const AdminDashboardContent: React.FC = () => {
                   <p className="text-xs text-[var(--text-secondary)]">نویسنده: {art.author_name_fa} | زمان مطالعه: {art.read_time_fa} | تاریخ: {art.published_at}</p>
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    onClick={() => {
+                      const newIsEditorial = !art.is_editorial;
+                      updateArticle(art.id, { is_editorial: newIsEditorial });
+                      setSaveToast({
+                        msg: newIsEditorial ? '⭐ مقاله به عنوان «سرمقاله اصلی» انتخاب شد!' : '⭐ وضعیت سرمقاله برداشته شد',
+                        type: 'success'
+                      });
+                      setTimeout(() => setSaveToast(null), 3000);
+                    }}
+                    className={`p-2 rounded-xl border transition-all flex items-center gap-1 text-xs font-bold ${
+                      art.is_editorial
+                        ? 'bg-[#1B889A] border-[#1B889A] text-white shadow-xs'
+                        : 'bg-[var(--bg-color)] border-[var(--card-border)] text-[var(--text-secondary)] hover:text-[#1B889A]'
+                    }`}
+                    title={art.is_editorial ? 'حذف از وضعیت سرمقاله' : 'تعیین به عنوان سرمقاله اصلی نشریه'}
+                  >
+                    <Sparkles className={`w-3.5 h-3.5 ${art.is_editorial ? 'fill-current' : ''}`} />
+                    <span className="hidden sm:inline">{art.is_editorial ? 'سرمقاله' : 'تعیین سرمقاله'}</span>
+                  </button>
                   <button
                     onClick={() => {
                       updateArticle(art.id, { featured: !art.featured });
@@ -1751,123 +1820,171 @@ export const AdminDashboardContent: React.FC = () => {
                 <label className="block font-bold mb-1">متن کامل مقاله:</label>
                 <textarea rows={6} value={artContent} onChange={e => setArtContent(e.target.value)} required className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-bold mb-1">دسته بندی (تایپ دلخواه یا انتخاب):</label>
+              {/* DYNAMIC CATEGORIES MANAGEMENT (ADD / DELETE / SELECT) */}
+              <div className="space-y-2 p-3 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)]">
+                <div className="flex items-center justify-between">
+                  <label className="block font-bold text-[var(--text-primary)]">دسته‌بندی مقاله:</label>
+                  <span className="text-[11px] text-[#1B889A] font-bold">انتخاب‌شده: {artCategory}</span>
+                </div>
+
+                {/* Add New Category Input Form */}
+                <div className="flex items-center gap-2">
                   <input
                     type="text"
-                    list="article-categories-list"
-                    value={artCategory}
-                    onChange={e => setArtCategory(e.target.value)}
-                    placeholder="تایپ یا انتخاب دسته‌بندی..."
-                    className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-[var(--text-primary)]"
+                    value={newCatInput}
+                    onChange={e => setNewCatInput(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleAddNewCategory();
+                      }
+                    }}
+                    placeholder="تایپ نام دسته‌بندی جدید و زدن افزودن..."
+                    className="w-full p-2 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] focus:border-[#1B889A]"
                   />
-                  <datalist id="article-categories-list">
-                    <option value="سرمقاله‌ها" />
-                    <option value="تحلیل‌ها" />
-                    <option value="نقد مکاتب" />
-                    <option value="شناخت مهدویت" />
-                    <option value="پژوهش‌های تاریخی" />
-                    <option value="یادداشت‌ها" />
-                  </datalist>
+                  <button
+                    type="button"
+                    onClick={() => handleAddNewCategory()}
+                    className="px-3 py-2 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white text-xs font-bold shrink-0 flex items-center gap-1 transition-all active:scale-95 shadow-xs"
+                    title="افزودن دسته‌بندی جدید"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>افزودن</span>
+                  </button>
+                </div>
 
-                  {/* Quick Category Suggestion Badges */}
-                  <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
-                    {['سرمقاله‌ها', 'تحلیل‌ها', 'نقد مکاتب', 'شناخت مهدویت'].map((catName) => (
+                {/* Dynamic Category Chips with Delete (×) button */}
+                <div className="flex flex-wrap items-center gap-1.5 pt-1 max-h-36 overflow-y-auto">
+                  {articleCategories.map((catName) => (
+                    <div
+                      key={catName}
+                      onClick={() => setArtCategory(catName)}
+                      className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 border ${
+                        artCategory === catName
+                          ? 'bg-[#1B889A] text-white border-[#1B889A] shadow-xs'
+                          : 'bg-[var(--card-bg)] text-[var(--text-secondary)] border-[var(--card-border)] hover:border-[#1B889A]'
+                      }`}
+                    >
+                      <span>{catName}</span>
                       <button
-                        key={catName}
                         type="button"
-                        onClick={() => setArtCategory(catName)}
-                        className={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition-all ${
+                        onClick={(e) => handleDeleteCategory(catName, e)}
+                        className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[10px] transition-colors ${
                           artCategory === catName
-                            ? 'bg-[#1B889A] text-white shadow-xs'
-                            : 'bg-[var(--bg-color)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:border-[#1B889A]'
+                            ? 'bg-white/20 hover:bg-red-500 hover:text-white'
+                            : 'text-stone-400 hover:bg-red-500 hover:text-white'
+                        }`}
+                        title={`حذف دسته‌بندی «${catName}»`}
+                      >
+                        <X className="w-2.5 h-2.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* IS LEAD EDITORIAL CHECKBOX / TOGGLE */}
+              <div className="p-3 rounded-2xl bg-gradient-to-r from-[#1B889A]/10 to-[var(--bg-color)] border-2 border-[#1B889A]/40 flex items-center justify-between gap-3">
+                <div className="space-y-0.5">
+                  <span className="font-bold text-xs text-[var(--text-primary)] font-serif-persian flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-[#1B889A]" />
+                    <span>تعیین به عنوان «سرمقاله اصلی نشریه» (Lead Editorial)</span>
+                  </span>
+                  <p className="text-[10px] text-[var(--text-secondary)]">
+                    تنها مقاله‌ای که این گزینه برای آن فعال باشد، به عنوان سرمقاله در کارت ویژه صفحه اول نمایش داده می‌شود.
+                  </p>
+                </div>
+
+                <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input
+                    type="checkbox"
+                    checked={artIsEditorial}
+                    onChange={e => setArtIsEditorial(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-stone-300 peer-focus:outline-none rounded-full peer dark:bg-stone-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-stone-600 peer-checked:bg-[#1B889A]"></div>
+                </label>
+              </div>
+
+              {/* AUTHOR SELECTION & DETAILS */}
+              <div className="relative space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="block font-bold text-[var(--text-primary)]">نام نویسنده:</label>
+                  <button
+                    type="button"
+                    onClick={() => setShowAuthorDropdown(!showAuthorDropdown)}
+                    className="text-[10px] font-bold text-[#1B889A] hover:underline flex items-center gap-1 bg-[#1B889A]/10 px-2 py-0.5 rounded-lg border border-[#1B889A]/30"
+                  >
+                    <UserCheck className="w-3 h-3 text-[#1B889A]" />
+                    <span>@ انتخاب از تیم (درباره ما)</span>
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  value={artAuthor}
+                  onChange={e => {
+                    setArtAuthor(e.target.value);
+                    if (e.target.value.includes('@')) {
+                      setShowAuthorDropdown(true);
+                    }
+                  }}
+                  placeholder="مثلاً: @احمد یا انتخاب از لیست زیر"
+                  className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-[var(--text-primary)] font-serif-persian"
+                />
+
+                {/* Team Members Quick Selector Chips */}
+                {teamMembers && teamMembers.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                    {teamMembers.map((member) => (
+                      <button
+                        key={member.id}
+                        type="button"
+                        onClick={() => {
+                          setArtAuthor(member.name_fa);
+                          if (member.role_fa) setArtAuthorTitle(member.role_fa);
+                          setShowAuthorDropdown(false);
+                        }}
+                        className={`px-2 py-1 rounded-xl text-[10px] font-bold transition-all flex items-center gap-1.5 border ${
+                          artAuthor === member.name_fa
+                            ? 'bg-[#1B889A] text-white border-[#1B889A] shadow-xs'
+                            : 'bg-[var(--bg-color)] text-[var(--text-secondary)] border-[var(--card-border)] hover:border-[#1B889A]'
                         }`}
                       >
-                        {catName}
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={member.avatar_url} alt="" className="w-4 h-4 rounded-full object-cover shrink-0" />
+                        <span>@{member.name_fa}</span>
                       </button>
                     ))}
                   </div>
-                </div>
-                <div className="relative space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <label className="block font-bold text-[var(--text-primary)]">نام نویسنده:</label>
-                    <button
-                      type="button"
-                      onClick={() => setShowAuthorDropdown(!showAuthorDropdown)}
-                      className="text-[10px] font-bold text-[#1B889A] hover:underline flex items-center gap-1 bg-[#1B889A]/10 px-2 py-0.5 rounded-lg border border-[#1B889A]/30"
-                    >
-                      <UserCheck className="w-3 h-3 text-[#1B889A]" />
-                      <span>@ انتخاب از تیم (درباره ما)</span>
-                    </button>
-                  </div>
-                  <input
-                    type="text"
-                    value={artAuthor}
-                    onChange={e => {
-                      setArtAuthor(e.target.value);
-                      if (e.target.value.includes('@')) {
-                        setShowAuthorDropdown(true);
-                      }
-                    }}
-                    placeholder="مثلاً: @احمد یا انتخاب از لیست زیر"
-                    className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-[var(--text-primary)] font-serif-persian"
-                  />
+                )}
 
-                  {/* Team Members Quick Selector Chips */}
-                  {teamMembers && teamMembers.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                      {teamMembers.map((member) => (
-                        <button
-                          key={member.id}
-                          type="button"
-                          onClick={() => {
-                            setArtAuthor(member.name_fa);
-                            if (member.role_fa) setArtAuthorTitle(member.role_fa);
-                            setShowAuthorDropdown(false);
-                          }}
-                          className={`px-2 py-1 rounded-xl text-[10px] font-bold transition-all flex items-center gap-1.5 border ${
-                            artAuthor === member.name_fa
-                              ? 'bg-[#1B889A] text-white border-[#1B889A] shadow-xs'
-                              : 'bg-[var(--bg-color)] text-[var(--text-secondary)] border-[var(--card-border)] hover:border-[#1B889A]'
-                          }`}
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={member.avatar_url} alt="" className="w-4 h-4 rounded-full object-cover shrink-0" />
-                          <span>@{member.name_fa}</span>
-                        </button>
-                      ))}
+                {/* Dropdown Menu when typing @ */}
+                {showAuthorDropdown && (
+                  <div className="absolute top-full right-0 left-0 z-50 mt-1 bg-[var(--card-bg)] border-2 border-[#1B889A] rounded-2xl shadow-2xl overflow-hidden max-h-48 overflow-y-auto p-1.5 space-y-1">
+                    <div className="text-[10px] font-bold text-[#1B889A] p-1.5 border-b border-[var(--card-border)] flex items-center justify-between">
+                      <span>انتخاب نویسنده از لیست اعضای ثبت‌شده:</span>
+                      <button type="button" onClick={() => setShowAuthorDropdown(false)}><X className="w-3.5 h-3.5" /></button>
                     </div>
-                  )}
-
-                  {/* Dropdown Menu when typing @ */}
-                  {showAuthorDropdown && (
-                    <div className="absolute top-full right-0 left-0 z-50 mt-1 bg-[var(--card-bg)] border-2 border-[#1B889A] rounded-2xl shadow-2xl overflow-hidden max-h-48 overflow-y-auto p-1.5 space-y-1">
-                      <div className="text-[10px] font-bold text-[#1B889A] p-1.5 border-b border-[var(--card-border)] flex items-center justify-between">
-                        <span>انتخاب نویسنده از لیست اعضای ثبت‌شده:</span>
-                        <button type="button" onClick={() => setShowAuthorDropdown(false)}><X className="w-3.5 h-3.5" /></button>
-                      </div>
-                      {teamMembers.map((member) => (
-                        <div
-                          key={member.id}
-                          onClick={() => {
-                            setArtAuthor(member.name_fa);
-                            if (member.role_fa) setArtAuthorTitle(member.role_fa);
-                            setShowAuthorDropdown(false);
-                          }}
-                          className="p-2 rounded-xl hover:bg-[#1B889A]/15 cursor-pointer flex items-center gap-2.5 transition-colors text-xs"
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={member.avatar_url} alt="" className="w-7 h-7 rounded-full object-cover border border-[#1B889A] shrink-0" />
-                          <div className="min-w-0">
-                            <span className="font-bold text-[var(--text-primary)] block truncate">@{member.name_fa}</span>
-                            <span className="text-[10px] text-[#1B889A] block truncate">{member.role_fa}</span>
-                          </div>
+                    {teamMembers.map((member) => (
+                      <div
+                        key={member.id}
+                        onClick={() => {
+                          setArtAuthor(member.name_fa);
+                          if (member.role_fa) setArtAuthorTitle(member.role_fa);
+                          setShowAuthorDropdown(false);
+                        }}
+                        className="p-2 rounded-xl hover:bg-[#1B889A]/15 cursor-pointer flex items-center gap-2.5 transition-colors text-xs"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={member.avatar_url} alt="" className="w-7 h-7 rounded-full object-cover border border-[#1B889A] shrink-0" />
+                        <div className="min-w-0">
+                          <span className="font-bold text-[var(--text-primary)] block truncate">@{member.name_fa}</span>
+                          <span className="text-[10px] text-[#1B889A] block truncate">{member.role_fa}</span>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* DEDICATED AUTHOR TITLE / POSITION (موقف) FIELD */}

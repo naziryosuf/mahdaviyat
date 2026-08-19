@@ -256,9 +256,21 @@ export const useStore = create<AppState>((set, get) => ({
     }
 
     try {
+      const cleanArticleForDb = (art: Article) => {
+        const { is_editorial, ...rest } = art;
+        const tags = Array.isArray(rest.tags) ? [...rest.tags] : [];
+        if (is_editorial && !tags.includes('#سرمقاله_اصلی')) {
+          tags.push('#سرمقاله_اصلی');
+        } else if (!is_editorial && tags.includes('#سرمقاله_اصلی')) {
+          const idx = tags.indexOf('#سرمقاله_اصلی');
+          if (idx !== -1) tags.splice(idx, 1);
+        }
+        return { ...rest, tags };
+      };
+
       // Sync non-empty tables to Supabase Cloud Database
       const promises: Promise<any>[] = [];
-      if (state.articles.length > 0) promises.push(Promise.resolve(supabase.from('articles').upsert(state.articles)));
+      if (state.articles.length > 0) promises.push(Promise.resolve(supabase.from('articles').upsert(state.articles.map(cleanArticleForDb))));
       if (state.magazineIssues.length > 0) promises.push(Promise.resolve(supabase.from('magazine_issues').upsert(state.magazineIssues)));
       if (state.videos.length > 0) promises.push(Promise.resolve(supabase.from('video_items').upsert(state.videos)));
       if (state.audios.length > 0) promises.push(Promise.resolve(supabase.from('audio_items').upsert(state.audios)));
@@ -558,7 +570,15 @@ export const useStore = create<AppState>((set, get) => ({
     }));
 
     try {
-      await supabase.from('articles').upsert(newArticle);
+      const { is_editorial, ...rest } = newArticle;
+      const tags = Array.isArray(rest.tags) ? [...rest.tags] : [];
+      if (is_editorial && !tags.includes('#سرمقاله_اصلی')) {
+        tags.push('#سرمقاله_اصلی');
+      } else if (!is_editorial && tags.includes('#سرمقاله_اصلی')) {
+        const idx = tags.indexOf('#سرمقاله_اصلی');
+        if (idx !== -1) tags.splice(idx, 1);
+      }
+      await supabase.from('articles').upsert({ ...rest, tags });
     } catch (e) {
       console.error('Supabase addArticle error:', e);
     }
@@ -599,7 +619,16 @@ export const useStore = create<AppState>((set, get) => ({
 
     if (updatedArt) {
       try {
-        await supabase.from('articles').upsert(updatedArt);
+        const currentArt: Article = updatedArt;
+        const { is_editorial, ...rest } = currentArt;
+        const tags = Array.isArray(rest.tags) ? [...rest.tags] : [];
+        if (is_editorial && !tags.includes('#سرمقاله_اصلی')) {
+          tags.push('#سرمقاله_اصلی');
+        } else if (!is_editorial && tags.includes('#سرمقاله_اصلی')) {
+          const idx = tags.indexOf('#سرمقاله_اصلی');
+          if (idx !== -1) tags.splice(idx, 1);
+        }
+        await supabase.from('articles').upsert({ ...rest, tags });
       } catch (e) {
         console.error('Supabase updateArticle error:', e);
       }
@@ -1067,9 +1096,13 @@ export const useStore = create<AppState>((set, get) => ({
       // 1. Articles
       const { data: supaArticles, error: artErr } = await supabase.from('articles').select('*').order('created_at', { ascending: false });
       if (!artErr && supaArticles) {
-        set({ articles: supaArticles });
+        const mappedArticles = supaArticles.map((art: any) => ({
+          ...art,
+          is_editorial: Boolean(art.is_editorial || art.tags?.includes('#سرمقاله_اصلی') || art.category_fa === 'سرمقاله‌ها')
+        }));
+        set({ articles: mappedArticles });
         if (typeof localStorage !== 'undefined') {
-          localStorage.setItem('mahdism_articles', JSON.stringify(supaArticles));
+          localStorage.setItem('mahdism_articles', JSON.stringify(mappedArticles));
         }
       }
 

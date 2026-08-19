@@ -13,6 +13,7 @@ export interface Article {
   image_url: string;
   image_position?: string;
   featured: boolean;
+  is_editorial?: boolean;
   audio_url?: string;
   audio_speaker_fa?: string;
   views?: number;
