@@ -317,13 +317,23 @@ export const useStore = create<AppState>((set, get) => ({
         return { ...rest, tags };
       };
 
+      const cleanTeamMemberForDb = (tm: TeamMember) => {
+        const { order_index, ...rest } = tm;
+        const dev = rest.submitted_device || getDeviceDetails();
+        const cleanDev = dev.replace(/ORDERINDEX:\d+\|\|/, '');
+        return {
+          ...rest,
+          submitted_device: `ORDERINDEX:${order_index || 99}||${cleanDev}`
+        };
+      };
+
       // Sync non-empty tables to Supabase Cloud Database
       const promises: Promise<any>[] = [];
       if (state.articles.length > 0) promises.push(Promise.resolve(supabase.from('articles').upsert(state.articles.map(cleanArticleForDb))));
       if (state.magazineIssues.length > 0) promises.push(Promise.resolve(supabase.from('magazine_issues').upsert(state.magazineIssues)));
       if (state.videos.length > 0) promises.push(Promise.resolve(supabase.from('video_items').upsert(state.videos)));
       if (state.audios.length > 0) promises.push(Promise.resolve(supabase.from('audio_items').upsert(state.audios)));
-      if (state.teamMembers.length > 0) promises.push(Promise.resolve(supabase.from('team_members').upsert(state.teamMembers)));
+      if (state.teamMembers.length > 0) promises.push(Promise.resolve(supabase.from('team_members').upsert(state.teamMembers.map(cleanTeamMemberForDb))));
       if (state.coHosts.length > 0) promises.push(Promise.resolve(supabase.from('co_hosts').upsert(state.coHosts)));
 
       promises.push(Promise.resolve(supabase.from('site_settings').upsert([
@@ -1061,12 +1071,27 @@ export const useStore = create<AppState>((set, get) => ({
       submitted_at: new Date().toLocaleDateString('fa-IR'),
       submitted_device: getDeviceDetails(),
     };
-    set((state) => ({ 
-      teamMembers: [...state.teamMembers, newMember],
+    const updatedTeam = [...get().teamMembers, newMember];
+    set({ 
+      teamMembers: updatedTeam,
       stagedChangesCount: 0,
       hasUnsavedChanges: false
-    }));
-    await supabase.from('team_members').upsert(newMember);
+    });
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('mahdism_team', JSON.stringify(updatedTeam));
+    }
+    try {
+      const { order_index, ...rest } = newMember;
+      const dev = rest.submitted_device || getDeviceDetails();
+      const cleanDev = dev.replace(/ORDERINDEX:\d+\|\|/, '');
+      const payload = {
+        ...rest,
+        submitted_device: `ORDERINDEX:${order_index || 99}||${cleanDev}`
+      };
+      await supabase.from('team_members').upsert(payload);
+    } catch (err) {
+      console.error('Supabase addTeamMember error:', err);
+    }
     get().addAuditLog(
       'افزودن', 
       newMember.name_fa, 
@@ -1077,19 +1102,35 @@ export const useStore = create<AppState>((set, get) => ({
 
   updateTeamMember: async (id, memberData) => {
     let updatedMember: TeamMember | null = null;
-    set((state) => ({
-      teamMembers: state.teamMembers.map((m) => {
-        if (m.id === id) {
-          updatedMember = { ...m, ...memberData };
-          return updatedMember;
-        }
-        return m;
-      }),
+    const updatedTeam = get().teamMembers.map((m) => {
+      if (m.id === id) {
+        updatedMember = { ...m, ...memberData };
+        return updatedMember;
+      }
+      return m;
+    });
+    set({
+      teamMembers: updatedTeam,
       stagedChangesCount: 0,
       hasUnsavedChanges: false
-    }));
+    });
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('mahdism_team', JSON.stringify(updatedTeam));
+    }
     if (updatedMember) {
-      await supabase.from('team_members').upsert(updatedMember);
+      try {
+        const targetMember = updatedMember as TeamMember;
+        const { order_index, ...rest } = targetMember;
+        const dev = rest.submitted_device || getDeviceDetails();
+        const cleanDev = dev.replace(/ORDERINDEX:\d+\|\|/, '');
+        const payload = {
+          ...rest,
+          submitted_device: `ORDERINDEX:${order_index || 99}||${cleanDev}`
+        };
+        await supabase.from('team_members').upsert(payload);
+      } catch (err) {
+        console.error('Supabase updateTeamMember error:', err);
+      }
     }
     const target = get().teamMembers.find(t => t.id === id);
     if (target) {
@@ -1099,12 +1140,20 @@ export const useStore = create<AppState>((set, get) => ({
 
   deleteTeamMember: async (id) => {
     const target = get().teamMembers.find(t => t.id === id);
-    set((state) => ({
-      teamMembers: state.teamMembers.filter((m) => m.id !== id),
+    const updatedTeam = get().teamMembers.filter((m) => m.id !== id);
+    set({
+      teamMembers: updatedTeam,
       stagedChangesCount: 0,
       hasUnsavedChanges: false
-    }));
-    await supabase.from('team_members').delete().eq('id', id);
+    });
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('mahdism_team', JSON.stringify(updatedTeam));
+    }
+    try {
+      await supabase.from('team_members').delete().eq('id', id);
+    } catch (err) {
+      console.error('Supabase deleteTeamMember error:', err);
+    }
     if (target) {
       get().addAuditLog('حذف', target.name_fa, 'عضو تیم');
     }
@@ -1233,7 +1282,21 @@ export const useStore = create<AppState>((set, get) => ({
       // 5. Team Members
       const { data: supaTeam, error: teamErr } = await supabase.from('team_members').select('*');
       if (!teamErr && supaTeam) {
-        set({ teamMembers: supaTeam });
+        const sanitizedTeam = supaTeam.map((tm: any, idx: number) => {
+          let orderIndex = tm.order_index;
+          if (!orderIndex && tm.submitted_device && tm.submitted_device.includes('ORDERINDEX:')) {
+            const match = tm.submitted_device.match(/ORDERINDEX:(\d+)/);
+            if (match && match[1]) orderIndex = parseInt(match[1]);
+          }
+          return {
+            ...tm,
+            order_index: orderIndex || idx + 1
+          };
+        });
+        set({ teamMembers: sanitizedTeam });
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('mahdism_team', JSON.stringify(sanitizedTeam));
+        }
       }
 
       // 6. Contact Messages
@@ -1388,6 +1451,13 @@ export const useStore = create<AppState>((set, get) => ({
             }))
           });
         }
+      } catch {}
+    }
+
+    const savedTeam = localStorage.getItem('mahdism_team');
+    if (savedTeam) {
+      try {
+        set({ teamMembers: JSON.parse(savedTeam) });
       } catch {}
     }
 

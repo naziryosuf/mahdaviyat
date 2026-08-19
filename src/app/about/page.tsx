@@ -26,8 +26,13 @@ import { TeamMember } from '@/types';
 function AboutContent() {
   const searchParams = useSearchParams();
   const authorQuery = searchParams.get('author') || searchParams.get('member');
-  const { teamMembers, articles, audios, videos, playAudio, aboutUsMission, aboutPillars } = useStore();
+  const { teamMembers, articles, audios, videos, playAudio, aboutUsMission, aboutPillars, initFromStorage, fetchFromBackend } = useStore();
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+
+  useEffect(() => {
+    initFromStorage();
+    fetchFromBackend();
+  }, [initFromStorage, fetchFromBackend]);
 
   useEffect(() => {
     if (authorQuery && teamMembers.length > 0) {
