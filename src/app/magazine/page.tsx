@@ -193,7 +193,7 @@ function MagazineContentInner() {
                       {/* 2. مشخصات و توضیحات جامع مجله (بخش اختصاصی وسیع) */}
                       <div className="lg:col-span-7 space-y-6">
                         
-                        {/* بج و مشخصات بالایی: شماره، تاریخ انتشار، نویسنده، و تعداد صفحات قابل کنترل از ادمین */}
+                        {/* بج و مشخصات بالایی: شماره، تاریخ انتشار و تعداد صفحات */}
                         <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[var(--card-border)]">
                           <div className="flex flex-wrap items-center gap-2">
                             <span className="px-3.5 py-1 rounded-full teal-badge text-xs font-extrabold shadow-sm">
@@ -204,12 +204,6 @@ function MagazineContentInner() {
                               <span>{issue.page_count_fa || '۴۵ صفحه (قطع A4)'}</span>
                             </span>
                           </div>
-
-                          {issue.author_name_fa && (
-                            <span className="text-xs font-bold text-[#1B889A] bg-[#1B889A]/10 px-3 py-1 rounded-full border border-[#1B889A]/20">
-                              نویسنده: {issue.author_name_fa} {issue.author_title_fa ? `(${issue.author_title_fa})` : ''}
-                            </span>
-                          )}
                         </div>
 
                         {/* عنوان مجله (کلیک روی عنوان نیز مطالعه آنلاین را باز می‌کند) */}

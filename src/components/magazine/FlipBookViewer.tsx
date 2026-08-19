@@ -83,13 +83,6 @@ export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
                 شماره {issue.issue_number}
               </span>
             </h3>
-            
-            {(issue.author_name_fa || issue.author_title_fa) && (
-              <p className="text-xs text-[#1B889A] font-bold mt-1 flex items-center gap-1.5 font-serif-persian">
-                <UserCheck className="w-3.5 h-3.5 shrink-0" />
-                <span>نویسنده / صاحب اثر: {issue.author_name_fa} {issue.author_title_fa ? `(${issue.author_title_fa})` : ''}</span>
-              </p>
-            )}
           </div>
         </div>
 
