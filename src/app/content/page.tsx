@@ -96,89 +96,91 @@ function ContentCatalogInner() {
           {filtered.map((art) => (
             <article
               key={art.id}
-              className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 hover:border-[#1B889A] transition-all duration-300 shadow-xl flex flex-col justify-between modern-card group overflow-hidden"
+              className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl hover:border-[#1B889A] transition-all duration-300 shadow-xl flex flex-col justify-between modern-card group overflow-hidden"
             >
-              {/* ARTICLE COVER IMAGE DISPLAY (STRICT 16:9 HD RATIO) */}
+              {/* ARTICLE COVER IMAGE DISPLAY (STRICT 16:9 HD RATIO & FLUSH ALIGNED EDGES) */}
               {art.image_url && !art.image_url.startsWith('file://') && art.image_url.trim() !== '' && (
                 <Link
                   href={`/content/${art.id}`}
-                  className="block relative w-full aspect-video -mx-6 -mt-6 mb-4 overflow-hidden rounded-xl border-b border-[var(--card-border)] bg-slate-100 dark:bg-slate-800 group/img cursor-pointer flex items-center justify-center"
+                  className="block relative w-full aspect-video overflow-hidden border-b border-[var(--card-border)] bg-slate-900 group/img cursor-pointer shrink-0"
                   title="برای مطالعه مقاله کلیک کنید"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={art.image_url}
                     alt={art.title_fa}
-                    className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 </Link>
               )}
 
-              <div className="space-y-4">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2.5 py-0.5 rounded-full teal-badge text-[11px] font-bold">
-                      {art.category_fa}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3 text-xs text-[var(--text-secondary)]">
-                    <span className="flex items-center gap-1 font-bold text-[#1B889A]">
-                      <Clock className="w-3.5 h-3.5" />
-                      {art.read_time_fa}
-                    </span>
-                    <button
-                      onClick={() => toggleBookmark(art.id)}
-                      className={`p-1.5 rounded-lg transition-colors ${
-                        bookmarkedArticles.includes(art.id)
-                          ? 'text-[#1B889A] bg-[#1B889A]/10'
-                          : 'text-stone-400 hover:text-[#1B889A]'
-                      }`}
-                    >
-                      <Bookmark className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <h3 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors leading-snug">
-                    <Link href={`/content/${art.id}`} className="hover:text-[#1B889A] transition-colors">
-                      {art.title_fa}
-                    </Link>
-                  </h3>
-                  <p className="text-xs text-[var(--text-secondary)] line-clamp-3 leading-relaxed font-serif-persian">
-                    {art.excerpt_fa}
-                  </p>
-                </div>
-
-                {/* Hashtags display */}
-                {art.tags && art.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 pt-2 border-t border-[var(--card-border)]">
-                    {art.tags.map((t, idx) => (
-                      <Link
-                        key={idx}
-                        href={`/?search=${encodeURIComponent(t.replace(/^#/, ''))}`}
-                        className="px-2 py-0.5 rounded-full bg-[#1B889A]/10 text-[#1B889A] hover:bg-[#1B889A] hover:text-white font-mono text-[10px] font-bold cursor-pointer transition-all"
-                        title={`جستجوی هشتگ ${t} در صفحه اصلی`}
+              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                <div className="space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-full teal-badge text-[11px] font-bold">
+                        {art.category_fa}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3 text-xs text-[var(--text-secondary)]">
+                      <span className="flex items-center gap-1 font-bold text-[#1B889A]">
+                        <Clock className="w-3.5 h-3.5" />
+                        {art.read_time_fa}
+                      </span>
+                      <button
+                        onClick={() => toggleBookmark(art.id)}
+                        className={`p-1.5 rounded-lg transition-colors ${
+                          bookmarkedArticles.includes(art.id)
+                            ? 'text-[#1B889A] bg-[#1B889A]/10'
+                            : 'text-stone-400 hover:text-[#1B889A]'
+                        }`}
                       >
-                        {t.startsWith('#') ? t : `#${t}`}
-                      </Link>
-                    ))}
+                        <Bookmark className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
-                )}
-              </div>
 
-              <div className="pt-4 mt-4 border-t border-[var(--card-border)] flex items-center justify-between">
-                <span className="text-xs text-[var(--text-secondary)] font-serif-persian">
-                  نویسنده: {art.author_name_fa || 'M. Nazir Yosuf'}
-                </span>
-                <Link
-                  href={`/content/${art.id}`}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1B889A] hover:gap-2 transition-all"
-                >
-                  <span>مطالعه مقاله</span>
-                  <ArrowLeft className="w-3.5 h-3.5 dir-rtl-rotate" />
-                </Link>
+                  <div className="space-y-2">
+                    <h3 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors leading-snug">
+                      <Link href={`/content/${art.id}`} className="hover:text-[#1B889A] transition-colors">
+                        {art.title_fa}
+                      </Link>
+                    </h3>
+                    <p className="text-xs text-[var(--text-secondary)] line-clamp-3 leading-relaxed font-serif-persian">
+                      {art.excerpt_fa}
+                    </p>
+                  </div>
+
+                  {/* Hashtags display */}
+                  {art.tags && art.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 pt-2 border-t border-[var(--card-border)]">
+                      {art.tags.map((t, idx) => (
+                        <Link
+                          key={idx}
+                          href={`/?search=${encodeURIComponent(t.replace(/^#/, ''))}`}
+                          className="px-2 py-0.5 rounded-full bg-[#1B889A]/10 text-[#1B889A] hover:bg-[#1B889A] hover:text-white font-mono text-[10px] font-bold cursor-pointer transition-all"
+                          title={`جستجوی هشتگ ${t} در صفحه اصلی`}
+                        >
+                          {t.startsWith('#') ? t : `#${t}`}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-4 border-t border-[var(--card-border)] flex items-center justify-between">
+                  <span className="text-xs text-[var(--text-secondary)] font-serif-persian">
+                    نویسنده: {art.author_name_fa || 'M. Nazir Yosuf'}
+                  </span>
+                  <Link
+                    href={`/content/${art.id}`}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1B889A] hover:gap-2 transition-all"
+                  >
+                    <span>مطالعه مقاله</span>
+                    <ArrowLeft className="w-3.5 h-3.5 dir-rtl-rotate" />
+                  </Link>
+                </div>
               </div>
             </article>
           ))}

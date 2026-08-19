@@ -298,32 +298,38 @@ function HomeContent() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {filteredArticles.map((art) => (
-                      <article key={art.id} className="p-4 sm:p-5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] transition-all space-y-3 overflow-hidden group">
+                      <article key={art.id} className="rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] transition-all duration-300 shadow-sm flex flex-col justify-between overflow-hidden group">
                         {art.image_url && !art.image_url.startsWith('file://') && art.image_url.trim() !== '' && (
-                          <Link href={`/content/${art.id}`} className="block relative w-full aspect-video -mx-4 sm:-mx-5 -mt-4 sm:-mt-5 mb-3 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800 border-b border-[var(--card-border)] group/img cursor-pointer flex items-center justify-center">
+                          <Link href={`/content/${art.id}`} className="block relative w-full aspect-video overflow-hidden border-b border-[var(--card-border)] bg-slate-900 group/img cursor-pointer shrink-0">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src={art.image_url}
                               alt={art.title_fa}
-                              className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-300"
+                              className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-500"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                           </Link>
                         )}
-                        <div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
-                          <span className="px-2.5 py-0.5 rounded-full teal-badge text-[11px] font-bold">{art.category_fa}</span>
-                          <span className="text-[#1B889A] font-bold">{art.read_time_fa}</span>
-                        </div>
-                        <h4 className="text-base font-bold text-[var(--text-primary)] font-serif-persian">
-                          <Link href={`/content/${art.id}`} className="hover:text-[#1B889A] transition-colors">{art.title_fa}</Link>
-                        </h4>
-                        <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">{art.excerpt_fa}</p>
-                        <div className="pt-2 flex items-center justify-between text-xs">
-                          <span className="text-[var(--text-secondary)] truncate max-w-[180px]">نویسنده: {art.author_name_fa}</span>
-                          <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
-                            <span>مطالعه کامل</span>
-                            <ArrowLeft className="w-3.5 h-3.5" />
-                          </Link>
+
+                        <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3">
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
+                              <span className="px-2.5 py-0.5 rounded-full teal-badge text-[11px] font-bold">{art.category_fa}</span>
+                              <span className="text-[#1B889A] font-bold">{art.read_time_fa}</span>
+                            </div>
+                            <h4 className="text-base font-bold text-[var(--text-primary)] font-serif-persian">
+                              <Link href={`/content/${art.id}`} className="hover:text-[#1B889A] transition-colors">{art.title_fa}</Link>
+                            </h4>
+                            <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">{art.excerpt_fa}</p>
+                          </div>
+
+                          <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs">
+                            <span className="text-[var(--text-secondary)] truncate max-w-[180px]">نویسنده: {art.author_name_fa}</span>
+                            <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                              <span>مطالعه کامل</span>
+                              <ArrowLeft className="w-3.5 h-3.5" />
+                            </Link>
+                          </div>
                         </div>
                       </article>
                     ))}
@@ -415,38 +421,43 @@ function HomeContent() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {articles.filter(art => art.featured).map(art => (
-                  <article key={art.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm overflow-hidden group">
+                  <article key={art.id} className="rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all duration-300 shadow-sm flex flex-col justify-between overflow-hidden group">
                     {art.image_url && !art.image_url.startsWith('file://') && art.image_url.trim() !== '' && (
-                      <Link href={`/content/${art.id}`} className="block relative w-full aspect-video -mx-4 -mt-4 mb-2.5 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800 border-b border-[var(--card-border)] group/img cursor-pointer flex items-center justify-center">
+                      <Link href={`/content/${art.id}`} className="block relative w-full aspect-video overflow-hidden border-b border-[var(--card-border)] bg-slate-900 group/img cursor-pointer shrink-0">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={art.image_url}
                           alt={art.title_fa}
-                          className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                       </Link>
                     )}
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
-                        <Pin className="w-3 h-3 fill-current" />
-                        <span>مقاله پین‌شده</span>
-                      </span>
-                      <span className="text-[#1B889A] font-bold text-[11px]">{art.read_time_fa}</span>
-                    </div>
 
-                    <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors leading-snug">
-                      <Link href={`/content/${art.id}`}>{art.title_fa}</Link>
-                    </h3>
+                    <div className="p-4 flex-1 flex flex-col justify-between space-y-2.5">
+                      <div className="space-y-2.5">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
+                            <Pin className="w-3 h-3 fill-current" />
+                            <span>مقاله پین‌شده</span>
+                          </span>
+                          <span className="text-[#1B889A] font-bold text-[11px]">{art.read_time_fa}</span>
+                        </div>
 
-                    <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">{art.excerpt_fa}</p>
-                    
-                    <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
-                      <span className="truncate">نویسنده: {art.author_name_fa}</span>
-                      <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
-                        <span>مطالعه</span>
-                        <ArrowLeft className="w-3.5 h-3.5" />
-                      </Link>
+                        <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors leading-snug">
+                          <Link href={`/content/${art.id}`}>{art.title_fa}</Link>
+                        </h3>
+
+                        <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">{art.excerpt_fa}</p>
+                      </div>
+                      
+                      <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
+                        <span className="truncate">نویسنده: {art.author_name_fa}</span>
+                        <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                          <span>مطالعه</span>
+                          <ArrowLeft className="w-3.5 h-3.5" />
+                        </Link>
+                      </div>
                     </div>
                   </article>
                 ))}
@@ -551,27 +562,43 @@ function HomeContent() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {articles.filter(art => art.featured).map(art => (
-                <article key={art.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm group">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
-                      <Pin className="w-3 h-3 fill-current" />
-                      <span>مقاله پین‌شده</span>
-                    </span>
-                    <span className="text-[#1B889A] font-bold text-[11px]">{art.read_time_fa}</span>
-                  </div>
-
-                  <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors leading-snug">
-                    <Link href={`/content/${art.id}`}>{art.title_fa}</Link>
-                  </h3>
-
-                  <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">{art.excerpt_fa}</p>
-                  
-                  <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
-                    <span className="truncate">نویسنده: {art.author_name_fa}</span>
-                    <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
-                      <span>مطالعه</span>
-                      <ArrowLeft className="w-3.5 h-3.5" />
+                <article key={art.id} className="rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all duration-300 shadow-sm flex flex-col justify-between overflow-hidden group">
+                  {art.image_url && !art.image_url.startsWith('file://') && art.image_url.trim() !== '' && (
+                    <Link href={`/content/${art.id}`} className="block relative w-full aspect-video overflow-hidden border-b border-[var(--card-border)] bg-slate-900 group/img cursor-pointer shrink-0">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={art.image_url}
+                        alt={art.title_fa}
+                        className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     </Link>
+                  )}
+
+                  <div className="p-4 flex-1 flex flex-col justify-between space-y-2.5">
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
+                          <Pin className="w-3 h-3 fill-current" />
+                          <span>مقاله پین‌شده</span>
+                        </span>
+                        <span className="text-[#1B889A] font-bold text-[11px]">{art.read_time_fa}</span>
+                      </div>
+
+                      <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors leading-snug">
+                        <Link href={`/content/${art.id}`}>{art.title_fa}</Link>
+                      </h3>
+
+                      <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">{art.excerpt_fa}</p>
+                    </div>
+                    
+                    <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
+                      <span className="truncate">نویسنده: {art.author_name_fa}</span>
+                      <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                        <span>مطالعه</span>
+                        <ArrowLeft className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
                   </div>
                 </article>
               ))}
@@ -796,60 +823,65 @@ function HomeContent() {
               .map((art) => (
                 <article
                   key={art.id}
-                  className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-4 sm:p-5 hover:border-[#1B889A] transition-all modern-card space-y-3 shadow-sm group"
+                  className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl hover:border-[#1B889A] transition-all duration-300 shadow-sm flex flex-col justify-between overflow-hidden group"
                 >
                   {art.image_url && !art.image_url.startsWith('file://') && art.image_url.trim() !== '' && (
-                    <Link href={`/content/${art.id}`} className="block relative w-full aspect-video -mx-4 sm:-mx-5 -mt-4 sm:-mt-5 mb-3 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800 border-b border-[var(--card-border)] group/img cursor-pointer flex items-center justify-center">
+                    <Link href={`/content/${art.id}`} className="block relative w-full aspect-video overflow-hidden border-b border-[var(--card-border)] bg-slate-900 group/img cursor-pointer shrink-0">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={art.image_url}
                         alt={art.title_fa}
-                        className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     </Link>
                   )}
-                  <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--text-secondary)]">
-                    <div className="flex items-center gap-2">
-                      <span className="px-2.5 py-0.5 rounded-full teal-badge text-[11px] sm:text-xs font-bold">
-                        {art.category_fa}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="flex items-center gap-1 font-bold text-[#1B889A]">
-                        <Clock className="w-3.5 h-3.5" />
-                        {art.read_time_fa}
-                      </span>
-                      <button
-                        onClick={() => toggleBookmark(art.id)}
-                        className={`p-1 rounded transition-colors ${
-                          bookmarkedArticles.includes(art.id) ? 'text-[#1B889A]' : 'text-stone-400 hover:text-[#1B889A]'
-                        }`}
-                      >
-                        <Bookmark className="w-4 h-4 fill-current" />
-                      </button>
-                    </div>
-                  </div>
 
-                  <h3 className="text-base sm:text-lg font-bold text-[var(--text-primary)] font-serif-persian leading-snug">
-                    <Link href={`/content/${art.id}`} className="hover:text-[#1B889A] transition-colors">
-                      {art.title_fa}
-                    </Link>
-                  </h3>
+                  <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3">
+                    <div className="space-y-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--text-secondary)]">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2.5 py-0.5 rounded-full teal-badge text-[11px] sm:text-xs font-bold">
+                            {art.category_fa}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="flex items-center gap-1 font-bold text-[#1B889A]">
+                            <Clock className="w-3.5 h-3.5" />
+                            {art.read_time_fa}
+                          </span>
+                          <button
+                            onClick={() => toggleBookmark(art.id)}
+                            className={`p-1 rounded transition-colors ${
+                              bookmarkedArticles.includes(art.id) ? 'text-[#1B889A]' : 'text-stone-400 hover:text-[#1B889A]'
+                            }`}
+                          >
+                            <Bookmark className="w-4 h-4 fill-current" />
+                          </button>
+                        </div>
+                      </div>
 
-                  <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed line-clamp-3">
-                    {art.excerpt_fa}
-                  </p>
+                      <h3 className="text-base sm:text-lg font-bold text-[var(--text-primary)] font-serif-persian leading-snug">
+                        <Link href={`/content/${art.id}`} className="hover:text-[#1B889A] transition-colors">
+                          {art.title_fa}
+                        </Link>
+                      </h3>
 
-                  <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <User className="w-3.5 h-3.5 text-[#1B889A] shrink-0" />
-                      <span className="truncate">نویسنده: <strong className="text-[var(--text-primary)]">{art.author_name_fa}</strong></span>
+                      <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed line-clamp-3 font-serif-persian">
+                        {art.excerpt_fa}
+                      </p>
                     </div>
-                    <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
-                      <span>مطالعه مقاله</span>
-                      <ArrowLeft className="w-3.5 h-3.5" />
-                    </Link>
+
+                    <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)] font-serif-persian">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <User className="w-3.5 h-3.5 text-[#1B889A] shrink-0" />
+                        <span className="truncate">نویسنده: <strong className="text-[var(--text-primary)]">{art.author_name_fa}</strong></span>
+                      </div>
+                      <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                        <span>مطالعه مقاله</span>
+                        <ArrowLeft className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
                   </div>
                 </article>
               ))}
