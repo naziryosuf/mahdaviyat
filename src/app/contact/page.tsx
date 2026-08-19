@@ -97,7 +97,7 @@ export default function ContactPage() {
                 required
                 value={senderName}
                 onChange={(e) => setSenderName(e.target.value)}
-                placeholder="مثال: احمد حسینی"
+                placeholder="مثال: احمد محمودی"
                 className="w-full px-4 py-3 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-2xl text-xs text-[var(--text-primary)] focus:outline-none focus:border-[#1B889A] transition-colors"
               />
             </div>
