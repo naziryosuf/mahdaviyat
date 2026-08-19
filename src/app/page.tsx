@@ -241,7 +241,7 @@ function HomeContent() {
 
           <div className="relative z-10 flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <Link
-              href="/magazine"
+              href="/magazine?read=1"
               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs transition-all shadow-md shadow-[#1B889A]/30 active:scale-95"
             >
               <BookOpen className="w-4 h-4" />
@@ -249,7 +249,7 @@ function HomeContent() {
             </Link>
 
             <Link
-              href="/magazine"
+              href="/magazine?download=1"
               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[var(--bg-color)] hover:bg-[var(--muted-bg)] text-[var(--text-primary)] border border-[var(--card-border)] font-bold text-xs transition-all shadow-sm active:scale-95"
             >
               <Download className="w-4 h-4 text-[#1B889A]" />
@@ -694,7 +694,7 @@ function HomeContent() {
               <div className="pt-4 border-t border-[var(--card-border)] flex items-center justify-between">
                 <span className="text-xs text-[var(--text-secondary)]">تعداد دانلود: <strong className="text-[#1B889A] font-bold">{issueOne.download_count || 0}</strong></span>
                 <Link
-                  href="/magazine"
+                  href="/magazine?read=1"
                   className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs transition-colors shadow-md"
                 >
                   <span>ورق زدن آنلاین</span>

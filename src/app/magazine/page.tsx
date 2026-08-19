@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { FlipBookViewer } from '@/components/magazine/FlipBookViewer';
 import { useStore } from '@/store/useStore';
 import { MagazineIssue } from '@/types';
@@ -22,13 +22,43 @@ import {
 } from 'lucide-react';
 import { translations } from '@/data/translations';
 
-export default function MagazinePage() {
+function MagazineContentInner() {
   const { magazineIssues, language } = useStore();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const t = translations[language] || translations.fa;
 
   const [selectedIssue, setSelectedIssue] = useState<MagazineIssue | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+
+  useEffect(() => {
+    const read = searchParams.get('read');
+    const download = searchParams.get('download');
+    const issueId = searchParams.get('issue');
+
+    if ((read === '1' || read === 'true' || issueId) && magazineIssues.length > 0) {
+      const found = issueId 
+        ? magazineIssues.find(i => i.id === issueId || String(i.issue_number) === issueId) 
+        : magazineIssues[0];
+      if (found) {
+        setSelectedIssue(found);
+      }
+    }
+
+    if ((download === '1' || download === 'true') && magazineIssues.length > 0) {
+      const targetIssue = magazineIssues[0];
+      if (targetIssue) {
+        const pdfUrl = targetIssue.pdf_url || '/downloads/mahdism_issue_1.pdf';
+        const link = document.createElement('a');
+        link.href = pdfUrl;
+        link.download = `مجله_ایدئولوژی_مهدویت_شماره_${targetIssue.issue_number || 1}.pdf`;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+  }, [searchParams, magazineIssues]);
 
   // Filter magazine issues by selected hashtag
   const filteredIssues = magazineIssues.filter(issue => {
@@ -40,10 +70,6 @@ export default function MagazinePage() {
       issue.description_fa.toLowerCase().includes(cleanTag)
     );
   });
-
-  const handleHashtagClick = (tag: string) => {
-    setSelectedTag(tag);
-  };
 
   return (
     <div className="space-y-12 py-6">
@@ -250,5 +276,13 @@ export default function MagazinePage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function MagazinePage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-xs text-[var(--text-secondary)] font-serif-persian">در حال بارگذاری مجله...</div>}>
+      <MagazineContentInner />
+    </Suspense>
   );
 }
