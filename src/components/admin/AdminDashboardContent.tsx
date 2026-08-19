@@ -760,7 +760,7 @@ export const AdminDashboardContent: React.FC = () => {
   const [audUrl, setAudUrl] = useState('');
   const [audDuration, setAudDuration] = useState('۱۵ دقیقه');
   const [audDesc, setAudDesc] = useState('');
-  const [audCategory, setAudCategory] = useState('پادکست صوتی');
+  const [audCategory, setAudCategory] = useState('محتوای صوتی');
   const [audCover, setAudCover] = useState('https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=600&auto=format&fit=crop&q=80');
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [audioCoverFile, setAudioCoverFile] = useState<File | null>(null);
@@ -806,7 +806,7 @@ export const AdminDashboardContent: React.FC = () => {
     setAudUrl('');
     setAudDuration('۱۵ دقیقه');
     setAudDesc('');
-    setAudCategory('پادکست صوتی');
+    setAudCategory('محتوای صوتی');
     setAudCover('https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=600&auto=format&fit=crop&q=80');
     setAudioFile(null);
     setAudioCoverFile(null);
@@ -1305,7 +1305,7 @@ export const AdminDashboardContent: React.FC = () => {
               }`}
             >
               <Video className="w-4 h-4" />
-              <span>ویدیوها ({videos.length})</span>
+              <span>محتوای ویدیویی ({videos.length})</span>
             </button>
           )}
 
@@ -1318,7 +1318,7 @@ export const AdminDashboardContent: React.FC = () => {
               }`}
             >
               <Volume2 className="w-4 h-4" />
-              <span>پادکست‌ها ({audios.length})</span>
+              <span>محتوای صوتی ({audios.length})</span>
             </button>
           )}
 
@@ -1630,15 +1630,15 @@ export const AdminDashboardContent: React.FC = () => {
         <div className="space-y-6">
           <div className="flex items-center justify-between bg-[var(--card-bg)] p-6 border border-[var(--card-border)] rounded-3xl">
             <div>
-              <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">مدیریت پادکست‌ها و فایل‌های صوتی</h2>
-              <p className="text-xs text-[var(--text-secondary)] mt-1">افزودن و ویرایش پادکست‌های شناختی مهدویت</p>
+              <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">مدیریت محتوای صوتی</h2>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">افزودن و ویرایش محتوای صوتی شناختی مهدویت</p>
             </div>
             <button
               onClick={openAddAudio}
               className="px-5 py-2.5 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white text-xs font-bold flex items-center gap-2 shadow-md active:scale-95 transition-all"
             >
               <Plus className="w-4 h-4" />
-              <span>افزودن پادکست جدید</span>
+              <span>افزودن محتوای صوتی جدید</span>
             </button>
           </div>
 
@@ -1663,7 +1663,7 @@ export const AdminDashboardContent: React.FC = () => {
                     <button
                       onClick={() => {
                         updateAudio(aud.id, { featured: !aud.featured });
-                        setSaveToast({ msg: !aud.featured ? '📌 پادکست در صفحه اصلی پین شد!' : '📌 پادکست از پین در آمد', type: 'success' });
+                        setSaveToast({ msg: !aud.featured ? '📌 محتوای صوتی در صفحه اصلی پین شد!' : '📌 محتوای صوتی از پین در آمد', type: 'success' });
                         setTimeout(() => setSaveToast(null), 3000);
                       }}
                       className={`p-2 rounded-xl border transition-all flex items-center gap-1 text-xs font-bold ${
@@ -1671,7 +1671,7 @@ export const AdminDashboardContent: React.FC = () => {
                           ? 'bg-amber-500/15 border-amber-500/40 text-amber-600 dark:text-amber-400 shadow-xs'
                           : 'bg-[var(--bg-color)] border-[var(--card-border)] text-[var(--text-secondary)] hover:text-[#1B889A]'
                       }`}
-                      title={aud.featured ? 'حذف از پادکست‌های پین‌شده' : 'پین کردن پادکست در صفحه اصلی'}
+                      title={aud.featured ? 'حذف از محتوای صوتی پین‌شده' : 'پین کردن محتوای صوتی در صفحه اصلی'}
                     >
                       <Pin className={`w-3.5 h-3.5 ${aud.featured ? 'fill-current' : ''}`} />
                       <span className="hidden sm:inline">{aud.featured ? 'پین‌شده' : 'پین'}</span>
@@ -2446,12 +2446,12 @@ export const AdminDashboardContent: React.FC = () => {
         <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 max-w-lg w-full space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
-              <h3 className="text-base font-bold text-[var(--text-primary)] font-serif-persian">{editingAud ? 'ویرایش پادکست صوتی' : 'افزودن پادکست جدید'}</h3>
+              <h3 className="text-base font-bold text-[var(--text-primary)] font-serif-persian">{editingAud ? 'ویرایش محتوای صوتی' : 'افزودن محتوای صوتی جدید'}</h3>
               <button onClick={() => setShowAudModal(false)}><X className="w-5 h-5 text-[var(--text-secondary)]" /></button>
             </div>
             <form onSubmit={handleSaveAudio} className="space-y-3 text-xs">
               <div>
-                <label className="block font-bold mb-1">عنوان پادکست / فایل صوتی:</label>
+                <label className="block font-bold mb-1">عنوان محتوای صوتی:</label>
                 <input type="text" value={audTitle} onChange={e => setAudTitle(e.target.value)} required className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -2467,7 +2467,7 @@ export const AdminDashboardContent: React.FC = () => {
               {/* AUDIO MP3 FILE & DEVICE UPLOAD */}
               <div className="space-y-2 p-3 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)]">
                 <div className="flex items-center justify-between">
-                  <label className="font-bold text-[var(--text-primary)]">فایل صوتی پادکست (MP3 / WAV / M4A):</label>
+                  <label className="font-bold text-[var(--text-primary)]">فایل صوتی (MP3 / WAV / M4A):</label>
                   
                   {/* File Upload Button from Device */}
                   <label className="px-3 py-1.5 rounded-xl bg-[#1B889A]/15 text-[#1B889A] hover:bg-[#1B889A] hover:text-white font-bold cursor-pointer transition-all flex items-center gap-1.5 text-xs">
@@ -2493,10 +2493,10 @@ export const AdminDashboardContent: React.FC = () => {
                 )}
               </div>
 
-              {/* PODCAST COVER IMAGE & DEVICE UPLOAD */}
+              {/* COVER IMAGE & DEVICE UPLOAD */}
               <div className="space-y-2 p-3 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)]">
                 <div className="flex items-center justify-between">
-                  <label className="font-bold text-[var(--text-primary)]">تصویر کاور پادکست (Cover Image):</label>
+                  <label className="font-bold text-[var(--text-primary)]">تصویر کاور (Cover Image):</label>
                   
                   {/* File Upload Button from Device */}
                   <label className="px-3 py-1.5 rounded-xl bg-[#1B889A]/15 text-[#1B889A] hover:bg-[#1B889A] hover:text-white font-bold cursor-pointer transition-all flex items-center gap-1.5 text-xs">
@@ -2520,7 +2520,7 @@ export const AdminDashboardContent: React.FC = () => {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={audCover}
-                      alt="پیش‌نمایش کاور پادکست"
+                      alt="پیش‌نمایش کاور"
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         e.currentTarget.src = 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=800&auto=format&fit=crop&q=80';
@@ -2544,7 +2544,7 @@ export const AdminDashboardContent: React.FC = () => {
               </div>
               <div className="flex justify-end gap-2 pt-3 border-t border-[var(--card-border)]">
                 <button type="button" onClick={() => setShowAudModal(false)} className="px-4 py-2 rounded-xl border border-[var(--card-border)]">انصراف</button>
-                <button type="submit" className="px-5 py-2 rounded-xl bg-[#1B889A] text-white font-bold">ثبت پادکست در دیتابیس</button>
+                <button type="submit" className="px-5 py-2 rounded-xl bg-[#1B889A] text-white font-bold">ثبت محتوای صوتی در دیتابیس</button>
               </div>
             </form>
           </div>

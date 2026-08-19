@@ -1203,18 +1203,30 @@ export const useStore = create<AppState>((set, get) => ({
       // 3. Videos
       const { data: supaVideos, error: vidErr } = await supabase.from('video_items').select('*');
       if (!vidErr && supaVideos) {
-        set({ videos: supaVideos });
+        const mappedVideos = supaVideos.map(vid => ({
+          ...vid,
+          category_fa: (!vid.category_fa || vid.category_fa.includes('درس‌گفتار') || vid.category_fa.includes('درسگفتار'))
+            ? 'محتوای ویدیویی'
+            : vid.category_fa
+        }));
+        set({ videos: mappedVideos });
         if (typeof localStorage !== 'undefined') {
-          localStorage.setItem('mahdism_videos', JSON.stringify(supaVideos));
+          localStorage.setItem('mahdism_videos', JSON.stringify(mappedVideos));
         }
       }
 
       // 4. Audios
       const { data: supaAudios, error: audErr } = await supabase.from('audio_items').select('*');
       if (!audErr && supaAudios) {
-        set({ audios: supaAudios });
+        const mappedAudios = supaAudios.map(aud => ({
+          ...aud,
+          category_fa: (!aud.category_fa || aud.category_fa.includes('پادکست'))
+            ? 'محتوای صوتی'
+            : aud.category_fa
+        }));
+        set({ audios: mappedAudios });
         if (typeof localStorage !== 'undefined') {
-          localStorage.setItem('mahdism_audios', JSON.stringify(supaAudios));
+          localStorage.setItem('mahdism_audios', JSON.stringify(mappedAudios));
         }
       }
 
@@ -1348,14 +1360,34 @@ export const useStore = create<AppState>((set, get) => ({
     const savedVideos = localStorage.getItem('mahdism_videos');
     if (savedVideos) {
       try {
-        set({ videos: JSON.parse(savedVideos) });
+        const parsedVids = JSON.parse(savedVideos);
+        if (Array.isArray(parsedVids)) {
+          set({
+            videos: parsedVids.map((v: any) => ({
+              ...v,
+              category_fa: (!v.category_fa || v.category_fa.includes('درس‌گفتار') || v.category_fa.includes('درسگفتار'))
+                ? 'محتوای ویدیویی'
+                : v.category_fa
+            }))
+          });
+        }
       } catch {}
     }
 
     const savedAudios = localStorage.getItem('mahdism_audios');
     if (savedAudios) {
       try {
-        set({ audios: JSON.parse(savedAudios) });
+        const parsedAuds = JSON.parse(savedAudios);
+        if (Array.isArray(parsedAuds)) {
+          set({
+            audios: parsedAuds.map((a: any) => ({
+              ...a,
+              category_fa: (!a.category_fa || a.category_fa.includes('پادکست'))
+                ? 'محتوای صوتی'
+                : a.category_fa
+            }))
+          });
+        }
       } catch {}
     }
 

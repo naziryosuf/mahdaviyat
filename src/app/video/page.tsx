@@ -35,7 +35,7 @@ export default function VideoLibraryPage() {
         <div className="border-b border-[var(--card-border)] pb-4 flex items-center justify-between">
           <h3 className="text-lg sm:text-xl font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
             <Video className="w-5 h-5 text-[#1B889A]" />
-            <span>گالری درس‌گفتارهای تصویری و تحلیل‌ها ({videos.length})</span>
+            <span>گالری محتوای ویدیویی ({videos.length})</span>
           </h3>
         </div>
 

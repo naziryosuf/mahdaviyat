@@ -10,7 +10,7 @@ export default function AudioPage() {
   const [filterCategory, setFilterCategory] = useState('همه');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const categories = ['همه', 'پادکست‌ها', 'درس‌گفتارها', 'وبینارها'];
+  const dynamicCategories = ['همه', ...Array.from(new Set(audios.map(a => a.category_fa || 'محتوای صوتی')))];
 
   const filteredAudios = audios.filter((aud) => {
     const matchesCategory = filterCategory === 'همه' || aud.category_fa === filterCategory;
@@ -57,7 +57,7 @@ export default function AudioPage() {
                 {activeAudio.description_fa}
               </p>
 
-              {/* ENHANCED PODCAST CONTROLS (PLAY/PAUSE, 10S SKIP BACK/FORWARD) */}
+              {/* ENHANCED AUDIO CONTROLS */}
               <div className="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-3">
                 
                 <button
@@ -78,7 +78,7 @@ export default function AudioPage() {
                   ) : (
                     <>
                       <Play className="w-5 h-5 fill-current" />
-                      <span>پخش فایل صوتی پادکست</span>
+                      <span>پخش محتوای صوتی</span>
                     </>
                   )}
                 </button>
@@ -98,7 +98,7 @@ export default function AudioPage() {
       {/* Filter and Search Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-[var(--card-border)] pb-6">
         <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0">
-          {categories.map((cat) => (
+          {dynamicCategories.map((cat) => (
             <button
               key={cat}
               onClick={() => setFilterCategory(cat)}
@@ -131,7 +131,7 @@ export default function AudioPage() {
           <Radio className="w-12 h-12 text-[#1B889A] mx-auto opacity-70" />
           <h3 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">هنوز فایل صوتی ثبت نگردیده است</h3>
           <p className="text-xs sm:text-sm text-[var(--text-secondary)] max-w-md mx-auto">
-            می‌توانید با ورود به پنل مدیریت، فایل‌های صوتی و پادکست‌های جدید را آپلود نمایید.
+            می‌توانید با ورود به پنل مدیریت، محتوای صوتی جدید را ثبت نمایید.
           </p>
         </div>
       ) : (

@@ -342,7 +342,7 @@ function HomeContent() {
                 <div className="space-y-4">
                   <h3 className="text-sm font-bold text-[#1B889A] flex items-center gap-2 border-b border-[var(--card-border)] pb-2">
                     <Volume2 className="w-4 h-4" />
-                    <span>پادکست‌ها و شنیدنی‌های یافته‌شده ({filteredAudios.length})</span>
+                    <span>محتوای صوتی یافته‌شده ({filteredAudios.length})</span>
                   </h3>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -368,7 +368,7 @@ function HomeContent() {
                 <div className="space-y-4">
                   <h3 className="text-sm font-bold text-[#A32838] flex items-center gap-2 border-b border-[var(--card-border)] pb-2">
                     <Video className="w-4 h-4" />
-                    <span>ویدیوها و درس‌گفتارهای یافته‌شده ({filteredVideos.length})</span>
+                    <span>محتوای ویدیویی یافته‌شده ({filteredVideos.length})</span>
                   </h3>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

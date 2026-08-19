@@ -142,7 +142,7 @@ export default function MediaPage() {
                     <h3 
                       onClick={() => playAudio(aud)}
                       className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate mt-1 cursor-pointer hover:text-[#1B889A] transition-colors"
-                      title="پخش پادکست"
+                      title="پخش محتوای صوتی"
                     >
                       {aud.title_fa}
                     </h3>
