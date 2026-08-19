@@ -520,11 +520,6 @@ function HomeContent() {
                       <span className="text-[#1B889A] font-bold text-[11px]">{vid.duration_fa}</span>
                     </div>
 
-                    <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate">
-                      <Link href="/media?tab=videos" className="hover:text-[#1B889A] transition-colors">{vid.title_fa}</Link>
-                    </h3>
-                    <p className="text-xs text-[var(--text-secondary)] line-clamp-1">{vid.speaker_fa}</p>
-
                     <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
                       <span>{vid.category_fa}</span>
                       <Link href="/media?tab=videos" className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
@@ -539,428 +534,469 @@ function HomeContent() {
           )}
         </>
       ) : (
-        /* DEFAULT ORDER: PINNED SECTION FIRST WHEN NO SEARCH ACTIVE */
-        (articles.some(a => a.featured) || magazineIssues.some(m => m.featured) || videos.some(v => v.featured) || audios.some(au => au.featured)) && (
-          <section className="bg-gradient-to-br from-[#1B889A]/15 via-[var(--card-bg)] to-[var(--bg-color)] border-2 border-[#1B889A] rounded-2xl sm:rounded-3xl p-4 sm:p-7 space-y-5 shadow-2xl modern-card">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-10 h-10 rounded-2xl bg-[#1B889A] text-white flex items-center justify-center font-bold shadow-md shrink-0">
-                  <Pin className="w-5 h-5 fill-current" />
+        /* DEFAULT ORDER: 1. PINNED ITEMS, 2. 3 LATEST ARTICLES, 3. 3 LATEST PODCASTS, 4. 3 LATEST VIDEOS */
+        <>
+          {/* 1. PINNED CONTENT SHOWCASE SECTION */}
+          {(articles.some(a => a.featured) || magazineIssues.some(m => m.featured) || videos.some(v => v.featured) || audios.some(au => au.featured)) && (
+            <section className="bg-gradient-to-br from-[#1B889A]/15 via-[var(--card-bg)] to-[var(--bg-color)] border-2 border-[#1B889A] rounded-2xl sm:rounded-3xl p-4 sm:p-7 space-y-5 shadow-2xl modern-card">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-2xl bg-[#1B889A] text-white flex items-center justify-center font-bold shadow-md shrink-0">
+                    <Pin className="w-5 h-5 fill-current" />
+                  </div>
+                  <div className="min-w-0">
+                    <h2 className="text-sm sm:text-lg font-extrabold text-[var(--text-primary)] font-serif-persian leading-snug">
+                      مطالب پین‌شده و ویژه
+                    </h2>
+                    <p className="text-[11px] sm:text-xs text-[var(--text-secondary)] leading-relaxed">
+                      برگزیده متون، مجلات و رسانه‌ها در صفحه اول
+                    </p>
+                  </div>
                 </div>
-                <div className="min-w-0">
-                  <h2 className="text-sm sm:text-lg font-extrabold text-[var(--text-primary)] font-serif-persian leading-snug">
-                    مطالب پین‌شده و ویژه
-                  </h2>
-                  <p className="text-[11px] sm:text-xs text-[var(--text-secondary)] leading-relaxed">
-                    برگزیده متون، مجلات و رسانه‌ها در صفحه اول
-                  </p>
-                </div>
+                <span className="self-start sm:self-center px-3 py-1 rounded-full bg-[#1B889A]/20 text-[#1B889A] text-[11px] font-extrabold border border-[#1B889A]/40 whitespace-nowrap shrink-0">
+                  منتخب تحریریه 🌟
+                </span>
               </div>
-              <span className="self-start sm:self-center px-3 py-1 rounded-full bg-[#1B889A]/20 text-[#1B889A] text-[11px] font-extrabold border border-[#1B889A]/40 whitespace-nowrap shrink-0">
-                منتخب تحریریه 🌟
-              </span>
-            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {articles.filter(art => art.featured).map(art => (
-                <article key={art.id} className="rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all duration-300 shadow-sm flex flex-col justify-between overflow-hidden group">
-                  {art.image_url && !art.image_url.startsWith('file://') && art.image_url.trim() !== '' && (
-                    <Link href={`/content/${art.id}`} className="block relative w-full aspect-video overflow-hidden border-b border-[var(--card-border)] bg-slate-900 group/img cursor-pointer shrink-0">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={art.image_url}
-                        alt={art.title_fa}
-                        className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    </Link>
-                  )}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {articles.filter(art => art.featured).map(art => (
+                  <article key={art.id} className="rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all duration-300 shadow-sm flex flex-col justify-between overflow-hidden group">
+                    {art.image_url && !art.image_url.startsWith('file://') && art.image_url.trim() !== '' && (
+                      <Link href={`/content/${art.id}`} className="block relative w-full aspect-video overflow-hidden border-b border-[var(--card-border)] bg-slate-900 group/img cursor-pointer shrink-0">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={art.image_url}
+                          alt={art.title_fa}
+                          className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                      </Link>
+                    )}
 
-                  <div className="p-4 flex-1 flex flex-col justify-between space-y-2.5">
-                    <div className="space-y-2.5">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
-                          <Pin className="w-3 h-3 fill-current" />
-                          <span>مقاله پین‌شده</span>
-                        </span>
-                        <span className="text-[#1B889A] font-bold text-[11px]">{art.read_time_fa}</span>
+                    <div className="p-4 flex-1 flex flex-col justify-between space-y-2.5">
+                      <div className="space-y-2.5">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
+                            <Pin className="w-3 h-3 fill-current" />
+                            <span>مقاله پین‌شده</span>
+                          </span>
+                          <span className="text-[#1B889A] font-bold text-[11px]">{art.read_time_fa}</span>
+                        </div>
+
+                        <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors leading-snug">
+                          <Link href={`/content/${art.id}`}>{art.title_fa}</Link>
+                        </h3>
+
+                        <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">{art.excerpt_fa}</p>
                       </div>
-
-                      <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors leading-snug">
-                        <Link href={`/content/${art.id}`}>{art.title_fa}</Link>
-                      </h3>
-
-                      <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">{art.excerpt_fa}</p>
+                      
+                      <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
+                        <span className="truncate">نویسنده: {art.author_name_fa}</span>
+                        <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                          <span>مطالعه</span>
+                          <ArrowLeft className="w-3.5 h-3.5" />
+                        </Link>
+                      </div>
                     </div>
-                    
+                  </article>
+                ))}
+
+                {magazineIssues.filter(iss => iss.featured).map(iss => (
+                  <div key={iss.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
+                        <Pin className="w-3 h-3 fill-current" />
+                        <span>شماره مجله پین‌شده</span>
+                      </span>
+                      <span className="text-[#1B889A] font-bold text-[11px]">{iss.publish_date_fa}</span>
+                    </div>
+
+                    <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate">{iss.title_fa}</h3>
+                    <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">{iss.description_fa}</p>
+
                     <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
-                      <span className="truncate">نویسنده: {art.author_name_fa}</span>
-                      <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
-                        <span>مطالعه</span>
+                      <span>شماره {iss.issue_number}</span>
+                      <Link href="/magazine" className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                        <span>ورق زدن آنلاین</span>
                         <ArrowLeft className="w-3.5 h-3.5" />
                       </Link>
                     </div>
                   </div>
-                </article>
-              ))}
+                ))}
 
-              {magazineIssues.filter(iss => iss.featured).map(iss => (
-                <div key={iss.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
-                      <Pin className="w-3 h-3 fill-current" />
-                      <span>شماره مجله پین‌شده</span>
-                    </span>
-                    <span className="text-[#1B889A] font-bold text-[11px]">{iss.publish_date_fa}</span>
+                {videos.filter(vid => vid.featured).map(vid => (
+                  <div key={vid.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
+                        <Pin className="w-3 h-3 fill-current" />
+                        <span>ویدیو پین‌شده</span>
+                      </span>
+                      <span className="text-[#1B889A] font-bold text-[11px]">{vid.duration_fa}</span>
+                    </div>
+
+                    <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate">{vid.title_fa}</h3>
+                    <p className="text-xs text-[var(--text-secondary)] line-clamp-1">{vid.speaker_fa}</p>
+
+                    <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
+                      <span>{vid.category_fa}</span>
+                      <Link href="/media?tab=videos" className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                        <span>مشاهده</span>
+                        <ArrowLeft className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* 2. THREE LATEST ARTICLES SECTION */}
+          {articles.length > 0 && (
+            <section className="space-y-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
+                <h2 className="text-base sm:text-xl font-extrabold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
+                  <FileText className="w-5 sm:w-6 h-5 sm:h-6 text-[#1B889A]" />
+                  <span>سه مقاله اخیر</span>
+                </h2>
+                <Link
+                  href="/content"
+                  className="text-xs text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0"
+                >
+                  <span>مشاهده آرشیو کامل مقالات</span>
+                  <ArrowLeft className="w-4 h-4" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {articles.slice(0, 3).map((art) => (
+                  <article
+                    key={art.id}
+                    className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl hover:border-[#1B889A] transition-all duration-300 shadow-md flex flex-col justify-between overflow-hidden group"
+                  >
+                    {art.image_url && !art.image_url.startsWith('file://') && art.image_url.trim() !== '' && (
+                      <Link href={`/content/${art.id}`} className="block relative w-full aspect-video overflow-hidden border-b border-[var(--card-border)] bg-slate-900 group/img cursor-pointer shrink-0">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={art.image_url}
+                          alt={art.title_fa}
+                          className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                      </Link>
+                    )}
+
+                    <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+                      <div className="space-y-3">
+                        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--text-secondary)]">
+                          <span className="px-2.5 py-0.5 rounded-full teal-badge text-[11px] font-bold">
+                            {art.category_fa}
+                          </span>
+                          <span className="flex items-center gap-1 font-bold text-[#1B889A]">
+                            <Clock className="w-3.5 h-3.5" />
+                            {art.read_time_fa}
+                          </span>
+                        </div>
+
+                        <h3 className="text-base font-bold text-[var(--text-primary)] font-serif-persian leading-snug group-hover:text-[#1B889A] transition-colors">
+                          <Link href={`/content/${art.id}`}>
+                            {art.title_fa}
+                          </Link>
+                        </h3>
+
+                        <p className="text-xs text-[var(--text-secondary)] line-clamp-3 leading-relaxed font-serif-persian">
+                          {art.excerpt_fa}
+                        </p>
+                      </div>
+
+                      <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)] font-serif-persian">
+                        <span className="truncate">نویسنده: <strong className="text-[var(--text-primary)]">{art.author_name_fa}</strong></span>
+                        <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                          <span>مطالعه</span>
+                          <ArrowLeft className="w-3.5 h-3.5" />
+                        </Link>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* 3. THREE LATEST PODCASTS SECTION */}
+          {audios.length > 0 && (
+            <section className="space-y-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
+                <h2 className="text-base sm:text-xl font-extrabold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
+                  <Volume2 className="w-5 sm:w-6 h-5 sm:h-6 text-[#1B889A]" />
+                  <span>سه پادکست اخیر</span>
+                </h2>
+                <Link
+                  href="/media?tab=podcasts"
+                  className="text-xs text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0"
+                >
+                  <span>مشاهده آرشیو کامل پادکست‌ها</span>
+                  <ArrowLeft className="w-4 h-4" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {audios.slice(0, 3).map((aud) => (
+                  <div
+                    key={aud.id}
+                    className="p-5 rounded-3xl bg-[var(--card-bg)] border border-[var(--card-border)] hover:border-[#1B889A] transition-all modern-card shadow-md flex flex-col justify-between space-y-4 group"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-2xl overflow-hidden border border-[#1B889A]/40 shrink-0 relative bg-stone-900 shadow-md">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={aud.cover_image} alt="" className="w-full h-full object-cover" />
+                          <button
+                            onClick={() => playAudio(aud)}
+                            className="absolute inset-0 bg-black/40 flex items-center justify-center text-white hover:bg-[#1B889A]/80 transition-colors"
+                          >
+                            <Play className="w-6 h-6 fill-current ml-0.5" />
+                          </button>
+                        </div>
+                        <div className="min-w-0">
+                          <span className="px-2.5 py-0.5 rounded-full teal-badge text-[10px] font-bold">
+                            {aud.category_fa}
+                          </span>
+                          <h3
+                            onClick={() => playAudio(aud)}
+                            className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate mt-1 cursor-pointer hover:text-[#1B889A] transition-colors"
+                            title="پخش پادکست"
+                          >
+                            {aud.title_fa}
+                          </h3>
+                          <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{aud.speaker_fa}</p>
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-[var(--text-secondary)] leading-relaxed line-clamp-2 font-serif-persian">
+                        {aud.description_fa}
+                      </p>
+                    </div>
+
+                    <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs">
+                      <span className="text-[var(--text-secondary)] font-bold flex items-center gap-1">
+                        <Clock className="w-3.5 h-3.5 text-[#1B889A]" />
+                        {aud.duration_fa}
+                      </span>
+                      <button
+                        onClick={() => playAudio(aud)}
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs transition-all shadow-md active:scale-95"
+                      >
+                        <Play className="w-3.5 h-3.5 fill-current" />
+                        <span>پخش صوتی</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* 4. THREE LATEST VIDEOS SECTION */}
+          {videos.length > 0 && (
+            <section className="space-y-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
+                <h2 className="text-base sm:text-xl font-extrabold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
+                  <Video className="w-5 sm:w-6 h-5 sm:h-6 text-[#1B889A]" />
+                  <span>سه ویدیو اخیر</span>
+                </h2>
+                <Link
+                  href="/media?tab=videos"
+                  className="text-xs text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0"
+                >
+                  <span>مشاهده آرشیو کامل ویدیوها</span>
+                  <ArrowLeft className="w-4 h-4" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {videos.slice(0, 3).map((vid) => (
+                  <Link
+                    key={vid.id}
+                    href="/media?tab=videos"
+                    className="p-4 rounded-3xl bg-[var(--card-bg)] border border-[var(--card-border)] hover:border-[#1B889A] transition-all modern-card shadow-md space-y-3 cursor-pointer group flex flex-col justify-between"
+                  >
+                    <div className="space-y-3">
+                      <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-900 border border-[var(--card-border)] flex items-center justify-center">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={vid.thumbnail_url}
+                          alt={vid.title_fa}
+                          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                          <div className="w-11 h-11 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+                            <Play className="w-5 h-5 fill-current ml-0.5" />
+                          </div>
+                        </div>
+                        <span className="absolute bottom-2.5 left-2.5 px-2.5 py-0.5 bg-black/80 rounded-lg text-[10px] font-mono text-white dir-ltr font-bold border border-white/10">
+                          {vid.duration_fa}
+                        </span>
+                      </div>
+
+                      <div>
+                        <span className="px-2.5 py-0.5 rounded-full teal-badge text-[10px] font-bold block w-fit mb-1.5">
+                          {vid.category_fa}
+                        </span>
+                        <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors leading-snug line-clamp-2">
+                          {vid.title_fa}
+                        </h3>
+                        <p className="text-xs text-[var(--text-secondary)] mt-1 font-serif-persian">سخنران: {vid.speaker_fa}</p>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[#1B889A] font-bold">
+                      <span>مشاهده ویدیو</span>
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* 5. HIGHLIGHT SHOWCASE SECTION */}
+          {(latestIssue || featuredArticle) && (
+            <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
+              
+              {/* Latest Magazine Showcase Card */}
+              {latestIssue && (
+                <div className={`${featuredArticle ? 'lg:col-span-5' : 'lg:col-span-12'} bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl p-5 sm:p-6 space-y-4 sm:space-y-5 modern-card flex flex-col justify-between shadow-lg`}>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="px-3 py-1 rounded-full teal-badge text-[11px] sm:text-xs font-bold">
+                        جدیدترین شماره مجله
+                      </span>
+                      <span className="text-xs text-[var(--text-secondary)] font-bold flex items-center gap-1">
+                        <Calendar className="w-3.5 h-3.5 text-[#1B889A]" />
+                        {latestIssue.publish_date_fa || 'تابستان ۱۴۰۴'}
+                      </span>
+                    </div>
+
+                    <h3 className="text-lg sm:text-xl font-bold text-[var(--text-primary)] font-serif-persian">
+                      {latestIssue.title_fa}
+                    </h3>
+
+                    <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed line-clamp-3">
+                      {latestIssue.description_fa}
+                    </p>
+
+                    <div className="relative rounded-2xl overflow-hidden border border-[var(--card-border)] aspect-[16/9] sm:aspect-[4/3] bg-stone-900 group">
+                      <Link href={`/magazine?issue=${latestIssue.id}`} className="block w-full h-full">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={latestIssue.cover_image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-4">
+                          <span className="text-white text-xs font-bold flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-[#1B889A]" />
+                            <span>{latestIssue.page_count_fa || 'شامل ۴۵ صفحه کامل و تمامی مقالات اختصاصی'}</span>
+                          </span>
+                        </div>
+                      </Link>
+                    </div>
                   </div>
 
-                  <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate">{iss.title_fa}</h3>
-                  <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">{iss.description_fa}</p>
-
-                  <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
-                    <span>شماره {iss.issue_number}</span>
-                    <Link href="/magazine" className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                  <div className="pt-4 border-t border-[var(--card-border)] flex items-center justify-between">
+                    <span className="text-xs text-[var(--text-secondary)]">تعداد دانلود: <strong className="text-[#1B889A] font-bold">{latestIssue.download_count || 0}</strong></span>
+                    <Link
+                      href={`/magazine?issue=${latestIssue.id}`}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs transition-colors shadow-md"
+                    >
                       <span>ورق زدن آنلاین</span>
                       <ArrowLeft className="w-3.5 h-3.5" />
                     </Link>
                   </div>
                 </div>
-              ))}
+              )}
 
-              {videos.filter(vid => vid.featured).map(vid => (
-                <div key={vid.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
-                      <Pin className="w-3 h-3 fill-current" />
-                      <span>ویدیو پین‌شده</span>
-                    </span>
-                    <span className="text-[#1B889A] font-bold text-[11px]">{vid.duration_fa}</span>
+              {/* Lead Editorial Article */}
+              {featuredArticle && (
+                <div className={`${latestIssue ? 'lg:col-span-7' : 'lg:col-span-12'} bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl p-5 sm:p-8 space-y-4 sm:space-y-5 modern-card flex flex-col justify-between shadow-lg`}>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-xs text-[#1B889A] font-bold">
+                        <FileText className="w-4 h-4" />
+                        <span>سرمقاله‌ها</span>
+                      </div>
+                      <button
+                        onClick={() => toggleBookmark(featuredArticle.id)}
+                        className={`p-1.5 rounded-xl border transition-all ${
+                          bookmarkedArticles.includes(featuredArticle.id)
+                            ? 'bg-[#1B889A] text-white border-[#1B889A]'
+                            : 'bg-[var(--bg-color)] border-[var(--card-border)] text-[var(--text-secondary)] hover:text-[#1B889A]'
+                        }`}
+                        title="نشان‌کردن مقاله"
+                      >
+                        <Bookmark className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    <h2 className="text-lg sm:text-2xl font-bold text-[var(--text-primary)] font-serif-persian leading-snug">
+                      <Link href={`/content/${featuredArticle.id}`} className="hover:text-[#1B889A] transition-colors">
+                        {featuredArticle.title_fa}
+                      </Link>
+                    </h2>
+
+                    <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+                      {featuredArticle.excerpt_fa}
+                    </p>
+
+                    {/* Article Cover Image Banner */}
+                    {featuredArticle.image_url && !featuredArticle.image_url.startsWith('file://') && featuredArticle.image_url.trim() !== '' && (
+                      <Link href={`/content/${featuredArticle.id}`} className="block relative w-full aspect-video rounded-2xl overflow-hidden border border-[var(--card-border)] bg-slate-900 shadow-md group/img cursor-pointer">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={featuredArticle.image_url} alt={featuredArticle.title_fa} className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                      </Link>
+                    )}
+
+                    <div className="flex items-center gap-3 p-3 bg-[var(--bg-color)] rounded-2xl border border-[var(--card-border)] text-xs text-[var(--text-secondary)]">
+                      <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-[#1B889A] shrink-0 shadow-md bg-slate-800 flex items-center justify-center">
+                        {featuredArticle.author_avatar && !featuredArticle.author_avatar.includes('unsplash.com') ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={featuredArticle.author_avatar} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full bg-[#1B889A] text-white flex items-center justify-center font-bold text-sm font-serif-persian">
+                            {featuredArticle.author_name_fa ? featuredArticle.author_name_fa.trim().charAt(0) : 'ن'}
+                          </div>
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <span className="font-bold text-[var(--text-primary)] block truncate">{featuredArticle.author_name_fa}</span>
+                        <span className="text-[11px] text-[#1B889A] font-semibold block truncate">سردبیر مجله ایدئولوژی مهدویت</span>
+                      </div>
+                      <div className="mr-auto flex items-center gap-2 sm:gap-3 shrink-0">
+                        <span className="flex items-center gap-1 font-bold text-[#1B889A]">
+                          <Clock className="w-3.5 h-3.5" />
+                          {featuredArticle.read_time_fa}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Eye className="w-3.5 h-3.5 text-slate-400" />
+                          {featuredArticle.views || 1}
+                        </span>
+                      </div>
+                    </div>
                   </div>
 
-                  <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate">{vid.title_fa}</h3>
-                  <p className="text-xs text-[var(--text-secondary)] line-clamp-1">{vid.speaker_fa}</p>
-
-                  <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
-                    <span>{vid.category_fa}</span>
-                    <Link href="/media?tab=videos" className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
-                      <span>مشاهده</span>
+                  <div className="pt-4 border-t border-[var(--card-border)] flex items-center justify-between text-xs">
+                    <span className="text-[var(--text-secondary)]">تاریخ انتشار: {featuredArticle.published_at}</span>
+                    <Link
+                      href={`/content/${featuredArticle.id}`}
+                      className="inline-flex items-center gap-1.5 font-bold text-[#1B889A] hover:underline"
+                    >
+                      <span>مطالعه کامل سرمقاله</span>
                       <ArrowLeft className="w-3.5 h-3.5" />
                     </Link>
                   </div>
                 </div>
-              ))}
-            </div>
-          </section>
-        )
-      )}
-
-      {/* HIGHLIGHT SHOWCASE SECTION */}
-      {(latestIssue || featuredArticle) && (
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
-          
-          {/* Latest Magazine Showcase Card */}
-          {latestIssue && (
-            <div className={`${featuredArticle ? 'lg:col-span-5' : 'lg:col-span-12'} bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl p-5 sm:p-6 space-y-4 sm:space-y-5 modern-card flex flex-col justify-between shadow-lg`}>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="px-3 py-1 rounded-full teal-badge text-[11px] sm:text-xs font-bold">
-                    جدیدترین شماره مجله
-                  </span>
-                  <span className="text-xs text-[var(--text-secondary)] font-bold flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5 text-[#1B889A]" />
-                    {latestIssue.publish_date_fa || 'تابستان ۱۴۰۴'}
-                  </span>
-                </div>
-
-                <h3 className="text-lg sm:text-xl font-bold text-[var(--text-primary)] font-serif-persian">
-                  {latestIssue.title_fa}
-                </h3>
-
-                <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed line-clamp-3">
-                  {latestIssue.description_fa}
-                </p>
-
-                <div className="relative rounded-2xl overflow-hidden border border-[var(--card-border)] aspect-[16/9] sm:aspect-[4/3] bg-stone-900 group">
-                  <Link href={`/magazine?issue=${latestIssue.id}`} className="block w-full h-full">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={latestIssue.cover_image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-4">
-                      <span className="text-white text-xs font-bold flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-[#1B889A]" />
-                        <span>{latestIssue.page_count_fa || 'شامل ۴۵ صفحه کامل و تمامی مقالات اختصاصی'}</span>
-                      </span>
-                    </div>
-                  </Link>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-[var(--card-border)] flex items-center justify-between">
-                <span className="text-xs text-[var(--text-secondary)]">تعداد دانلود: <strong className="text-[#1B889A] font-bold">{latestIssue.download_count || 0}</strong></span>
-                <Link
-                  href={`/magazine?issue=${latestIssue.id}`}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs transition-colors shadow-md"
-                >
-                  <span>ورق زدن آنلاین</span>
-                  <ArrowLeft className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </div>
+              )}
+            </section>
           )}
-
-          {/* Lead Editorial Article */}
-          {featuredArticle && (
-            <div className={`${latestIssue ? 'lg:col-span-7' : 'lg:col-span-12'} bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl p-5 sm:p-8 space-y-4 sm:space-y-5 modern-card flex flex-col justify-between shadow-lg`}>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs text-[#1B889A] font-bold">
-                    <FileText className="w-4 h-4" />
-                    <span>سرمقاله‌ها</span>
-                  </div>
-                  <button
-                    onClick={() => toggleBookmark(featuredArticle.id)}
-                    className={`p-1.5 rounded-xl border transition-all ${
-                      bookmarkedArticles.includes(featuredArticle.id)
-                        ? 'bg-[#1B889A] text-white border-[#1B889A]'
-                        : 'bg-[var(--bg-color)] border-[var(--card-border)] text-[var(--text-secondary)] hover:text-[#1B889A]'
-                    }`}
-                    title="نشان‌کردن مقاله"
-                  >
-                    <Bookmark className="w-4 h-4" />
-                  </button>
-                </div>
-
-                <h2 className="text-lg sm:text-2xl font-bold text-[var(--text-primary)] font-serif-persian leading-snug">
-                  <Link href={`/content/${featuredArticle.id}`} className="hover:text-[#1B889A] transition-colors">
-                    {featuredArticle.title_fa}
-                  </Link>
-                </h2>
-
-                <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
-                  {featuredArticle.excerpt_fa}
-                </p>
-
-                {/* Article Cover Image Banner */}
-                {featuredArticle.image_url && !featuredArticle.image_url.startsWith('file://') && featuredArticle.image_url.trim() !== '' && (
-                  <Link href={`/content/${featuredArticle.id}`} className="block relative w-full aspect-video rounded-2xl overflow-hidden border border-[var(--card-border)] bg-slate-900 shadow-md group/img cursor-pointer">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={featuredArticle.image_url} alt={featuredArticle.title_fa} className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  </Link>
-                )}
-
-                <div className="flex items-center gap-3 p-3 bg-[var(--bg-color)] rounded-2xl border border-[var(--card-border)] text-xs text-[var(--text-secondary)]">
-                  <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-[#1B889A] shrink-0 shadow-md bg-slate-800 flex items-center justify-center">
-                    {featuredArticle.author_avatar && !featuredArticle.author_avatar.includes('unsplash.com') ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={featuredArticle.author_avatar} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full bg-[#1B889A] text-white flex items-center justify-center font-bold text-sm font-serif-persian">
-                        {featuredArticle.author_name_fa ? featuredArticle.author_name_fa.trim().charAt(0) : 'ن'}
-                      </div>
-                    )}
-                  </div>
-                  <div className="min-w-0">
-                    <span className="font-bold text-[var(--text-primary)] block truncate">{featuredArticle.author_name_fa}</span>
-                    <span className="text-[11px] text-[#1B889A] font-semibold block truncate">سردبیر مجله ایدئولوژی مهدویت</span>
-                  </div>
-                  <div className="mr-auto flex items-center gap-2 sm:gap-3 shrink-0">
-                    <span className="flex items-center gap-1 font-bold text-[#1B889A]">
-                      <Clock className="w-3.5 h-3.5" />
-                      {featuredArticle.read_time_fa}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Eye className="w-3.5 h-3.5 text-slate-400" />
-                      {featuredArticle.views || 1}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-[var(--card-border)] flex items-center justify-between text-xs">
-                <span className="text-[var(--text-secondary)]">تاریخ انتشار: {featuredArticle.published_at}</span>
-                <Link
-                  href={`/content/${featuredArticle.id}`}
-                  className="inline-flex items-center gap-1.5 font-bold text-[#1B889A] hover:underline"
-                >
-                  <span>مطالعه کامل سرمقاله</span>
-                  <ArrowLeft className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </div>
-          )}
-
-        </section>
+        </>
       )}
-
-      {/* ARTICLES STREAM & SIDEBARS */}
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
-        
-        <div className="lg:col-span-8 space-y-6">
-          
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
-            <h2 className="text-base sm:text-lg font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-[#1B889A]" />
-              <span>{t.latestArticles} ({articles.length})</span>
-            </h2>
-
-            <div className="flex flex-wrap items-center gap-1.5">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl text-xs font-bold transition-all ${
-                    selectedCategory === cat
-                      ? 'bg-[#1B889A] text-white shadow-md shadow-[#1B889A]/30'
-                      : 'bg-[var(--card-bg)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:border-[#1B889A]'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-4 sm:space-y-5">
-            {articles
-              .filter(art => selectedCategory === 'همه' || art.category_fa === selectedCategory)
-              .map((art) => (
-                <article
-                  key={art.id}
-                  className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl hover:border-[#1B889A] transition-all duration-300 shadow-sm flex flex-col justify-between overflow-hidden group"
-                >
-                  {art.image_url && !art.image_url.startsWith('file://') && art.image_url.trim() !== '' && (
-                    <Link href={`/content/${art.id}`} className="block relative w-full aspect-video overflow-hidden border-b border-[var(--card-border)] bg-slate-900 group/img cursor-pointer shrink-0">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={art.image_url}
-                        alt={art.title_fa}
-                        className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    </Link>
-                  )}
-
-                  <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3">
-                    <div className="space-y-3">
-                      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--text-secondary)]">
-                        <div className="flex items-center gap-2">
-                          <span className="px-2.5 py-0.5 rounded-full teal-badge text-[11px] sm:text-xs font-bold">
-                            {art.category_fa}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <span className="flex items-center gap-1 font-bold text-[#1B889A]">
-                            <Clock className="w-3.5 h-3.5" />
-                            {art.read_time_fa}
-                          </span>
-                          <button
-                            onClick={() => toggleBookmark(art.id)}
-                            className={`p-1 rounded transition-colors ${
-                              bookmarkedArticles.includes(art.id) ? 'text-[#1B889A]' : 'text-stone-400 hover:text-[#1B889A]'
-                            }`}
-                          >
-                            <Bookmark className="w-4 h-4 fill-current" />
-                          </button>
-                        </div>
-                      </div>
-
-                      <h3 className="text-base sm:text-lg font-bold text-[var(--text-primary)] font-serif-persian leading-snug">
-                        <Link href={`/content/${art.id}`} className="hover:text-[#1B889A] transition-colors">
-                          {art.title_fa}
-                        </Link>
-                      </h3>
-
-                      <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed line-clamp-3 font-serif-persian">
-                        {art.excerpt_fa}
-                      </p>
-                    </div>
-
-                    <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)] font-serif-persian">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <User className="w-3.5 h-3.5 text-[#1B889A] shrink-0" />
-                        <span className="truncate">نویسنده: <strong className="text-[var(--text-primary)]">{art.author_name_fa}</strong></span>
-                      </div>
-                      <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
-                        <span>مطالعه مقاله</span>
-                        <ArrowLeft className="w-3.5 h-3.5" />
-                      </Link>
-                    </div>
-                  </div>
-                </article>
-              ))}
-          </div>
-
-        </div>
-
-        <div className="lg:col-span-4 space-y-6">
-          
-          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl p-4 sm:p-5 space-y-4 modern-card shadow-md">
-            <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
-              <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
-                <Volume2 className="w-4 h-4 text-[#1B889A]" />
-                <span>{t.topAudios}</span>
-              </h3>
-              <Link href="/media?tab=podcasts" className="text-xs text-[#1B889A] font-bold hover:underline">
-                آرشیو پادکست‌ها
-              </Link>
-            </div>
-
-            <div className="space-y-2.5">
-              {audios.map((aud) => (
-                <div
-                  key={aud.id}
-                  className="p-3 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-2xl flex items-center justify-between gap-3 hover:border-[#1B889A] transition-colors"
-                >
-                  <div className="min-w-0">
-                    <h4 className="text-xs font-bold text-[var(--text-primary)] truncate">{aud.title_fa}</h4>
-                    <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{aud.speaker_fa} • {aud.duration_fa}</p>
-                  </div>
-                  <button
-                    onClick={() => playAudio(aud)}
-                    className="w-8 h-8 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white flex items-center justify-center shrink-0 shadow-md active:scale-95 transition-all"
-                    title="شنیدن صوتی"
-                  >
-                    <Play className="w-3.5 h-3.5 fill-current" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl p-4 sm:p-5 space-y-4 modern-card shadow-md">
-            <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
-              <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
-                <Video className="w-4 h-4 text-[#1B889A]" />
-                <span>{t.topVideos}</span>
-              </h3>
-              <Link href="/media?tab=videos" className="text-xs text-[#1B889A] font-bold hover:underline">
-                آرشیو ویدیوها
-              </Link>
-            </div>
-
-            <div className="space-y-2.5">
-              {videos.map((vid) => (
-                <Link
-                  key={vid.id}
-                  href="/media?tab=videos"
-                  className="p-3 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-2xl flex items-center gap-3 hover:border-[#1B889A] transition-colors block group"
-                >
-                  <div className="w-12 h-9 rounded-xl overflow-hidden shrink-0 bg-stone-900 relative border border-[var(--card-border)] shadow-sm">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={vid.thumbnail_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                  </div>
-                  <div className="min-w-0">
-                    <h4 className="text-xs font-bold text-[var(--text-primary)] truncate group-hover:text-[#1B889A] transition-colors">{vid.title_fa}</h4>
-                    <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{vid.speaker_fa} • {vid.duration_fa}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-
-        </div>
-
-      </section>
 
     </div>
   );
