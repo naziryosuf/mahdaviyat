@@ -130,7 +130,8 @@ function HomeContent() {
   const displayTop3Tags = computedTop3.length >= 3 ? computedTop3 : ['مهدویت', 'جامعه', 'انسان'];
 
   const featuredArticle = articles[0];
-  const issueOne = magazineIssues[0];
+  const sortedMagazines = [...magazineIssues].sort((a, b) => (b.issue_number || 0) - (a.issue_number || 0));
+  const latestIssue = sortedMagazines[0] || magazineIssues[0];
 
   return (
     <div className="space-y-8 sm:space-y-12 py-4 sm:py-6 relative gpu-accelerate">
@@ -654,47 +655,49 @@ function HomeContent() {
       )}
 
       {/* HIGHLIGHT SHOWCASE SECTION */}
-      {(issueOne || featuredArticle) && (
+      {(latestIssue || featuredArticle) && (
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
           
-          {/* Issue 1 Showcase Card */}
-          {issueOne && (
-            <div className="lg:col-span-5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl p-5 sm:p-6 space-y-4 sm:space-y-5 modern-card flex flex-col justify-between shadow-lg">
+          {/* Latest Magazine Showcase Card */}
+          {latestIssue && (
+            <div className={`${featuredArticle ? 'lg:col-span-5' : 'lg:col-span-12'} bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl p-5 sm:p-6 space-y-4 sm:space-y-5 modern-card flex flex-col justify-between shadow-lg`}>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="px-3 py-1 rounded-full teal-badge text-[11px] sm:text-xs font-bold">
-                    شماره نخست مجله
+                    جدیدترین شماره مجله
                   </span>
                   <span className="text-xs text-[var(--text-secondary)] font-bold flex items-center gap-1">
                     <Calendar className="w-3.5 h-3.5 text-[#1B889A]" />
-                    {issueOne.publish_date_fa || 'تابستان ۱۴۰۴'}
+                    {latestIssue.publish_date_fa || 'تابستان ۱۴۰۴'}
                   </span>
                 </div>
 
                 <h3 className="text-lg sm:text-xl font-bold text-[var(--text-primary)] font-serif-persian">
-                  {issueOne.title_fa}
+                  {latestIssue.title_fa}
                 </h3>
 
-                <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
-                  {issueOne.description_fa}
+                <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed line-clamp-3">
+                  {latestIssue.description_fa}
                 </p>
 
                 <div className="relative rounded-2xl overflow-hidden border border-[var(--card-border)] aspect-[16/9] sm:aspect-[4/3] bg-stone-900 group">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={issueOne.cover_image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-4">
-                    <span className="text-white text-xs font-bold flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-[#1B889A]" />
-                      شامل ۴۵ صفحه کامل و تمامی ۹ مقاله اختصاصی
-                    </span>
-                  </div>
+                  <Link href={`/magazine?issue=${latestIssue.id}`} className="block w-full h-full">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={latestIssue.cover_image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-4">
+                      <span className="text-white text-xs font-bold flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-[#1B889A]" />
+                        <span>{latestIssue.page_count_fa || 'شامل ۴۵ صفحه کامل و تمامی مقالات اختصاصی'}</span>
+                      </span>
+                    </div>
+                  </Link>
                 </div>
               </div>
 
               <div className="pt-4 border-t border-[var(--card-border)] flex items-center justify-between">
-                <span className="text-xs text-[var(--text-secondary)]">تعداد دانلود: <strong className="text-[#1B889A] font-bold">{issueOne.download_count || 0}</strong></span>
+                <span className="text-xs text-[var(--text-secondary)]">تعداد دانلود: <strong className="text-[#1B889A] font-bold">{latestIssue.download_count || 0}</strong></span>
                 <Link
-                  href="/magazine?read=1"
+                  href={`/magazine?issue=${latestIssue.id}`}
                   className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs transition-colors shadow-md"
                 >
                   <span>ورق زدن آنلاین</span>
@@ -706,7 +709,7 @@ function HomeContent() {
 
           {/* Lead Editorial Article */}
           {featuredArticle && (
-            <div className={`${issueOne ? 'lg:col-span-7' : 'lg:col-span-12'} bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl p-5 sm:p-8 space-y-4 sm:space-y-5 modern-card flex flex-col justify-between shadow-lg`}>
+            <div className={`${latestIssue ? 'lg:col-span-7' : 'lg:col-span-12'} bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl p-5 sm:p-8 space-y-4 sm:space-y-5 modern-card flex flex-col justify-between shadow-lg`}>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-xs text-[#1B889A] font-bold">

@@ -36,26 +36,35 @@ function MagazineContentInner() {
     const download = searchParams.get('download');
     const issueId = searchParams.get('issue');
 
-    if ((read === '1' || read === 'true' || issueId) && magazineIssues.length > 0) {
-      const found = issueId 
-        ? magazineIssues.find(i => i.id === issueId || String(i.issue_number) === issueId) 
-        : magazineIssues[0];
-      if (found) {
-        setSelectedIssue(found);
-      }
-    }
+    if (magazineIssues.length > 0) {
+      // Sort issues by issue_number descending to always target the latest issue
+      const sortedIssues = [...magazineIssues].sort((a, b) => (b.issue_number || 0) - (a.issue_number || 0));
+      const latestIssue = sortedIssues[0];
 
-    if ((download === '1' || download === 'true') && magazineIssues.length > 0) {
-      const targetIssue = magazineIssues[0];
-      if (targetIssue) {
-        const pdfUrl = targetIssue.pdf_url || '/downloads/mahdism_issue_1.pdf';
-        const link = document.createElement('a');
-        link.href = pdfUrl;
-        link.download = `مجله_ایدئولوژی_مهدویت_شماره_${targetIssue.issue_number || 1}.pdf`;
-        link.target = '_blank';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+      if (read || issueId) {
+        const found = issueId 
+          ? magazineIssues.find(i => i.id === issueId || String(i.issue_number) === issueId) 
+          : latestIssue;
+        if (found) {
+          setSelectedIssue(found);
+        }
+      }
+
+      if (download) {
+        const targetIssue = issueId
+          ? magazineIssues.find(i => i.id === issueId || String(i.issue_number) === issueId) || latestIssue
+          : latestIssue;
+
+        if (targetIssue) {
+          const pdfUrl = targetIssue.pdf_url || '/downloads/mahdism_issue_1.pdf';
+          const link = document.createElement('a');
+          link.href = pdfUrl;
+          link.download = `مجله_ایدئولوژی_مهدویت_شماره_${targetIssue.issue_number || 1}.pdf`;
+          link.target = '_blank';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
       }
     }
   }, [searchParams, magazineIssues]);
