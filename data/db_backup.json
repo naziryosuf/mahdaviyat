@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-19T15:01:24.526Z",
+  "timestamp": "2026-08-19T15:16:30.528Z",
   "articles": [
     {
       "id": "art-1787135731072",
@@ -83,7 +83,8 @@
       "submitted_device": "Windows Desktop (Edge)",
       "tags": [
         "#معرفت‌شناسی",
-        "#مهدویت"
+        "#مهدویت",
+        "#سرمقاله_اصلی"
       ],
       "created_at": "2026-08-17T17:41:38.826+00:00"
     },
@@ -554,19 +555,6 @@
   ],
   "auditLogs": [
     {
-      "id": "log-1786702573818",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "حذف",
-      "target_title": "پادکست شناختی: جایگاه انسان در هستی‌شناسی مهدوی",
-      "item_type": "صوتی",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۱۶",
-      "time_only": "۱۲:۱۶",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
-    {
       "id": "log-1786704715018",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
@@ -718,6 +706,19 @@
       "item_type": "مجله",
       "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۱۷",
       "time_only": "۱۲:۱۷",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786702573818",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "پادکست شناختی: جایگاه انسان در هستی‌شناسی مهدوی",
+      "item_type": "صوتی",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۱۶",
+      "time_only": "۱۲:۱۶",
       "device_info": "Windows Desktop (Edge)",
       "status_note": null,
       "created_at": null
@@ -1100,6 +1101,19 @@
       "created_at": "2026-08-19T10:55:16.462088+00:00"
     },
     {
+      "id": "log-1787152543878",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "افزودن",
+      "target_title": "نظیف ",
+      "item_type": "عضو تیم",
+      "timestamp": "۱۴۰۵/۵/۲۸ - ۱۷:۱۵",
+      "time_only": "۱۷:۱۵",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": "انتشار مستقیم",
+      "created_at": null
+    },
+    {
       "id": "log-1786708601552",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
@@ -1477,19 +1491,6 @@
       "created_at": "2026-08-14T15:49:50.729735+00:00"
     },
     {
-      "id": "log-1787067054538",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "ویرایش",
-      "target_title": "بزرگ‌ترین مشکلات انسان‌ها در قرن ۲۱ چیست؟",
-      "item_type": "صوتی",
-      "timestamp": "۱۴۰۵/۵/۲۷ - ۱۷:۳۰",
-      "time_only": "۱۷:۳۰",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
-    {
       "id": "log-1786999834516",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
@@ -1657,6 +1658,19 @@
       "device_info": "Android Mobile (Chrome)",
       "status_note": "انتشار مستقیم",
       "created_at": "2026-08-18T11:16:20.382239+00:00"
+    },
+    {
+      "id": "log-1787067054538",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "بزرگ‌ترین مشکلات انسان‌ها در قرن ۲۱ چیست؟",
+      "item_type": "صوتی",
+      "timestamp": "۱۴۰۵/۵/۲۷ - ۱۷:۳۰",
+      "time_only": "۱۷:۳۰",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
     },
     {
       "id": "log-1786988717405",

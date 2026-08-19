@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Article, MagazineIssue, VideoItem, AudioItem, InfographicItem, TeamMember, ContactMessage, CoHostUser, AuditLogItem } from '../types';
+import { Article, MagazineIssue, VideoItem, AudioItem, InfographicItem, TeamMember, ContactMessage, CoHostUser, AuditLogItem, AboutPillar } from '../types';
 import { initialArticles, initialMagazineIssues, initialVideos, initialAudios, initialInfographics, initialTeamMembers, initialContactMessages, initialCoHosts } from '../data/initialData';
 import { Language } from '../data/translations';
 import { supabase } from '@/lib/supabase';
@@ -17,9 +17,12 @@ interface AppState {
   language: Language;
   setLanguage: (lang: Language) => void;
 
-  // Editable About Us Mission Text
+  // Editable About Us Mission Text & 3 Pillars
   aboutUsMission: string;
   setAboutUsMission: (desc: string) => void;
+  aboutPillars: AboutPillar[];
+  setAboutPillars: (pillars: AboutPillar[]) => void;
+  updateAboutPillar: (index: number, pillar: Partial<AboutPillar>) => void;
 
   // Designer Portfolio Website URL & Name (footer link)
   designerName: string;
@@ -153,6 +156,51 @@ export const useStore = create<AppState>((set, get) => ({
     } catch {}
   },
 
+  aboutPillars: [
+    {
+      title: '۱. ارتقای بصیرت شناختی',
+      description: 'توانمندسازی ذهن جامعه برای تحلیل مستقل اخبار، مقابله با جنگ شناختی رسانه‌های سلطه و بازشناسی حق از باطل.'
+    },
+    {
+      title: '۲. نقد مستدل مکاتب بشری',
+      description: 'بررسی و نقد علمی مکاتب الحادی و ماده‌گرای غرب، و اثبات کارآمدی جهان‌بینی اسلام و فرهنگ مهدوی.'
+    },
+    {
+      title: '۳. تحکیم اخوت و بیداری',
+      description: 'تقویت همدلی، وحدت کلمه و ایجاد بیداری معنوی میان جوانان و نخبگان سراسر افغانستان و جهان.'
+    }
+  ],
+  setAboutPillars: (pillars: AboutPillar[]) => {
+    set((state) => ({
+      aboutPillars: pillars,
+      stagedChangesCount: state.stagedChangesCount + 1,
+      hasUnsavedChanges: true
+    }));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('mahdism_about_pillars', JSON.stringify(pillars));
+    }
+    try {
+      supabase.from('site_settings').upsert({ key: 'about_pillars', value: JSON.stringify(pillars) }).then(() => {});
+    } catch {}
+  },
+  updateAboutPillar: (index: number, pillar: Partial<AboutPillar>) => {
+    const current = [...get().aboutPillars];
+    if (current[index]) {
+      current[index] = { ...current[index], ...pillar };
+      set((state) => ({
+        aboutPillars: current,
+        stagedChangesCount: state.stagedChangesCount + 1,
+        hasUnsavedChanges: true
+      }));
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('mahdism_about_pillars', JSON.stringify(current));
+      }
+      try {
+        supabase.from('site_settings').upsert({ key: 'about_pillars', value: JSON.stringify(current) }).then(() => {});
+      } catch {}
+    }
+  },
+
   designerName: 'M. Nazir Yosufi',
   setDesignerName: (name: string) => {
     set((state) => ({ 
@@ -251,6 +299,7 @@ export const useStore = create<AppState>((set, get) => ({
       localStorage.setItem('mahdism_team', JSON.stringify(state.teamMembers));
       localStorage.setItem('mahdism_audit_logs', JSON.stringify(state.auditLogs));
       localStorage.setItem('mahdism_about_mission', state.aboutUsMission);
+      localStorage.setItem('mahdism_about_pillars', JSON.stringify(state.aboutPillars));
       localStorage.setItem('mahdism_designer_name', state.designerName);
       localStorage.setItem('mahdism_designer_url', state.designerWebsiteUrl);
     }
@@ -280,7 +329,8 @@ export const useStore = create<AppState>((set, get) => ({
       promises.push(Promise.resolve(supabase.from('site_settings').upsert([
         { key: 'designer_name', value: state.designerName },
         { key: 'designer_url', value: state.designerWebsiteUrl },
-        { key: 'about_mission', value: state.aboutUsMission }
+        { key: 'about_mission', value: state.aboutUsMission },
+        { key: 'about_pillars', value: JSON.stringify(state.aboutPillars) }
       ])));
 
       if (state.auditLogs.length > 0) promises.push(Promise.resolve(supabase.from('audit_logs').upsert(state.auditLogs)));
@@ -1204,6 +1254,15 @@ export const useStore = create<AppState>((set, get) => ({
             set({ aboutUsMission: item.value });
             if (typeof localStorage !== 'undefined') localStorage.setItem('mahdism_about_mission', item.value);
           }
+          if (item.key === 'about_pillars' && item.value) {
+            try {
+              const parsed = JSON.parse(item.value);
+              if (Array.isArray(parsed) && parsed.length >= 3) {
+                set({ aboutPillars: parsed });
+                if (typeof localStorage !== 'undefined') localStorage.setItem('mahdism_about_pillars', item.value);
+              }
+            } catch {}
+          }
         });
       }
 
@@ -1236,6 +1295,16 @@ export const useStore = create<AppState>((set, get) => ({
     const savedAboutMission = localStorage.getItem('mahdism_about_mission');
     if (savedAboutMission) {
       set({ aboutUsMission: savedAboutMission });
+    }
+
+    const savedAboutPillars = localStorage.getItem('mahdism_about_pillars');
+    if (savedAboutPillars) {
+      try {
+        const parsed = JSON.parse(savedAboutPillars);
+        if (Array.isArray(parsed) && parsed.length >= 3) {
+          set({ aboutPillars: parsed });
+        }
+      } catch {}
     }
 
     const savedDesignerName = localStorage.getItem('mahdism_designer_name');

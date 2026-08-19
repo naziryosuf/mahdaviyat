@@ -169,3 +169,8 @@ export interface AuditLogItem {
   device_info: string;
   status_note?: string;
 }
+
+export interface AboutPillar {
+  title: string;
+  description: string;
+}

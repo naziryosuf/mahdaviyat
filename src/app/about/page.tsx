@@ -26,7 +26,7 @@ import { TeamMember } from '@/types';
 function AboutContent() {
   const searchParams = useSearchParams();
   const authorQuery = searchParams.get('author') || searchParams.get('member');
-  const { teamMembers, articles, audios, videos, playAudio, aboutUsMission } = useStore();
+  const { teamMembers, articles, audios, videos, playAudio, aboutUsMission, aboutPillars } = useStore();
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
 
   useEffect(() => {
@@ -96,9 +96,11 @@ function AboutContent() {
           <div className="w-12 h-12 rounded-2xl bg-[#1B889A]/10 border border-[#1B889A]/30 flex items-center justify-center text-[#1B889A]">
             <Target className="w-6 h-6" />
           </div>
-          <h3 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">۱. ارتقای بصیرت شناختی</h3>
-          <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-serif-persian leading-relaxed">
-            توانمندسازی ذهن جامعه برای تحلیل مستقل اخبار، مقابله با جنگ شناختی رسانه‌های سلطه و بازشناسی حق از باطل.
+          <h3 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">
+            {aboutPillars?.[0]?.title || '۱. ارتقای بصیرت شناختی'}
+          </h3>
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-serif-persian leading-relaxed whitespace-pre-line">
+            {aboutPillars?.[0]?.description || 'توانمندسازی ذهن جامعه برای تحلیل مستقل اخبار، مقابله با جنگ شناختی رسانه‌های سلطه و بازشناسی حق از باطل.'}
           </p>
         </div>
 
@@ -106,9 +108,11 @@ function AboutContent() {
           <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
             <BookOpen className="w-6 h-6" />
           </div>
-          <h3 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">۲. نقد مستدل مکاتب بشری</h3>
-          <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-serif-persian leading-relaxed">
-            بررسی و نقد علمی مکاتب الحادی و ماده‌گرای غرب، و اثبات کارآمدی جهان‌بینی اسلام و فرهنگ مهدوی.
+          <h3 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">
+            {aboutPillars?.[1]?.title || '۲. نقد مستدل مکاتب بشری'}
+          </h3>
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-serif-persian leading-relaxed whitespace-pre-line">
+            {aboutPillars?.[1]?.description || 'بررسی و نقد علمی مکاتب الحادی و ماده‌گرای غرب، و اثبات کارآمدی جهان‌بینی اسلام و فرهنگ مهدوی.'}
           </p>
         </div>
 
@@ -116,9 +120,11 @@ function AboutContent() {
           <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
             <HeartHandshake className="w-6 h-6" />
           </div>
-          <h3 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">۳. تحکیم اخوت و بیداری</h3>
-          <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-serif-persian leading-relaxed">
-            تقویت همدلی، وحدت کلمه و ایجاد بیداری معنوی میان جوانان و نخبگان سراسر افغانستان و جهان.
+          <h3 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">
+            {aboutPillars?.[2]?.title || '۳. تحکیم اخوت و بیداری'}
+          </h3>
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-serif-persian leading-relaxed whitespace-pre-line">
+            {aboutPillars?.[2]?.description || 'تقویت همدلی، وحدت کلمه و ایجاد بیداری معنوی میان جوانان و نخبگان سراسر افغانستان و جهان.'}
           </p>
         </div>
       </section>
