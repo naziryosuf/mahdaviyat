@@ -1,7 +1,20 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Send, CheckCircle2, Video, Phone, Mail, ExternalLink } from 'lucide-react';
+import Link from 'next/link';
+import { 
+  Send, 
+  CheckCircle2, 
+  Video, 
+  Phone, 
+  Mail, 
+  ExternalLink,
+  BookOpen,
+  Newspaper,
+  FileText,
+  Layers,
+  Info
+} from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { translations } from '@/data/translations';
 
@@ -28,10 +41,81 @@ export const Footer: React.FC = () => {
     <footer aria-label="پای‌برگ وب‌سایت" className="bg-[var(--card-bg)] border-t border-[var(--card-border)] text-[var(--text-secondary)] mt-12 py-6 sm:py-8">
       <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 space-y-6">
         
-        {/* Contact Links & Subscription Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10 items-stretch">
+        {/* Quick Links, Contact Links & Subscription Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
           
-          {/* Official Social & Contact Card */}
+          {/* 1. Quick Navigation Links Card */}
+          <div className="space-y-3 flex flex-col justify-between">
+            <div>
+              <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian border-r-2 border-[#1B889A] pr-2.5 leading-tight">
+                {t.quickLinks || 'دسترسی سریع'}
+              </h4>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <Link
+                href="/"
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] hover:text-[#1B889A] transition-all shadow-sm group min-w-0"
+              >
+                <div className="w-7 h-7 rounded-lg bg-[#1B889A]/10 border border-[#1B889A]/30 flex items-center justify-center text-[#1B889A] shrink-0 group-hover:scale-105 transition-transform">
+                  <BookOpen className="w-3.5 h-3.5" />
+                </div>
+                <span className="font-bold text-[var(--text-primary)] group-hover:text-[#1B889A] transition-colors truncate">{t.home || 'صفحه اصلی'}</span>
+              </Link>
+
+              <Link
+                href="/magazine"
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] hover:text-[#1B889A] transition-all shadow-sm group min-w-0"
+              >
+                <div className="w-7 h-7 rounded-lg bg-[#1B889A]/10 border border-[#1B889A]/30 flex items-center justify-center text-[#1B889A] shrink-0 group-hover:scale-105 transition-transform">
+                  <Newspaper className="w-3.5 h-3.5" />
+                </div>
+                <span className="font-bold text-[var(--text-primary)] group-hover:text-[#1B889A] transition-colors truncate">{t.magazine || 'آرشیو مجله'}</span>
+              </Link>
+
+              <Link
+                href="/content"
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] hover:text-[#1B889A] transition-all shadow-sm group min-w-0"
+              >
+                <div className="w-7 h-7 rounded-lg bg-[#1B889A]/10 border border-[#1B889A]/30 flex items-center justify-center text-[#1B889A] shrink-0 group-hover:scale-105 transition-transform">
+                  <FileText className="w-3.5 h-3.5" />
+                </div>
+                <span className="font-bold text-[var(--text-primary)] group-hover:text-[#1B889A] transition-colors truncate">{t.content || 'مقالات'}</span>
+              </Link>
+
+              <Link
+                href="/media"
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] hover:text-[#1B889A] transition-all shadow-sm group min-w-0"
+              >
+                <div className="w-7 h-7 rounded-lg bg-[#1B889A]/10 border border-[#1B889A]/30 flex items-center justify-center text-[#1B889A] shrink-0 group-hover:scale-105 transition-transform">
+                  <Layers className="w-3.5 h-3.5" />
+                </div>
+                <span className="font-bold text-[var(--text-primary)] group-hover:text-[#1B889A] transition-colors truncate">{t.media || 'چندرسانه‌ای'}</span>
+              </Link>
+
+              <Link
+                href="/about"
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] hover:text-[#1B889A] transition-all shadow-sm group min-w-0"
+              >
+                <div className="w-7 h-7 rounded-lg bg-[#1B889A]/10 border border-[#1B889A]/30 flex items-center justify-center text-[#1B889A] shrink-0 group-hover:scale-105 transition-transform">
+                  <Info className="w-3.5 h-3.5" />
+                </div>
+                <span className="font-bold text-[var(--text-primary)] group-hover:text-[#1B889A] transition-colors truncate">{t.about || 'درباره ما'}</span>
+              </Link>
+
+              <Link
+                href="/contact"
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] hover:text-[#1B889A] transition-all shadow-sm group min-w-0"
+              >
+                <div className="w-7 h-7 rounded-lg bg-[#1B889A]/10 border border-[#1B889A]/30 flex items-center justify-center text-[#1B889A] shrink-0 group-hover:scale-105 transition-transform">
+                  <Mail className="w-3.5 h-3.5" />
+                </div>
+                <span className="font-bold text-[var(--text-primary)] group-hover:text-[#1B889A] transition-colors truncate">{t.contact || 'ارتباط با ما'}</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* 2. Official Social & Contact Card */}
           <div className="space-y-3 flex flex-col justify-between">
             <div>
               <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian border-r-2 border-[#1B889A] pr-2.5 leading-tight">
@@ -100,7 +184,7 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Newsletter Subscription Box */}
+          {/* 3. Newsletter Subscription Box */}
           <div className="space-y-3 flex flex-col justify-between">
             <div>
               <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian border-r-2 border-[#1B889A] pr-2.5 leading-tight">
