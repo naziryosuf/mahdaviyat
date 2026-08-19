@@ -728,13 +728,13 @@ function HomeContent() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
                 <h2 className="text-base sm:text-xl font-extrabold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
                   <Volume2 className="w-5 sm:w-6 h-5 sm:h-6 text-[#1B889A]" />
-                  <span>سه پادکست اخیر</span>
+                  <span>سه محتوای صوتی اخیر</span>
                 </h2>
                 <Link
                   href="/media?tab=podcasts"
                   className="text-xs text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0"
                 >
-                  <span>مشاهده آرشیو کامل پادکست‌ها</span>
+                  <span>مشاهده آرشیو کامل محتوای صوتی</span>
                   <ArrowLeft className="w-4 h-4" />
                 </Link>
               </div>
@@ -802,13 +802,13 @@ function HomeContent() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
                 <h2 className="text-base sm:text-xl font-extrabold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
                   <Video className="w-5 sm:w-6 h-5 sm:h-6 text-[#1B889A]" />
-                  <span>سه ویدیو اخیر</span>
+                  <span>سه محتوای ویدیویی اخیر</span>
                 </h2>
                 <Link
                   href="/media?tab=videos"
                   className="text-xs text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0"
                 >
-                  <span>مشاهده آرشیو کامل ویدیوها</span>
+                  <span>مشاهده آرشیو کامل محتوای ویدیویی</span>
                   <ArrowLeft className="w-4 h-4" />
                 </Link>
               </div>

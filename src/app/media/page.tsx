@@ -60,7 +60,7 @@ export default function MediaPage() {
           چندرسانه‌ای مجله <span className="teal-gradient-text">ایدئولوژی مهدویت</span>
         </h1>
         <p className="text-xs sm:text-sm text-[var(--text-secondary)] max-w-2xl leading-relaxed">
-          دسترسی به پادکست‌های صوتی، ویدیوهای تحلیل مکاتب، اینفوگرافیک‌های معرفتی و مطالب شنیداری.
+          دسترسی به محتوای صوتی، محتوای ویدیویی، محتوای تصویری و گرافیکی و مطالب شنیداری.
         </p>
 
         {/* Tab Filters */}
@@ -83,7 +83,7 @@ export default function MediaPage() {
                 : 'bg-[var(--bg-color)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:border-[#1B889A]'
             }`}
           >
-            پادکست‌های صوتی
+            محتوای صوتی
           </button>
           <button
             onClick={() => setActiveTab('videos')}
@@ -93,7 +93,7 @@ export default function MediaPage() {
                 : 'bg-[var(--bg-color)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:border-[#1B889A]'
             }`}
           >
-            ویدیوها و درس‌گفتارها
+            محتوای ویدیویی
           </button>
           <button
             onClick={() => setActiveTab('infographics')}
@@ -103,7 +103,7 @@ export default function MediaPage() {
                 : 'bg-[var(--bg-color)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:border-[#1B889A]'
             }`}
           >
-            اینفوگرافیک‌ها
+            محتوای تصویری و گرافیکی
           </button>
         </div>
       </section>
@@ -114,7 +114,7 @@ export default function MediaPage() {
           <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
             <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
               <Radio className="w-5 h-5 text-[#1B889A]" />
-              <span>پادکست‌ها و فایل‌های صوتی ({filteredAudios.length})</span>
+              <span>محتوای صوتی ({filteredAudios.length})</span>
             </h2>
             <Link href="/audio" className="text-xs text-[#1B889A] font-bold hover:underline">
               صفحه اختصاصی آرشیو صوتی
@@ -191,7 +191,7 @@ export default function MediaPage() {
           <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
             <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
               <Video className="w-5 h-5 text-[#1B889A]" />
-              <span>درس‌گفتارهای تصویری و تحلیل‌ها ({filteredVideos.length})</span>
+              <span>محتوای ویدیویی ({filteredVideos.length})</span>
             </h2>
             <Link href="/video" className="text-xs text-[#1B889A] font-bold hover:underline">
               صفحه اختصاصی ویدیویی
@@ -278,7 +278,7 @@ export default function MediaPage() {
           <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
             <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
               <ImageIcon className="w-5 h-5 text-[#1B889A]" />
-              <span>اینفوگرافیک‌ها و تصاویر معرفتی ({filteredInfographics.length})</span>
+              <span>محتوای تصویری و گرافیکی ({filteredInfographics.length})</span>
             </h2>
           </div>
 
