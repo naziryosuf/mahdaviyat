@@ -242,19 +242,19 @@ function HomeContent() {
 
           <div className="relative z-10 flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <Link
-              href="/magazine?read=1"
+              href="/magazine"
               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs transition-all shadow-md shadow-[#1B889A]/30 active:scale-95"
             >
               <BookOpen className="w-4 h-4" />
-              <span>مطالعه شماره نخست مجله</span>
+              <span>مطالعه مجله</span>
             </Link>
 
             <Link
-              href="/magazine?download=1"
+              href="/magazine"
               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[var(--bg-color)] hover:bg-[var(--muted-bg)] text-[var(--text-primary)] border border-[var(--card-border)] font-bold text-xs transition-all shadow-sm active:scale-95"
             >
               <Download className="w-4 h-4 text-[#1B889A]" />
-              <span>دانلود فایل PDF مجله</span>
+              <span>دانلود مجله</span>
             </Link>
           </div>
 
