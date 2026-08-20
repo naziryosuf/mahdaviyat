@@ -48,6 +48,7 @@ import {
 import { calculateReadingTimeFa } from '@/utils/readingTime';
 import { compressImageFile } from '@/utils/imageCompressor';
 import { uploadMagazineFile } from '@/utils/storageUpload';
+import { supabase } from '@/lib/supabase';
 import { Article, MagazineIssue, VideoItem, AudioItem, TeamMember, ContactMessage, CoHostUser } from '@/types';
 
 const parseTagsInput = (str: string): string[] => {
@@ -1056,6 +1057,14 @@ export const AdminDashboardContent: React.FC = () => {
       const trimmed = aboutInputText.trim() || aboutUsMission;
       await setAboutUsMission(trimmed);
       await setAboutPillars(localPillars);
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('mahdism_about_mission', trimmed);
+        localStorage.setItem('mahdism_about_pillars', JSON.stringify(localPillars));
+      }
+      await supabase.from('site_settings').upsert([
+        { key: 'about_mission', value: trimmed },
+        { key: 'about_pillars', value: JSON.stringify(localPillars) }
+      ]);
       await saveAllChangesToLive();
       setIsAboutTouched(false);
       addAuditLog('ویرایش', 'متن رسالت و اهداف سه‌گانه', 'عضو تیم', 'به‌روزرسانی صفحه درباره ما و انتشار آنلاین');
