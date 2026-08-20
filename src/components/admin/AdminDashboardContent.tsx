@@ -1054,18 +1054,35 @@ export const AdminDashboardContent: React.FC = () => {
     e.preventDefault();
     setSaveToast({ msg: 'در حال ذخیره اطلاعات صفحه درباره ما و اهداف سه‌گانه...', type: 'loading' });
     try {
-      const trimmed = aboutInputText.trim() || aboutUsMission;
-      await setAboutUsMission(trimmed);
-      await setAboutPillars(localPillars);
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('mahdism_about_mission', trimmed);
-        localStorage.setItem('mahdism_about_pillars', JSON.stringify(localPillars));
-      }
-      await supabase.from('site_settings').upsert([
-        { key: 'about_mission', value: trimmed },
-        { key: 'about_pillars', value: JSON.stringify(localPillars) }
+      const finalMission = aboutInputText.trim() || aboutUsMission;
+      const finalPillars = localPillars.map((p, i) => ({
+        title: p?.title ?? '',
+        description: p?.description ?? ''
+      }));
+
+      // 1. Direct synchronous update to Supabase Cloud
+      const { error: supaErr } = await supabase.from('site_settings').upsert([
+        { key: 'about_mission', value: finalMission },
+        { key: 'about_pillars', value: JSON.stringify(finalPillars) }
       ]);
-      await saveAllChangesToLive();
+      if (supaErr) {
+        throw new Error(supaErr.message);
+      }
+
+      // 2. Direct synchronous update to LocalStorage
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('mahdism_about_mission', finalMission);
+        localStorage.setItem('mahdism_about_pillars', JSON.stringify(finalPillars));
+      }
+
+      // 3. Update Zustand store state
+      useStore.setState({
+        aboutUsMission: finalMission,
+        aboutPillars: finalPillars,
+        hasUnsavedChanges: false,
+        stagedChangesCount: 0
+      });
+
       setIsAboutTouched(false);
       addAuditLog('ویرایش', 'متن رسالت و اهداف سه‌گانه', 'عضو تیم', 'به‌روزرسانی صفحه درباره ما و انتشار آنلاین');
       setSaveToast({ msg: '✅ اطلاعات صفحه درباره ما و ۳ هدف کلیدی با موفقیت ذخیره و منتشر شد!', type: 'success' });
@@ -2703,11 +2720,14 @@ export const AdminDashboardContent: React.FC = () => {
                       <label className="text-xs font-bold text-[var(--text-primary)] block mb-1">عنوان هدف ۱:</label>
                       <input
                         type="text"
-                        value={localPillars[0]?.title || ''}
+                        value={localPillars[0]?.title ?? ''}
                         onChange={(e) => {
-                          const updated = [...localPillars];
-                          updated[0] = { ...updated[0], title: e.target.value };
-                          setLocalPillars(updated);
+                          const val = e.target.value;
+                          setLocalPillars(prev => {
+                            const updated = [...prev];
+                            updated[0] = { ...(updated[0] || { title: '', description: '' }), title: val };
+                            return updated;
+                          });
                           setIsAboutTouched(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs font-bold text-[var(--text-primary)] font-serif-persian focus:border-[#1B889A]"
@@ -2717,11 +2737,14 @@ export const AdminDashboardContent: React.FC = () => {
                       <label className="text-xs font-bold text-[var(--text-primary)] block mb-1">توضیحات هدف ۱:</label>
                       <textarea
                         rows={4}
-                        value={localPillars[0]?.description || ''}
+                        value={localPillars[0]?.description ?? ''}
                         onChange={(e) => {
-                          const updated = [...localPillars];
-                          updated[0] = { ...updated[0], description: e.target.value };
-                          setLocalPillars(updated);
+                          const val = e.target.value;
+                          setLocalPillars(prev => {
+                            const updated = [...prev];
+                            updated[0] = { ...(updated[0] || { title: '', description: '' }), description: val };
+                            return updated;
+                          });
                           setIsAboutTouched(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] font-serif-persian leading-relaxed focus:border-[#1B889A]"
@@ -2739,11 +2762,14 @@ export const AdminDashboardContent: React.FC = () => {
                       <label className="text-xs font-bold text-[var(--text-primary)] block mb-1">عنوان هدف ۲:</label>
                       <input
                         type="text"
-                        value={localPillars[1]?.title || ''}
+                        value={localPillars[1]?.title ?? ''}
                         onChange={(e) => {
-                          const updated = [...localPillars];
-                          updated[1] = { ...updated[1], title: e.target.value };
-                          setLocalPillars(updated);
+                          const val = e.target.value;
+                          setLocalPillars(prev => {
+                            const updated = [...prev];
+                            updated[1] = { ...(updated[1] || { title: '', description: '' }), title: val };
+                            return updated;
+                          });
                           setIsAboutTouched(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs font-bold text-[var(--text-primary)] font-serif-persian focus:border-amber-500"
@@ -2753,11 +2779,14 @@ export const AdminDashboardContent: React.FC = () => {
                       <label className="text-xs font-bold text-[var(--text-primary)] block mb-1">توضیحات هدف ۲:</label>
                       <textarea
                         rows={4}
-                        value={localPillars[1]?.description || ''}
+                        value={localPillars[1]?.description ?? ''}
                         onChange={(e) => {
-                          const updated = [...localPillars];
-                          updated[1] = { ...updated[1], description: e.target.value };
-                          setLocalPillars(updated);
+                          const val = e.target.value;
+                          setLocalPillars(prev => {
+                            const updated = [...prev];
+                            updated[1] = { ...(updated[1] || { title: '', description: '' }), description: val };
+                            return updated;
+                          });
                           setIsAboutTouched(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] font-serif-persian leading-relaxed focus:border-amber-500"
@@ -2775,11 +2804,14 @@ export const AdminDashboardContent: React.FC = () => {
                       <label className="text-xs font-bold text-[var(--text-primary)] block mb-1">عنوان هدف ۳:</label>
                       <input
                         type="text"
-                        value={localPillars[2]?.title || ''}
+                        value={localPillars[2]?.title ?? ''}
                         onChange={(e) => {
-                          const updated = [...localPillars];
-                          updated[2] = { ...updated[2], title: e.target.value };
-                          setLocalPillars(updated);
+                          const val = e.target.value;
+                          setLocalPillars(prev => {
+                            const updated = [...prev];
+                            updated[2] = { ...(updated[2] || { title: '', description: '' }), title: val };
+                            return updated;
+                          });
                           setIsAboutTouched(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs font-bold text-[var(--text-primary)] font-serif-persian focus:border-emerald-500"
@@ -2789,11 +2821,14 @@ export const AdminDashboardContent: React.FC = () => {
                       <label className="text-xs font-bold text-[var(--text-primary)] block mb-1">توضیحات هدف ۳:</label>
                       <textarea
                         rows={4}
-                        value={localPillars[2]?.description || ''}
+                        value={localPillars[2]?.description ?? ''}
                         onChange={(e) => {
-                          const updated = [...localPillars];
-                          updated[2] = { ...updated[2], description: e.target.value };
-                          setLocalPillars(updated);
+                          const val = e.target.value;
+                          setLocalPillars(prev => {
+                            const updated = [...prev];
+                            updated[2] = { ...(updated[2] || { title: '', description: '' }), description: val };
+                            return updated;
+                          });
                           setIsAboutTouched(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] font-serif-persian leading-relaxed focus:border-emerald-500"

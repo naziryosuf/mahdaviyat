@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-20T19:40:02.793Z",
+  "timestamp": "2026-08-20T19:44:34.961Z",
   "articles": [
     {
       "id": "art-1787135731072",
@@ -344,28 +344,6 @@
   ],
   "videos": [
     {
-      "id": "vid-1787140502378",
-      "title_fa": "انسان یا خلیفه خدا جل‌جلاله در روی زمین ",
-      "description_fa": "",
-      "video_url": "https://youtu.be/_H8yXZX4xAE",
-      "thumbnail_url": "https://img.youtube.com/vi/_H8yXZX4xAE/hqdefault.jpg",
-      "duration_fa": "60 دقیقه",
-      "category_fa": "محتوای ویدیویی",
-      "speaker_fa": " داکتر نقیب الله ذکی",
-      "published_at": "۱۴۰۵/۵/۲۸",
-      "views": 1,
-      "featured": false,
-      "status": "published",
-      "submitted_by_name": "M. Nazir Yosuf",
-      "submitted_at": "۱۴۰۵/۵/۲۸",
-      "submitted_device": "Windows Desktop (Chrome)",
-      "download_url": null,
-      "transcript_fa": null,
-      "timestamps": null,
-      "tags": null,
-      "created_at": null
-    },
-    {
       "id": "vid-1787140387772",
       "title_fa": "وبینار:  پایه‌های تربیت موفق؛ والدین، معلمان و جامعه ",
       "description_fa": "",
@@ -474,28 +452,31 @@
       "timestamps": [],
       "tags": [],
       "created_at": "2026-08-19T11:56:35.258783+00:00"
-    }
-  ],
-  "audios": [
+    },
     {
-      "id": "aud-1787001214563",
-      "title_fa": "مصاحبه: مروری به ستراتیژی پیامبر ص برای ساختن جامعه اسلامی",
-      "speaker_fa": "مصاحبه با الهام الدین سادات کارشناس ارشد حقوق عامه و آگاه امور اسلامی",
-      "audio_url": "https://files.catbox.moe/q2frob.mp3",
-      "duration_fa": "یک ساعت و ۱۰ دقیقه",
-      "description_fa": "محورهای بحث:\n- طرح اسلام برای ساختن جامعه چیست؟\n- ستراتیژی و برنامه پیامبر ص در ساختن جامعه اسلامی چه بود؟\n-چرا امروزه مسلمانان در ساختن یک جامعه سالم موفق نیستند؟\nو..",
-      "published_at": "۱۴۰۵/۵/۲۶",
-      "category_fa": "محتوای صوتی",
-      "cover_image": "https://abimnaqtmcgoslealmoh.supabase.co/storage/v1/object/public/magazines/covers/cover_1787181953728_88rbu.jpg",
-      "plays": 1,
+      "id": "vid-1787140502378",
+      "title_fa": "انسان یا خلیفه خدا جل‌جلاله در روی زمین ",
+      "description_fa": "",
+      "video_url": "https://youtu.be/_H8yXZX4xAE",
+      "thumbnail_url": "https://img.youtube.com/vi/_H8yXZX4xAE/hqdefault.jpg",
+      "duration_fa": "60 دقیقه",
+      "category_fa": "محتوای ویدیویی",
+      "speaker_fa": " داکتر نقیب الله ذکی",
+      "published_at": "۱۴۰۵/۵/۲۸",
+      "views": 1,
       "featured": false,
       "status": "published",
       "submitted_by_name": "M. Nazir Yosuf",
-      "submitted_at": "۱۴۰۵/۵/۲۶",
-      "submitted_device": "Windows Desktop (Edge)",
-      "tags": [],
-      "created_at": "2026-08-17T21:13:25.77509+00:00"
-    },
+      "submitted_at": "۱۴۰۵/۵/۲۸",
+      "submitted_device": "Windows Desktop (Chrome)",
+      "download_url": null,
+      "transcript_fa": null,
+      "timestamps": null,
+      "tags": null,
+      "created_at": null
+    }
+  ],
+  "audios": [
     {
       "id": "aud-1787001555820",
       "title_fa": "مصاحبه: بزرگ‌ترین مشکلات انسان‌ها در قرن ۲۱ چیست؟",
@@ -552,6 +533,25 @@
       "submitted_device": "Windows Desktop (Edge)",
       "tags": [],
       "created_at": "2026-08-17T21:20:46.990554+00:00"
+    },
+    {
+      "id": "aud-1787001214563",
+      "title_fa": "مصاحبه: مروری به ستراتیژی پیامبر ص برای ساختن جامعه اسلامی",
+      "speaker_fa": "مصاحبه با الهام الدین سادات کارشناس ارشد حقوق عامه و آگاه امور اسلامی",
+      "audio_url": "https://files.catbox.moe/q2frob.mp3",
+      "duration_fa": "یک ساعت و ۱۰ دقیقه",
+      "description_fa": "محورهای بحث:\n- طرح اسلام برای ساختن جامعه چیست؟\n- ستراتیژی و برنامه پیامبر ص در ساختن جامعه اسلامی چه بود؟\n-چرا امروزه مسلمانان در ساختن یک جامعه سالم موفق نیستند؟\nو..",
+      "published_at": "۱۴۰۵/۵/۲۶",
+      "category_fa": "محتوای صوتی",
+      "cover_image": "https://abimnaqtmcgoslealmoh.supabase.co/storage/v1/object/public/magazines/covers/cover_1787181953728_88rbu.jpg",
+      "plays": 1,
+      "featured": false,
+      "status": "published",
+      "submitted_by_name": "M. Nazir Yosuf",
+      "submitted_at": "۱۴۰۵/۵/۲۶",
+      "submitted_device": "Windows Desktop (Edge)",
+      "tags": [],
+      "created_at": "2026-08-17T21:13:25.77509+00:00"
     },
     {
       "id": "aud-1787181567310",
@@ -626,6 +626,19 @@
       "created_at": "2026-08-17T21:34:01.032501+00:00"
     },
     {
+      "id": "team-1787176068269",
+      "name_fa": "احسان‌الله عتیق",
+      "role_fa": "روزنامه‌نگار",
+      "bio_fa": "فارغ‌التحصیل رشته Publizistik- und Kommunikationswissenschaft (علوم ارتباطات و روزنامه‌نگاری) از Freie Universität Berlin است و در کنار رشته اصلی، در حوزه‌های علوم کامپیوتر، تاریخ و فرهنگ نیز تحصیل کرده است. او روزنامه‌نگار، پژوهشگر رسانه و فعال حوزه صلح و ارتباطات است و در زمینه پژوهش رسانه‌ای، تحلیل نظام‌های رسانه‌ای، تولید محتوا و ارتباطات بین‌فرهنگی فعالیت دارد.\n\nوی از سال ۲۰۲۵ به‌عنوان همکار تحقیقاتی / Student Assistant در پروژه پژوهشی Media for Peace (M4P) در دانشگاه آزاد برلین فعالیت می‌کند و در زمینه پژوهش، جمع‌آوری و تحلیل داده‌های رسانه‌ای و مطالعات رسانه مشارکت دارد.\n\nتحصیلات\n\n* کارشناسی علوم ارتباطات و روزنامه‌نگاری (Publizistik- und Kommunikationswissenschaft) - Freie Universität Berlin، آلمان (۲۰۲۴ – ۲۰۲۶)\n    * گرایش‌های فرعی: علوم کامپیوتر (Computer Science) و تاریخ و فرهنگ\n* کارشناسی ارتباطات و روزنامه‌نگاری - دانشگاه کابل، افغانستان (۲۰۱۷ – ۲۰۲۱)\n* Peace Practice Alliance – برنامه آموزشی آنلاین - Euphrates Institute، کالیفرنیا (۲۰۲۲)\n* فراغت از دوره مکتب لیسه عالی عبدالغفور ندیم، کابل (۲۰۱۶)\n\nدوره‌های کوتاه مدت\n\n* دوره تخصصی روزنامه‌نگاری صلح، جنسیت و خبرنگاری خیابانی - Afghan Women’s News Agency، کابل (۲۰۲۰ – ۲۰۲۱)\n* Leadership, Time Management, Goal Setting, Effective Communication and Language Teaching Methodology - QESDSO، کابل (۲۰۲۰ – ۲۰۲۱)\n* Peace Leadership Training - Euphrates Institute (۲۰۲۲)\n* ZuBe – Zukunftsorientierte Beschäftigung für Migrant*innen - آلمان (۲۰۲۳)\n* دوره‌های زبان آلمانی از سطح A1 تا C1 - کسب سطح C1 زبان آلمانی\n\nتجارب کاری\n\n* همکار تحقیقاتی / Student Assistant - پروژه Media for Peace (M4P)، Freie Universität Berlin (۲۰۲۵ – اکنون)\n    * همکاری در پژوهش‌های مرتبط با رسانه، ارتباطات و صلح\n    * جمع‌آوری، کدگذاری و تحلیل داده‌های رسانه‌ای\n    * مشارکت در پژوهش و تحلیل نظام‌های رسانه‌ای\n    * همکاری در فعالیت‌های پژوهشی و دانشگاهی مرتبط با رسانه و ارتباطات\n* Media Support - The Good Media Network (۲۰۲۴ — به مدت ۸ ماه)\n    * پشتیبانی و همکاری در فعالیت‌های رسانه‌ای و تولید محتوا\n* Student Ambassador / سفیر دانشجویی - Freie Universität Berlin، برنامه weStudents (۲۰۲۴ — به مدت ۶ ماه)\n    * معرفی تجربه تحصیل و زندگی دانشجویی در آلمان\n    * مشارکت در برنامه‌های دانشگاهی و ارتباط با دانشجویان\n* خبرنگار، تهیه‌کننده و گوینده رادیو - The Killid Group (TKG)، کابل (۲۰۲۰)\n    * تهیه و تولید محتوای رادیویی\n    * گزارشگری و انجام مصاحبه\n    * گویندگی و تهیه برنامه‌های رسانه‌ای\n* Peace Builder / فعال صلح‌سازی - Afghanistan Youth Empowerment and Peace-Building Organization (AYEPO)، کابل (۲۰۲۰ – ۲۰۲۱)\n* استاد زبان انگلیسی - Thunder English Language High Institute، کابل (۲۰۱۸ – ۲۰۲۰)\n* مدرس زبان آلمانی - تدریس آنلاین و خصوصی (۲۰۲۵ – اکنون)\n\nتجارب حوزه پژوهش و نویسندگی\n\n* همکاری در پروژه پژوهشی Media for Peace (M4P) در Freie Universität Berlin از سال ۲۰۲۵\n* پژوهش و تحلیل نظام‌های رسانه‌ای، به‌ویژه رسانه‌های افغانستان\n* بررسی تأثیر تحولات سیاسی و اجتماعی بر رسانه‌ها و روزنامه‌نگاری\n* تجربه در جمع‌آوری، کدگذاری و تحلیل داده‌های رسانه‌ای\n* انجام پژوهش‌های کمی در حوزه مطالعات رسانه\n* پژوهش در زمینه رسانه، صلح، ارتباطات عمومی و دیجیتالی‌شدن رسانه‌ها\n* نویسندگی و تولید محتوای رسانه‌ای در حوزه‌های اجتماعی، سیاسی، صلح و حقوق بشر\n* نگارش مقالات و مطالب در زمینه آموزش، جامعه، رسانه و مسائل افغانستان\n* نویسندگی و تولید محتوا برای وب‌سایت‌ها و رسانه‌های دانشگاهی Freie Universität Berlin، از جمله مطالب مرتبط با تجربه دانشجویی و زندگی در آلمان\n* تجربه تولید محتوای رادیویی، گزارشگری، مصاحبه و گویندگی\n* ویرایش و آماده‌سازی متون رسانه‌ای و دانشگاهی\n\nفعالیت‌های دانشجویی و اجتماعی\n\n* سفیر دانشجویی Freie Universität Berlin در برنامه weStudents — ۲۰۲۴\n* مدیر ویرایش، Qalam Quarterly، کابل — ۲۰۲۰ تا ۲۰۲۱\n* گزارشگر و ویراستار متون، کمیته نشرات اتحادیه محصلان دانشگاه کابل — ۲۰۱۹ تا ۲۰۲۱\n* معاون مدیر برنامه، انجمن محصلان دانشکده ژورنالیزم دانشگاه کابل — ۲۰۲۰ تا ۲۰۲۱\n* مسئول کمیته نشرات و ارتباطات، انجمن دانشجویان دانشکده ژورنالیزم دانشگاه کابل — ۲۰۱۹ تا ۲۰۲۰\n\nمهارت‌های تخصصی\n\n* پژوهش و تحقیق رسانه‌ای\n* روزنامه‌نگاری و گزارشگری\n* تولید، ویرایش و مدیریت محتوای رسانه‌ای\n* تحلیل رسانه و داده‌های رسانه‌ای\n* پژوهش کمی و تحلیل داده\n* ارتباطات عمومی\n* صلح‌سازی و فعالیت‌های اجتماعی\n* Advocacy و فعالیت‌های حقوق بشری\nزبان‌ها و سطح آن\n\n* دری / فارسی: زبان مادری\n* پشتو: بسیار خوب / مسلط\n* انگلیسی: بسیار خوب / مسلط\n* آلمانی: C1 — بسیار خوب\n\nحوزه‌های تخصصی و علایق پژوهشی\n\n* رسانه و روزنامه‌نگاری\n* مطالعات ارتباطات\n* پژوهش و تحلیل رسانه‌ای\n* رسانه و تحولات سیاسی و اجتماعی\n* مسائل اجتماعی و سیاسی افغانستان\n* رسانه، صلح و ارتباطات\n* ارتباطات عمومی و بین‌فرهنگی\n* دیجیتالی‌شدن رسانه‌ها",
+      "avatar_url": "https://abimnaqtmcgoslealmoh.supabase.co/storage/v1/object/public/magazines/covers/cover_1787176067831_8t9g8.jpg",
+      "specialization_fa": "کارشناس علوم ارتباطات و روزنامه‌نگاری دانشگاه آزاد برلین ",
+      "status": "published",
+      "submitted_by_name": "M. Nazir Yosuf",
+      "submitted_at": "۱۴۰۵/۵/۲۸",
+      "submitted_device": "ORDERINDEX:4||Windows Desktop (Chrome)",
+      "created_at": "2026-08-19T21:47:48.399665+00:00"
+    },
+    {
       "id": "team-1787175697632",
       "name_fa": "محمد شهیر شریفی",
       "role_fa": "نویسنده و پژوهشگر",
@@ -652,17 +665,17 @@
       "created_at": "2026-08-19T15:36:42.699222+00:00"
     },
     {
-      "id": "team-1787176068269",
-      "name_fa": "احسان‌الله عتیق",
-      "role_fa": "روزنامه‌نگار",
-      "bio_fa": "فارغ‌التحصیل رشته Publizistik- und Kommunikationswissenschaft (علوم ارتباطات و روزنامه‌نگاری) از Freie Universität Berlin است و در کنار رشته اصلی، در حوزه‌های علوم کامپیوتر، تاریخ و فرهنگ نیز تحصیل کرده است. او روزنامه‌نگار، پژوهشگر رسانه و فعال حوزه صلح و ارتباطات است و در زمینه پژوهش رسانه‌ای، تحلیل نظام‌های رسانه‌ای، تولید محتوا و ارتباطات بین‌فرهنگی فعالیت دارد.\n\nوی از سال ۲۰۲۵ به‌عنوان همکار تحقیقاتی / Student Assistant در پروژه پژوهشی Media for Peace (M4P) در دانشگاه آزاد برلین فعالیت می‌کند و در زمینه پژوهش، جمع‌آوری و تحلیل داده‌های رسانه‌ای و مطالعات رسانه مشارکت دارد.\n\nتحصیلات\n\n* کارشناسی علوم ارتباطات و روزنامه‌نگاری (Publizistik- und Kommunikationswissenschaft) - Freie Universität Berlin، آلمان (۲۰۲۴ – ۲۰۲۶)\n    * گرایش‌های فرعی: علوم کامپیوتر (Computer Science) و تاریخ و فرهنگ\n* کارشناسی ارتباطات و روزنامه‌نگاری - دانشگاه کابل، افغانستان (۲۰۱۷ – ۲۰۲۱)\n* Peace Practice Alliance – برنامه آموزشی آنلاین - Euphrates Institute، کالیفرنیا (۲۰۲۲)\n* فراغت از دوره مکتب لیسه عالی عبدالغفور ندیم، کابل (۲۰۱۶)\n\nدوره‌های کوتاه مدت\n\n* دوره تخصصی روزنامه‌نگاری صلح، جنسیت و خبرنگاری خیابانی - Afghan Women’s News Agency، کابل (۲۰۲۰ – ۲۰۲۱)\n* Leadership, Time Management, Goal Setting, Effective Communication and Language Teaching Methodology - QESDSO، کابل (۲۰۲۰ – ۲۰۲۱)\n* Peace Leadership Training - Euphrates Institute (۲۰۲۲)\n* ZuBe – Zukunftsorientierte Beschäftigung für Migrant*innen - آلمان (۲۰۲۳)\n* دوره‌های زبان آلمانی از سطح A1 تا C1 - کسب سطح C1 زبان آلمانی\n\nتجارب کاری\n\n* همکار تحقیقاتی / Student Assistant - پروژه Media for Peace (M4P)، Freie Universität Berlin (۲۰۲۵ – اکنون)\n    * همکاری در پژوهش‌های مرتبط با رسانه، ارتباطات و صلح\n    * جمع‌آوری، کدگذاری و تحلیل داده‌های رسانه‌ای\n    * مشارکت در پژوهش و تحلیل نظام‌های رسانه‌ای\n    * همکاری در فعالیت‌های پژوهشی و دانشگاهی مرتبط با رسانه و ارتباطات\n* Media Support - The Good Media Network (۲۰۲۴ — به مدت ۸ ماه)\n    * پشتیبانی و همکاری در فعالیت‌های رسانه‌ای و تولید محتوا\n* Student Ambassador / سفیر دانشجویی - Freie Universität Berlin، برنامه weStudents (۲۰۲۴ — به مدت ۶ ماه)\n    * معرفی تجربه تحصیل و زندگی دانشجویی در آلمان\n    * مشارکت در برنامه‌های دانشگاهی و ارتباط با دانشجویان\n* خبرنگار، تهیه‌کننده و گوینده رادیو - The Killid Group (TKG)، کابل (۲۰۲۰)\n    * تهیه و تولید محتوای رادیویی\n    * گزارشگری و انجام مصاحبه\n    * گویندگی و تهیه برنامه‌های رسانه‌ای\n* Peace Builder / فعال صلح‌سازی - Afghanistan Youth Empowerment and Peace-Building Organization (AYEPO)، کابل (۲۰۲۰ – ۲۰۲۱)\n* استاد زبان انگلیسی - Thunder English Language High Institute، کابل (۲۰۱۸ – ۲۰۲۰)\n* مدرس زبان آلمانی - تدریس آنلاین و خصوصی (۲۰۲۵ – اکنون)\n\nتجارب حوزه پژوهش و نویسندگی\n\n* همکاری در پروژه پژوهشی Media for Peace (M4P) در Freie Universität Berlin از سال ۲۰۲۵\n* پژوهش و تحلیل نظام‌های رسانه‌ای، به‌ویژه رسانه‌های افغانستان\n* بررسی تأثیر تحولات سیاسی و اجتماعی بر رسانه‌ها و روزنامه‌نگاری\n* تجربه در جمع‌آوری، کدگذاری و تحلیل داده‌های رسانه‌ای\n* انجام پژوهش‌های کمی در حوزه مطالعات رسانه\n* پژوهش در زمینه رسانه، صلح، ارتباطات عمومی و دیجیتالی‌شدن رسانه‌ها\n* نویسندگی و تولید محتوای رسانه‌ای در حوزه‌های اجتماعی، سیاسی، صلح و حقوق بشر\n* نگارش مقالات و مطالب در زمینه آموزش، جامعه، رسانه و مسائل افغانستان\n* نویسندگی و تولید محتوا برای وب‌سایت‌ها و رسانه‌های دانشگاهی Freie Universität Berlin، از جمله مطالب مرتبط با تجربه دانشجویی و زندگی در آلمان\n* تجربه تولید محتوای رادیویی، گزارشگری، مصاحبه و گویندگی\n* ویرایش و آماده‌سازی متون رسانه‌ای و دانشگاهی\n\nفعالیت‌های دانشجویی و اجتماعی\n\n* سفیر دانشجویی Freie Universität Berlin در برنامه weStudents — ۲۰۲۴\n* مدیر ویرایش، Qalam Quarterly، کابل — ۲۰۲۰ تا ۲۰۲۱\n* گزارشگر و ویراستار متون، کمیته نشرات اتحادیه محصلان دانشگاه کابل — ۲۰۱۹ تا ۲۰۲۱\n* معاون مدیر برنامه، انجمن محصلان دانشکده ژورنالیزم دانشگاه کابل — ۲۰۲۰ تا ۲۰۲۱\n* مسئول کمیته نشرات و ارتباطات، انجمن دانشجویان دانشکده ژورنالیزم دانشگاه کابل — ۲۰۱۹ تا ۲۰۲۰\n\nمهارت‌های تخصصی\n\n* پژوهش و تحقیق رسانه‌ای\n* روزنامه‌نگاری و گزارشگری\n* تولید، ویرایش و مدیریت محتوای رسانه‌ای\n* تحلیل رسانه و داده‌های رسانه‌ای\n* پژوهش کمی و تحلیل داده\n* ارتباطات عمومی\n* صلح‌سازی و فعالیت‌های اجتماعی\n* Advocacy و فعالیت‌های حقوق بشری\nزبان‌ها و سطح آن\n\n* دری / فارسی: زبان مادری\n* پشتو: بسیار خوب / مسلط\n* انگلیسی: بسیار خوب / مسلط\n* آلمانی: C1 — بسیار خوب\n\nحوزه‌های تخصصی و علایق پژوهشی\n\n* رسانه و روزنامه‌نگاری\n* مطالعات ارتباطات\n* پژوهش و تحلیل رسانه‌ای\n* رسانه و تحولات سیاسی و اجتماعی\n* مسائل اجتماعی و سیاسی افغانستان\n* رسانه، صلح و ارتباطات\n* ارتباطات عمومی و بین‌فرهنگی\n* دیجیتالی‌شدن رسانه‌ها",
-      "avatar_url": "https://abimnaqtmcgoslealmoh.supabase.co/storage/v1/object/public/magazines/covers/cover_1787176067831_8t9g8.jpg",
-      "specialization_fa": "کارشناس علوم ارتباطات و روزنامه‌نگاری دانشگاه آزاد برلین ",
+      "id": "team-1787175855143",
+      "name_fa": "شرافت الله فرخزاد",
+      "role_fa": "ویراستار",
+      "bio_fa": "* دانشجوی مقطع کارشناسی ارشد رشته اداره و تجارت در یکی از دانشگاه‌های آنلاین ایالات متحده آمریکا\n* در حال حاضر کارمند یکی از شرکت‌های آلمانی\n\nتحصیلات:\n\n* فراغت از دوره مکتب (صنف 12) – لیسه عالی شیرخان، کندز، افغانستان (2008–2019)\n\nدوره‌های کوتاه‌مدت و فعالیت‌های آموزشی و هنری:\n* دوره زبان آلمانی سطح B2 – Technische Universität Dresden (TU Dresden) (2024–2025)\n* دوره‌های آموزش طراحی و گرافیک کامپیوتری، شامل Adobe Photoshop، Adobe Premiere Pro و سایر نرم‌افزارهای کاربردی در زمینه طراحی و تولید محتوای دیجیتال\n* دوره کوتاه‌مدت فن بیان و هنر سخنرانی\n* دوره‌های آموزش هنرهای تجسمی شامل خطاطی، نقاشی و مینیاتوری\n* اشتراک در نمایشگاه‌های ملی و بین‌المللی هنر و صنایع دستی\n\nتجارب کاری:\n* کارمند اداری و مدیر صدور ویزا – ریاست امور خارجه، شیرخان بندر، کندز، افغانستان (2021–2022)\n* مؤسس و مدیر نگارستان اپاسکا – کندز، افغانستان (2019)\n* کارمند بخش رسانه‌ای و تولید محتوا – Uranus TV، افغانستان (2019)\n* کارمند یکی از شرکت‌های آلمانی – آلمان (در حال حاضر)\n\nتجارب نویسندگی و فعالیت‌های ادبی:\n* سرودن اشعار در حوزه‌های حماسی و عرفانی و نگارش مقالات\n* نویسنده و تولیدکننده مطالب برای وبلاگ شخصی از سال 2015 تاکنون\n\nزبان‌ها و سطح آن‌ها:\n* دری / فارسی: زبان مادری\n* آلمانی: B2 \n* پشتو: خوب\n* ازبکی: فصیح",
+      "avatar_url": "https://abimnaqtmcgoslealmoh.supabase.co/storage/v1/object/public/magazines/covers/cover_1787175854621_qvldl.png",
+      "specialization_fa": "دانشجوی مقطع کارشناسی ارشد رشته اداره و تجارت ",
       "status": "published",
       "submitted_by_name": "M. Nazir Yosuf",
       "submitted_at": "۱۴۰۵/۵/۲۸",
-      "submitted_device": "ORDERINDEX:4||Windows Desktop (Chrome)",
-      "created_at": "2026-08-19T21:47:48.399665+00:00"
+      "submitted_device": "ORDERINDEX:6||Windows Desktop (Chrome)",
+      "created_at": "2026-08-19T21:44:15.289473+00:00"
     },
     {
       "id": "team-1787051779756",
@@ -676,19 +689,6 @@
       "submitted_at": "۱۴۰۵/۵/۲۷",
       "submitted_device": "ORDERINDEX:1||Android Mobile (Chrome)",
       "created_at": "2026-08-18T11:16:20.216856+00:00"
-    },
-    {
-      "id": "team-1787175855143",
-      "name_fa": "شرافت الله فرخزاد",
-      "role_fa": "ویراستار",
-      "bio_fa": "* دانشجوی مقطع کارشناسی ارشد رشته اداره و تجارت در یکی از دانشگاه‌های آنلاین ایالات متحده آمریکا\n* در حال حاضر کارمند یکی از شرکت‌های آلمانی\n\nتحصیلات:\n\n* فراغت از دوره مکتب (صنف 12) – لیسه عالی شیرخان، کندز، افغانستان (2008–2019)\n\nدوره‌های کوتاه‌مدت و فعالیت‌های آموزشی و هنری:\n* دوره زبان آلمانی سطح B2 – Technische Universität Dresden (TU Dresden) (2024–2025)\n* دوره‌های آموزش طراحی و گرافیک کامپیوتری، شامل Adobe Photoshop، Adobe Premiere Pro و سایر نرم‌افزارهای کاربردی در زمینه طراحی و تولید محتوای دیجیتال\n* دوره کوتاه‌مدت فن بیان و هنر سخنرانی\n* دوره‌های آموزش هنرهای تجسمی شامل خطاطی، نقاشی و مینیاتوری\n* اشتراک در نمایشگاه‌های ملی و بین‌المللی هنر و صنایع دستی\n\nتجارب کاری:\n* کارمند اداری و مدیر صدور ویزا – ریاست امور خارجه، شیرخان بندر، کندز، افغانستان (2021–2022)\n* مؤسس و مدیر نگارستان اپاسکا – کندز، افغانستان (2019)\n* کارمند بخش رسانه‌ای و تولید محتوا – Uranus TV، افغانستان (2019)\n* کارمند یکی از شرکت‌های آلمانی – آلمان (در حال حاضر)\n\nتجارب نویسندگی و فعالیت‌های ادبی:\n* سرودن اشعار در حوزه‌های حماسی و عرفانی و نگارش مقالات\n* نویسنده و تولیدکننده مطالب برای وبلاگ شخصی از سال 2015 تاکنون\n\nزبان‌ها و سطح آن‌ها:\n* دری / فارسی: زبان مادری\n* آلمانی: B2 \n* پشتو: خوب\n* ازبکی: فصیح",
-      "avatar_url": "https://abimnaqtmcgoslealmoh.supabase.co/storage/v1/object/public/magazines/covers/cover_1787175854621_qvldl.png",
-      "specialization_fa": "دانشجوی مقطع کارشناسی ارشد رشته اداره و تجارت ",
-      "status": "published",
-      "submitted_by_name": "M. Nazir Yosuf",
-      "submitted_at": "۱۴۰۵/۵/۲۸",
-      "submitted_device": "ORDERINDEX:6||Windows Desktop (Chrome)",
-      "created_at": "2026-08-19T21:44:15.289473+00:00"
     }
   ],
   "coHosts": [
@@ -721,12 +721,12 @@
     },
     {
       "key": "about_mission",
-      "value": "مجلۀ «ایدئولوژی مهدویت» بستری است برای ارائه شناخت پیرامون مهم‌ترین موضوعات: خداشناسی، خودشناسی، جامعه‌شناسی، هستی‌شناسی و سایر موضوعات تاریخی؛ به هدف ایجاد بیداری معنوی و اجتماعی. این مجله توسط جمعی از نویسندگان آزاد افغانستان از سراسر جهان تشکیل شده و به صورت کاملاً داوطلبانه و غیرانتفاعی اداره می‌شود.",
+      "value": "تست تغییر رسالت در زمان: 2026-08-20T19:43:41.216Z",
       "updated_at": "2026-08-13T20:05:17.688345+00:00"
     },
     {
       "key": "about_pillars",
-      "value": "[{\"title\":\"۱. ارتقای بصیرت شناختی\",\"description\":\"توانمندسازی ذهن جامعه برای تحلیل مستقل اخبار، مقابله با جنگ شناختی رسانه‌های سلطه و بازشناسی حق از باطل.\"},{\"title\":\"۲. نقد مستدل مکاتب بشری\",\"description\":\"بررسی و نقد علمی مکاتب الحادی و ماده‌گرای غرب، و اثبات کارآمدی جهان‌بینی اسلام و فرهنگ مهدوی.\"},{\"title\":\"۳. تحکیم اخوت و بیداری\",\"description\":\"تقویت همدلی، وحدت کلمه و ایجاد بیداری معنوی میان جوانان و نخبگان سراسر افغانستان و جهان.\"}]",
+      "value": "[{\"title\":\"عنوان تست ۱\",\"description\":\"توضیحات تست ۱\"},{\"title\":\"عنوان تست ۲\",\"description\":\"توضیحات تست ۲\"},{\"title\":\"عنوان تست ۳\",\"description\":\"توضیحات تست ۳\"}]",
       "updated_at": "2026-08-19T15:36:44.534513+00:00"
     },
     {
@@ -741,19 +741,6 @@
     }
   ],
   "auditLogs": [
-    {
-      "id": "log-1786704405407",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "ویرایش",
-      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
-      "item_type": "مجله",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۴۶",
-      "time_only": "۱۲:۴۶",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
     {
       "id": "log-1786704040225",
       "user_name": "M. Nazir Yosuf",
@@ -829,6 +816,19 @@
       "timestamp": "۱۴۰۵/۵/۲۹ - ۰۲:۱۰",
       "time_only": "۰۲:۱۰",
       "device_info": "Android Mobile (Chrome)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786704405407",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۴۶",
+      "time_only": "۱۲:۴۶",
+      "device_info": "Windows Desktop (Edge)",
       "status_note": null,
       "created_at": null
     },
@@ -1483,19 +1483,6 @@
       "created_at": null
     },
     {
-      "id": "log-1786983098250",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "ویرایش",
-      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
-      "item_type": "مجله",
-      "timestamp": "۱۴۰۵/۵/۲۶ - ۱۸:۱۱",
-      "time_only": "۱۸:۱۱",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
-    {
       "id": "log-1786983257276",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
@@ -1504,6 +1491,19 @@
       "item_type": "مجله",
       "timestamp": "۱۴۰۵/۵/۲۶ - ۱۸:۱۴",
       "time_only": "۱۸:۱۴",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786983098250",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۶ - ۱۸:۱۱",
+      "time_only": "۱۸:۱۱",
       "device_info": "Windows Desktop (Edge)",
       "status_note": null,
       "created_at": null
@@ -2458,19 +2458,6 @@
       "created_at": "2026-08-14T13:10:57.756351+00:00"
     },
     {
-      "id": "log-1786656006746",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "حذف",
-      "target_title": "نقد و بررسی ماتریالیسم تاریخی از منظر حکمت اسلامی",
-      "item_type": "مقاله",
-      "timestamp": "۱۴۰۵/۵/۲۲ - ۲۳:۲۰",
-      "time_only": "۲۳:۲۰",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": "2026-08-13T21:20:04.494466+00:00"
-    },
-    {
       "id": "log-1787181954686",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
@@ -2479,6 +2466,19 @@
       "item_type": "صوتی",
       "timestamp": "۱۴۰۵/۵/۲۹ - ۰۱:۲۵",
       "time_only": "۰۱:۲۵",
+      "device_info": "Windows Desktop (Chrome)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1787141190176",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "فایل صوتی از افتتاحیه شمارۀ نخست مجلۀ دیجیتالی ایدئولوژی مهدویت ",
+      "item_type": "صوتی",
+      "timestamp": "۱۴۰۵/۵/۲۸ - ۱۴:۰۶",
+      "time_only": "۱۴:۰۶",
       "device_info": "Windows Desktop (Chrome)",
       "status_note": null,
       "created_at": null
@@ -2614,30 +2614,17 @@
       "created_at": "2026-08-19T10:42:29.412421+00:00"
     },
     {
-      "id": "log-1786656006092",
+      "id": "log-1786656006746",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
       "action_type": "حذف",
-      "target_title": "تبیین مفاهیم بنیادین معرفت‌شناختی در عصر غیبت",
+      "target_title": "نقد و بررسی ماتریالیسم تاریخی از منظر حکمت اسلامی",
       "item_type": "مقاله",
       "timestamp": "۱۴۰۵/۵/۲۲ - ۲۳:۲۰",
       "time_only": "۲۳:۲۰",
       "device_info": "Windows Desktop (Edge)",
       "status_note": null,
-      "created_at": "2026-08-13T21:20:03.894183+00:00"
-    },
-    {
-      "id": "log-1787141190176",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "ویرایش",
-      "target_title": "فایل صوتی از افتتاحیه شمارۀ نخست مجلۀ دیجیتالی ایدئولوژی مهدویت ",
-      "item_type": "صوتی",
-      "timestamp": "۱۴۰۵/۵/۲۸ - ۱۴:۰۶",
-      "time_only": "۱۴:۰۶",
-      "device_info": "Windows Desktop (Chrome)",
-      "status_note": null,
-      "created_at": null
+      "created_at": "2026-08-13T21:20:04.494466+00:00"
     },
     {
       "id": "log-1787177324094",
@@ -2664,19 +2651,6 @@
       "device_info": "Windows Desktop (Chrome)",
       "status_note": "ویرایش و انتشار مستقیم",
       "created_at": "2026-08-19T22:07:47.355209+00:00"
-    },
-    {
-      "id": "log-1786982155309",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "حذف",
-      "target_title": " شماره دوم مجلۀ دیجیتالی ایدئولوژی مهدویت",
-      "item_type": "مجله",
-      "timestamp": "۱۴۰۵/۵/۲۶ - ۱۷:۵۵",
-      "time_only": "۱۷:۵۵",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
     },
     {
       "id": "log-1787176904045",
@@ -2744,6 +2718,32 @@
       "created_at": "2026-08-18T15:27:48.183114+00:00"
     },
     {
+      "id": "log-1786656006092",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "تبیین مفاهیم بنیادین معرفت‌شناختی در عصر غیبت",
+      "item_type": "مقاله",
+      "timestamp": "۱۴۰۵/۵/۲۲ - ۲۳:۲۰",
+      "time_only": "۲۳:۲۰",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": "2026-08-13T21:20:03.894183+00:00"
+    },
+    {
+      "id": "log-1786982155309",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": " شماره دوم مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۶ - ۱۷:۵۵",
+      "time_only": "۱۷:۵۵",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
       "id": "log-1787184288567",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
@@ -2781,19 +2781,6 @@
       "device_info": "Android Mobile (Chrome)",
       "status_note": "ویرایش و انتشار مستقیم",
       "created_at": "2026-08-20T00:04:42.623294+00:00"
-    },
-    {
-      "id": "log-1786704715018",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "ویرایش",
-      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
-      "item_type": "مجله",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۵۱",
-      "time_only": "۱۲:۵۱",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
     },
     {
       "id": "log-1786658374331",
@@ -2844,6 +2831,19 @@
       "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۱۶",
       "time_only": "۱۲:۱۶",
       "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1787182133632",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "مصاحبه: نگاه کلی به تیوری سلامت انسان ",
+      "item_type": "صوتی",
+      "timestamp": "۱۴۰۵/۵/۲۹ - ۰۱:۲۸",
+      "time_only": "۰۱:۲۸",
+      "device_info": "Windows Desktop (Chrome)",
       "status_note": null,
       "created_at": null
     },
@@ -2952,15 +2952,15 @@
       "created_at": "2026-08-19T10:55:16.462088+00:00"
     },
     {
-      "id": "log-1787182133632",
+      "id": "log-1786704715018",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
       "action_type": "ویرایش",
-      "target_title": "مصاحبه: نگاه کلی به تیوری سلامت انسان ",
-      "item_type": "صوتی",
-      "timestamp": "۱۴۰۵/۵/۲۹ - ۰۱:۲۸",
-      "time_only": "۰۱:۲۸",
-      "device_info": "Windows Desktop (Chrome)",
+      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۵۱",
+      "time_only": "۱۲:۵۱",
+      "device_info": "Windows Desktop (Edge)",
       "status_note": null,
       "created_at": null
     },
