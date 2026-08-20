@@ -662,7 +662,7 @@ function HomeContent() {
                   href="/content"
                   className="text-xs text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0"
                 >
-                  <span>مشاهده آرشیو کامل مقالات</span>
+                  <span>مشاهده آرشیف کامل مقالات</span>
                   <ArrowLeft className="w-4 h-4" />
                 </Link>
               </div>
@@ -734,7 +734,7 @@ function HomeContent() {
                   href="/media?tab=podcasts"
                   className="text-xs text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0"
                 >
-                  <span>مشاهده آرشیو کامل محتوای صوتی</span>
+                  <span>مشاهده آرشیف کامل محتوای صوتی</span>
                   <ArrowLeft className="w-4 h-4" />
                 </Link>
               </div>
@@ -764,11 +764,11 @@ function HomeContent() {
                           <h3
                             onClick={() => playAudio(aud)}
                             className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate mt-1 cursor-pointer hover:text-[#1B889A] transition-colors"
-                            title="پخش پادکست"
+                            title="پخش محتوای صوتی"
                           >
                             {aud.title_fa}
                           </h3>
-                          <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{aud.speaker_fa}</p>
+                          <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 font-serif-persian">{aud.speaker_fa}</p>
                         </div>
                       </div>
 
@@ -808,7 +808,7 @@ function HomeContent() {
                   href="/media?tab=videos"
                   className="text-xs text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0"
                 >
-                  <span>مشاهده آرشیو کامل محتوای ویدیویی</span>
+                  <span>مشاهده آرشیف کامل محتوای ویدیویی</span>
                   <ArrowLeft className="w-4 h-4" />
                 </Link>
               </div>

@@ -54,7 +54,7 @@ export default function MediaPage() {
       <section className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 sm:p-10 shadow-xl space-y-4 modern-card">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full teal-badge text-xs font-bold shadow-sm">
           <Sparkles className="w-4 h-4 text-[#1B889A]" />
-          <span>آرشیو جامع چندرسانه‌ای</span>
+          <span>آرشیف جامع چندرسانه‌ای</span>
         </div>
         <h1 className="text-2xl sm:text-4xl font-extrabold text-[var(--text-primary)] font-serif-persian">
           چندرسانه‌ای مجله <span className="teal-gradient-text">ایدئولوژی مهدویت</span>
@@ -117,7 +117,7 @@ export default function MediaPage() {
               <span>محتوای صوتی ({filteredAudios.length})</span>
             </h2>
             <Link href="/audio" className="text-xs text-[#1B889A] font-bold hover:underline">
-              صفحه اختصاصی آرشیو صوتی
+              صفحه اختصاصی آرشیف صوتی
             </Link>
           </div>
 

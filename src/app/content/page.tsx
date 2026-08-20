@@ -42,7 +42,7 @@ function ContentCatalogInner() {
         <div className="max-w-2xl space-y-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full teal-badge text-xs font-bold shadow-sm">
             <Sparkles className="w-3.5 h-3.5 text-[#1B889A]" />
-            <span>آرشیو کامل مقالات و سایر متون</span>
+            <span>آرشیف کامل مقالات و سایر متون</span>
           </div>
           <h1 className="text-3xl font-extrabold text-[var(--text-primary)] font-serif-persian">مقالات و سایر متون</h1>
           <p className="text-sm text-[var(--text-secondary)] font-serif-persian leading-relaxed">

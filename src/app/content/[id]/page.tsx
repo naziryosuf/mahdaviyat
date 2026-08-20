@@ -82,7 +82,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
         <div className="pt-2">
           <Link href="/content" className="px-5 py-2.5 rounded-xl bg-[#1B889A] text-white font-bold text-xs shadow-md inline-flex items-center gap-2">
             <ArrowRight className="w-4 h-4" />
-            <span>بازگشت به آرشیو مقالات</span>
+            <span>بازگشت به آرشیف مقالات</span>
           </Link>
         </div>
       </div>
@@ -252,7 +252,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
         className="inline-flex items-center gap-2 text-xs font-bold text-[#1B889A] hover:underline transition-colors no-print"
       >
         <ArrowRight className="w-4 h-4" />
-        <span>بازگشت به آرشیو مقالات</span>
+        <span>بازگشت به آرشیف مقالات</span>
       </Link>
 
       {/* DEDICATED OFFICIAL PRINT HEADER (VERTICAL LINE-BY-LINE FORMATTING) */}
