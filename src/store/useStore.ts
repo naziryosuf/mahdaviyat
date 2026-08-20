@@ -1334,7 +1334,7 @@ export const useStore = create<AppState>((set, get) => ({
             set({ designerWebsiteUrl: item.value });
             if (typeof localStorage !== 'undefined') localStorage.setItem('mahdism_designer_url', item.value);
           }
-          if (item.key === 'about_mission' && item.value) {
+          if (item.key === 'about_mission' && item.value !== undefined && item.value !== null) {
             set({ aboutUsMission: item.value });
             if (typeof localStorage !== 'undefined') localStorage.setItem('mahdism_about_mission', item.value);
           }
@@ -1377,12 +1377,12 @@ export const useStore = create<AppState>((set, get) => ({
     }
 
     const savedAboutMission = localStorage.getItem('mahdism_about_mission');
-    if (savedAboutMission) {
+    if (savedAboutMission !== null) {
       set({ aboutUsMission: savedAboutMission });
     }
 
     const savedAboutPillars = localStorage.getItem('mahdism_about_pillars');
-    if (savedAboutPillars) {
+    if (savedAboutPillars !== null) {
       try {
         const parsed = JSON.parse(savedAboutPillars);
         if (Array.isArray(parsed) && parsed.length >= 3) {

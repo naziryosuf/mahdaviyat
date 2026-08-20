@@ -1036,29 +1036,28 @@ export const AdminDashboardContent: React.FC = () => {
   // About Us Edit Form State
   const [aboutInputText, setAboutInputText] = useState(aboutUsMission);
   const [localPillars, setLocalPillars] = useState(aboutPillars);
-  const [isAboutDirty, setIsAboutDirty] = useState(false);
+  const [isAboutInitialized, setIsAboutInitialized] = useState(false);
 
+  // Initialize form state once from store/database on load
   useEffect(() => {
-    if (!isAboutDirty) {
+    if (!isAboutInitialized && aboutUsMission) {
       setAboutInputText(aboutUsMission);
+      if (aboutPillars && aboutPillars.length >= 3) {
+        setLocalPillars(aboutPillars);
+      }
+      setIsAboutInitialized(true);
     }
-  }, [aboutUsMission, isAboutDirty]);
-
-  useEffect(() => {
-    if (!isAboutDirty && aboutPillars && aboutPillars.length >= 3) {
-      setLocalPillars(aboutPillars);
-    }
-  }, [aboutPillars, isAboutDirty]);
+  }, [aboutUsMission, aboutPillars, isAboutInitialized]);
 
   const handleSaveAboutUs = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaveToast({ msg: 'در حال ذخیره اطلاعات صفحه درباره ما و اهداف سه‌گانه...', type: 'loading' });
     try {
-      // 1. Build the final values from current form state
-      const finalMission = aboutInputText.trim() || aboutUsMission;
-      const finalPillars = localPillars.map((p, i) => ({
-        title: p?.title ?? '',
-        description: p?.description ?? ''
+      // 1. Build the exact final values from current form state
+      const finalMission = aboutInputText.trim();
+      const finalPillars = localPillars.map((p) => ({
+        title: p?.title?.trim() ?? '',
+        description: p?.description?.trim() ?? ''
       }));
 
       // 2. Await the Supabase upsert operation
@@ -1084,8 +1083,9 @@ export const AdminDashboardContent: React.FC = () => {
         stagedChangesCount: 0
       });
 
-      // 5. Mark the form as clean
-      setIsAboutDirty(false);
+      // 5. Keep local state aligned
+      setAboutInputText(finalMission);
+      setLocalPillars(finalPillars);
 
       // 6. Log audit and show existing success message
       addAuditLog('ویرایش', 'متن رسالت و اهداف سه‌گانه', 'عضو تیم', 'به‌روزرسانی صفحه درباره ما و انتشار آنلاین');
@@ -1093,7 +1093,6 @@ export const AdminDashboardContent: React.FC = () => {
       setTimeout(() => setSaveToast(null), 3500);
     } catch (err: any) {
       console.error('Error saving about us:', err);
-      // On failure: do NOT mark form clean, do NOT overwrite with old data
       setSaveToast({ msg: `❌ خطا در ذخیره اطلاعات: ${err?.message || 'مشکلی رخ داد'}`, type: 'error' });
       setTimeout(() => setSaveToast(null), 4000);
     }
@@ -2694,10 +2693,7 @@ export const AdminDashboardContent: React.FC = () => {
                 <textarea
                   rows={4}
                   value={aboutInputText}
-                  onChange={(e) => {
-                    setAboutInputText(e.target.value);
-                    setIsAboutDirty(true);
-                  }}
+                  onChange={(e) => setAboutInputText(e.target.value)}
                   placeholder="متن کامل رسالت و چشم‌انداز مجله..."
                   className="w-full p-3.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs sm:text-sm text-[var(--text-primary)] font-serif-persian leading-relaxed focus:outline-none focus:border-[#1B889A] transition-colors"
                 />
@@ -2733,7 +2729,6 @@ export const AdminDashboardContent: React.FC = () => {
                             updated[0] = { ...(updated[0] || { title: '', description: '' }), title: val };
                             return updated;
                           });
-                          setIsAboutDirty(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs font-bold text-[var(--text-primary)] font-serif-persian focus:border-[#1B889A]"
                       />
@@ -2750,7 +2745,6 @@ export const AdminDashboardContent: React.FC = () => {
                             updated[0] = { ...(updated[0] || { title: '', description: '' }), description: val };
                             return updated;
                           });
-                          setIsAboutDirty(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] font-serif-persian leading-relaxed focus:border-[#1B889A]"
                       />
@@ -2775,7 +2769,6 @@ export const AdminDashboardContent: React.FC = () => {
                             updated[1] = { ...(updated[1] || { title: '', description: '' }), title: val };
                             return updated;
                           });
-                          setIsAboutDirty(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs font-bold text-[var(--text-primary)] font-serif-persian focus:border-amber-500"
                       />
@@ -2792,7 +2785,6 @@ export const AdminDashboardContent: React.FC = () => {
                             updated[1] = { ...(updated[1] || { title: '', description: '' }), description: val };
                             return updated;
                           });
-                          setIsAboutDirty(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] font-serif-persian leading-relaxed focus:border-amber-500"
                       />
@@ -2817,7 +2809,6 @@ export const AdminDashboardContent: React.FC = () => {
                             updated[2] = { ...(updated[2] || { title: '', description: '' }), title: val };
                             return updated;
                           });
-                          setIsAboutDirty(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs font-bold text-[var(--text-primary)] font-serif-persian focus:border-emerald-500"
                       />
@@ -2834,7 +2825,6 @@ export const AdminDashboardContent: React.FC = () => {
                             updated[2] = { ...(updated[2] || { title: '', description: '' }), description: val };
                             return updated;
                           });
-                          setIsAboutDirty(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] font-serif-persian leading-relaxed focus:border-emerald-500"
                       />
