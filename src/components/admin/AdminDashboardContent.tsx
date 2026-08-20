@@ -118,6 +118,7 @@ export const AdminDashboardContent: React.FC = () => {
     addTeamMember,
     updateTeamMember,
     deleteTeamMember,
+    addAuditLog,
   } = useStore();
 
   const isSuperAdmin = currentUser?.is_super_admin || currentUser?.password_code === '190716';
@@ -1034,28 +1035,30 @@ export const AdminDashboardContent: React.FC = () => {
   // About Us Edit Form State
   const [aboutInputText, setAboutInputText] = useState(aboutUsMission);
   const [localPillars, setLocalPillars] = useState(aboutPillars);
-  const [aboutSavedNotify, setAboutSavedNotify] = useState(false);
+  const [isAboutTouched, setIsAboutTouched] = useState(false);
 
   useEffect(() => {
-    setAboutInputText(aboutUsMission);
-  }, [aboutUsMission]);
+    if (!isAboutTouched) {
+      setAboutInputText(aboutUsMission);
+    }
+  }, [aboutUsMission, isAboutTouched]);
 
   useEffect(() => {
-    if (aboutPillars && aboutPillars.length >= 3) {
+    if (!isAboutTouched && aboutPillars && aboutPillars.length >= 3) {
       setLocalPillars(aboutPillars);
     }
-  }, [aboutPillars]);
+  }, [aboutPillars, isAboutTouched]);
 
   const handleSaveAboutUs = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaveToast({ msg: 'در حال ذخیره اطلاعات صفحه درباره ما و اهداف سه‌گانه...', type: 'loading' });
     try {
-      const trimmed = aboutInputText.trim();
-      if (trimmed) {
-        setAboutUsMission(trimmed);
-      }
-      setAboutPillars(localPillars);
+      const trimmed = aboutInputText.trim() || aboutUsMission;
+      await setAboutUsMission(trimmed);
+      await setAboutPillars(localPillars);
       await saveAllChangesToLive();
+      setIsAboutTouched(false);
+      addAuditLog('ویرایش', 'متن رسالت و اهداف سه‌گانه', 'عضو تیم', 'به‌روزرسانی صفحه درباره ما و انتشار آنلاین');
       setSaveToast({ msg: '✅ اطلاعات صفحه درباره ما و ۳ هدف کلیدی با موفقیت ذخیره و منتشر شد!', type: 'success' });
       setTimeout(() => setSaveToast(null), 3500);
     } catch (err: any) {
@@ -2660,7 +2663,10 @@ export const AdminDashboardContent: React.FC = () => {
                 <textarea
                   rows={4}
                   value={aboutInputText}
-                  onChange={(e) => setAboutInputText(e.target.value)}
+                  onChange={(e) => {
+                    setAboutInputText(e.target.value);
+                    setIsAboutTouched(true);
+                  }}
                   placeholder="متن کامل رسالت و چشم‌انداز مجله..."
                   className="w-full p-3.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs sm:text-sm text-[var(--text-primary)] font-serif-persian leading-relaxed focus:outline-none focus:border-[#1B889A] transition-colors"
                 />
@@ -2693,6 +2699,7 @@ export const AdminDashboardContent: React.FC = () => {
                           const updated = [...localPillars];
                           updated[0] = { ...updated[0], title: e.target.value };
                           setLocalPillars(updated);
+                          setIsAboutTouched(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs font-bold text-[var(--text-primary)] font-serif-persian focus:border-[#1B889A]"
                       />
@@ -2706,6 +2713,7 @@ export const AdminDashboardContent: React.FC = () => {
                           const updated = [...localPillars];
                           updated[0] = { ...updated[0], description: e.target.value };
                           setLocalPillars(updated);
+                          setIsAboutTouched(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] font-serif-persian leading-relaxed focus:border-[#1B889A]"
                       />
@@ -2727,6 +2735,7 @@ export const AdminDashboardContent: React.FC = () => {
                           const updated = [...localPillars];
                           updated[1] = { ...updated[1], title: e.target.value };
                           setLocalPillars(updated);
+                          setIsAboutTouched(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs font-bold text-[var(--text-primary)] font-serif-persian focus:border-amber-500"
                       />
@@ -2740,6 +2749,7 @@ export const AdminDashboardContent: React.FC = () => {
                           const updated = [...localPillars];
                           updated[1] = { ...updated[1], description: e.target.value };
                           setLocalPillars(updated);
+                          setIsAboutTouched(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] font-serif-persian leading-relaxed focus:border-amber-500"
                       />
@@ -2761,6 +2771,7 @@ export const AdminDashboardContent: React.FC = () => {
                           const updated = [...localPillars];
                           updated[2] = { ...updated[2], title: e.target.value };
                           setLocalPillars(updated);
+                          setIsAboutTouched(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs font-bold text-[var(--text-primary)] font-serif-persian focus:border-emerald-500"
                       />
@@ -2774,6 +2785,7 @@ export const AdminDashboardContent: React.FC = () => {
                           const updated = [...localPillars];
                           updated[2] = { ...updated[2], description: e.target.value };
                           setLocalPillars(updated);
+                          setIsAboutTouched(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] font-serif-persian leading-relaxed focus:border-emerald-500"
                       />

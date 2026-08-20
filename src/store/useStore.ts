@@ -19,10 +19,10 @@ interface AppState {
 
   // Editable About Us Mission Text & 3 Pillars
   aboutUsMission: string;
-  setAboutUsMission: (desc: string) => void;
+  setAboutUsMission: (desc: string) => Promise<void> | void;
   aboutPillars: AboutPillar[];
-  setAboutPillars: (pillars: AboutPillar[]) => void;
-  updateAboutPillar: (index: number, pillar: Partial<AboutPillar>) => void;
+  setAboutPillars: (pillars: AboutPillar[]) => Promise<void> | void;
+  updateAboutPillar: (index: number, pillar: Partial<AboutPillar>) => Promise<void> | void;
 
   // Designer Portfolio Website URL & Name (footer link)
   designerName: string;
@@ -145,15 +145,20 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   aboutUsMission: defaultMissionText,
-  setAboutUsMission: (desc: string) => {
+  setAboutUsMission: async (desc: string) => {
     set((state) => ({ 
       aboutUsMission: desc,
       stagedChangesCount: state.stagedChangesCount + 1,
       hasUnsavedChanges: true
     }));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('mahdism_about_mission', desc);
+    }
     try {
-      supabase.from('site_settings').upsert({ key: 'about_mission', value: desc }).then(() => {});
-    } catch {}
+      await supabase.from('site_settings').upsert({ key: 'about_mission', value: desc });
+    } catch (err) {
+      console.error('Supabase setAboutUsMission error:', err);
+    }
   },
 
   aboutPillars: [
@@ -170,7 +175,7 @@ export const useStore = create<AppState>((set, get) => ({
       description: 'تقویت همدلی، وحدت کلمه و ایجاد بیداری معنوی میان جوانان و نخبگان سراسر افغانستان و جهان.'
     }
   ],
-  setAboutPillars: (pillars: AboutPillar[]) => {
+  setAboutPillars: async (pillars: AboutPillar[]) => {
     set((state) => ({
       aboutPillars: pillars,
       stagedChangesCount: state.stagedChangesCount + 1,
@@ -180,10 +185,12 @@ export const useStore = create<AppState>((set, get) => ({
       localStorage.setItem('mahdism_about_pillars', JSON.stringify(pillars));
     }
     try {
-      supabase.from('site_settings').upsert({ key: 'about_pillars', value: JSON.stringify(pillars) }).then(() => {});
-    } catch {}
+      await supabase.from('site_settings').upsert({ key: 'about_pillars', value: JSON.stringify(pillars) });
+    } catch (err) {
+      console.error('Supabase setAboutPillars error:', err);
+    }
   },
-  updateAboutPillar: (index: number, pillar: Partial<AboutPillar>) => {
+  updateAboutPillar: async (index: number, pillar: Partial<AboutPillar>) => {
     const current = [...get().aboutPillars];
     if (current[index]) {
       current[index] = { ...current[index], ...pillar };
@@ -196,8 +203,10 @@ export const useStore = create<AppState>((set, get) => ({
         localStorage.setItem('mahdism_about_pillars', JSON.stringify(current));
       }
       try {
-        supabase.from('site_settings').upsert({ key: 'about_pillars', value: JSON.stringify(current) }).then(() => {});
-      } catch {}
+        await supabase.from('site_settings').upsert({ key: 'about_pillars', value: JSON.stringify(current) });
+      } catch (err) {
+        console.error('Supabase updateAboutPillar error:', err);
+      }
     }
   },
 
