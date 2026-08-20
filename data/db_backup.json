@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-20T19:44:34.961Z",
+  "timestamp": "2026-08-20T19:51:06.583Z",
   "articles": [
     {
       "id": "art-1787135731072",
@@ -344,28 +344,6 @@
   ],
   "videos": [
     {
-      "id": "vid-1787140387772",
-      "title_fa": "وبینار:  پایه‌های تربیت موفق؛ والدین، معلمان و جامعه ",
-      "description_fa": "",
-      "video_url": "https://www.youtube.com/watch?v=Xbc0i8B6FEs",
-      "thumbnail_url": "https://img.youtube.com/vi/Xbc0i8B6FEs/hqdefault.jpg",
-      "duration_fa": "60 دقیقه",
-      "category_fa": "محتوای ویدیویی",
-      "speaker_fa": "انجنیر سید بشیر روفی",
-      "published_at": "۱۴۰۵/۵/۲۸",
-      "views": 1,
-      "featured": false,
-      "status": "published",
-      "submitted_by_name": "M. Nazir Yosuf",
-      "submitted_at": "۱۴۰۵/۵/۲۸",
-      "submitted_device": "Windows Desktop (Chrome)",
-      "download_url": null,
-      "transcript_fa": null,
-      "timestamps": [],
-      "tags": [],
-      "created_at": "2026-08-19T11:53:09.001681+00:00"
-    },
-    {
       "id": "vid-1787174871379",
       "title_fa": "شاهکار خدا جل‌جلاله در بدن شما! ",
       "description_fa": "ویدیوی تفکر در نعمات الهی",
@@ -474,28 +452,31 @@
       "timestamps": null,
       "tags": null,
       "created_at": null
-    }
-  ],
-  "audios": [
+    },
     {
-      "id": "aud-1787001555820",
-      "title_fa": "مصاحبه: بزرگ‌ترین مشکلات انسان‌ها در قرن ۲۱ چیست؟",
-      "speaker_fa": "مصاحبه با دکتور اعجازالحق رحیمی، محقق و نامزد دکترا در دانشگاه ریتسومیکن/Ritsumeikan کشور جاپان ",
-      "audio_url": "https://files.catbox.moe/w8os7f.mp3",
-      "duration_fa": "یک ساعت و ۱۰ دقیقه",
-      "description_fa": "محورهای بحث:\nآیا می‌توانیم مشکلات بشر را به طور خلاصه مورد شناسایی قرار بدهیم؟\nشناخت مشکلات بشر برای انسان‌ها چه کمکی می‌کند؟\nپنج مشکل جهانی در قرن ۲۱ چیست؟\nو...",
-      "published_at": "۱۴۰۵/۵/۲۶",
-      "category_fa": "محتوای صوتی",
-      "cover_image": "https://abimnaqtmcgoslealmoh.supabase.co/storage/v1/object/public/magazines/covers/cover_1787177830092_dp0me.jpg",
-      "plays": 1,
+      "id": "vid-1787140387772",
+      "title_fa": "وبینار:  پایه‌های تربیت موفق؛ والدین، معلمان و جامعه ",
+      "description_fa": "",
+      "video_url": "https://www.youtube.com/watch?v=Xbc0i8B6FEs",
+      "thumbnail_url": "https://img.youtube.com/vi/Xbc0i8B6FEs/hqdefault.jpg",
+      "duration_fa": "60 دقیقه",
+      "category_fa": "محتوای ویدیویی",
+      "speaker_fa": "انجنیر سید بشیر روفی",
+      "published_at": "۱۴۰۵/۵/۲۸",
+      "views": 1,
       "featured": false,
       "status": "published",
       "submitted_by_name": "M. Nazir Yosuf",
-      "submitted_at": "۱۴۰۵/۵/۲۶",
-      "submitted_device": "Windows Desktop (Edge)",
+      "submitted_at": "۱۴۰۵/۵/۲۸",
+      "submitted_device": "Windows Desktop (Chrome)",
+      "download_url": null,
+      "transcript_fa": null,
+      "timestamps": [],
       "tags": [],
-      "created_at": "2026-08-17T21:19:07.016043+00:00"
-    },
+      "created_at": "2026-08-19T11:53:09.001681+00:00"
+    }
+  ],
+  "audios": [
     {
       "id": "aud-1787140892672",
       "title_fa": "پادکست:  داشتن رهبری سلیم، بزرگترین نعمت پس از هدایت  - نویسنده: دکتر حبیب الله شریفی",
@@ -552,6 +533,25 @@
       "submitted_device": "Windows Desktop (Edge)",
       "tags": [],
       "created_at": "2026-08-17T21:13:25.77509+00:00"
+    },
+    {
+      "id": "aud-1787001555820",
+      "title_fa": "مصاحبه: بزرگ‌ترین مشکلات انسان‌ها در قرن ۲۱ چیست؟",
+      "speaker_fa": "مصاحبه با دکتور اعجازالحق رحیمی، محقق و نامزد دکترا در دانشگاه ریتسومیکن/Ritsumeikan کشور جاپان ",
+      "audio_url": "https://files.catbox.moe/w8os7f.mp3",
+      "duration_fa": "یک ساعت و ۱۰ دقیقه",
+      "description_fa": "محورهای بحث:\nآیا می‌توانیم مشکلات بشر را به طور خلاصه مورد شناسایی قرار بدهیم؟\nشناخت مشکلات بشر برای انسان‌ها چه کمکی می‌کند؟\nپنج مشکل جهانی در قرن ۲۱ چیست؟\nو...",
+      "published_at": "۱۴۰۵/۵/۲۶",
+      "category_fa": "محتوای صوتی",
+      "cover_image": "https://abimnaqtmcgoslealmoh.supabase.co/storage/v1/object/public/magazines/covers/cover_1787177830092_dp0me.jpg",
+      "plays": 1,
+      "featured": false,
+      "status": "published",
+      "submitted_by_name": "M. Nazir Yosuf",
+      "submitted_at": "۱۴۰۵/۵/۲۶",
+      "submitted_device": "Windows Desktop (Edge)",
+      "tags": [],
+      "created_at": "2026-08-17T21:19:07.016043+00:00"
     },
     {
       "id": "aud-1787181567310",
@@ -665,19 +665,6 @@
       "created_at": "2026-08-19T15:36:42.699222+00:00"
     },
     {
-      "id": "team-1787175855143",
-      "name_fa": "شرافت الله فرخزاد",
-      "role_fa": "ویراستار",
-      "bio_fa": "* دانشجوی مقطع کارشناسی ارشد رشته اداره و تجارت در یکی از دانشگاه‌های آنلاین ایالات متحده آمریکا\n* در حال حاضر کارمند یکی از شرکت‌های آلمانی\n\nتحصیلات:\n\n* فراغت از دوره مکتب (صنف 12) – لیسه عالی شیرخان، کندز، افغانستان (2008–2019)\n\nدوره‌های کوتاه‌مدت و فعالیت‌های آموزشی و هنری:\n* دوره زبان آلمانی سطح B2 – Technische Universität Dresden (TU Dresden) (2024–2025)\n* دوره‌های آموزش طراحی و گرافیک کامپیوتری، شامل Adobe Photoshop، Adobe Premiere Pro و سایر نرم‌افزارهای کاربردی در زمینه طراحی و تولید محتوای دیجیتال\n* دوره کوتاه‌مدت فن بیان و هنر سخنرانی\n* دوره‌های آموزش هنرهای تجسمی شامل خطاطی، نقاشی و مینیاتوری\n* اشتراک در نمایشگاه‌های ملی و بین‌المللی هنر و صنایع دستی\n\nتجارب کاری:\n* کارمند اداری و مدیر صدور ویزا – ریاست امور خارجه، شیرخان بندر، کندز، افغانستان (2021–2022)\n* مؤسس و مدیر نگارستان اپاسکا – کندز، افغانستان (2019)\n* کارمند بخش رسانه‌ای و تولید محتوا – Uranus TV، افغانستان (2019)\n* کارمند یکی از شرکت‌های آلمانی – آلمان (در حال حاضر)\n\nتجارب نویسندگی و فعالیت‌های ادبی:\n* سرودن اشعار در حوزه‌های حماسی و عرفانی و نگارش مقالات\n* نویسنده و تولیدکننده مطالب برای وبلاگ شخصی از سال 2015 تاکنون\n\nزبان‌ها و سطح آن‌ها:\n* دری / فارسی: زبان مادری\n* آلمانی: B2 \n* پشتو: خوب\n* ازبکی: فصیح",
-      "avatar_url": "https://abimnaqtmcgoslealmoh.supabase.co/storage/v1/object/public/magazines/covers/cover_1787175854621_qvldl.png",
-      "specialization_fa": "دانشجوی مقطع کارشناسی ارشد رشته اداره و تجارت ",
-      "status": "published",
-      "submitted_by_name": "M. Nazir Yosuf",
-      "submitted_at": "۱۴۰۵/۵/۲۸",
-      "submitted_device": "ORDERINDEX:6||Windows Desktop (Chrome)",
-      "created_at": "2026-08-19T21:44:15.289473+00:00"
-    },
-    {
       "id": "team-1787051779756",
       "name_fa": "محمد نذیر یوسف ",
       "role_fa": "مدیر مسوول ",
@@ -689,6 +676,19 @@
       "submitted_at": "۱۴۰۵/۵/۲۷",
       "submitted_device": "ORDERINDEX:1||Android Mobile (Chrome)",
       "created_at": "2026-08-18T11:16:20.216856+00:00"
+    },
+    {
+      "id": "team-1787175855143",
+      "name_fa": "شرافت الله فرخزاد",
+      "role_fa": "ویراستار",
+      "bio_fa": "* دانشجوی مقطع کارشناسی ارشد رشته اداره و تجارت در یکی از دانشگاه‌های آنلاین ایالات متحده آمریکا\n* در حال حاضر کارمند یکی از شرکت‌های آلمانی\n\nتحصیلات:\n\n* فراغت از دوره مکتب (صنف 12) – لیسه عالی شیرخان، کندز، افغانستان (2008–2019)\n\nدوره‌های کوتاه‌مدت و فعالیت‌های آموزشی و هنری:\n* دوره زبان آلمانی سطح B2 – Technische Universität Dresden (TU Dresden) (2024–2025)\n* دوره‌های آموزش طراحی و گرافیک کامپیوتری، شامل Adobe Photoshop، Adobe Premiere Pro و سایر نرم‌افزارهای کاربردی در زمینه طراحی و تولید محتوای دیجیتال\n* دوره کوتاه‌مدت فن بیان و هنر سخنرانی\n* دوره‌های آموزش هنرهای تجسمی شامل خطاطی، نقاشی و مینیاتوری\n* اشتراک در نمایشگاه‌های ملی و بین‌المللی هنر و صنایع دستی\n\nتجارب کاری:\n* کارمند اداری و مدیر صدور ویزا – ریاست امور خارجه، شیرخان بندر، کندز، افغانستان (2021–2022)\n* مؤسس و مدیر نگارستان اپاسکا – کندز، افغانستان (2019)\n* کارمند بخش رسانه‌ای و تولید محتوا – Uranus TV، افغانستان (2019)\n* کارمند یکی از شرکت‌های آلمانی – آلمان (در حال حاضر)\n\nتجارب نویسندگی و فعالیت‌های ادبی:\n* سرودن اشعار در حوزه‌های حماسی و عرفانی و نگارش مقالات\n* نویسنده و تولیدکننده مطالب برای وبلاگ شخصی از سال 2015 تاکنون\n\nزبان‌ها و سطح آن‌ها:\n* دری / فارسی: زبان مادری\n* آلمانی: B2 \n* پشتو: خوب\n* ازبکی: فصیح",
+      "avatar_url": "https://abimnaqtmcgoslealmoh.supabase.co/storage/v1/object/public/magazines/covers/cover_1787175854621_qvldl.png",
+      "specialization_fa": "دانشجوی مقطع کارشناسی ارشد رشته اداره و تجارت ",
+      "status": "published",
+      "submitted_by_name": "M. Nazir Yosuf",
+      "submitted_at": "۱۴۰۵/۵/۲۸",
+      "submitted_device": "ORDERINDEX:6||Windows Desktop (Chrome)",
+      "created_at": "2026-08-19T21:44:15.289473+00:00"
     }
   ],
   "coHosts": [
@@ -720,16 +720,6 @@
       "updated_at": "2026-08-13T20:05:01.147442+00:00"
     },
     {
-      "key": "about_mission",
-      "value": "تست تغییر رسالت در زمان: 2026-08-20T19:43:41.216Z",
-      "updated_at": "2026-08-13T20:05:17.688345+00:00"
-    },
-    {
-      "key": "about_pillars",
-      "value": "[{\"title\":\"عنوان تست ۱\",\"description\":\"توضیحات تست ۱\"},{\"title\":\"عنوان تست ۲\",\"description\":\"توضیحات تست ۲\"},{\"title\":\"عنوان تست ۳\",\"description\":\"توضیحات تست ۳\"}]",
-      "updated_at": "2026-08-19T15:36:44.534513+00:00"
-    },
-    {
       "key": "designer_name",
       "value": "ARTIN",
       "updated_at": "2026-08-13T20:05:17.688345+00:00"
@@ -738,22 +728,19 @@
       "key": "designer_url",
       "value": "https://artin-one.vercel.app/en",
       "updated_at": "2026-08-13T20:05:17.688345+00:00"
+    },
+    {
+      "key": "about_mission",
+      "value": "تست تغییر رسالت در زمان: 2026-08-20T19:43:41.216Z",
+      "updated_at": "2026-08-13T20:05:17.688345+00:00"
+    },
+    {
+      "key": "about_pillars",
+      "value": "[{\"title\":\"عنوان تست ۱\",\"description\":\"توانمندسازی ذهن جامعه برای تحلیل مستقل اخبار، مقابله با جنگ شناختی رسانه‌های سلطه و بازشناسی حق از باطل.\"},{\"title\":\"عنوان تست ۲\",\"description\":\"توضیحات تست ۲\"},{\"title\":\"عنوان تست ۳\",\"description\":\"توضیحات تست ۳\"}]",
+      "updated_at": "2026-08-19T15:36:44.534513+00:00"
     }
   ],
   "auditLogs": [
-    {
-      "id": "log-1786704040225",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "ویرایش",
-      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
-      "item_type": "مجله",
-      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۴۰",
-      "time_only": "۱۲:۴۰",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
     {
       "id": "log-1786702588690",
       "user_name": "M. Nazir Yosuf",
@@ -828,6 +815,19 @@
       "item_type": "مجله",
       "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۴۶",
       "time_only": "۱۲:۴۶",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1786704040225",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "شماره نخست مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۳ - ۱۲:۴۰",
+      "time_only": "۱۲:۴۰",
       "device_info": "Windows Desktop (Edge)",
       "status_note": null,
       "created_at": null
@@ -1119,19 +1119,6 @@
       "created_at": "2026-08-18T15:23:09.608792+00:00"
     },
     {
-      "id": "log-1787067055807",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "ویرایش",
-      "target_title": "مروری به ستراتیژی پیامبر ص برای ساختن جامعه اسلامی",
-      "item_type": "صوتی",
-      "timestamp": "۱۴۰۵/۵/۲۷ - ۱۷:۳۰",
-      "time_only": "۱۷:۳۰",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
-    {
       "id": "log-1786708142544",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
@@ -1192,6 +1179,19 @@
       "item_type": "مجله",
       "timestamp": "۱۴۰۵/۵/۲۳ - ۱۳:۳۵",
       "time_only": "۱۳:۳۵",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1787067055807",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "مروری به ستراتیژی پیامبر ص برای ساختن جامعه اسلامی",
+      "item_type": "صوتی",
+      "timestamp": "۱۴۰۵/۵/۲۷ - ۱۷:۳۰",
+      "time_only": "۱۷:۳۰",
       "device_info": "Windows Desktop (Edge)",
       "status_note": null,
       "created_at": null
@@ -2627,6 +2627,32 @@
       "created_at": "2026-08-13T21:20:04.494466+00:00"
     },
     {
+      "id": "log-1787184285173",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "چرا ایدئولوژی مهدویت؟",
+      "item_type": "مقاله",
+      "timestamp": "۱۴۰۵/۵/۲۹ - ۰۲:۰۴",
+      "time_only": "۰۲:۰۴",
+      "device_info": "Android Mobile (Chrome)",
+      "status_note": "ویرایش و انتشار مستقیم",
+      "created_at": "2026-08-20T00:04:46.322756+00:00"
+    },
+    {
+      "id": "log-1787184281478",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "چرا ایدئولوژی مهدویت؟",
+      "item_type": "مقاله",
+      "timestamp": "۱۴۰۵/۵/۲۹ - ۰۲:۰۴",
+      "time_only": "۰۲:۰۴",
+      "device_info": "Android Mobile (Chrome)",
+      "status_note": "ویرایش و انتشار مستقیم",
+      "created_at": "2026-08-20T00:04:42.623294+00:00"
+    },
+    {
       "id": "log-1787177324094",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
@@ -2692,6 +2718,32 @@
       "created_at": "2026-08-19T21:26:03.387615+00:00"
     },
     {
+      "id": "log-1786982155309",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": " شماره دوم مجلۀ دیجیتالی ایدئولوژی مهدویت",
+      "item_type": "مجله",
+      "timestamp": "۱۴۰۵/۵/۲۶ - ۱۷:۵۵",
+      "time_only": "۱۷:۵۵",
+      "device_info": "Windows Desktop (Edge)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1787184288567",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "ویرایش",
+      "target_title": "چرا ایدئولوژی مهدویت؟",
+      "item_type": "مقاله",
+      "timestamp": "۱۴۰۵/۵/۲۹ - ۰۲:۰۴",
+      "time_only": "۰۲:۰۴",
+      "device_info": "Android Mobile (Chrome)",
+      "status_note": "ویرایش و انتشار مستقیم",
+      "created_at": null
+    },
+    {
       "id": "log-1787140892841",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
@@ -2731,92 +2783,14 @@
       "created_at": "2026-08-13T21:20:03.894183+00:00"
     },
     {
-      "id": "log-1786982155309",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "حذف",
-      "target_title": " شماره دوم مجلۀ دیجیتالی ایدئولوژی مهدویت",
-      "item_type": "مجله",
-      "timestamp": "۱۴۰۵/۵/۲۶ - ۱۷:۵۵",
-      "time_only": "۱۷:۵۵",
-      "device_info": "Windows Desktop (Edge)",
-      "status_note": null,
-      "created_at": null
-    },
-    {
-      "id": "log-1787184288567",
+      "id": "log-1787182133632",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
       "action_type": "ویرایش",
-      "target_title": "چرا ایدئولوژی مهدویت؟",
-      "item_type": "مقاله",
-      "timestamp": "۱۴۰۵/۵/۲۹ - ۰۲:۰۴",
-      "time_only": "۰۲:۰۴",
-      "device_info": "Android Mobile (Chrome)",
-      "status_note": "ویرایش و انتشار مستقیم",
-      "created_at": null
-    },
-    {
-      "id": "log-1787184285173",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "ویرایش",
-      "target_title": "چرا ایدئولوژی مهدویت؟",
-      "item_type": "مقاله",
-      "timestamp": "۱۴۰۵/۵/۲۹ - ۰۲:۰۴",
-      "time_only": "۰۲:۰۴",
-      "device_info": "Android Mobile (Chrome)",
-      "status_note": "ویرایش و انتشار مستقیم",
-      "created_at": "2026-08-20T00:04:46.322756+00:00"
-    },
-    {
-      "id": "log-1787184281478",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "ویرایش",
-      "target_title": "چرا ایدئولوژی مهدویت؟",
-      "item_type": "مقاله",
-      "timestamp": "۱۴۰۵/۵/۲۹ - ۰۲:۰۴",
-      "time_only": "۰۲:۰۴",
-      "device_info": "Android Mobile (Chrome)",
-      "status_note": "ویرایش و انتشار مستقیم",
-      "created_at": "2026-08-20T00:04:42.623294+00:00"
-    },
-    {
-      "id": "log-1786658374331",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "حذف",
-      "target_title": "تبیین مفاهیم بنیادین معرفت‌شناختی در عصر غیبت",
-      "item_type": "مقاله",
-      "timestamp": "۱۴۰۵/۵/۲۲ - ۲۳:۵۹",
-      "time_only": "۲۳:۵۹",
-      "device_info": "Android Mobile (Chrome)",
-      "status_note": null,
-      "created_at": null
-    },
-    {
-      "id": "log-1787175180094",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "افزودن",
-      "target_title": "اغواگری‌های شیطان از منظر قرآن",
-      "item_type": "مقاله",
-      "timestamp": "۱۴۰۵/۵/۲۸ - ۲۳:۳۳",
-      "time_only": "۲۳:۳۳",
-      "device_info": "Windows Desktop (Chrome)",
-      "status_note": "انتشار مستقیم",
-      "created_at": null
-    },
-    {
-      "id": "log-1787176926354",
-      "user_name": "M. Nazir Yosuf",
-      "user_role": "مدیر کل و سردبیر ارشد",
-      "action_type": "ویرایش",
-      "target_title": "محمد نظیف یوسفی",
-      "item_type": "عضو تیم",
-      "timestamp": "۱۴۰۵/۵/۲۹ - ۰۰:۰۲",
-      "time_only": "۰۰:۰۲",
+      "target_title": "مصاحبه: نگاه کلی به تیوری سلامت انسان ",
+      "item_type": "صوتی",
+      "timestamp": "۱۴۰۵/۵/۲۹ - ۰۱:۲۸",
+      "time_only": "۰۱:۲۸",
       "device_info": "Windows Desktop (Chrome)",
       "status_note": null,
       "created_at": null
@@ -2835,15 +2809,41 @@
       "created_at": null
     },
     {
-      "id": "log-1787182133632",
+      "id": "log-1787176926354",
       "user_name": "M. Nazir Yosuf",
       "user_role": "مدیر کل و سردبیر ارشد",
       "action_type": "ویرایش",
-      "target_title": "مصاحبه: نگاه کلی به تیوری سلامت انسان ",
-      "item_type": "صوتی",
-      "timestamp": "۱۴۰۵/۵/۲۹ - ۰۱:۲۸",
-      "time_only": "۰۱:۲۸",
+      "target_title": "محمد نظیف یوسفی",
+      "item_type": "عضو تیم",
+      "timestamp": "۱۴۰۵/۵/۲۹ - ۰۰:۰۲",
+      "time_only": "۰۰:۰۲",
       "device_info": "Windows Desktop (Chrome)",
+      "status_note": null,
+      "created_at": null
+    },
+    {
+      "id": "log-1787175180094",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "افزودن",
+      "target_title": "اغواگری‌های شیطان از منظر قرآن",
+      "item_type": "مقاله",
+      "timestamp": "۱۴۰۵/۵/۲۸ - ۲۳:۳۳",
+      "time_only": "۲۳:۳۳",
+      "device_info": "Windows Desktop (Chrome)",
+      "status_note": "انتشار مستقیم",
+      "created_at": null
+    },
+    {
+      "id": "log-1786658374331",
+      "user_name": "M. Nazir Yosuf",
+      "user_role": "مدیر کل و سردبیر ارشد",
+      "action_type": "حذف",
+      "target_title": "تبیین مفاهیم بنیادین معرفت‌شناختی در عصر غیبت",
+      "item_type": "مقاله",
+      "timestamp": "۱۴۰۵/۵/۲۲ - ۲۳:۵۹",
+      "time_only": "۲۳:۵۹",
+      "device_info": "Android Mobile (Chrome)",
       "status_note": null,
       "created_at": null
     },

@@ -1036,31 +1036,32 @@ export const AdminDashboardContent: React.FC = () => {
   // About Us Edit Form State
   const [aboutInputText, setAboutInputText] = useState(aboutUsMission);
   const [localPillars, setLocalPillars] = useState(aboutPillars);
-  const [isAboutTouched, setIsAboutTouched] = useState(false);
+  const [isAboutDirty, setIsAboutDirty] = useState(false);
 
   useEffect(() => {
-    if (!isAboutTouched) {
+    if (!isAboutDirty) {
       setAboutInputText(aboutUsMission);
     }
-  }, [aboutUsMission, isAboutTouched]);
+  }, [aboutUsMission, isAboutDirty]);
 
   useEffect(() => {
-    if (!isAboutTouched && aboutPillars && aboutPillars.length >= 3) {
+    if (!isAboutDirty && aboutPillars && aboutPillars.length >= 3) {
       setLocalPillars(aboutPillars);
     }
-  }, [aboutPillars, isAboutTouched]);
+  }, [aboutPillars, isAboutDirty]);
 
   const handleSaveAboutUs = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaveToast({ msg: 'در حال ذخیره اطلاعات صفحه درباره ما و اهداف سه‌گانه...', type: 'loading' });
     try {
+      // 1. Build the final values from current form state
       const finalMission = aboutInputText.trim() || aboutUsMission;
       const finalPillars = localPillars.map((p, i) => ({
         title: p?.title ?? '',
         description: p?.description ?? ''
       }));
 
-      // 1. Direct synchronous update to Supabase Cloud
+      // 2. Await the Supabase upsert operation
       const { error: supaErr } = await supabase.from('site_settings').upsert([
         { key: 'about_mission', value: finalMission },
         { key: 'about_pillars', value: JSON.stringify(finalPillars) }
@@ -1069,13 +1070,13 @@ export const AdminDashboardContent: React.FC = () => {
         throw new Error(supaErr.message);
       }
 
-      // 2. Direct synchronous update to LocalStorage
+      // 3. Only if Supabase succeeds, update localStorage
       if (typeof localStorage !== 'undefined') {
         localStorage.setItem('mahdism_about_mission', finalMission);
         localStorage.setItem('mahdism_about_pillars', JSON.stringify(finalPillars));
       }
 
-      // 3. Update Zustand store state
+      // 4. Update the Zustand store with the exact same new values
       useStore.setState({
         aboutUsMission: finalMission,
         aboutPillars: finalPillars,
@@ -1083,12 +1084,16 @@ export const AdminDashboardContent: React.FC = () => {
         stagedChangesCount: 0
       });
 
-      setIsAboutTouched(false);
+      // 5. Mark the form as clean
+      setIsAboutDirty(false);
+
+      // 6. Log audit and show existing success message
       addAuditLog('ویرایش', 'متن رسالت و اهداف سه‌گانه', 'عضو تیم', 'به‌روزرسانی صفحه درباره ما و انتشار آنلاین');
       setSaveToast({ msg: '✅ اطلاعات صفحه درباره ما و ۳ هدف کلیدی با موفقیت ذخیره و منتشر شد!', type: 'success' });
       setTimeout(() => setSaveToast(null), 3500);
     } catch (err: any) {
       console.error('Error saving about us:', err);
+      // On failure: do NOT mark form clean, do NOT overwrite with old data
       setSaveToast({ msg: `❌ خطا در ذخیره اطلاعات: ${err?.message || 'مشکلی رخ داد'}`, type: 'error' });
       setTimeout(() => setSaveToast(null), 4000);
     }
@@ -2691,7 +2696,7 @@ export const AdminDashboardContent: React.FC = () => {
                   value={aboutInputText}
                   onChange={(e) => {
                     setAboutInputText(e.target.value);
-                    setIsAboutTouched(true);
+                    setIsAboutDirty(true);
                   }}
                   placeholder="متن کامل رسالت و چشم‌انداز مجله..."
                   className="w-full p-3.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs sm:text-sm text-[var(--text-primary)] font-serif-persian leading-relaxed focus:outline-none focus:border-[#1B889A] transition-colors"
@@ -2728,7 +2733,7 @@ export const AdminDashboardContent: React.FC = () => {
                             updated[0] = { ...(updated[0] || { title: '', description: '' }), title: val };
                             return updated;
                           });
-                          setIsAboutTouched(true);
+                          setIsAboutDirty(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs font-bold text-[var(--text-primary)] font-serif-persian focus:border-[#1B889A]"
                       />
@@ -2745,7 +2750,7 @@ export const AdminDashboardContent: React.FC = () => {
                             updated[0] = { ...(updated[0] || { title: '', description: '' }), description: val };
                             return updated;
                           });
-                          setIsAboutTouched(true);
+                          setIsAboutDirty(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] font-serif-persian leading-relaxed focus:border-[#1B889A]"
                       />
@@ -2770,7 +2775,7 @@ export const AdminDashboardContent: React.FC = () => {
                             updated[1] = { ...(updated[1] || { title: '', description: '' }), title: val };
                             return updated;
                           });
-                          setIsAboutTouched(true);
+                          setIsAboutDirty(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs font-bold text-[var(--text-primary)] font-serif-persian focus:border-amber-500"
                       />
@@ -2787,7 +2792,7 @@ export const AdminDashboardContent: React.FC = () => {
                             updated[1] = { ...(updated[1] || { title: '', description: '' }), description: val };
                             return updated;
                           });
-                          setIsAboutTouched(true);
+                          setIsAboutDirty(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] font-serif-persian leading-relaxed focus:border-amber-500"
                       />
@@ -2812,7 +2817,7 @@ export const AdminDashboardContent: React.FC = () => {
                             updated[2] = { ...(updated[2] || { title: '', description: '' }), title: val };
                             return updated;
                           });
-                          setIsAboutTouched(true);
+                          setIsAboutDirty(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs font-bold text-[var(--text-primary)] font-serif-persian focus:border-emerald-500"
                       />
@@ -2829,7 +2834,7 @@ export const AdminDashboardContent: React.FC = () => {
                             updated[2] = { ...(updated[2] || { title: '', description: '' }), description: val };
                             return updated;
                           });
-                          setIsAboutTouched(true);
+                          setIsAboutDirty(true);
                         }}
                         className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] font-serif-persian leading-relaxed focus:border-emerald-500"
                       />
