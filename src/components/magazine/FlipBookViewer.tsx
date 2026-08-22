@@ -15,6 +15,7 @@ import {
   Loader2
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { MobilePdfViewer } from './MobilePdfViewer';
 
 interface Props {
   issue: MagazineIssue;
@@ -25,15 +26,30 @@ export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  const pdfUrl = issue.pdf_url || '/downloads/mahdism_issue_1.pdf';
+  const pdfUrl = issue.pdf_url || '/magazines/issue-1-mahdaviyat.pdf';
 
   useEffect(() => {
     setMounted(true);
+    const checkDevice = () => {
+      if (typeof window !== 'undefined') {
+        const isTouchOrSmall = 
+          window.innerWidth < 768 || 
+          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        setIsMobile(isTouchOrSmall);
+      }
+    };
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
+
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 800);
-    return () => clearTimeout(timer);
+    return () => {
+      window.removeEventListener('resize', checkDevice);
+      clearTimeout(timer);
+    };
   }, [pdfUrl]);
 
   const handleDownloadPDF = () => {
@@ -121,8 +137,18 @@ export const FlipBookViewer: React.FC<Props> = ({ issue, onBackToCatalog }) => {
 
       </div>
 
-      {/* 2. MAIN NATIVE IN-BROWSER PDF READER CONTAINER */}
-      <div className={`relative w-full ${isFullscreen ? 'h-[calc(100vh-100px)]' : 'h-[75vh] min-h-[550px]'} bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-800 flex flex-col`}>
+      {/* 2. MOBILE DEDICATED PDF VIEWER (Block on Mobile / Hidden on Desktop) */}
+      <div className="block md:hidden w-full">
+        <MobilePdfViewer 
+          pdfUrl={pdfUrl} 
+          title={issue.title_fa} 
+          issueNumber={issue.issue_number} 
+          onDownloadPDF={handleDownloadPDF} 
+        />
+      </div>
+
+      {/* 3. MAIN NATIVE IN-BROWSER PDF READER CONTAINER (Desktop Only - Hidden on Mobile) */}
+      <div className={`hidden md:flex relative w-full ${isFullscreen ? 'h-[calc(100vh-100px)]' : 'h-[75vh] min-h-[550px]'} bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-800 flex-col`}>
         
         {/* Top Controls Toolbar */}
         <div className="flex items-center justify-between px-4 py-2.5 bg-slate-800/90 backdrop-blur border-b border-slate-700 text-white text-xs sm:text-sm shrink-0">
