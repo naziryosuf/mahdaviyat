@@ -406,22 +406,6 @@ function HomeContent() {
                               </p>
                             </div>
                           </div>
-
-                          <button
-                            onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
-                            className={`p-2.5 rounded-xl text-white flex items-center justify-center shrink-0 shadow-md transition-all active:scale-95 ${
-                              isPlayingThis 
-                                ? 'bg-amber-600 hover:bg-amber-500 shadow-amber-600/30' 
-                                : 'bg-[#1B889A] hover:bg-[#156d7b] shadow-[#1B889A]/30'
-                            }`}
-                            title={isPlayingThis ? "توقف" : "پخش پادکست"}
-                          >
-                            {isPlayingThis ? (
-                              <Pause className="w-4 h-4 fill-current" />
-                            ) : (
-                              <Play className="w-4 h-4 fill-current translate-x-[0.5px]" />
-                            )}
-                          </button>
                         </div>
                       );
                     })}
