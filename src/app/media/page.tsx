@@ -8,6 +8,7 @@ import {
   Volume2, 
   Video, 
   Play, 
+  Pause,
   Download, 
   Search, 
   FileText, 
@@ -25,7 +26,7 @@ import { VideoPlayerWithDescription } from '@/components/video/VideoPlayerWithDe
 import { parseVideoUrl } from '@/utils/videoEmbed';
 
 export default function MediaPage() {
-  const { audios, videos, infographics, playAudio, currentAudio, isPlayingAudio } = useStore();
+  const { audios, videos, infographics, playAudio, pauseAudio, currentAudio, isPlayingAudio } = useStore();
   const [activeTab, setActiveTab] = useState<'all' | 'podcasts' | 'videos' | 'infographics'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeDisplayVideo, setActiveDisplayVideo] = useState<VideoItem | null>(null);
@@ -122,65 +123,97 @@ export default function MediaPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredAudios.map((aud) => (
-              <div key={aud.id} className="p-5 rounded-3xl bg-[var(--card-bg)] border border-[var(--card-border)] hover:border-[#1B889A] transition-all modern-card shadow-md space-y-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-2xl overflow-hidden border border-[#1B889A]/40 shrink-0 relative">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={aud.cover_image} alt="" className="w-full h-full object-cover" />
+            {filteredAudios.map((aud) => {
+              const isCurrent = currentAudio?.id === aud.id;
+              const isPlayingThis = isCurrent && isPlayingAudio;
+
+              return (
+                <div 
+                  key={aud.id} 
+                  className={`p-5 rounded-3xl bg-[var(--card-bg)] border transition-all modern-card shadow-md space-y-4 ${
+                    isCurrent 
+                      ? 'border-[#1B889A] ring-2 ring-[#1B889A]/30' 
+                      : 'border-[var(--card-border)] hover:border-[#1B889A]'
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-2xl overflow-hidden border border-[#1B889A]/40 shrink-0 relative bg-stone-900 shadow-md">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={aud.cover_image} alt="" className="w-full h-full object-cover" />
+                      <button
+                        onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
+                        className="absolute inset-0 bg-black/40 flex items-center justify-center text-white hover:bg-[#1B889A]/80 transition-colors"
+                        title={isPlayingThis ? "توقف" : "پخش"}
+                      >
+                        <div className="w-7 h-7 rounded-full bg-[#1B889A] flex items-center justify-center shadow-md">
+                          {isPlayingThis ? (
+                            <Pause className="w-3.5 h-3.5 fill-current" />
+                          ) : (
+                            <Play className="w-3.5 h-3.5 fill-current" />
+                          )}
+                        </div>
+                      </button>
+                    </div>
+                    <div className="min-w-0">
+                      <span className="px-2.5 py-0.5 rounded-full teal-badge text-[10px] font-bold">
+                        {aud.category_fa}
+                      </span>
+                      <h3 
+                        onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
+                        className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate mt-1 cursor-pointer hover:text-[#1B889A] transition-colors"
+                        title="پخش محتوای صوتی"
+                      >
+                        {aud.title_fa}
+                      </h3>
+                      <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{aud.speaker_fa}</p>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed line-clamp-2">
+                    {aud.description_fa}
+                  </p>
+
+                  {/* Clickable Tags Chips (Max 3) */}
+                  {aud.tags && aud.tags.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                      {aud.tags.slice(0, 3).map((tag, idx) => (
+                        <Link
+                          key={idx}
+                          href={`/?search=${encodeURIComponent(tag)}`}
+                          className="px-2 py-0.5 rounded-full bg-[#1B889A]/10 border border-[#1B889A]/30 text-[#1B889A] hover:bg-[#1B889A] hover:text-white text-[10px] font-bold transition-all shadow-sm"
+                        >
+                          #{tag}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs">
+                    <span className="text-[var(--text-secondary)] font-bold">{aud.duration_fa}</span>
                     <button
-                      onClick={() => playAudio(aud)}
-                      className="absolute inset-0 bg-black/40 flex items-center justify-center text-white hover:bg-[#1B889A]/80 transition-colors"
+                      onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
+                      className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-white font-bold text-xs transition-all shadow-md active:scale-95 ${
+                        isPlayingThis 
+                          ? 'bg-amber-600 hover:bg-amber-500 shadow-amber-600/30' 
+                          : 'bg-[#1B889A] hover:bg-[#156d7b] shadow-[#1B889A]/30'
+                      }`}
                     >
-                      <Play className="w-6 h-6 fill-current" />
+                      {isPlayingThis ? (
+                        <>
+                          <Pause className="w-3.5 h-3.5 fill-current" />
+                          <span>توقف</span>
+                        </>
+                      ) : (
+                        <>
+                          <Play className="w-3.5 h-3.5 fill-current" />
+                          <span>پخش صوتی</span>
+                        </>
+                      )}
                     </button>
                   </div>
-                  <div className="min-w-0">
-                    <span className="px-2.5 py-0.5 rounded-full teal-badge text-[10px] font-bold">
-                      {aud.category_fa}
-                    </span>
-                    <h3 
-                      onClick={() => playAudio(aud)}
-                      className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate mt-1 cursor-pointer hover:text-[#1B889A] transition-colors"
-                      title="پخش محتوای صوتی"
-                    >
-                      {aud.title_fa}
-                    </h3>
-                    <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{aud.speaker_fa}</p>
-                  </div>
                 </div>
-
-                <p className="text-xs text-[var(--text-secondary)] leading-relaxed line-clamp-2">
-                  {aud.description_fa}
-                </p>
-
-                {/* Clickable Tags Chips (Max 3) */}
-                {aud.tags && aud.tags.length > 0 && (
-                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                    {aud.tags.slice(0, 3).map((tag, idx) => (
-                      <Link
-                        key={idx}
-                        href={`/?search=${encodeURIComponent(tag)}`}
-                        className="px-2 py-0.5 rounded-full bg-[#1B889A]/10 border border-[#1B889A]/30 text-[#1B889A] hover:bg-[#1B889A] hover:text-white text-[10px] font-bold transition-all shadow-sm"
-                      >
-                        #{tag}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-
-                <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs">
-                  <span className="text-[var(--text-secondary)] font-bold">{aud.duration_fa}</span>
-                  <button
-                    onClick={() => playAudio(aud)}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs transition-all shadow-md active:scale-95"
-                  >
-                    <Play className="w-3.5 h-3.5 fill-current" />
-                    <span>پخش صوتی</span>
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
       )}
@@ -190,7 +223,7 @@ export default function MediaPage() {
         <section className="space-y-6">
           <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
             <h2 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
-              <Video className="w-5 h-5 text-[#1B889A]" />
+              <Video className="w-4.5 h-4.5 text-[#1B889A]" />
               <span>محتوای ویدیویی ({filteredVideos.length})</span>
             </h2>
             <Link href="/video" className="text-xs text-[#1B889A] font-bold hover:underline">
@@ -222,8 +255,8 @@ export default function MediaPage() {
                         }}
                       />
                       <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                        <div className="w-12 h-12 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
-                          <Play className="w-6 h-6 fill-current ml-0.5" />
+                        <div className="w-9 h-9 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                          <Play className="w-4 h-4 fill-current" />
                         </div>
                       </div>
                       <span className="absolute bottom-2.5 left-2.5 px-2.5 py-0.5 bg-black/80 rounded-lg text-[10px] font-mono text-white dir-ltr font-bold border border-white/10">

@@ -68,16 +68,16 @@ export default function AudioPage() {
                       playAudio(activeAudio);
                     }
                   }}
-                  className="flex items-center gap-3 px-7 py-3.5 rounded-2xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-sm shadow-xl shadow-[#1B889A]/30 transition-all active:scale-95"
+                  className="flex items-center gap-2.5 px-6 py-3 rounded-2xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs sm:text-sm shadow-lg shadow-[#1B889A]/30 transition-all active:scale-95"
                 >
                   {currentAudio?.id === activeAudio.id && isPlayingAudio ? (
                     <>
-                      <Pause className="w-5 h-5 fill-current" />
+                      <Pause className="w-4 h-4 fill-current" />
                       <span>توقف پخش صوتی</span>
                     </>
                   ) : (
                     <>
-                      <Play className="w-5 h-5 fill-current" />
+                      <Play className="w-4 h-4 fill-current" />
                       <span>پخش محتوای صوتی</span>
                     </>
                   )}
@@ -163,8 +163,8 @@ export default function AudioPage() {
                         className="w-full h-full object-cover object-center group-hover/cover:scale-105 transition-transform duration-300"
                       />
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover/cover:bg-black/50 transition-colors">
-                        <div className="w-10 h-10 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-lg">
-                          {isPlayingThis ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current" />}
+                        <div className="w-8 h-8 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-md">
+                          {isPlayingThis ? <Pause className="w-3.5 h-3.5 fill-current" /> : <Play className="w-3.5 h-3.5 fill-current" />}
                         </div>
                       </div>
                     </div>

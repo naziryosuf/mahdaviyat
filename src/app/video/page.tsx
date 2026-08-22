@@ -34,7 +34,7 @@ export default function VideoLibraryPage() {
       <div className="space-y-6">
         <div className="border-b border-[var(--card-border)] pb-4 flex items-center justify-between">
           <h3 className="text-lg sm:text-xl font-bold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
-            <Video className="w-5 h-5 text-[#1B889A]" />
+            <Video className="w-4.5 h-4.5 text-[#1B889A]" />
             <span>گالری محتوای ویدیویی ({videos.length})</span>
           </h3>
         </div>
@@ -63,8 +63,8 @@ export default function VideoLibraryPage() {
                       }}
                     />
                     <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                      <div className="w-12 h-12 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
-                        <Play className="w-6 h-6 ml-0.5 fill-current" />
+                      <div className="w-9 h-9 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                        <Play className="w-4 h-4 fill-current" />
                       </div>
                     </div>
                     <span className="absolute bottom-2.5 left-2.5 px-2.5 py-0.5 bg-black/80 rounded-lg text-[10px] font-mono text-white dir-ltr font-bold border border-white/10">

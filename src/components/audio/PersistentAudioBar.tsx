@@ -166,13 +166,13 @@ export const PersistentAudioBar: React.FC = () => {
           {/* Main Play/Pause Button */}
           <button
             onClick={toggleAudioPlay}
-            className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-[#1B889A] hover:bg-[#156d7b] text-white flex items-center justify-center shadow-lg shadow-[#1B889A]/30 transition-all active:scale-95 shrink-0"
+            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-[#1B889A] hover:bg-[#156d7b] text-white flex items-center justify-center shadow-lg shadow-[#1B889A]/30 transition-all active:scale-95 shrink-0"
             aria-label={isPlayingAudio ? "توقف پخش محتوای صوتی" : "پخش محتوای صوتی"}
           >
             {isPlayingAudio ? (
-              <Pause className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
+              <Pause className="w-4 h-4 sm:w-4.5 sm:h-4.5 fill-current" />
             ) : (
-              <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-0.5 fill-current" />
+              <Play className="w-4 h-4 sm:w-4.5 sm:h-4.5 fill-current translate-x-[0.5px]" />
             )}
           </button>
 
