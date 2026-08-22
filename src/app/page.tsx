@@ -343,24 +343,88 @@ function HomeContent() {
                 <div className="space-y-4">
                   <h3 className="text-sm font-bold text-[#1B889A] flex items-center gap-2 border-b border-[var(--card-border)] pb-2">
                     <Volume2 className="w-4 h-4" />
-                    <span>محتوای صوتی یافته‌شده ({filteredAudios.length})</span>
+                    <span>پادکست‌ها و محتوای صوتی یافته‌شده ({filteredAudios.length})</span>
                   </h3>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {filteredAudios.map((aud) => (
-                      <div key={aud.id} className="p-3.5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] flex items-center justify-between gap-3">
-                        <div className="min-w-0">
-                          <h4 className="text-xs font-bold text-[var(--text-primary)] truncate">{aud.title_fa}</h4>
-                          <p className="text-[11px] text-[var(--text-secondary)] mt-1">{aud.speaker_fa} • {aud.duration_fa}</p>
-                        </div>
-                        <button
-                          onClick={() => playAudio(aud)}
-                          className="w-9 h-9 rounded-xl bg-[#1B889A] text-white flex items-center justify-center shrink-0 shadow-md hover:bg-[#156d7b] transition-colors"
+                    {filteredAudios.map((aud) => {
+                      const isCurrent = currentAudio?.id === aud.id;
+                      const isPlayingThis = isCurrent && isPlayingAudio;
+                      const coverSrc = aud.cover_image && aud.cover_image.trim() !== '' 
+                        ? aud.cover_image 
+                        : 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=300&auto=format&fit=crop&q=80';
+
+                      return (
+                        <div 
+                          key={aud.id} 
+                          className={`p-3.5 rounded-2xl bg-[var(--bg-color)] border transition-all modern-card shadow-sm flex items-center justify-between gap-3 group ${
+                            isCurrent 
+                              ? 'border-[#1B889A] ring-2 ring-[#1B889A]/30' 
+                              : 'border-[var(--card-border)] hover:border-[#1B889A]'
+                          }`}
                         >
-                          <Play className="w-4 h-4 fill-current" />
-                        </button>
-                      </div>
-                    ))}
+                          <div className="flex items-center gap-3 min-w-0 flex-1">
+                            {/* Podcast Cover Image with Play/Pause Overlay */}
+                            <div className="w-14 h-14 rounded-xl overflow-hidden border border-[#1B889A]/40 shrink-0 relative bg-slate-900 shadow-md">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img 
+                                src={coverSrc} 
+                                alt={aud.title_fa} 
+                                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300" 
+                                onError={(e) => {
+                                  e.currentTarget.src = 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=300&auto=format&fit=crop&q=80';
+                                }}
+                              />
+                              <button
+                                onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
+                                className="absolute inset-0 bg-black/40 hover:bg-[#1B889A]/80 transition-colors flex items-center justify-center text-white"
+                                title={isPlayingThis ? "توقف پادکست" : "پخش پادکست"}
+                              >
+                                <div className="w-7 h-7 rounded-full bg-[#1B889A] flex items-center justify-center shadow-md">
+                                  {isPlayingThis ? (
+                                    <Pause className="w-3.5 h-3.5 fill-current" />
+                                  ) : (
+                                    <Play className="w-3.5 h-3.5 fill-current translate-x-[0.5px]" />
+                                  )}
+                                </div>
+                              </button>
+                            </div>
+
+                            <div className="min-w-0 flex-1">
+                              <span className="px-2 py-0.5 rounded-full teal-badge text-[9px] font-bold block w-fit mb-0.5">
+                                {aud.category_fa}
+                              </span>
+                              <h4 
+                                onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
+                                className="text-xs font-bold text-[var(--text-primary)] truncate font-serif-persian cursor-pointer hover:text-[#1B889A] transition-colors"
+                                title={aud.title_fa}
+                              >
+                                {aud.title_fa}
+                              </h4>
+                              <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 font-serif-persian truncate">
+                                {aud.speaker_fa} • {aud.duration_fa}
+                              </p>
+                            </div>
+                          </div>
+
+                          <button
+                            onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
+                            className={`p-2.5 rounded-xl text-white flex items-center justify-center shrink-0 shadow-md transition-all active:scale-95 ${
+                              isPlayingThis 
+                                ? 'bg-amber-600 hover:bg-amber-500 shadow-amber-600/30' 
+                                : 'bg-[#1B889A] hover:bg-[#156d7b] shadow-[#1B889A]/30'
+                            }`}
+                            title={isPlayingThis ? "توقف" : "پخش پادکست"}
+                          >
+                            {isPlayingThis ? (
+                              <Pause className="w-4 h-4 fill-current" />
+                            ) : (
+                              <Play className="w-4 h-4 fill-current translate-x-[0.5px]" />
+                            )}
+                          </button>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
