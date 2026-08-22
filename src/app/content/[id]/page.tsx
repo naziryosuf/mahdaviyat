@@ -294,24 +294,38 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
 
           {/* Reading Customization & Action Bar */}
           <div className="flex items-center gap-1.5 sm:gap-2 bg-[var(--bg-color)] p-1.5 rounded-2xl border border-[var(--card-border)] no-print">
-            <span className="text-[11px] sm:text-xs text-[var(--text-secondary)] px-1.5 flex items-center gap-1">
+            <span className="text-[11px] sm:text-xs text-[var(--text-secondary)] px-1 flex items-center gap-1">
               <Type className="w-3.5 h-3.5 text-[#1B889A]" />
               <span>قلم:</span>
             </span>
-            <button
-              onClick={() => setFontSize((s) => Math.max(s - 2, 14))}
-              className="px-2.5 py-1 rounded-lg bg-[var(--card-bg)] hover:bg-[#1B889A]/10 text-xs text-[var(--text-primary)] font-bold border border-[var(--card-border)]"
-              title="کوچک‌کردن قلم"
-            >
-              A-
-            </button>
-            <button
-              onClick={() => setFontSize((s) => Math.min(s + 2, 26))}
-              className="px-2.5 py-1 rounded-lg bg-[var(--card-bg)] hover:bg-[#1B889A]/10 text-xs text-[var(--text-primary)] font-bold border border-[var(--card-border)]"
-              title="بزرگ‌کردن قلم"
-            >
-              A+
-            </button>
+
+            <div className="flex items-center gap-1 bg-[var(--card-bg)] p-0.5 rounded-xl border border-[var(--card-border)]">
+              <button
+                onClick={() => setFontSize((s) => Math.max(s - 1, 12))}
+                className="px-2 py-1 rounded-lg hover:bg-[#1B889A]/15 text-xs text-[var(--text-primary)] hover:text-[#1B889A] font-bold transition-all active:scale-90"
+                title="کوچک‌کردن قلم (-A)"
+                aria-label="کوچک‌کردن قلم"
+              >
+                -A
+              </button>
+
+              <span 
+                onClick={() => setFontSize(17)}
+                className="px-1.5 py-0.5 rounded-md bg-[#1B889A]/15 text-[#1B889A] font-mono text-[11px] sm:text-xs font-black min-w-[28px] text-center select-none cursor-pointer hover:bg-[#1B889A]/25 transition-colors"
+                title="سایز فعلی قلم (کلیک برای بازنشانی)"
+              >
+                {fontSize}
+              </span>
+
+              <button
+                onClick={() => setFontSize((s) => Math.min(s + 1, 32))}
+                className="px-2 py-1 rounded-lg hover:bg-[#1B889A]/15 text-xs text-[var(--text-primary)] hover:text-[#1B889A] font-bold transition-all active:scale-90"
+                title="بزرگ‌کردن قلم (+A)"
+                aria-label="بزرگ‌کردن قلم"
+              >
+                +A
+              </button>
+            </div>
 
             <div className="h-4 w-px bg-[var(--card-border)] mx-1" />
 
