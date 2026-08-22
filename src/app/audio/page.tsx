@@ -34,12 +34,28 @@ export default function AudioPage() {
 
           <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
             
-            {/* Cover Image */}
-            <div className="w-44 h-44 sm:w-56 sm:h-56 rounded-2xl overflow-hidden border-2 border-[#1B889A]/40 shadow-2xl relative shrink-0">
+            {/* Cover Image with Interactive Play/Pause Overlay */}
+            <div 
+              onClick={() => {
+                if (currentAudio?.id === activeAudio.id && isPlayingAudio) {
+                  pauseAudio();
+                } else {
+                  playAudio(activeAudio);
+                }
+              }}
+              className="w-44 h-44 sm:w-56 sm:h-56 rounded-2xl overflow-hidden border-2 border-[#1B889A]/40 shadow-2xl relative shrink-0 cursor-pointer group/hero"
+              title={currentAudio?.id === activeAudio.id && isPlayingAudio ? "توقف پخش" : "پخش محتوای صوتی"}
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={activeAudio.cover_image} alt="" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                <Music className="w-12 h-12 text-[#1B889A] opacity-80" />
+              <img src={activeAudio.cover_image} alt="" className="w-full h-full object-cover group-hover/hero:scale-105 transition-transform duration-500" />
+              <div className="absolute inset-0 bg-black/30 group-hover/hero:bg-black/40 transition-colors flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-xl group-hover/hero:scale-110 transition-transform">
+                  {currentAudio?.id === activeAudio.id && isPlayingAudio ? (
+                    <Pause className="w-5 h-5 fill-current" />
+                  ) : (
+                    <Play className="w-5 h-5 fill-current translate-x-[1px]" />
+                  )}
+                </div>
               </div>
             </div>
 
@@ -77,7 +93,7 @@ export default function AudioPage() {
                     </>
                   ) : (
                     <>
-                      <Play className="w-4 h-4 fill-current" />
+                      <Play className="w-4 h-4 fill-current translate-x-[0.5px]" />
                       <span>پخش محتوای صوتی</span>
                     </>
                   )}
@@ -163,8 +179,12 @@ export default function AudioPage() {
                         className="w-full h-full object-cover object-center group-hover/cover:scale-105 transition-transform duration-300"
                       />
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover/cover:bg-black/50 transition-colors">
-                        <div className="w-8 h-8 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-md">
-                          {isPlayingThis ? <Pause className="w-3.5 h-3.5 fill-current" /> : <Play className="w-3.5 h-3.5 fill-current" />}
+                        <div className="w-10 h-10 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-lg group-hover/cover:scale-110 transition-transform">
+                          {isPlayingThis ? (
+                            <Pause className="w-4 h-4 fill-current" />
+                          ) : (
+                            <Play className="w-4 h-4 fill-current translate-x-[1px]" />
+                          )}
                         </div>
                       </div>
                     </div>
@@ -199,10 +219,10 @@ export default function AudioPage() {
                         playAudio(aud);
                       }
                     }}
-                    className={`px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 ${
+                    className={`px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-md ${
                       isPlayingThis
-                        ? 'bg-amber-600 hover:bg-amber-500 text-white shadow-md'
-                        : 'bg-[#1B889A] hover:bg-[#156d7b] text-white shadow-md'
+                        ? 'bg-amber-600 hover:bg-amber-500 text-white'
+                        : 'bg-[#1B889A] hover:bg-[#156d7b] text-white'
                     }`}
                   >
                     {isPlayingThis ? (
@@ -212,8 +232,8 @@ export default function AudioPage() {
                       </>
                     ) : (
                       <>
-                        <Play className="w-3.5 h-3.5 fill-current" />
-                        <span>پخش</span>
+                        <Play className="w-3.5 h-3.5 fill-current translate-x-[0.5px]" />
+                        <span>پخش پادکست</span>
                       </>
                     )}
                   </button>

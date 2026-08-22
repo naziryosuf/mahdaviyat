@@ -145,11 +145,11 @@ export default function MediaPage() {
                         className="absolute inset-0 bg-black/40 flex items-center justify-center text-white hover:bg-[#1B889A]/80 transition-colors"
                         title={isPlayingThis ? "توقف" : "پخش"}
                       >
-                        <div className="w-7 h-7 rounded-full bg-[#1B889A] flex items-center justify-center shadow-md">
+                        <div className="w-8 h-8 rounded-full bg-[#1B889A] flex items-center justify-center shadow-md">
                           {isPlayingThis ? (
                             <Pause className="w-3.5 h-3.5 fill-current" />
                           ) : (
-                            <Play className="w-3.5 h-3.5 fill-current" />
+                            <Play className="w-3.5 h-3.5 fill-current translate-x-[0.5px]" />
                           )}
                         </div>
                       </button>
@@ -205,8 +205,8 @@ export default function MediaPage() {
                         </>
                       ) : (
                         <>
-                          <Play className="w-3.5 h-3.5 fill-current" />
-                          <span>پخش صوتی</span>
+                          <Play className="w-3.5 h-3.5 fill-current translate-x-[0.5px]" />
+                          <span>پخش پادکست</span>
                         </>
                       )}
                     </button>
