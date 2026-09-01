@@ -3,12 +3,38 @@ import "./globals.css";
 import { AppClientLayoutWrapper } from "@/components/layout/AppClientLayoutWrapper";
 
 export const metadata: Metadata = {
-  title: "مجله مستقل فکری-شناختی ایدئولوژی مهدویت",
-  description: "نشریه مستقل علمی، تحلیلی و شناختی ایدئولوژی مهدویت.",
+  metadataBase: new URL('https://www.ideologymahdaviyat.org'),
+  title: {
+    default: "مجله مستقل فکری-شناختی ایدئولوژی مهدویت",
+    template: "%s | مجله ایدئولوژی مهدویت",
+  },
+  description: "نشریه مستقل علمی، تحلیلی و شناختی ایدئولوژی مهدویت - بستر اندیشه، فلسفه، جهان‌بینی توحیدی و معرفت دینی.",
   icons: {
-    icon: "/kaaba_logo_official.jpg",
-    shortcut: "/kaaba_logo_official.jpg",
-    apple: "/kaaba_logo_official.jpg",
+    icon: "/kaaba_unity_logo.jpg",
+    shortcut: "/kaaba_unity_logo.jpg",
+    apple: "/kaaba_unity_logo.jpg",
+  },
+  openGraph: {
+    title: "مجله مستقل فکری-شناختی ایدئولوژی مهدویت",
+    description: "نشریه مستقل علمی، تحلیلی و شناختی ایدئولوژی مهدویت.",
+    url: "https://www.ideologymahdaviyat.org",
+    siteName: "ایدئولوژی مهدویت",
+    images: [
+      {
+        url: "/kaaba_unity_logo.jpg",
+        width: 800,
+        height: 800,
+        alt: "لوگوی رسمی مجله ایدئولوژی مهدویت",
+      },
+    ],
+    locale: "fa_AF",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "مجله مستقل فکری-شناختی ایدئولوژی مهدویت",
+    description: "نشریه مستقل علمی، تحلیلی و شناختی ایدئولوژی مهدویت.",
+    images: ["/kaaba_unity_logo.jpg"],
   },
 };
 
