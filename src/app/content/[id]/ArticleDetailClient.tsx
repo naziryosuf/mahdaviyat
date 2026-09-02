@@ -202,66 +202,141 @@ export function ArticleDetailClient({ id, initialArticle }: ArticleDetailClientP
         </div>
       )}
 
-      {/* INTERACTIVE SOCIAL SHARE MODAL */}
+      {/* INTERACTIVE SOCIAL SHARE MODAL WITH COVER PREVIEW */}
       {showShareModal && (
-        <div className="fixed inset-0 z-[99999] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150 no-print">
-          <div className="bg-[var(--card-bg)] border-2 border-[#1B889A]/50 rounded-3xl p-6 sm:p-8 max-w-md w-full space-y-6 shadow-2xl modern-card">
-            
-            <div className="flex items-center justify-between border-b border-[var(--card-border)] pb-4">
-              <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-2xl bg-[#1B889A]/15 border border-[#1B889A]/40 flex items-center justify-center text-[#1B889A]">
-                  <Share2 className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-base font-extrabold text-[var(--text-primary)] font-serif-persian">
-                    اشتراک‌گذاری مقاله در شبکه‌های اجتماعی
-                  </h3>
-                  <p className="text-xs text-[var(--text-secondary)]">شبکه اجتماعی موردنظر جهت انتشار مقاله را انتخاب نمایید</p>
-                </div>
-              </div>
+        <div 
+          className="fixed inset-0 z-[99999] bg-black/70 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-150 no-print"
+          onClick={() => setShowShareModal(false)}
+        >
+          <div 
+            className="bg-[var(--card-bg)] border-2 border-[#1B889A] rounded-3xl p-5 sm:p-7 max-w-lg w-full space-y-5 shadow-2xl modern-card relative animate-in zoom-in-95 fade-in slide-in-from-bottom-3"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowShareModal(false)}
+              className="absolute top-4 left-4 p-2 rounded-xl text-[var(--text-secondary)] hover:text-white hover:bg-[#1B889A] transition-all shadow-sm active:scale-95"
+              title="بستن پنجره"
+            >
+              <X className="w-5 h-5" />
+            </button>
 
-              <button
-                onClick={() => setShowShareModal(false)}
-                className="p-2 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-color)] transition-all"
-              >
-                <X className="w-5 h-5" />
-              </button>
+            {/* Header */}
+            <div className="flex items-center gap-3 border-b border-[var(--card-border)] pb-3">
+              <div className="w-10 h-10 rounded-2xl bg-[#1B889A]/15 border border-[#1B889A]/40 flex items-center justify-center text-[#1B889A] shrink-0">
+                <Share2 className="w-5 h-5" />
+              </div>
+              <div className="text-right">
+                <h3 className="text-base font-extrabold text-[var(--text-primary)] font-serif-persian">
+                  اشتراک‌گذاری این مقاله
+                </h3>
+                <p className="text-xs text-[var(--text-secondary)]">ارسال همراه با تصویر کاور و عنوان کامل در واتساپ و تلگرام</p>
+              </div>
+            </div>
+
+            {/* Article Card Preview (Cover image + Title + Excerpt) */}
+            <div className="bg-[var(--bg-color)] border border-[var(--card-border)] rounded-2xl overflow-hidden shadow-sm">
+              {article.image_url && (
+                <div className="w-full aspect-[16/9] relative bg-slate-900 overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={article.image_url}
+                    alt={article.title_fa}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-2 right-2 px-2.5 py-1 rounded-lg bg-black/75 backdrop-blur-md text-white text-[10px] font-bold">
+                    پیش‌نمایش کاور در واتساپ و تلگرام
+                  </div>
+                </div>
+              )}
+              <div className="p-3.5 space-y-1 text-right">
+                <span className="text-[10px] text-[#1B889A] font-bold block">
+                  مجله مستقل فکری-شناختی ایدئولوژی مهدویت
+                </span>
+                <h4 className="text-xs sm:text-sm font-bold text-[var(--text-primary)] font-serif-persian line-clamp-2">
+                  {article.title_fa}
+                </h4>
+                {article.excerpt_fa && (
+                  <p className="text-[11px] text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
+                    {article.excerpt_fa}
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* Social Sharing Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {socialLinks.map((item, index) => (
-                <a
-                  key={index}
-                  href={item.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={`p-3 rounded-2xl ${item.color} font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all active:scale-95`}
-                >
-                  <item.icon className="w-4 h-4" />
-                  <span>{item.name}</span>
-                </a>
-              ))}
+            <div className="grid grid-cols-2 gap-2.5">
+              {/* WhatsApp */}
+              <a
+                href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
+                  `${article.title_fa}\n\n${article.excerpt_fa ? article.excerpt_fa + '\n\n' : ''}مطالعه در مجله ایدئولوژی مهدویت:\n${currentUrl}`
+                )}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-[#25D366]/15 hover:bg-[#25D366] text-[#25D366] hover:text-white border border-[#25D366]/30 font-bold text-xs shadow-sm transition-all active:scale-95"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>ارسال در واتساپ</span>
+              </a>
+
+              {/* Telegram */}
+              <a
+                href={`https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(article.title_fa)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-[#229ED9]/15 hover:bg-[#229ED9] text-[#229ED9] hover:text-white border border-[#229ED9]/30 font-bold text-xs shadow-sm transition-all active:scale-95"
+              >
+                <Send className="w-4 h-4" />
+                <span>ارسال در تلگرام</span>
+              </a>
+
+              {/* Eitaa */}
+              <a
+                href={`https://eitaa.com/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(article.title_fa)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-[#E85E26]/15 hover:bg-[#E85E26] text-[#E85E26] hover:text-white border border-[#E85E26]/30 font-bold text-xs shadow-sm transition-all active:scale-95"
+              >
+                <Globe className="w-4 h-4" />
+                <span>ارسال در ایتا</span>
+              </a>
+
+              {/* Copy Link Button */}
+              <button
+                onClick={handleCopyLink}
+                className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-[#1B889A]/15 hover:bg-[#1B889A] text-[#1B889A] hover:text-white border border-[#1B889A]/30 font-bold text-xs shadow-sm transition-all active:scale-95"
+              >
+                <Copy className="w-4 h-4" />
+                <span>کپی لینک مستقیم</span>
+              </button>
             </div>
 
-            {/* Copy Direct Link Box */}
-            <div className="pt-3 border-t border-[var(--card-border)] space-y-2">
-              <span className="text-xs font-bold text-[var(--text-secondary)] block">کپی مستقیم آدرس لینک مقاله:</span>
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  readOnly
-                  value={currentUrl}
-                  className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-xs font-mono text-[var(--text-secondary)] dir-ltr truncate"
-                />
-                <button
-                  onClick={handleCopyLink}
-                  className="px-4 py-2.5 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs flex items-center gap-1.5 shadow-md shrink-0 transition-all active:scale-95"
-                >
-                  <Copy className="w-4 h-4" />
-                  <span>کپی</span>
-                </button>
-              </div>
+            {/* Native Mobile Share if supported */}
+            {typeof navigator !== 'undefined' && typeof navigator.share === 'function' && (
+              <button
+                onClick={handleNativeShare}
+                className="w-full flex items-center justify-center gap-2 p-3 rounded-2xl bg-[var(--bg-color)] hover:bg-[#1B889A] text-[var(--text-primary)] hover:text-white border border-[var(--card-border)] hover:border-[#1B889A] font-bold text-xs transition-all shadow-sm active:scale-95"
+              >
+                <ExternalLink className="w-4 h-4" />
+                <span>اشتراک‌گذاری با سایر برنامه‌های گوشی</span>
+              </button>
+            )}
+
+            {/* Direct Link Input */}
+            <div className="pt-2 border-t border-[var(--card-border)] flex items-center gap-2">
+              <input
+                type="text"
+                readOnly
+                value={currentUrl}
+                className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-xs font-mono text-[var(--text-secondary)] dir-ltr truncate"
+              />
+              <button
+                onClick={handleCopyLink}
+                className="px-4 py-2.5 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs flex items-center gap-1.5 shadow-md shrink-0 transition-all active:scale-95"
+              >
+                <Copy className="w-4 h-4" />
+                <span>کپی</span>
+              </button>
             </div>
 
           </div>
@@ -574,135 +649,6 @@ export function ArticleDetailClient({ id, initialArticle }: ArticleDetailClientP
               </div>
             </div>
 
-          </div>
-        </div>
-      )}
-
-      {/* Article Share Lightbox Modal */}
-      {showShareModal && (
-        <div 
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-opacity duration-300 animate-in fade-in no-print"
-          onClick={() => setShowShareModal(false)}
-        >
-          <div 
-            className="bg-[var(--card-bg)] border-2 border-[#1B889A] rounded-3xl p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl modern-card relative animate-in zoom-in-95 fade-in slide-in-from-bottom-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close Button */}
-            <button
-              onClick={() => setShowShareModal(false)}
-              className="absolute top-5 left-5 p-2 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] text-[var(--text-secondary)] hover:text-white hover:bg-[#1B889A] transition-all shadow-md active:scale-95"
-              title="بستن پنجره"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            {/* Header */}
-            <div className="flex items-center gap-3 border-b border-[var(--card-border)] pb-4">
-              <div className="w-10 h-10 rounded-xl bg-[#1B889A]/15 text-[#1B889A] flex items-center justify-center shrink-0">
-                <Share2 className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="text-base sm:text-lg font-bold text-[var(--text-primary)] font-serif-persian">
-                  اشتراک‌گذاری این مقاله
-                </h3>
-                <p className="text-xs text-[var(--text-secondary)]">
-                  همراه با نمایش تصویر کاور و عنوان در واتساپ و تلگرام
-                </p>
-              </div>
-            </div>
-
-            {/* Card Preview (Shows cover image and title) */}
-            <div className="bg-[var(--bg-color)] border border-[var(--card-border)] rounded-2xl overflow-hidden shadow-sm">
-              {article.image_url && (
-                <div className="w-full aspect-[16/9] relative bg-slate-900 overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={article.image_url}
-                    alt={article.title_fa}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-2 right-2 px-2.5 py-1 rounded-lg bg-black/70 backdrop-blur-md text-white text-[10px] font-bold">
-                    پیش‌نمایش کاور در شبکه‌های اجتماعی
-                  </div>
-                </div>
-              )}
-              <div className="p-3.5 space-y-1.5 text-right">
-                <span className="text-[10px] text-[#1B889A] font-bold block">
-                  مجله مستقل فکری-شناختی ایدئولوژی مهدویت
-                </span>
-                <h4 className="text-xs sm:text-sm font-bold text-[var(--text-primary)] font-serif-persian line-clamp-2">
-                  {article.title_fa}
-                </h4>
-                {article.excerpt_fa && (
-                  <p className="text-[11px] text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
-                    {article.excerpt_fa}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Quick Share Buttons Grid */}
-            <div className="grid grid-cols-2 gap-2.5">
-              {/* WhatsApp Button */}
-              <a
-                href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
-                  `${article.title_fa}\n\n${article.excerpt_fa ? article.excerpt_fa + '\n\n' : ''}مطالعه در مجله ایدئولوژی مهدویت:\n${typeof window !== 'undefined' ? window.location.href : 'https://www.ideologymahdaviyat.org/content/' + article.id}`
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#25D366]/15 hover:bg-[#25D366] text-[#25D366] hover:text-white border border-[#25D366]/30 font-bold text-xs transition-all shadow-sm active:scale-95"
-              >
-                <MessageCircle className="w-4 h-4" />
-                <span>ارسال در واتساپ</span>
-              </a>
-
-              {/* Telegram Button */}
-              <a
-                href={`https://t.me/share/url?url=${encodeURIComponent(
-                  typeof window !== 'undefined' ? window.location.href : 'https://www.ideologymahdaviyat.org/content/' + article.id
-                )}&text=${encodeURIComponent(article.title_fa)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#229ED9]/15 hover:bg-[#229ED9] text-[#229ED9] hover:text-white border border-[#229ED9]/30 font-bold text-xs transition-all shadow-sm active:scale-95"
-              >
-                <Send className="w-4 h-4" />
-                <span>ارسال در تلگرام</span>
-              </a>
-
-              {/* Eitaa Button */}
-              <a
-                href={`https://eitaa.com/share/url?url=${encodeURIComponent(
-                  typeof window !== 'undefined' ? window.location.href : 'https://www.ideologymahdaviyat.org/content/' + article.id
-                )}&text=${encodeURIComponent(article.title_fa)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#E85E26]/15 hover:bg-[#E85E26] text-[#E85E26] hover:text-white border border-[#E85E26]/30 font-bold text-xs transition-all shadow-sm active:scale-95"
-              >
-                <Globe className="w-4 h-4" />
-                <span>ارسال در ایتا</span>
-              </a>
-
-              {/* Copy Link Button */}
-              <button
-                onClick={handleCopyLink}
-                className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#1B889A]/15 hover:bg-[#1B889A] text-[#1B889A] hover:text-white border border-[#1B889A]/30 font-bold text-xs transition-all shadow-sm active:scale-95"
-              >
-                <Copy className="w-4 h-4" />
-                <span>کپی لینک مستقیم</span>
-              </button>
-            </div>
-
-            {/* Native Mobile Share if supported */}
-            {typeof navigator !== 'undefined' && typeof navigator.share === 'function' && (
-              <button
-                onClick={handleNativeShare}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[var(--bg-color)] hover:bg-[#1B889A] text-[var(--text-primary)] hover:text-white border border-[var(--card-border)] hover:border-[#1B889A] font-bold text-xs transition-all shadow-sm active:scale-95"
-              >
-                <ExternalLink className="w-4 h-4" />
-                <span>اشتراک‌گذاری با سایر برنامه‌های گوشی</span>
-              </button>
-            )}
           </div>
         </div>
       )}
