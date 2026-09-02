@@ -34,7 +34,8 @@ async function getArticle(id: string) {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
-  const article = await getArticle(id);
+  const decodedId = decodeURIComponent(id);
+  const article = (await getArticle(decodedId)) || (await getArticle(id));
 
   if (!article) {
     return {
@@ -43,10 +44,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const title = article.title_fa || 'مقاله تحلیلی';
-  const description = article.excerpt_fa || article.content_fa?.slice(0, 160) || 'مجله مستقل فکری-شناختی ایدئولوژی مهدویت';
+  const title = (article.title_fa || 'مقاله تحلیلی').trim();
+  const description = (article.excerpt_fa || article.content_fa?.slice(0, 160) || 'مجله مستقل فکری-شناختی ایدئولوژی مهدویت')
+    .replace(/[\r\n]+/g, ' ')
+    .trim();
   const imageUrl = article.image_url && article.image_url.trim() !== '' 
-    ? article.image_url 
+    ? article.image_url.trim() 
     : 'https://www.ideologymahdaviyat.org/kaaba_unity_logo.jpg';
   const pageUrl = `https://www.ideologymahdaviyat.org/content/${id}`;
   const author = article.author_name_fa || 'تحریریه مجله مهدویت';
@@ -63,9 +66,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       images: [
         {
           url: imageUrl,
+          secureUrl: imageUrl,
           width: 1200,
           height: 630,
           alt: title,
+          type: imageUrl.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg',
         },
       ],
       locale: 'fa_AF',
