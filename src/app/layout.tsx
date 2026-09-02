@@ -10,14 +10,8 @@ export const metadata: Metadata = {
   },
   description: "نشریه مستقل علمی، تحلیلی و شناختی ایدئولوژی مهدویت - بستر اندیشه، فلسفه، جهان‌بینی توحیدی و معرفت دینی.",
   icons: {
-    icon: [
-      { url: "/favicon.ico" },
-      { url: "/icon-48x48.png", sizes: "48x48", type: "image/png" },
-      { url: "/icon-96x96.png", sizes: "96x96", type: "image/png" },
-      { url: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icon-512x512.png", sizes: "512x512", type: "image/png" },
-    ],
-    shortcut: "/favicon.ico",
+    icon: "/logo_calligraphy.png",
+    shortcut: "/logo_calligraphy.png",
     apple: "/apple-touch-icon.png",
   },
   openGraph: {
