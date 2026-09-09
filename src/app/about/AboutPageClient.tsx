@@ -19,7 +19,14 @@ import {
   Play, 
   UserCheck,
   Award,
-  BookMarked
+  BookMarked,
+  Share2,
+  CheckCircle2,
+  MessageCircle,
+  Send,
+  Globe,
+  Copy,
+  ExternalLink
 } from 'lucide-react';
 import { TeamMember } from '@/types';
 
@@ -28,6 +35,15 @@ function AboutContent() {
   const authorQuery = searchParams.get('author') || searchParams.get('member');
   const { teamMembers, articles, audios, videos, playAudio, aboutUsMission, aboutPillars, initFromStorage, fetchFromBackend } = useStore();
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+  const [sharingMember, setSharingMember] = useState<TeamMember | null>(null);
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage('');
+    }, 3000);
+  };
 
   useEffect(() => {
     initFromStorage();
@@ -191,7 +207,20 @@ function AboutContent() {
                   <UserCheck className="w-3.5 h-3.5" />
                   <span>مشاهده بیوگرافی و آثار</span>
                 </span>
-                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform text-[#1B889A]" />
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSharingMember(member);
+                    }}
+                    className="p-1.5 rounded-xl hover:bg-[#1B889A]/15 text-[var(--text-secondary)] hover:text-[#1B889A] transition-colors"
+                    title="اشتراک‌گذاری پروفایل"
+                  >
+                    <Share2 className="w-4 h-4" />
+                  </button>
+                  <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform text-[#1B889A]" />
+                </div>
               </div>
             </div>
           ))}
@@ -251,6 +280,16 @@ function AboutContent() {
                     <BookMarked className="w-3.5 h-3.5 text-[#1B889A]" />
                     <span>کل آثار: {totalWorksCount} مورد</span>
                   </span>
+
+                  <button
+                    type="button"
+                    onClick={() => setSharingMember(selectedMember)}
+                    className="px-3 py-1 rounded-xl bg-[#1B889A]/15 hover:bg-[#1B889A] border border-[#1B889A]/40 text-[#1B889A] hover:text-white transition-all flex items-center gap-1.5 font-bold shadow-sm active:scale-95"
+                    title="اشتراک‌گذاری پروفایل این نویسنده"
+                  >
+                    <Share2 className="w-3.5 h-3.5" />
+                    <span>اشتراک‌گذاری پروفایل</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -328,6 +367,198 @@ function AboutContent() {
                   <p className="text-xs text-[var(--text-secondary)] text-center py-6 font-serif-persian">آثار الکترونیکی این نویسنده به زودی بارگذاری می‌گردد.</p>
                 )}
               </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[999999] px-6 py-3 rounded-2xl bg-emerald-700/95 text-white text-xs sm:text-sm font-bold shadow-2xl backdrop-blur-md flex items-center gap-2 animate-in fade-in slide-in-from-top-4">
+          <CheckCircle2 className="w-4 h-4 text-emerald-200" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* SHARE PROFILE LIGHTBOX MODAL */}
+      {sharingMember && (
+        <div 
+          className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-opacity duration-200 animate-in fade-in no-print"
+          onClick={() => setSharingMember(null)}
+        >
+          <div 
+            className="bg-[var(--card-bg)] border-2 border-[#1B889A] rounded-3xl p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl modern-card relative animate-in zoom-in-95 fade-in slide-in-from-bottom-3"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setSharingMember(null)}
+              className="absolute top-4 left-4 p-2 rounded-xl text-[var(--text-secondary)] hover:text-white hover:bg-[#1B889A] transition-all shadow-sm active:scale-95"
+              title="بستن پنجره"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Header */}
+            <div className="flex items-center gap-3 border-b border-[var(--card-border)] pb-3">
+              <div className="w-10 h-10 rounded-2xl bg-[#1B889A]/15 border border-[#1B889A]/40 flex items-center justify-center text-[#1B889A] shrink-0">
+                <Share2 className="w-5 h-5" />
+              </div>
+              <div className="text-right">
+                <h3 className="text-base sm:text-lg font-extrabold text-[var(--text-primary)] font-serif-persian">
+                  اشتراک‌گذاری پروفایل نویسنده
+                </h3>
+                <p className="text-xs text-[var(--text-secondary)]">
+                  ارسال مشخصات و بیوگرافی به همراه لینک مستقیم در شبکه‌های اجتماعی
+                </p>
+              </div>
+            </div>
+
+            {/* Member Preview Card */}
+            <div className="bg-[var(--bg-color)] border border-[var(--card-border)] rounded-2xl p-4 flex items-center gap-4 shadow-sm">
+              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#1B889A] shrink-0 shadow-md ring-2 ring-[#1B889A]/20">
+                {sharingMember.avatar_url && !sharingMember.avatar_url.includes('unsplash.com') ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={sharingMember.avatar_url}
+                    alt={sharingMember.name_fa}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-[#1B889A] text-white flex items-center justify-center font-extrabold text-2xl font-serif-persian">
+                    {sharingMember.name_fa ? sharingMember.name_fa.trim().charAt(0) : 'ن'}
+                  </div>
+                )}
+              </div>
+              <div className="space-y-1 text-right min-w-0 flex-1">
+                <h4 className="text-sm sm:text-base font-bold text-[var(--text-primary)] font-serif-persian truncate">
+                  {sharingMember.name_fa}
+                </h4>
+                <p className="text-xs text-[#1B889A] font-bold">
+                  {sharingMember.role_fa}
+                  {sharingMember.specialization_fa ? ` • ${sharingMember.specialization_fa}` : ''}
+                </p>
+                <p className="text-[11px] text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
+                  {sharingMember.bio_fa}
+                </p>
+              </div>
+            </div>
+
+            {/* Social Share Buttons Grid */}
+            <div className="grid grid-cols-2 gap-2.5">
+              {/* WhatsApp */}
+              <a
+                href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
+                  `پروفایل ${sharingMember.name_fa} (${sharingMember.role_fa})\n\nدر مجله ایدئولوژی مهدویت:\n${
+                    typeof window !== 'undefined' 
+                      ? `${window.location.origin}/about?author=${encodeURIComponent(sharingMember.name_fa)}` 
+                      : `https://www.ideologymahdaviyat.org/about?author=${encodeURIComponent(sharingMember.name_fa)}`
+                  }`
+                )}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-[#25D366]/15 hover:bg-[#25D366] text-[#25D366] hover:text-white border border-[#25D366]/30 font-bold text-xs shadow-sm transition-all active:scale-95"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>ارسال در واتساپ</span>
+              </a>
+
+              {/* Telegram */}
+              <a
+                href={`https://t.me/share/url?url=${encodeURIComponent(
+                  typeof window !== 'undefined' 
+                    ? `${window.location.origin}/about?author=${encodeURIComponent(sharingMember.name_fa)}` 
+                    : `https://www.ideologymahdaviyat.org/about?author=${encodeURIComponent(sharingMember.name_fa)}`
+                )}&text=${encodeURIComponent(`پروفایل و آثار ${sharingMember.name_fa} در مجله ایدئولوژی مهدویت`)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-[#229ED9]/15 hover:bg-[#229ED9] text-[#229ED9] hover:text-white border border-[#229ED9]/30 font-bold text-xs shadow-sm transition-all active:scale-95"
+              >
+                <Send className="w-4 h-4" />
+                <span>ارسال در تلگرام</span>
+              </a>
+
+              {/* Eitaa */}
+              <a
+                href={`https://eitaa.com/share/url?url=${encodeURIComponent(
+                  typeof window !== 'undefined' 
+                    ? `${window.location.origin}/about?author=${encodeURIComponent(sharingMember.name_fa)}` 
+                    : `https://www.ideologymahdaviyat.org/about?author=${encodeURIComponent(sharingMember.name_fa)}`
+                )}&text=${encodeURIComponent(`پروفایل و آثار ${sharingMember.name_fa} در مجله ایدئولوژی مهدویت`)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-[#E85E26]/15 hover:bg-[#E85E26] text-[#E85E26] hover:text-white border border-[#E85E26]/30 font-bold text-xs shadow-sm transition-all active:scale-95"
+              >
+                <Globe className="w-4 h-4" />
+                <span>ارسال در ایتا</span>
+              </a>
+
+              {/* Copy Link Button */}
+              <button
+                onClick={() => {
+                  const url = typeof window !== 'undefined' 
+                    ? `${window.location.origin}/about?author=${encodeURIComponent(sharingMember.name_fa)}` 
+                    : `https://www.ideologymahdaviyat.org/about?author=${encodeURIComponent(sharingMember.name_fa)}`;
+                  navigator.clipboard?.writeText(url);
+                  showToast('لینک پروفایل نویسنده کپی شد');
+                }}
+                className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-[#1B889A]/15 hover:bg-[#1B889A] text-[#1B889A] hover:text-white border border-[#1B889A]/30 font-bold text-xs shadow-sm transition-all active:scale-95"
+              >
+                <Copy className="w-4 h-4" />
+                <span>کپی لینک مستقیم</span>
+              </button>
+            </div>
+
+            {/* Native Mobile Share */}
+            {typeof navigator !== 'undefined' && typeof navigator.share === 'function' && (
+              <button
+                onClick={async () => {
+                  const url = typeof window !== 'undefined' 
+                    ? `${window.location.origin}/about?author=${encodeURIComponent(sharingMember.name_fa)}` 
+                    : `https://www.ideologymahdaviyat.org/about?author=${encodeURIComponent(sharingMember.name_fa)}`;
+                  try {
+                    await navigator.share({
+                      title: `پروفایل ${sharingMember.name_fa}`,
+                      text: `پروفایل و آثار ${sharingMember.name_fa} (${sharingMember.role_fa}) در مجله ایدئولوژی مهدویت`,
+                      url,
+                    });
+                  } catch (e) {
+                    // dismissed
+                  }
+                }}
+                className="w-full flex items-center justify-center gap-2 p-3 rounded-2xl bg-[var(--bg-color)] hover:bg-[#1B889A] text-[var(--text-primary)] hover:text-white border border-[var(--card-border)] hover:border-[#1B889A] font-bold text-xs transition-all shadow-sm active:scale-95"
+              >
+                <ExternalLink className="w-4 h-4" />
+                <span>اشتراک‌گذاری با سایر برنامه‌های گوشی</span>
+              </button>
+            )}
+
+            {/* Direct Link Input */}
+            <div className="pt-2 border-t border-[var(--card-border)] flex items-center gap-2">
+              <input
+                type="text"
+                readOnly
+                value={
+                  typeof window !== 'undefined' 
+                    ? `${window.location.origin}/about?author=${encodeURIComponent(sharingMember.name_fa)}` 
+                    : `https://www.ideologymahdaviyat.org/about?author=${encodeURIComponent(sharingMember.name_fa)}`
+                }
+                className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl text-xs font-mono text-[var(--text-secondary)] dir-ltr truncate"
+              />
+              <button
+                onClick={() => {
+                  const url = typeof window !== 'undefined' 
+                    ? `${window.location.origin}/about?author=${encodeURIComponent(sharingMember.name_fa)}` 
+                    : `https://www.ideologymahdaviyat.org/about?author=${encodeURIComponent(sharingMember.name_fa)}`;
+                  navigator.clipboard?.writeText(url);
+                  showToast('لینک پروفایل نویسنده کپی شد');
+                }}
+                className="px-4 py-2.5 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs flex items-center gap-1.5 shadow-md shrink-0 transition-all active:scale-95"
+              >
+                <Copy className="w-4 h-4" />
+                <span>کپی</span>
+              </button>
             </div>
 
           </div>
