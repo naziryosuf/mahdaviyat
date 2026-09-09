@@ -3,6 +3,9 @@ import { supabase } from '@/lib/supabase';
 import { initialMagazineIssues } from '@/data/initialData';
 import { MagazineCatalogClient } from './MagazineCatalogClient';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface PageProps {
   searchParams: Promise<{ issue?: string; read?: string }>;
 }

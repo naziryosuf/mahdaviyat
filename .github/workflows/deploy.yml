@@ -37,11 +37,10 @@ jobs:
         env:
           NEXT_TELEMETRY_DISABLED: 1
 
-      - name: Trigger Vercel Instant Deployment
+      - name: Trigger Vercel Deploy Hook (if secret configured)
+        if: env.VERCEL_DEPLOY_HOOK != ''
+        env:
+          VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
         run: |
-          HOOK_URL="${{ secrets.VERCEL_DEPLOY_HOOK }}"
-          if [ -z "$HOOK_URL" ]; then
-            HOOK_URL="https://api.vercel.com/v1/integrations/deploy/prj_axwAR7QPBZGJSJHpNNoBArkSmtjd/n55WEtnv8g"
-          fi
           echo "Triggering Vercel Deploy Hook..."
-          curl -X POST "$HOOK_URL"
+          curl -s -X POST "$VERCEL_DEPLOY_HOOK" || true

@@ -3,6 +3,9 @@ import { supabase } from '@/lib/supabase';
 import { initialArticles } from '@/data/initialData';
 import { ArticleDetailClient } from './ArticleDetailClient';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }

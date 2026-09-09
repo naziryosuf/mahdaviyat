@@ -3,6 +3,9 @@ import { supabase } from '@/lib/supabase';
 import { initialVideos } from '@/data/initialData';
 import { VideoPageClient } from './VideoPageClient';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface PageProps {
   searchParams: Promise<{ id?: string }>;
 }

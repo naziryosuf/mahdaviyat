@@ -3,6 +3,9 @@ import { supabase } from '@/lib/supabase';
 import { initialAudios } from '@/data/initialData';
 import { AudioPageClient } from './AudioPageClient';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface PageProps {
   searchParams: Promise<{ id?: string }>;
 }

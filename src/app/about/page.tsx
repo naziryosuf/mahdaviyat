@@ -3,6 +3,9 @@ import { supabase } from '@/lib/supabase';
 import { initialTeamMembers } from '@/data/initialData';
 import { AboutPageClient } from './AboutPageClient';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface PageProps {
   searchParams: Promise<{
     member?: string;
