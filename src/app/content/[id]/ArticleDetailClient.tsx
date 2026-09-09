@@ -155,7 +155,7 @@ export function ArticleDetailClient({ id, initialArticle }: ArticleDetailClientP
   };
 
   // Social Share Links Generator
-  const currentUrl = typeof window !== 'undefined' ? window.location.href : `https://www.ideologymahdaviyat.org/content/${article.id}`;
+  const currentUrl = typeof window !== 'undefined' ? `${window.location.origin}/content/${article.id}` : `https://www.ideologymahdaviyat.org/content/${article.id}`;
   const shareTitle = article.title_fa;
 
   const socialLinks = [

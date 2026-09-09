@@ -67,7 +67,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const description = issue.description_fa || 'مطالعه آنلاین و دانلود نسخه رسمی مجله ایدئولوژی مهدویت.';
   const imageUrl = issue.cover_image && issue.cover_image.trim() !== ''
     ? issue.cover_image
-    : 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=1200&auto=format&fit=crop&q=80';
+    : 'https://www.ideologymahdaviyat.org/official_logo.jpg';
   const pageUrl = issueQuery 
     ? `https://www.ideologymahdaviyat.org/magazine?issue=${encodeURIComponent(issueQuery)}`
     : 'https://www.ideologymahdaviyat.org/magazine';

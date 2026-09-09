@@ -54,7 +54,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const description = video.description_fa || `سخنران: ${video.speaker_fa} • مدت زمان: ${video.duration_fa}`;
   const imageUrl = video.thumbnail_url && video.thumbnail_url.trim() !== ''
     ? video.thumbnail_url
-    : 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=1200&auto=format&fit=crop&q=80';
+    : 'https://www.ideologymahdaviyat.org/official_logo.jpg';
   const pageUrl = videoId
     ? `https://www.ideologymahdaviyat.org/video?id=${encodeURIComponent(videoId)}`
     : 'https://www.ideologymahdaviyat.org/video';

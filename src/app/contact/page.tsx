@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     siteName: 'ایدئولوژی مهدویت',
     images: [
       {
-        url: '/kaaba_unity_logo.jpg',
+        url: '/official_logo.jpg',
         width: 800,
         height: 800,
         alt: 'ارتباط با مجله ایدئولوژی مهدویت',
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'ارتباط با ما | مجله ایدئولوژی مهدویت',
     description: 'ارتباط مستقیم با هیئت تحریریه و ارسال مقالات به مجله ایدئولوژی مهدویت.',
-    images: ['/kaaba_unity_logo.jpg'],
+    images: ['/official_logo.jpg'],
   },
 };
 

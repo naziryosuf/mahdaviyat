@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     siteName: 'ایدئولوژی مهدویت',
     images: [
       {
-        url: '/kaaba_unity_logo.jpg',
+        url: '/official_logo.jpg',
         width: 800,
         height: 800,
         alt: 'آرشیو مقالات ایدئولوژی مهدویت',
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'آرشیو مقالات و پژوهش‌های ایدئولوژی مهدویت',
     description: 'مجموعه مقالات و یادداشت‌های پژوهشی مجله ایدئولوژی مهدویت.',
-    images: ['/kaaba_unity_logo.jpg'],
+    images: ['/official_logo.jpg'],
   },
 };
 

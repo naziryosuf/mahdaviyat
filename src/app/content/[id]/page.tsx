@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     .trim();
   const imageUrl = article.image_url && article.image_url.trim() !== '' 
     ? article.image_url.trim() 
-    : 'https://www.ideologymahdaviyat.org/kaaba_unity_logo.jpg';
+    : 'https://www.ideologymahdaviyat.org/official_logo.jpg';
   const pageUrl = `https://www.ideologymahdaviyat.org/content/${id}`;
   const author = article.author_name_fa || 'تحریریه مجله مهدویت';
 

@@ -54,7 +54,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const description = audio.description_fa || `سخنران: ${audio.speaker_fa} • مدت زمان: ${audio.duration_fa}`;
   const imageUrl = audio.cover_image && audio.cover_image.trim() !== ''
     ? audio.cover_image
-    : 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=1200&auto=format&fit=crop&q=80';
+    : 'https://www.ideologymahdaviyat.org/official_logo.jpg';
   const pageUrl = audioId
     ? `https://www.ideologymahdaviyat.org/audio?id=${encodeURIComponent(audioId)}`
     : 'https://www.ideologymahdaviyat.org/audio';

@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     siteName: "ایدئولوژی مهدویت",
     images: [
       {
-        url: "/kaaba_unity_logo.jpg",
+        url: "/official_logo.jpg",
         width: 800,
         height: 800,
         alt: "لوگوی رسمی مجله ایدئولوژی مهدویت",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "مجله مستقل فکری-شناختی ایدئولوژی مهدویت",
     description: "نشریه مستقل علمی، تحلیلی و شناختی ایدئولوژی مهدویت.",
-    images: ["/kaaba_unity_logo.jpg"],
+    images: ["/official_logo.jpg"],
   },
 };
 
