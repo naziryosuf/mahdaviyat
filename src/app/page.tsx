@@ -33,7 +33,7 @@ function HomeContent() {
   const searchParams = useSearchParams();
   const urlSearch = searchParams.get('search') || '';
 
-  const { articles, magazineIssues, videos, audios, playAudio, pauseAudio, currentAudio, isPlayingAudio, language, toggleBookmark, bookmarkedArticles, aboutUsMission } = useStore();
+  const { articles, magazineIssues, videos, audios, playAudio, pauseAudio, currentAudio, isPlayingAudio, language, toggleBookmark, bookmarkedArticles } = useStore();
   const t = translations[language] || translations.fa;
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -203,7 +203,7 @@ function HomeContent() {
               transition={{ duration: 0.6, delay: 1 }}
               className="text-xs sm:text-base text-[var(--text-secondary)] leading-relaxed max-w-3xl mx-auto"
             >
-              {aboutUsMission || t.missionDesc}
+              {t.missionDesc}
             </motion.p>
           </div>
 

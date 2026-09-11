@@ -95,11 +95,6 @@ export const AdminDashboardContent: React.FC = () => {
     contactMessages,
     markContactRead,
     deleteContactMessage,
-    aboutUsMission,
-    setAboutUsMission,
-    aboutPillars,
-    setAboutPillars,
-    updateAboutPillar,
     designerName,
     setDesignerName,
     designerWebsiteUrl,
@@ -139,7 +134,7 @@ export const AdminDashboardContent: React.FC = () => {
 
   const [passcode, setPasscode] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
-  const [activeTab, setActiveTab] = useState<'pending' | 'articles' | 'magazines' | 'videos' | 'audios' | 'team' | 'messages' | 'cohosts' | 'audit_logs' | 'about' | 'storage' | 'footer_designer'>('articles');
+  const [activeTab, setActiveTab] = useState<'pending' | 'articles' | 'magazines' | 'videos' | 'audios' | 'team' | 'messages' | 'cohosts' | 'audit_logs' | 'storage' | 'footer_designer'>('articles');
 
   // Save Success Notification Toast
   const [showSaveToast, setShowSaveToast] = useState(false);
@@ -1022,8 +1017,7 @@ export const AdminDashboardContent: React.FC = () => {
           videos,
           audios,
           teamMembers,
-          contactMessages,
-          aboutUsMission
+          contactMessages
         });
         const bytes = new Blob([fullPayloadStr]).size;
         setStorageUsedBytes(bytes);
@@ -1031,72 +1025,7 @@ export const AdminDashboardContent: React.FC = () => {
         setStoragePercentage(pct);
       } catch (e) {}
     }
-  }, [articles, magazineIssues, videos, audios, teamMembers, contactMessages, aboutUsMission]);
-
-  // About Us Edit Form State
-  const [aboutInputText, setAboutInputText] = useState(aboutUsMission);
-  const [localPillars, setLocalPillars] = useState(aboutPillars);
-  const [isAboutInitialized, setIsAboutInitialized] = useState(false);
-
-  // Initialize form state once from store/database on load
-  useEffect(() => {
-    if (!isAboutInitialized && aboutUsMission) {
-      setAboutInputText(aboutUsMission);
-      if (aboutPillars && aboutPillars.length >= 3) {
-        setLocalPillars(aboutPillars);
-      }
-      setIsAboutInitialized(true);
-    }
-  }, [aboutUsMission, aboutPillars, isAboutInitialized]);
-
-  const handleSaveAboutUs = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaveToast({ msg: 'در حال ذخیره اطلاعات صفحه درباره ما و اهداف سه‌گانه...', type: 'loading' });
-    try {
-      // 1. Build the exact final values from current form state
-      const finalMission = aboutInputText.trim();
-      const finalPillars = localPillars.map((p) => ({
-        title: p?.title?.trim() ?? '',
-        description: p?.description?.trim() ?? ''
-      }));
-
-      // 2. Await the Supabase upsert operation
-      const { error: supaErr } = await supabase.from('site_settings').upsert([
-        { key: 'about_mission', value: finalMission },
-        { key: 'about_pillars', value: JSON.stringify(finalPillars) }
-      ]);
-      if (supaErr) {
-        throw new Error(supaErr.message);
-      }
-
-      // 3. Only if Supabase succeeds, update localStorage
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('mahdism_about_mission', finalMission);
-        localStorage.setItem('mahdism_about_pillars', JSON.stringify(finalPillars));
-      }
-
-      // 4. Update the Zustand store with the exact same new values
-      useStore.setState({
-        aboutUsMission: finalMission,
-        aboutPillars: finalPillars,
-        hasUnsavedChanges: false,
-        stagedChangesCount: 0
-      });
-
-      // 5. Keep local state aligned
-      setAboutInputText(finalMission);
-      setLocalPillars(finalPillars);
-
-      // 6. Log audit and show existing success message
-      addAuditLog('ویرایش', 'متن رسالت و اهداف سه‌گانه', 'عضو تیم', 'به‌روزرسانی صفحه درباره ما و انتشار آنلاین');
-      setSaveToast({ msg: '✅ اطلاعات صفحه درباره ما و ۳ هدف کلیدی با موفقیت ذخیره و منتشر شد!', type: 'success' });
-      setTimeout(() => setSaveToast(null), 3500);
-    } catch (err: any) {
-      console.error('Error saving about us:', err);
-      setSaveToast({ msg: `❌ خطا در ذخیره اطلاعات: ${err?.message || 'مشکلی رخ داد'}`, type: 'error' });
-      setTimeout(() => setSaveToast(null), 4000);
-    }
-  };
+  }, [articles, magazineIssues, videos, audios, teamMembers, contactMessages]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1381,18 +1310,6 @@ export const AdminDashboardContent: React.FC = () => {
             </button>
           )}
 
-          {/* EDIT ABOUT US */}
-          {(isSuperAdmin || userPerms.can_manage_about) && (
-            <button
-              onClick={() => setActiveTab('about')}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
-                activeTab === 'about' ? 'bg-[#1B889A] text-white shadow-md' : 'bg-[var(--card-bg)] text-[var(--text-secondary)] border border-[var(--card-border)]'
-              }`}
-            >
-              <Info className="w-4 h-4" />
-              <span>ویرایش «درباره ما»</span>
-            </button>
-          )}
 
           {/* VIEW STORAGE STATS */}
           {(isSuperAdmin || userPerms.can_view_storage) && (
@@ -2662,197 +2579,6 @@ export const AdminDashboardContent: React.FC = () => {
         </div>
       )}
 
-      {/* EDIT ABOUT US & 3 CORE OBJECTIVES / PILLARS TAB */}
-      {activeTab === 'about' && (isSuperAdmin || userPerms.can_manage_about) && (
-        <div className="space-y-6">
-          <div className="bg-[var(--card-bg)] border-2 border-[#1B889A]/30 p-6 sm:p-8 rounded-3xl space-y-8 shadow-xl modern-card">
-            
-            {/* Header */}
-            <div className="flex items-center gap-3 border-b border-[var(--card-border)] pb-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#1B889A] text-white flex items-center justify-center font-bold shadow-lg shrink-0">
-                <Info className="w-6 h-6" />
-              </div>
-              <div>
-                <h2 className="text-lg sm:text-xl font-extrabold text-[var(--text-primary)] font-serif-persian">
-                  مدیریت و ویرایش صفحه «درباره ما»
-                </h2>
-                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                  ویرایش متن رسالت اصلی مجله و ۳ بخش اهداف و محورهای کلیدی
-                </p>
-              </div>
-            </div>
-
-            <form onSubmit={handleSaveAboutUs} className="space-y-8">
-              
-              {/* 1. Main Mission Text */}
-              <div className="space-y-3 bg-[var(--bg-color)] p-5 sm:p-6 rounded-2xl border border-[var(--card-border)] shadow-sm">
-                <label className="text-sm font-extrabold text-[var(--text-primary)] block flex items-center gap-2 font-serif-persian">
-                  <Sparkles className="w-4 h-4 text-[#1B889A]" />
-                  <span>متن رسالت و چشم‌انداز راهبردی مجله (Mission Text):</span>
-                </label>
-                <textarea
-                  rows={4}
-                  value={aboutInputText}
-                  onChange={(e) => setAboutInputText(e.target.value)}
-                  placeholder="متن کامل رسالت و چشم‌انداز مجله..."
-                  className="w-full p-3.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs sm:text-sm text-[var(--text-primary)] font-serif-persian leading-relaxed focus:outline-none focus:border-[#1B889A] transition-colors"
-                />
-                <p className="text-[11px] text-[var(--text-secondary)]">این متن در بالای صفحه «درباره ما» به عنوان پیام و هدف اصلی نشریه نمایش داده می‌شود.</p>
-              </div>
-
-              {/* 2. Three Core Objectives / Pillars Cards */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 border-b border-[var(--card-border)] pb-2">
-                  <Target className="w-5 h-5 text-[#1B889A]" />
-                  <h3 className="text-base font-extrabold text-[var(--text-primary)] font-serif-persian">
-                    ویرایش ۳ بخش اهداف و محورهای کلیدی (۳ هدف راهبردی):
-                  </h3>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  
-                  {/* Pillar 1 */}
-                  <div className="bg-[var(--bg-color)] p-5 rounded-2xl border-2 border-[#1B889A]/40 space-y-3 shadow-sm">
-                    <div className="flex items-center gap-2 text-xs font-bold text-[#1B889A] border-b border-[var(--card-border)] pb-2">
-                      <Target className="w-4 h-4" />
-                      <span>هدف اول (بصیرت شناختی)</span>
-                    </div>
-                    <div>
-                      <label className="text-xs font-bold text-[var(--text-primary)] block mb-1">عنوان هدف ۱:</label>
-                      <input
-                        type="text"
-                        value={localPillars[0]?.title ?? ''}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setLocalPillars(prev => {
-                            const updated = [...prev];
-                            updated[0] = { ...(updated[0] || { title: '', description: '' }), title: val };
-                            return updated;
-                          });
-                        }}
-                        className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs font-bold text-[var(--text-primary)] font-serif-persian focus:border-[#1B889A]"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-bold text-[var(--text-primary)] block mb-1">توضیحات هدف ۱:</label>
-                      <textarea
-                        rows={4}
-                        value={localPillars[0]?.description ?? ''}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setLocalPillars(prev => {
-                            const updated = [...prev];
-                            updated[0] = { ...(updated[0] || { title: '', description: '' }), description: val };
-                            return updated;
-                          });
-                        }}
-                        className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] font-serif-persian leading-relaxed focus:border-[#1B889A]"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Pillar 2 */}
-                  <div className="bg-[var(--bg-color)] p-5 rounded-2xl border-2 border-amber-500/40 space-y-3 shadow-sm">
-                    <div className="flex items-center gap-2 text-xs font-bold text-amber-500 border-b border-[var(--card-border)] pb-2">
-                      <BookOpen className="w-4 h-4" />
-                      <span>هدف دوم (نقد مکاتب بشری)</span>
-                    </div>
-                    <div>
-                      <label className="text-xs font-bold text-[var(--text-primary)] block mb-1">عنوان هدف ۲:</label>
-                      <input
-                        type="text"
-                        value={localPillars[1]?.title ?? ''}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setLocalPillars(prev => {
-                            const updated = [...prev];
-                            updated[1] = { ...(updated[1] || { title: '', description: '' }), title: val };
-                            return updated;
-                          });
-                        }}
-                        className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs font-bold text-[var(--text-primary)] font-serif-persian focus:border-amber-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-bold text-[var(--text-primary)] block mb-1">توضیحات هدف ۲:</label>
-                      <textarea
-                        rows={4}
-                        value={localPillars[1]?.description ?? ''}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setLocalPillars(prev => {
-                            const updated = [...prev];
-                            updated[1] = { ...(updated[1] || { title: '', description: '' }), description: val };
-                            return updated;
-                          });
-                        }}
-                        className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] font-serif-persian leading-relaxed focus:border-amber-500"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Pillar 3 */}
-                  <div className="bg-[var(--bg-color)] p-5 rounded-2xl border-2 border-emerald-500/40 space-y-3 shadow-sm">
-                    <div className="flex items-center gap-2 text-xs font-bold text-emerald-500 border-b border-[var(--card-border)] pb-2">
-                      <HeartHandshake className="w-4 h-4" />
-                      <span>هدف سوم (اخوت و بیداری)</span>
-                    </div>
-                    <div>
-                      <label className="text-xs font-bold text-[var(--text-primary)] block mb-1">عنوان هدف ۳:</label>
-                      <input
-                        type="text"
-                        value={localPillars[2]?.title ?? ''}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setLocalPillars(prev => {
-                            const updated = [...prev];
-                            updated[2] = { ...(updated[2] || { title: '', description: '' }), title: val };
-                            return updated;
-                          });
-                        }}
-                        className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs font-bold text-[var(--text-primary)] font-serif-persian focus:border-emerald-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-bold text-[var(--text-primary)] block mb-1">توضیحات هدف ۳:</label>
-                      <textarea
-                        rows={4}
-                        value={localPillars[2]?.description ?? ''}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setLocalPillars(prev => {
-                            const updated = [...prev];
-                            updated[2] = { ...(updated[2] || { title: '', description: '' }), description: val };
-                            return updated;
-                          });
-                        }}
-                        className="w-full p-2.5 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--text-primary)] font-serif-persian leading-relaxed focus:border-emerald-500"
-                      />
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
-              {/* Submit / Save Button */}
-              <div className="pt-4 border-t border-[var(--card-border)] flex flex-wrap items-center justify-between gap-4">
-                <p className="text-xs text-[var(--text-secondary)]">
-                  با ذخیره این بخش، تغییرات متن رسالت و ۳ هدف بلافاصله در صفحه «درباره ما» و دیتابیس آنلاین اعمال می‌گردند.
-                </p>
-                <button
-                  type="submit"
-                  className="px-8 py-3.5 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-extrabold text-xs sm:text-sm shadow-xl flex items-center gap-2 transition-all active:scale-95 shadow-[#1B889A]/30"
-                >
-                  <Save className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span>ذخیره و به روز رسانی صفحه درباره ما</span>
-                </button>
-              </div>
-
-            </form>
-
-          </div>
-        </div>
-      )}
 
       {/* STORAGE STATS TAB */}
       {activeTab === 'storage' && (isSuperAdmin || userPerms.can_view_storage) && (
@@ -3130,7 +2856,7 @@ export const AdminDashboardContent: React.FC = () => {
                     <span className="font-bold text-[#1B889A] bg-[#1B889A]/10 px-2 py-0.5 rounded-md">{ch.password_code}</span>
                   </div>
                   <div className="flex items-center justify-between text-[var(--text-secondary)]">
-                    <span>ویرایش درباره ما:</span>
+                    <span>تنظیمات طراح (فوتر):</span>
                     <span className={`font-bold ${ch.permissions.can_manage_about ? 'text-emerald-400' : 'text-red-400'}`}>
                       {ch.permissions.can_manage_about ? 'مجاز' : 'غیرمجاز'}
                     </span>
@@ -3218,7 +2944,7 @@ export const AdminDashboardContent: React.FC = () => {
                     onChange={(e) => setPermManageAbout(e.target.checked)}
                     className="w-4 h-4 accent-[#1B889A] rounded"
                   />
-                  <span>دسترسی به ویرایش بخش «درباره ما»</span>
+                  <span>دسترسی به ویرایش مشخصات طراح (فوتر)</span>
                 </label>
 
                 <label className="flex items-center gap-2 cursor-pointer font-bold text-[var(--text-primary)]">

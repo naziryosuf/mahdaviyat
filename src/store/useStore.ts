@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Article, MagazineIssue, VideoItem, AudioItem, InfographicItem, TeamMember, ContactMessage, CoHostUser, AuditLogItem, AboutPillar } from '../types';
+import { Article, MagazineIssue, VideoItem, AudioItem, InfographicItem, TeamMember, ContactMessage, CoHostUser, AuditLogItem } from '../types';
 import { initialArticles, initialMagazineIssues, initialVideos, initialAudios, initialInfographics, initialTeamMembers, initialContactMessages, initialCoHosts } from '../data/initialData';
 import { Language } from '../data/translations';
 import { supabase } from '@/lib/supabase';
@@ -16,13 +16,6 @@ interface AppState {
   // Trilingual language state
   language: Language;
   setLanguage: (lang: Language) => void;
-
-  // Editable About Us Mission Text & 3 Pillars
-  aboutUsMission: string;
-  setAboutUsMission: (desc: string) => Promise<void> | void;
-  aboutPillars: AboutPillar[];
-  setAboutPillars: (pillars: AboutPillar[]) => Promise<void> | void;
-  updateAboutPillar: (index: number, pillar: Partial<AboutPillar>) => Promise<void> | void;
 
   // Designer Portfolio Website URL & Name (footer link)
   designerName: string;
@@ -114,8 +107,6 @@ interface AppState {
   initFromStorage: () => void;
 }
 
-const defaultMissionText = 'مجلۀ «ایدئولوژی مهدویت» بستری است برای ارائه شناخت پیرامون مهم‌ترین موضوعات: خداشناسی، خودشناسی، جامعه‌شناسی، هستی‌شناسی و سایر موضوعات تاریخی؛ به هدف ایجاد بیداری معنوی و اجتماعی. این مجله توسط جمعی از نویسندگان آزاد افغانستان از سراسر جهان تشکیل شده و به صورت کاملاً داوطلبانه و غیرانتفاعی اداره می‌شود.';
-
 export const useStore = create<AppState>((set, get) => ({
   theme: 'dark',
   toggleTheme: () => {
@@ -141,72 +132,6 @@ export const useStore = create<AppState>((set, get) => ({
     set({ language: lang });
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('mahdism_lang', lang);
-    }
-  },
-
-  aboutUsMission: defaultMissionText,
-  setAboutUsMission: async (desc: string) => {
-    set((state) => ({ 
-      aboutUsMission: desc,
-      stagedChangesCount: state.stagedChangesCount + 1,
-      hasUnsavedChanges: true
-    }));
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('mahdism_about_mission', desc);
-    }
-    try {
-      await supabase.from('site_settings').upsert({ key: 'about_mission', value: desc });
-    } catch (err) {
-      console.error('Supabase setAboutUsMission error:', err);
-    }
-  },
-
-  aboutPillars: [
-    {
-      title: '۱. ارتقای بصیرت شناختی',
-      description: 'توانمندسازی ذهن جامعه برای تحلیل مستقل اخبار، مقابله با جنگ شناختی رسانه‌های سلطه و بازشناسی حق از باطل.'
-    },
-    {
-      title: '۲. نقد مستدل مکاتب بشری',
-      description: 'بررسی و نقد علمی مکاتب الحادی و ماده‌گرای غرب، و اثبات کارآمدی جهان‌بینی اسلام و فرهنگ مهدوی.'
-    },
-    {
-      title: '۳. تحکیم اخوت و بیداری',
-      description: 'تقویت همدلی، وحدت کلمه و ایجاد بیداری معنوی میان جوانان و نخبگان سراسر افغانستان و جهان.'
-    }
-  ],
-  setAboutPillars: async (pillars: AboutPillar[]) => {
-    set((state) => ({
-      aboutPillars: pillars,
-      stagedChangesCount: state.stagedChangesCount + 1,
-      hasUnsavedChanges: true
-    }));
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('mahdism_about_pillars', JSON.stringify(pillars));
-    }
-    try {
-      await supabase.from('site_settings').upsert({ key: 'about_pillars', value: JSON.stringify(pillars) });
-    } catch (err) {
-      console.error('Supabase setAboutPillars error:', err);
-    }
-  },
-  updateAboutPillar: async (index: number, pillar: Partial<AboutPillar>) => {
-    const current = [...get().aboutPillars];
-    if (current[index]) {
-      current[index] = { ...current[index], ...pillar };
-      set((state) => ({
-        aboutPillars: current,
-        stagedChangesCount: state.stagedChangesCount + 1,
-        hasUnsavedChanges: true
-      }));
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('mahdism_about_pillars', JSON.stringify(current));
-      }
-      try {
-        await supabase.from('site_settings').upsert({ key: 'about_pillars', value: JSON.stringify(current) });
-      } catch (err) {
-        console.error('Supabase updateAboutPillar error:', err);
-      }
     }
   },
 
@@ -307,8 +232,6 @@ export const useStore = create<AppState>((set, get) => ({
       localStorage.setItem('mahdism_audios', JSON.stringify(state.audios));
       localStorage.setItem('mahdism_team', JSON.stringify(state.teamMembers));
       localStorage.setItem('mahdism_audit_logs', JSON.stringify(state.auditLogs));
-      localStorage.setItem('mahdism_about_mission', state.aboutUsMission);
-      localStorage.setItem('mahdism_about_pillars', JSON.stringify(state.aboutPillars));
       localStorage.setItem('mahdism_designer_name', state.designerName);
       localStorage.setItem('mahdism_designer_url', state.designerWebsiteUrl);
     }
@@ -347,9 +270,7 @@ export const useStore = create<AppState>((set, get) => ({
 
       promises.push(Promise.resolve(supabase.from('site_settings').upsert([
         { key: 'designer_name', value: state.designerName },
-        { key: 'designer_url', value: state.designerWebsiteUrl },
-        { key: 'about_mission', value: state.aboutUsMission },
-        { key: 'about_pillars', value: JSON.stringify(state.aboutPillars) }
+        { key: 'designer_url', value: state.designerWebsiteUrl }
       ])));
 
       if (state.auditLogs.length > 0) promises.push(Promise.resolve(supabase.from('audit_logs').upsert(state.auditLogs)));
@@ -1334,19 +1255,6 @@ export const useStore = create<AppState>((set, get) => ({
             set({ designerWebsiteUrl: item.value });
             if (typeof localStorage !== 'undefined') localStorage.setItem('mahdism_designer_url', item.value);
           }
-          if (item.key === 'about_mission' && item.value !== undefined && item.value !== null) {
-            set({ aboutUsMission: item.value });
-            if (typeof localStorage !== 'undefined') localStorage.setItem('mahdism_about_mission', item.value);
-          }
-          if (item.key === 'about_pillars' && item.value) {
-            try {
-              const parsed = JSON.parse(item.value);
-              if (Array.isArray(parsed) && parsed.length >= 3) {
-                set({ aboutPillars: parsed });
-                if (typeof localStorage !== 'undefined') localStorage.setItem('mahdism_about_pillars', item.value);
-              }
-            } catch {}
-          }
         });
       }
 
@@ -1363,6 +1271,12 @@ export const useStore = create<AppState>((set, get) => ({
   initFromStorage: () => {
     if (typeof localStorage === 'undefined') return;
 
+    // Purge any legacy about mission or pillars from localStorage
+    try {
+      localStorage.removeItem('mahdism_about_mission');
+      localStorage.removeItem('mahdism_about_pillars');
+    } catch {}
+
     const userSetTheme = localStorage.getItem('mahdism_theme_user_set') as ThemeMode;
     if (userSetTheme === 'dark' || userSetTheme === 'light') {
       get().setTheme(userSetTheme);
@@ -1374,21 +1288,6 @@ export const useStore = create<AppState>((set, get) => ({
     const savedLang = localStorage.getItem('mahdism_lang') as Language;
     if (savedLang) {
       set({ language: savedLang });
-    }
-
-    const savedAboutMission = localStorage.getItem('mahdism_about_mission');
-    if (savedAboutMission !== null) {
-      set({ aboutUsMission: savedAboutMission });
-    }
-
-    const savedAboutPillars = localStorage.getItem('mahdism_about_pillars');
-    if (savedAboutPillars !== null) {
-      try {
-        const parsed = JSON.parse(savedAboutPillars);
-        if (Array.isArray(parsed) && parsed.length >= 3) {
-          set({ aboutPillars: parsed });
-        }
-      } catch {}
     }
 
     const savedDesignerName = localStorage.getItem('mahdism_designer_name');

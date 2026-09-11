@@ -28,12 +28,30 @@ import {
   Copy,
   ExternalLink
 } from 'lucide-react';
-import { TeamMember } from '@/types';
+import { TeamMember, AboutPillar } from '@/types';
+
+// Frontend-only official static texts for About Us (managed purely in frontend)
+export const ABOUT_MISSION_TEXT = 'مجلۀ «ایدئولوژی مهدویت» بستری است برای ارائه شناخت پیرامون مهم‌ترین موضوعات: خداشناسی، خودشناسی، جامعه‌شناسی، هستی‌شناسی و سایر موضوعات تاریخی؛ به هدف ایجاد بیداری معنوی و اجتماعی. این مجله توسط جمعی از نویسندگان آزاد افغانستان از سراسر جهان تشکیل شده و به صورت کاملاً داوطلبانه و غیرانتفاعی اداره می‌شود.';
+
+export const ABOUT_PILLARS: AboutPillar[] = [
+  {
+    title: '۱. ارتقای بصیرت شناختی',
+    description: 'توانمندسازی ذهن جامعه برای تحلیل مستقل اخبار، مقابله با جنگ شناختی رسانه‌های سلطه و بازشناسی حق از باطل.'
+  },
+  {
+    title: '۲. نقد مستدل مکاتب بشری',
+    description: 'بررسی و نقد علمی مکاتب الحادی و ماده‌گرای غرب، و اثبات کارآمدی جهان‌بینی اسلام و فرهنگ مهدوی.'
+  },
+  {
+    title: '۳. تحکیم اخوت و بیداری',
+    description: 'تقویت همدلی، وحدت کلمه و ایجاد بیداری معنوی میان جوانان و نخبگان سراسر افغانستان و جهان.'
+  }
+];
 
 function AboutContent() {
   const searchParams = useSearchParams();
   const authorQuery = searchParams.get('member') || searchParams.get('id') || searchParams.get('author');
-  const { teamMembers, articles, audios, videos, playAudio, aboutUsMission, aboutPillars, initFromStorage, fetchFromBackend } = useStore();
+  const { teamMembers, articles, audios, videos, playAudio, initFromStorage, fetchFromBackend } = useStore();
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const [sharingMember, setSharingMember] = useState<TeamMember | null>(null);
   const [toastMessage, setToastMessage] = useState('');
@@ -109,7 +127,7 @@ function AboutContent() {
             درباره مجله <span className="teal-gradient-text">ایدئولوژی مهدویت</span>
           </h1>
           <p className="text-sm sm:text-base text-[var(--text-secondary)] font-serif-persian leading-relaxed whitespace-pre-line">
-            {aboutUsMission}
+            {ABOUT_MISSION_TEXT}
           </p>
         </div>
       </section>
@@ -121,10 +139,10 @@ function AboutContent() {
             <Target className="w-6 h-6" />
           </div>
           <h3 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">
-            {aboutPillars?.[0]?.title || '۱. ارتقای بصیرت شناختی'}
+            {ABOUT_PILLARS[0].title}
           </h3>
           <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-serif-persian leading-relaxed whitespace-pre-line">
-            {aboutPillars?.[0]?.description || 'توانمندسازی ذهن جامعه برای تحلیل مستقل اخبار، مقابله با جنگ شناختی رسانه‌های سلطه و بازشناسی حق از باطل.'}
+            {ABOUT_PILLARS[0].description}
           </p>
         </div>
 
@@ -133,10 +151,10 @@ function AboutContent() {
             <BookOpen className="w-6 h-6" />
           </div>
           <h3 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">
-            {aboutPillars?.[1]?.title || '۲. نقد مستدل مکاتب بشری'}
+            {ABOUT_PILLARS[1].title}
           </h3>
           <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-serif-persian leading-relaxed whitespace-pre-line">
-            {aboutPillars?.[1]?.description || 'بررسی و نقد علمی مکاتب الحادی و ماده‌گرای غرب، و اثبات کارآمدی جهان‌بینی اسلام و فرهنگ مهدوی.'}
+            {ABOUT_PILLARS[1].description}
           </p>
         </div>
 
@@ -145,10 +163,10 @@ function AboutContent() {
             <HeartHandshake className="w-6 h-6" />
           </div>
           <h3 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">
-            {aboutPillars?.[2]?.title || '۳. تحکیم اخوت و بیداری'}
+            {ABOUT_PILLARS[2].title}
           </h3>
           <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-serif-persian leading-relaxed whitespace-pre-line">
-            {aboutPillars?.[2]?.description || 'تقویت همدلی، وحدت کلمه و ایجاد بیداری معنوی میان جوانان و نخبگان سراسر افغانستان و جهان.'}
+            {ABOUT_PILLARS[2].description}
           </p>
         </div>
       </section>
