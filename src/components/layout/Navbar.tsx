@@ -14,7 +14,6 @@ import {
   X, 
   Sun,
   Moon,
-  Music,
   Globe,
   ChevronDown,
   Check,
@@ -41,6 +40,7 @@ export const Navbar: React.FC = () => {
 
   const { 
     currentAudio, 
+    isPlayingAudio,
     initFromStorage, 
     language, 
     setLanguage, 
@@ -174,14 +174,59 @@ export const Navbar: React.FC = () => {
             {/* Right Action Controls */}
             <div className="flex items-center gap-1 sm:gap-2 shrink-0">
               
-              {/* Audio Indicator Pill */}
+              {/* Audio Indicator Pill with Animated Wave (wow) */}
               {currentAudio && (
                 <Link 
-                  href="/media?tab=audio" 
-                  className="hidden xl:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1B889A]/20 border border-[#1B889A]/50 text-[#1B889A] dark:text-cyan-300 text-xs font-bold animate-pulse shadow-md"
+                  href={`/audio?id=${currentAudio.id}`} 
+                  className="hidden xl:flex items-center gap-2.5 px-3 py-1 rounded-full bg-[#1B889A]/15 border border-[#1B889A]/45 hover:border-[#1B889A] hover:bg-[#1B889A]/25 text-[#1B889A] dark:text-cyan-300 text-xs font-bold transition-all shadow-sm group"
+                  title={`در حال شنیدن: ${currentAudio.title_fa}`}
                 >
-                  <Music className="w-3.5 h-3.5 text-[#1B889A] animate-spin" style={{ animationDuration: '4s' }} />
-                  <span className="max-w-[120px] truncate" title={currentAudio.title_fa}>{currentAudio.title_fa}</span>
+                  {/* Animated Waveform Bars (wow icon) */}
+                  <div className="flex items-center gap-[2.5px] h-3.5 px-0.5 shrink-0" title={isPlayingAudio ? 'در حال پخش' : 'مکث'}>
+                    <span
+                      className="w-[2.5px] rounded-full bg-[#1B889A]"
+                      style={{
+                        height: '40%',
+                        transformOrigin: 'center',
+                        animation: isPlayingAudio ? 'whatsappWave 0.5s ease-in-out infinite alternate 0s' : 'none',
+                      }}
+                    />
+                    <span
+                      className="w-[2.5px] rounded-full bg-[#1B889A]"
+                      style={{
+                        height: '95%',
+                        transformOrigin: 'center',
+                        animation: isPlayingAudio ? 'whatsappWave 0.4s ease-in-out infinite alternate 0.15s' : 'none',
+                      }}
+                    />
+                    <span
+                      className="w-[2.5px] rounded-full bg-[#1B889A]"
+                      style={{
+                        height: '30%',
+                        transformOrigin: 'center',
+                        animation: isPlayingAudio ? 'whatsappWave 0.65s ease-in-out infinite alternate 0.3s' : 'none',
+                      }}
+                    />
+                    <span
+                      className="w-[2.5px] rounded-full bg-[#1B889A]"
+                      style={{
+                        height: '100%',
+                        transformOrigin: 'center',
+                        animation: isPlayingAudio ? 'whatsappWave 0.42s ease-in-out infinite alternate 0.1s' : 'none',
+                      }}
+                    />
+                    <span
+                      className="w-[2.5px] rounded-full bg-[#1B889A]"
+                      style={{
+                        height: '60%',
+                        transformOrigin: 'center',
+                        animation: isPlayingAudio ? 'whatsappWave 0.55s ease-in-out infinite alternate 0.25s' : 'none',
+                      }}
+                    />
+                  </div>
+                  <span className="max-w-[130px] truncate group-hover:text-[#1B889A] transition-colors" title={currentAudio.title_fa}>
+                    {currentAudio.title_fa}
+                  </span>
                 </Link>
               )}
 
