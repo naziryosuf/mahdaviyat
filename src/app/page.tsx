@@ -18,7 +18,6 @@ import {
   FileText,
   User,
   Eye,
-  Bookmark,
   Calendar,
   CheckCircle2,
   X,
@@ -33,7 +32,7 @@ function HomeContent() {
   const searchParams = useSearchParams();
   const urlSearch = searchParams.get('search') || '';
 
-  const { articles, magazineIssues, videos, audios, playAudio, pauseAudio, currentAudio, isPlayingAudio, language, toggleBookmark, bookmarkedArticles } = useStore();
+  const { articles, magazineIssues, videos, audios, playAudio, pauseAudio, currentAudio, isPlayingAudio, language } = useStore();
   const t = translations[language] || translations.fa;
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -997,17 +996,6 @@ function HomeContent() {
                         <FileText className="w-4 h-4" />
                         <span>سرمقاله‌ها</span>
                       </div>
-                      <button
-                        onClick={() => toggleBookmark(featuredArticle.id)}
-                        className={`p-1.5 rounded-xl border transition-all ${
-                          bookmarkedArticles.includes(featuredArticle.id)
-                            ? 'bg-[#1B889A] text-white border-[#1B889A]'
-                            : 'bg-[var(--bg-color)] border-[var(--card-border)] text-[var(--text-secondary)] hover:text-[#1B889A]'
-                        }`}
-                        title="نشان‌کردن مقاله"
-                      >
-                        <Bookmark className="w-4 h-4" />
-                      </button>
                     </div>
 
                     <h2 className="text-lg sm:text-2xl font-bold text-[var(--text-primary)] font-serif-persian leading-snug">

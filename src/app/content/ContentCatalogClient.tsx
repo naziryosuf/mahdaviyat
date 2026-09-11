@@ -4,10 +4,10 @@ import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useStore } from '@/store/useStore';
-import { FileText, Search, Clock, ArrowLeft, Bookmark, Sparkles, Headphones, Tag } from 'lucide-react';
+import { FileText, Search, Clock, ArrowLeft, Sparkles, Headphones, Tag } from 'lucide-react';
 
 function ContentCatalogInner() {
-  const { articles, bookmarkedArticles, toggleBookmark } = useStore();
+  const { articles } = useStore();
   const searchParams = useSearchParams();
   const initialSearch = searchParams.get('search') || '';
 
@@ -128,16 +128,6 @@ function ContentCatalogInner() {
                         <Clock className="w-3.5 h-3.5" />
                         {art.read_time_fa}
                       </span>
-                      <button
-                        onClick={() => toggleBookmark(art.id)}
-                        className={`p-1.5 rounded-lg transition-colors ${
-                          bookmarkedArticles.includes(art.id)
-                            ? 'text-[#1B889A] bg-[#1B889A]/10'
-                            : 'text-stone-400 hover:text-[#1B889A]'
-                        }`}
-                      >
-                        <Bookmark className="w-4 h-4" />
-                      </button>
                     </div>
                   </div>
 

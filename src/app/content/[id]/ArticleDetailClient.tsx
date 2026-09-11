@@ -6,7 +6,6 @@ import { useStore } from '@/store/useStore';
 import { 
   Clock, 
   User, 
-  Bookmark, 
   Share2, 
   Printer, 
   ArrowRight, 
@@ -28,7 +27,6 @@ import {
   Globe, 
   UserCheck, 
   Award, 
-  BookMarked, 
   FileText, 
   Volume2, 
   Video 
@@ -43,7 +41,7 @@ interface ArticleDetailClientProps {
 }
 
 export function ArticleDetailClient({ id, initialArticle }: ArticleDetailClientProps) {
-  const { articles, teamMembers, audios, videos, bookmarkedArticles, toggleBookmark, playAudio, currentAudio, isPlayingAudio, pauseAudio } = useStore();
+  const { articles, teamMembers, audios, videos, playAudio, currentAudio, isPlayingAudio, pauseAudio } = useStore();
   const [fontSize, setFontSize] = useState<number>(17); // optimal mobile/desktop reading font size
   const [toastMessage, setToastMessage] = useState<string>('');
   const [showShareModal, setShowShareModal] = useState<boolean>(false);
@@ -158,21 +156,11 @@ export function ArticleDetailClient({ id, initialArticle }: ArticleDetailClientP
     });
   };
 
-  const isBookmarked = bookmarkedArticles.includes(article.id);
   const isPlayingThisAudio = currentAudio?.id === article.id && isPlayingAudio;
 
   const hasAudio = Boolean(article.audio_url && article.audio_url.trim().length > 0);
   const isYouTubeAudio = hasAudio && (article.audio_url?.includes('youtube.com') || article.audio_url?.includes('youtu.be'));
   const videoEmbedInfo = hasAudio && article.audio_url ? parseVideoUrl(article.audio_url) : null;
-
-  const handleToggleBookmark = () => {
-    toggleBookmark(article.id);
-    if (!isBookmarked) {
-      showToast('مقاله با موفقیت نشان‌گذاری و ذخیره گردید');
-    } else {
-      showToast('مقاله از لیست نشان‌شده‌ها حذف گردید');
-    }
-  };
 
   const handlePlayArticleAudio = () => {
     if (!article.audio_url) return;
@@ -465,15 +453,6 @@ export function ArticleDetailClient({ id, initialArticle }: ArticleDetailClientP
 
             <div className="h-4 w-px bg-[var(--card-border)] mx-1" />
 
-            <button
-              onClick={handleToggleBookmark}
-              className={`p-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors ${
-                isBookmarked ? 'text-[#1B889A] bg-[#1B889A]/15' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-              }`}
-              title="نشان‌کردن و ذخیره مقاله"
-            >
-              <Bookmark className="w-4 h-4 fill-current" />
-            </button>
 
             <button
               onClick={handlePrint}
