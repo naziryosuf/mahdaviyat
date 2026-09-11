@@ -8,11 +8,15 @@ import { PersistentAudioBar } from "@/components/audio/PersistentAudioBar";
 import { InitialSitePreloader } from "@/components/common/InitialSitePreloader";
 import { ThemeTransitionWave } from "@/components/common/ThemeTransitionWave";
 import { useStore } from "@/store/useStore";
+import { recordPageVisit } from "@/utils/siteAnalytics";
 
 export const AppClientLayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
+    // Record anonymous visitor traffic
+    recordPageVisit();
+
     // Initial Storage & Supabase Backend Sync
     const store = useStore.getState();
     store.initFromStorage();

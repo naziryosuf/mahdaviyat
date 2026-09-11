@@ -43,7 +43,9 @@ import {
   PinOff,
   Target,
   BookOpen,
-  HeartHandshake
+  HeartHandshake,
+  TrendingUp,
+  BarChart3
 } from 'lucide-react';
 import { calculateReadingTimeFa } from '@/utils/readingTime';
 import { compressImageFile } from '@/utils/imageCompressor';
@@ -51,6 +53,7 @@ import { uploadMagazineFile } from '@/utils/storageUpload';
 import { supabase } from '@/lib/supabase';
 import { Article, MagazineIssue, VideoItem, AudioItem, TeamMember, ContactMessage, CoHostUser } from '@/types';
 import { MultiAuthorPicker } from '@/components/admin/MultiAuthorPicker';
+import { SiteTrafficChart } from '@/components/admin/SiteTrafficChart';
 
 const parseTagsInput = (str: string): string[] => {
   if (!str || !str.trim()) return [];
@@ -135,7 +138,7 @@ export const AdminDashboardContent: React.FC = () => {
 
   const [passcode, setPasscode] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
-  const [activeTab, setActiveTab] = useState<'pending' | 'articles' | 'magazines' | 'videos' | 'audios' | 'team' | 'messages' | 'cohosts' | 'audit_logs' | 'storage' | 'footer_designer'>('articles');
+  const [activeTab, setActiveTab] = useState<'pending' | 'analytics' | 'articles' | 'magazines' | 'videos' | 'audios' | 'team' | 'messages' | 'cohosts' | 'audit_logs' | 'storage' | 'footer_designer'>('articles');
 
   // Save Success Notification Toast
   const [showSaveToast, setShowSaveToast] = useState(false);
@@ -1232,6 +1235,19 @@ export const AdminDashboardContent: React.FC = () => {
             <span>تاریخچه فعالیت‌ها & دیوایس‌ها</span>
           </button>
 
+          {/* Site Traffic & Visitor Analytics Tab */}
+          <button
+            onClick={() => setActiveTab('analytics')}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+              activeTab === 'analytics' 
+                ? 'bg-[#1B889A] text-white shadow-md' 
+                : 'bg-[var(--card-bg)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:text-[var(--text-primary)] hover:border-[#1B889A]'
+            }`}
+          >
+            <TrendingUp className="w-4 h-4 text-emerald-400" />
+            <span>نمودار و آمار بازدیدها</span>
+          </button>
+
           {/* Articles */}
           {userPerms.can_manage_articles && (
             <button
@@ -1352,6 +1368,16 @@ export const AdminDashboardContent: React.FC = () => {
         </div>
       </div>
 
+      {/* ANALYTICS & TRAFFIC GRAPH TAB */}
+      {activeTab === 'analytics' && (
+        <SiteTrafficChart
+          articles={articles}
+          magazineIssues={magazineIssues}
+          videos={videos}
+          audios={audios}
+        />
+      )}
+
       {/* ARTICLES TAB */}
       {activeTab === 'articles' && userPerms.can_manage_articles && (
         <div className="space-y-6">
@@ -1369,12 +1395,11 @@ export const AdminDashboardContent: React.FC = () => {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 gap-3">
-            {articles.map(art => (
-              <div key={art.id} className="p-4 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] flex items-center justify-between gap-4 hover:border-[#1B889A] transition-all">
-                <div className="space-y-1">
+          <div className="space-y-4">
+            {articles.map((art) => (
+              <div key={art.id} className="p-4 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] flex items-center justify-between gap-4">
+                <div className="space-y-1 min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded-md bg-[#1B889A]/10 text-[#1B889A] font-bold text-[10px]">{art.category_fa}</span>
                     {art.is_editorial && (
                       <span className="px-2 py-0.5 rounded-md bg-[#1B889A] text-white font-extrabold text-[10px] flex items-center gap-1 shadow-xs">
                         <Sparkles className="w-3 h-3 fill-current" />
@@ -1389,7 +1414,18 @@ export const AdminDashboardContent: React.FC = () => {
                     )}
                     <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">{art.title_fa}</h4>
                   </div>
-                  <p className="text-xs text-[var(--text-secondary)]">نویسنده: {art.author_name_fa} | زمان مطالعه: {art.read_time_fa} | تاریخ: {art.published_at}</p>
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--text-secondary)] mt-1">
+                    <span>نویسنده: {art.author_name_fa}</span>
+                    <span>•</span>
+                    <span>زمان: {art.read_time_fa}</span>
+                    <span>•</span>
+                    <span>تاریخ: {art.published_at}</span>
+                    <span>•</span>
+                    <span className="flex items-center gap-1 font-bold text-[#1B889A] px-2 py-0.5 rounded-lg bg-[#1B889A]/10 font-mono">
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>{(art.views || 0).toLocaleString('fa-IR')} بازدید</span>
+                    </span>
+                  </div>
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0">
                   <button
@@ -1500,9 +1536,12 @@ export const AdminDashboardContent: React.FC = () => {
                     </button>
                   </div>
                 </div>
-                <div className="flex items-center justify-between text-xs pt-2 border-t border-[var(--card-border)] text-[var(--text-secondary)] font-mono">
-                  <span>دانلودها: {mag.download_count}</span>
-                  <span>تاریخ: {mag.publish_date_fa}</span>
+                <div className="flex items-center justify-between text-xs pt-2 border-t border-[var(--card-border)] text-[var(--text-secondary)]">
+                  <span className="flex items-center gap-1.5 font-bold text-indigo-500 px-2.5 py-1 rounded-lg bg-indigo-500/10 font-mono">
+                    <Download className="w-3.5 h-3.5" />
+                    <span>دانلودها: {(mag.download_count || 0).toLocaleString('fa-IR')}</span>
+                  </span>
+                  <span>تاریخ انتشار: {mag.publish_date_fa}</span>
                 </div>
               </div>
             ))}
@@ -1542,7 +1581,16 @@ export const AdminDashboardContent: React.FC = () => {
                       )}
                     </div>
                     <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">{vid.title_fa}</h4>
-                    <p className="text-xs text-[var(--text-secondary)]">سخنران: {vid.speaker_fa} | مدت: {vid.duration_fa}</p>
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--text-secondary)] mt-1">
+                      <span>سخنران: {vid.speaker_fa}</span>
+                      <span>•</span>
+                      <span>مدت: {vid.duration_fa}</span>
+                      <span>•</span>
+                      <span className="flex items-center gap-1 font-bold text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-lg bg-amber-500/10 font-mono">
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>{(vid.views || 0).toLocaleString('fa-IR')} مشاهده</span>
+                      </span>
+                    </div>
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
                     <button
@@ -1607,7 +1655,16 @@ export const AdminDashboardContent: React.FC = () => {
                       )}
                     </div>
                     <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">{aud.title_fa}</h4>
-                    <p className="text-xs text-[var(--text-secondary)]">گوینده: {aud.speaker_fa} | زمان: {aud.duration_fa}</p>
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--text-secondary)] mt-1">
+                      <span>گوینده: {aud.speaker_fa}</span>
+                      <span>•</span>
+                      <span>زمان: {aud.duration_fa}</span>
+                      <span>•</span>
+                      <span className="flex items-center gap-1 font-bold text-rose-500 px-2 py-0.5 rounded-lg bg-rose-500/10 font-mono">
+                        <Volume2 className="w-3.5 h-3.5" />
+                        <span>{(aud.plays || 0).toLocaleString('fa-IR')} شنیده شده</span>
+                      </span>
+                    </div>
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
                     <button

@@ -1056,7 +1056,7 @@ function HomeContent() {
                   </div>
 
                   <div className="pt-4 border-t border-[var(--card-border)] flex items-center justify-between">
-                    <span className="text-xs text-[var(--text-secondary)]">تعداد دانلود: <strong className="text-[#1B889A] font-bold">{latestIssue.download_count || 0}</strong></span>
+                    <span className="text-xs text-[var(--text-secondary)] font-medium">نسخه دیجیتال و کامل مجله</span>
                     <Link
                       href={`/magazine?issue=${latestIssue.id}`}
                       className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs transition-colors shadow-md"
@@ -1117,10 +1117,6 @@ function HomeContent() {
                         <span className="flex items-center gap-1 font-bold text-[#1B889A]">
                           <Clock className="w-3.5 h-3.5" />
                           {featuredArticle.read_time_fa}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Eye className="w-3.5 h-3.5 text-slate-400" />
-                          {featuredArticle.views || 1}
                         </span>
                       </div>
                     </div>

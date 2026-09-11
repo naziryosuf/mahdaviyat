@@ -29,7 +29,7 @@ import {
 import { translations } from '@/data/translations';
 
 function MagazineContentInner() {
-  const { magazineIssues, language } = useStore();
+  const { magazineIssues, language, updateMagazineIssue } = useStore();
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = translations[language] || translations.fa;
@@ -278,6 +278,9 @@ function MagazineContentInner() {
                             download={`مجله_ایدئولوژی_مهدویت_شماره_${issue.issue_number}.pdf`}
                             target="_blank"
                             rel="noreferrer"
+                            onClick={() => {
+                              updateMagazineIssue(issue.id, { download_count: (issue.download_count || 0) + 1 });
+                            }}
                             className="flex-1 flex items-center justify-center gap-2.5 px-5 py-3.5 rounded-xl bg-[var(--bg-color)] hover:bg-[var(--muted-bg)] text-[var(--text-primary)] border border-[var(--card-border)] font-bold text-xs sm:text-sm transition-all active:scale-95"
                           >
                             <Download className="w-4 h-4 sm:w-5 sm:h-5 text-[#1B889A]" />

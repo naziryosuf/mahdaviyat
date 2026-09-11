@@ -41,13 +41,23 @@ interface ArticleDetailClientProps {
 }
 
 export function ArticleDetailClient({ id, initialArticle }: ArticleDetailClientProps) {
-  const { articles, teamMembers, audios, videos, playAudio, currentAudio, isPlayingAudio, pauseAudio } = useStore();
+  const { articles, teamMembers, audios, videos, playAudio, currentAudio, isPlayingAudio, pauseAudio, updateArticle } = useStore();
   const [fontSize, setFontSize] = useState<number>(17); // optimal mobile/desktop reading font size
   const [toastMessage, setToastMessage] = useState<string>('');
   const [showShareModal, setShowShareModal] = useState<boolean>(false);
   const [selectedAuthorMember, setSelectedAuthorMember] = useState<TeamMember | null>(null);
 
   const article = articles.find((a) => a.id === id || a.slug === id) || initialArticle || (articles.length > 0 ? articles[0] : null);
+
+  React.useEffect(() => {
+    if (article?.id) {
+      const viewedKey = `mahdism_viewed_art_${article.id}`;
+      if (typeof sessionStorage !== 'undefined' && !sessionStorage.getItem(viewedKey)) {
+        sessionStorage.setItem(viewedKey, '1');
+        updateArticle(article.id, { views: (article.views || 0) + 1 });
+      }
+    }
+  }, [article?.id, updateArticle]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);

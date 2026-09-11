@@ -23,7 +23,7 @@ import { parseVideoUrl } from '@/utils/videoEmbed';
 import { VideoItem } from '@/types';
 
 function VideoContentInner() {
-  const { videos } = useStore();
+  const { videos, updateVideo } = useStore();
   const searchParams = useSearchParams();
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
   const [sharingVideo, setSharingVideo] = useState<VideoItem | null>(null);
@@ -35,6 +35,17 @@ function VideoContentInner() {
       setToastMessage('');
     }, 3000);
   };
+
+  // Track video views
+  useEffect(() => {
+    if (selectedVideo?.id) {
+      const viewedKey = `mahdism_viewed_vid_${selectedVideo.id}`;
+      if (typeof sessionStorage !== 'undefined' && !sessionStorage.getItem(viewedKey)) {
+        sessionStorage.setItem(viewedKey, '1');
+        updateVideo(selectedVideo.id, { views: (selectedVideo.views || 0) + 1 });
+      }
+    }
+  }, [selectedVideo?.id, updateVideo]);
 
   // If a specific video ID was requested in query params, open it
   useEffect(() => {
