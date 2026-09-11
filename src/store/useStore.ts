@@ -59,9 +59,11 @@ interface AppState {
   updateCoHost: (id: string, updates: Partial<CoHostUser>) => void;
   deleteCoHost: (id: string) => void;
 
-  // Pending Approvals Queue Actions (Super Admin / Authorized Co-Host)
-  approvePendingItem: (itemType: 'article' | 'magazine' | 'video' | 'audio' | 'team', id: string) => void;
-  rejectPendingItem: (itemType: 'article' | 'magazine' | 'video' | 'audio' | 'team', id: string) => void;
+  // Anonymous / Public Counter Increments (pure metrics, zero device logging, zero audit logging)
+  incrementArticleViews: (id: string) => Promise<void>;
+  incrementVideoViews: (id: string) => Promise<void>;
+  incrementAudioPlays: (id: string) => Promise<void>;
+  incrementMagazineDownloads: (id: string) => Promise<void>;
 
   // Active Audio Player State
   currentAudio: AudioItem | null;
@@ -190,6 +192,9 @@ export const useStore = create<AppState>((set, get) => ({
   ],
 
   addAuditLog: (action_type, target_title, item_type, status_note) => {
+    // Only record audit logs for authenticated admin sessions
+    if (!get().isAdminLoggedIn) return;
+
     const currentUser = get().currentUser;
     const now = new Date();
     const timeOnly = now.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
@@ -399,124 +404,65 @@ export const useStore = create<AppState>((set, get) => ({
     }
   },
 
-  // Pending Approvals Queue
-  approvePendingItem: (itemType, id) => {
-    let title = '';
-    if (itemType === 'article') {
-      const art = get().articles.find(a => a.id === id);
-      if (art) {
-        title = art.title_fa;
-        const updated = { ...art, status: 'published' as const };
-        supabase.from('articles').upsert(updated).then(() => {});
-      }
-      set((state) => ({
-        articles: state.articles.map(a => a.id === id ? { ...a, status: 'published' } : a),
-        stagedChangesCount: state.stagedChangesCount + 1,
-        hasUnsavedChanges: true
-      }));
-    } else if (itemType === 'magazine') {
-      const mag = get().magazineIssues.find(m => m.id === id);
-      if (mag) {
-        title = mag.title_fa;
-        const updated = { ...mag, status: 'published' as const };
-        supabase.from('magazine_issues').upsert(updated).then(() => {});
-      }
-      set((state) => ({
-        magazineIssues: state.magazineIssues.map(m => m.id === id ? { ...m, status: 'published' } : m),
-        stagedChangesCount: state.stagedChangesCount + 1,
-        hasUnsavedChanges: true
-      }));
-    } else if (itemType === 'video') {
-      const vid = get().videos.find(v => v.id === id);
-      if (vid) {
-        title = vid.title_fa;
-        const updated = { ...vid, status: 'published' as const };
-        supabase.from('video_items').upsert(updated).then(() => {});
-      }
-      set((state) => ({
-        videos: state.videos.map(v => v.id === id ? { ...v, status: 'published' } : v),
-        stagedChangesCount: state.stagedChangesCount + 1,
-        hasUnsavedChanges: true
-      }));
-    } else if (itemType === 'audio') {
-      const aud = get().audios.find(a => a.id === id);
-      if (aud) {
-        title = aud.title_fa;
-        const updated = { ...aud, status: 'published' as const };
-        supabase.from('audio_items').upsert(updated).then(() => {});
-      }
-      set((state) => ({
-        audios: state.audios.map(a => a.id === id ? { ...a, status: 'published' } : a),
-        stagedChangesCount: state.stagedChangesCount + 1,
-        hasUnsavedChanges: true
-      }));
-    } else if (itemType === 'team') {
-      const tm = get().teamMembers.find(t => t.id === id);
-      if (tm) {
-        title = tm.name_fa;
-        const updated = { ...tm, status: 'published' as const };
-        supabase.from('team_members').upsert(updated).then(() => {});
-      }
-      set((state) => ({
-        teamMembers: state.teamMembers.map(t => t.id === id ? { ...t, status: 'published' } : t),
-        stagedChangesCount: state.stagedChangesCount + 1,
-        hasUnsavedChanges: true
-      }));
+  // Pure Public Metrics Increment Actions (No device tracking, no audit logs)
+  incrementArticleViews: async (id) => {
+    set((state) => ({
+      articles: state.articles.map((art) =>
+        art.id === id ? { ...art, views: (art.views || 0) + 1 } : art
+      )
+    }));
+    try {
+      const { data } = await supabase.from('articles').select('views').eq('id', id).maybeSingle();
+      const currentViews = data?.views || 0;
+      await supabase.from('articles').update({ views: currentViews + 1 }).eq('id', id);
+    } catch (err) {
+      console.warn('incrementArticleViews error:', err);
     }
-
-    get().addAuditLog('تایید و انتشار', title, itemType === 'article' ? 'مقاله' : itemType === 'magazine' ? 'مجله' : itemType === 'video' ? 'ویدیو' : itemType === 'audio' ? 'صوتی' : 'عضو تیم', 'تایید نهایی توسط مدیر ارشد (Nazir Yosuf)');
   },
 
-  rejectPendingItem: (itemType, id) => {
-    let title = '';
-    if (itemType === 'article') {
-      const art = get().articles.find(a => a.id === id);
-      if (art) title = art.title_fa;
-      supabase.from('articles').delete().eq('id', id).then(() => {});
-      set((state) => ({
-        articles: state.articles.filter(a => a.id !== id),
-        stagedChangesCount: state.stagedChangesCount + 1,
-        hasUnsavedChanges: true
-      }));
-    } else if (itemType === 'magazine') {
-      const mag = get().magazineIssues.find(m => m.id === id);
-      if (mag) title = mag.title_fa;
-      supabase.from('magazine_issues').delete().eq('id', id).then(() => {});
-      set((state) => ({
-        magazineIssues: state.magazineIssues.filter(m => m.id !== id),
-        stagedChangesCount: state.stagedChangesCount + 1,
-        hasUnsavedChanges: true
-      }));
-    } else if (itemType === 'video') {
-      const vid = get().videos.find(v => v.id === id);
-      if (vid) title = vid.title_fa;
-      supabase.from('video_items').delete().eq('id', id).then(() => {});
-      set((state) => ({
-        videos: state.videos.filter(v => v.id !== id),
-        stagedChangesCount: state.stagedChangesCount + 1,
-        hasUnsavedChanges: true
-      }));
-    } else if (itemType === 'audio') {
-      const aud = get().audios.find(a => a.id === id);
-      if (aud) title = aud.title_fa;
-      supabase.from('audio_items').delete().eq('id', id).then(() => {});
-      set((state) => ({
-        audios: state.audios.filter(a => a.id !== id),
-        stagedChangesCount: state.stagedChangesCount + 1,
-        hasUnsavedChanges: true
-      }));
-    } else if (itemType === 'team') {
-      const tm = get().teamMembers.find(t => t.id === id);
-      if (tm) title = tm.name_fa;
-      supabase.from('team_members').delete().eq('id', id).then(() => {});
-      set((state) => ({
-        teamMembers: state.teamMembers.filter(t => t.id !== id),
-        stagedChangesCount: state.stagedChangesCount + 1,
-        hasUnsavedChanges: true
-      }));
+  incrementVideoViews: async (id) => {
+    set((state) => ({
+      videos: state.videos.map((vid) =>
+        vid.id === id ? { ...vid, views: (vid.views || 0) + 1 } : vid
+      )
+    }));
+    try {
+      const { data } = await supabase.from('video_items').select('views').eq('id', id).maybeSingle();
+      const currentViews = data?.views || 0;
+      await supabase.from('video_items').update({ views: currentViews + 1 }).eq('id', id);
+    } catch (err) {
+      console.warn('incrementVideoViews error:', err);
     }
+  },
 
-    get().addAuditLog('رد درخواست', title, itemType === 'article' ? 'مقاله' : itemType === 'magazine' ? 'مجله' : itemType === 'video' ? 'ویدیو' : itemType === 'audio' ? 'صوتی' : 'عضو تیم', 'رد درخواست انتشار توسط مدیر ارشد');
+  incrementAudioPlays: async (id) => {
+    set((state) => ({
+      audios: state.audios.map((aud) =>
+        aud.id === id ? { ...aud, plays: (aud.plays || 0) + 1 } : aud
+      )
+    }));
+    try {
+      const { data } = await supabase.from('audio_items').select('plays').eq('id', id).maybeSingle();
+      const currentPlays = data?.plays || 0;
+      await supabase.from('audio_items').update({ plays: currentPlays + 1 }).eq('id', id);
+    } catch (err) {
+      console.warn('incrementAudioPlays error:', err);
+    }
+  },
+
+  incrementMagazineDownloads: async (id) => {
+    set((state) => ({
+      magazineIssues: state.magazineIssues.map((mag) =>
+        mag.id === id ? { ...mag, download_count: (mag.download_count || 0) + 1 } : mag
+      )
+    }));
+    try {
+      const { data } = await supabase.from('magazine_issues').select('download_count').eq('id', id).maybeSingle();
+      const currentDownloads = data?.download_count || 0;
+      await supabase.from('magazine_issues').update({ download_count: currentDownloads + 1 }).eq('id', id);
+    } catch (err) {
+      console.warn('incrementMagazineDownloads error:', err);
+    }
   },
 
   currentAudio: null,
@@ -524,8 +470,7 @@ export const useStore = create<AppState>((set, get) => ({
   playAudio: (audio) => {
     set({ currentAudio: audio, isPlayingAudio: true });
     if (audio && audio.id && !audio.id.startsWith('art-')) {
-      const currentPlays = audio.plays || 0;
-      get().updateAudio(audio.id, { plays: currentPlays + 1 });
+      get().incrementAudioPlays(audio.id);
     }
   },
   pauseAudio: () => set({ isPlayingAudio: false }),
@@ -545,18 +490,15 @@ export const useStore = create<AppState>((set, get) => ({
 
   addArticle: async (articleData) => {
     const currentUser = get().currentUser;
-    const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
-    const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
-    const initialStatus = canDirect ? 'published' : 'pending_approval';
 
     const newArticle: Article = {
       ...articleData,
       id: `art-${Date.now()}`,
       views: 1,
-      status: initialStatus,
+      status: 'published',
       submitted_by_name: currentUser?.name_fa || 'M. Nazir Yosuf',
       submitted_at: new Date().toLocaleDateString('fa-IR'),
-      submitted_device: getDeviceDetails(),
+      submitted_device: get().isAdminLoggedIn ? getDeviceDetails() : 'سامانه مرکزی',
     };
 
     set((state) => ({ 
@@ -579,19 +521,11 @@ export const useStore = create<AppState>((set, get) => ({
       console.error('Supabase addArticle error:', e);
     }
 
-    get().addAuditLog(
-      'افزودن', 
-      newArticle.title_fa, 
-      'مقاله', 
-      canDirect ? 'انتشار مستقیم' : 'در انتظار تایید ادمین ارشد (Nazir Yosuf)'
-    );
+    get().addAuditLog('افزودن', newArticle.title_fa, 'مقاله', 'انتشار مستقیم');
   },
 
   updateArticle: async (id, articleData) => {
     const currentUser = get().currentUser;
-    const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
-    const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
-    const nextStatus = canDirect ? 'published' : 'pending_approval';
 
     let updatedArt: Article | null = null;
     set((state) => ({
@@ -600,10 +534,10 @@ export const useStore = create<AppState>((set, get) => ({
           updatedArt = { 
             ...art, 
             ...articleData,
-            status: nextStatus,
-            submitted_by_name: currentUser?.name_fa || 'M. Nazir Yosuf',
+            status: 'published',
+            submitted_by_name: currentUser?.name_fa || art.submitted_by_name || 'M. Nazir Yosuf',
             submitted_at: new Date().toLocaleDateString('fa-IR'),
-            submitted_device: getDeviceDetails()
+            submitted_device: get().isAdminLoggedIn ? getDeviceDetails() : (art.submitted_device || 'سامانه مرکزی')
           };
           return updatedArt;
         }
@@ -632,12 +566,7 @@ export const useStore = create<AppState>((set, get) => ({
 
     const target = get().articles.find(a => a.id === id);
     if (target) {
-      get().addAuditLog(
-        'ویرایش', 
-        target.title_fa, 
-        'مقاله', 
-        canDirect ? 'ویرایش و انتشار مستقیم' : 'ویرایش شده - در انتظار تایید ادمین ارشد'
-      );
+      get().addAuditLog('ویرایش', target.title_fa, 'مقاله', 'ویرایش و بروزرسانی');
     }
   },
 
@@ -660,9 +589,6 @@ export const useStore = create<AppState>((set, get) => ({
 
   addMagazineIssue: async (issueData) => {
     const currentUser = get().currentUser;
-    const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
-    const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
-    const initialStatus = canDirect ? 'published' : 'pending_approval';
 
     let cover = issueData.cover_image && !issueData.cover_image.startsWith('file://') && issueData.cover_image.trim() !== ''
       ? issueData.cover_image
@@ -678,10 +604,10 @@ export const useStore = create<AppState>((set, get) => ({
       cover_image: cover,
       pdf_url: pdf,
       download_count: 0,
-      status: initialStatus,
+      status: 'published',
       submitted_by_name: currentUser?.name_fa || 'M. Nazir Yosuf',
       submitted_at: new Date().toLocaleDateString('fa-IR'),
-      submitted_device: getDeviceDetails(),
+      submitted_device: get().isAdminLoggedIn ? getDeviceDetails() : 'سامانه مرکزی',
     };
 
     set((state) => ({ 
@@ -700,10 +626,10 @@ export const useStore = create<AppState>((set, get) => ({
       pdf_url: newIssue.pdf_url,
       download_count: newIssue.download_count,
       featured: newIssue.featured,
-      status: newIssue.status,
+      status: 'published',
       submitted_by_name: newIssue.submitted_by_name,
       submitted_at: newIssue.submitted_at,
-      submitted_device: `PAGECOUNT:${newIssue.page_count_fa || '۴۵ صفحه (قطع A4)'}||${newIssue.submitted_device || getDeviceDetails()}`,
+      submitted_device: `PAGECOUNT:${newIssue.page_count_fa || '۴۵ صفحه (قطع A4)'}||${newIssue.submitted_device}`,
       tags: newIssue.tags,
       pages: newIssue.pages
     };
@@ -730,19 +656,11 @@ export const useStore = create<AppState>((set, get) => ({
       throw e;
     }
 
-    get().addAuditLog(
-      'افزودن', 
-      newIssue.title_fa, 
-      'مجله', 
-      canDirect ? 'انتشار مستقیم' : 'در انتظار تایید ادمین ارشد'
-    );
+    get().addAuditLog('افزودن', newIssue.title_fa, 'مجله', 'انتشار مستقیم');
   },
 
   updateMagazineIssue: async (id, issueData) => {
     const currentUser = get().currentUser;
-    const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
-    const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
-    const nextStatus = canDirect ? 'published' : 'pending_approval';
 
     let updatedMag: MagazineIssue | null = null;
     set((state) => ({
@@ -753,7 +671,7 @@ export const useStore = create<AppState>((set, get) => ({
             ...issueData,
             cover_image: issueData.cover_image && !issueData.cover_image.startsWith('file://') && issueData.cover_image.trim() !== '' ? issueData.cover_image : (iss.cover_image || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80'),
             pdf_url: issueData.pdf_url && !issueData.pdf_url.startsWith('file://') && issueData.pdf_url.trim() !== '' ? issueData.pdf_url : (iss.pdf_url || '/downloads/mahdism_issue_1.pdf'),
-            status: nextStatus
+            status: 'published'
           };
           return updatedMag;
         }
@@ -827,18 +745,15 @@ export const useStore = create<AppState>((set, get) => ({
 
   addVideo: async (videoData) => {
     const currentUser = get().currentUser;
-    const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
-    const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
-    const initialStatus = canDirect ? 'published' : 'pending_approval';
 
     const newVid: VideoItem = {
       ...videoData,
       id: `vid-${Date.now()}`,
       views: 1,
-      status: initialStatus,
+      status: 'published',
       submitted_by_name: currentUser?.name_fa || 'M. Nazir Yosuf',
       submitted_at: new Date().toLocaleDateString('fa-IR'),
-      submitted_device: getDeviceDetails(),
+      submitted_device: get().isAdminLoggedIn ? getDeviceDetails() : 'سامانه مرکزی',
     };
     set((state) => ({ 
       videos: [newVid, ...state.videos],
@@ -846,20 +761,10 @@ export const useStore = create<AppState>((set, get) => ({
       hasUnsavedChanges: false
     }));
     await supabase.from('video_items').upsert(newVid);
-    get().addAuditLog(
-      'افزودن', 
-      newVid.title_fa, 
-      'ویدیو', 
-      canDirect ? 'انتشار مستقیم' : 'در انتظار تایید ادمین ارشد'
-    );
+    get().addAuditLog('افزودن', newVid.title_fa, 'ویدیو', 'انتشار مستقیم');
   },
 
   updateVideo: async (id, videoData) => {
-    const currentUser = get().currentUser;
-    const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
-    const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
-    const nextStatus = canDirect ? 'published' : 'pending_approval';
-
     let updatedVid: VideoItem | null = null;
     set((state) => ({
       videos: state.videos.map((v) => {
@@ -867,7 +772,7 @@ export const useStore = create<AppState>((set, get) => ({
           updatedVid = { 
             ...v, 
             ...videoData,
-            status: nextStatus
+            status: 'published'
           };
           return updatedVid;
         }
@@ -881,7 +786,7 @@ export const useStore = create<AppState>((set, get) => ({
     }
     const target = get().videos.find(v => v.id === id);
     if (target) {
-      get().addAuditLog('ویرایش', target.title_fa, 'ویدیو');
+      get().addAuditLog('ویرایش', target.title_fa, 'ویدیو', 'ویرایش و بروزرسانی');
     }
   },
 
@@ -900,18 +805,15 @@ export const useStore = create<AppState>((set, get) => ({
 
   addAudio: async (audioData) => {
     const currentUser = get().currentUser;
-    const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
-    const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
-    const initialStatus = canDirect ? 'published' : 'pending_approval';
 
     const newAud: AudioItem = {
       ...audioData,
       id: `aud-${Date.now()}`,
       plays: 1,
-      status: initialStatus,
+      status: 'published',
       submitted_by_name: currentUser?.name_fa || 'M. Nazir Yosuf',
       submitted_at: new Date().toLocaleDateString('fa-IR'),
-      submitted_device: getDeviceDetails(),
+      submitted_device: get().isAdminLoggedIn ? getDeviceDetails() : 'سامانه مرکزی',
     };
     set((state) => ({ 
       audios: [newAud, ...state.audios],
@@ -919,20 +821,10 @@ export const useStore = create<AppState>((set, get) => ({
       hasUnsavedChanges: false
     }));
     await supabase.from('audio_items').upsert(newAud);
-    get().addAuditLog(
-      'افزودن', 
-      newAud.title_fa, 
-      'صوتی', 
-      canDirect ? 'انتشار مستقیم' : 'در انتظار تایید ادمین ارشد'
-    );
+    get().addAuditLog('افزودن', newAud.title_fa, 'صوتی', 'انتشار مستقیم');
   },
 
   updateAudio: async (id, audioData) => {
-    const currentUser = get().currentUser;
-    const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
-    const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
-    const nextStatus = canDirect ? 'published' : 'pending_approval';
-
     let updatedAud: AudioItem | null = null;
     set((state) => ({
       audios: state.audios.map((a) => {
@@ -940,7 +832,7 @@ export const useStore = create<AppState>((set, get) => ({
           updatedAud = { 
             ...a, 
             ...audioData,
-            status: nextStatus 
+            status: 'published' 
           };
           return updatedAud;
         }
@@ -954,7 +846,7 @@ export const useStore = create<AppState>((set, get) => ({
     }
     const target = get().audios.find(a => a.id === id);
     if (target) {
-      get().addAuditLog('ویرایش', target.title_fa, 'صوتی');
+      get().addAuditLog('ویرایش', target.title_fa, 'صوتی', 'ویرایش و بروزرسانی');
     }
   },
 
@@ -995,17 +887,14 @@ export const useStore = create<AppState>((set, get) => ({
 
   addTeamMember: async (memberData) => {
     const currentUser = get().currentUser;
-    const isSuper = currentUser?.is_super_admin || currentUser?.password_code === '190716';
-    const canDirect = isSuper || currentUser?.permissions.can_direct_publish;
-    const initialStatus = canDirect ? 'published' : 'pending_approval';
 
     const newMember: TeamMember = {
       ...memberData,
       id: `team-${Date.now()}`,
-      status: initialStatus,
+      status: 'published',
       submitted_by_name: currentUser?.name_fa || 'M. Nazir Yosuf',
       submitted_at: new Date().toLocaleDateString('fa-IR'),
-      submitted_device: getDeviceDetails(),
+      submitted_device: get().isAdminLoggedIn ? getDeviceDetails() : 'سامانه مرکزی',
     };
     const updatedTeam = [...get().teamMembers, newMember];
     set({ 
@@ -1028,12 +917,7 @@ export const useStore = create<AppState>((set, get) => ({
     } catch (err) {
       console.error('Supabase addTeamMember error:', err);
     }
-    get().addAuditLog(
-      'افزودن', 
-      newMember.name_fa, 
-      'عضو تیم', 
-      canDirect ? 'انتشار مستقیم' : 'در انتظار تایید ادمین ارشد'
-    );
+    get().addAuditLog('افزودن', newMember.name_fa, 'عضو تیم', 'انتشار مستقیم');
   },
 
   updateTeamMember: async (id, memberData) => {

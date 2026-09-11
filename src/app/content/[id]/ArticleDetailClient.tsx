@@ -41,7 +41,7 @@ interface ArticleDetailClientProps {
 }
 
 export function ArticleDetailClient({ id, initialArticle }: ArticleDetailClientProps) {
-  const { articles, teamMembers, audios, videos, playAudio, currentAudio, isPlayingAudio, pauseAudio, updateArticle } = useStore();
+  const { articles, teamMembers, audios, videos, playAudio, currentAudio, isPlayingAudio, pauseAudio, incrementArticleViews } = useStore();
   const [fontSize, setFontSize] = useState<number>(17); // optimal mobile/desktop reading font size
   const [toastMessage, setToastMessage] = useState<string>('');
   const [showShareModal, setShowShareModal] = useState<boolean>(false);
@@ -54,10 +54,10 @@ export function ArticleDetailClient({ id, initialArticle }: ArticleDetailClientP
       const viewedKey = `mahdism_viewed_art_${article.id}`;
       if (typeof sessionStorage !== 'undefined' && !sessionStorage.getItem(viewedKey)) {
         sessionStorage.setItem(viewedKey, '1');
-        updateArticle(article.id, { views: (article.views || 0) + 1 });
+        incrementArticleViews(article.id);
       }
     }
-  }, [article?.id, updateArticle]);
+  }, [article?.id, incrementArticleViews]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);

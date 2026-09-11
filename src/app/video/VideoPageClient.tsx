@@ -23,7 +23,7 @@ import { parseVideoUrl } from '@/utils/videoEmbed';
 import { VideoItem } from '@/types';
 
 function VideoContentInner() {
-  const { videos, updateVideo } = useStore();
+  const { videos, incrementVideoViews } = useStore();
   const searchParams = useSearchParams();
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
   const [sharingVideo, setSharingVideo] = useState<VideoItem | null>(null);
@@ -42,10 +42,10 @@ function VideoContentInner() {
       const viewedKey = `mahdism_viewed_vid_${selectedVideo.id}`;
       if (typeof sessionStorage !== 'undefined' && !sessionStorage.getItem(viewedKey)) {
         sessionStorage.setItem(viewedKey, '1');
-        updateVideo(selectedVideo.id, { views: (selectedVideo.views || 0) + 1 });
+        incrementVideoViews(selectedVideo.id);
       }
     }
-  }, [selectedVideo?.id, updateVideo]);
+  }, [selectedVideo?.id, incrementVideoViews]);
 
   // If a specific video ID was requested in query params, open it
   useEffect(() => {

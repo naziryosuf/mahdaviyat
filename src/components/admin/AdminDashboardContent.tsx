@@ -89,8 +89,6 @@ export const AdminDashboardContent: React.FC = () => {
     hasUnsavedChanges,
     saveAllChangesToLive,
     discardStagedChanges,
-    approvePendingItem,
-    rejectPendingItem,
     articles, 
     magazineIssues, 
     videos, 
@@ -138,7 +136,7 @@ export const AdminDashboardContent: React.FC = () => {
 
   const [passcode, setPasscode] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
-  const [activeTab, setActiveTab] = useState<'pending' | 'analytics' | 'articles' | 'magazines' | 'videos' | 'audios' | 'team' | 'messages' | 'cohosts' | 'audit_logs' | 'storage' | 'footer_designer'>('articles');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'articles' | 'magazines' | 'videos' | 'audios' | 'team' | 'messages' | 'cohosts' | 'audit_logs' | 'storage' | 'footer_designer'>('articles');
 
   // Save Success Notification Toast
   const [showSaveToast, setShowSaveToast] = useState(false);
@@ -998,14 +996,6 @@ export const AdminDashboardContent: React.FC = () => {
     setTimeout(() => setSaveToast(null), 3000);
   };
 
-  // Pending items count calculation
-  const pendingArticles = articles.filter(a => a.status === 'pending_approval');
-  const pendingMagazines = magazineIssues.filter(m => m.status === 'pending_approval');
-  const pendingVideos = videos.filter(v => v.status === 'pending_approval');
-  const pendingAudios = audios.filter(a => a.status === 'pending_approval');
-  const pendingTeam = teamMembers.filter(t => t.status === 'pending_approval');
-
-  const totalPendingCount = pendingArticles.length + pendingMagazines.length + pendingVideos.length + pendingAudios.length + pendingTeam.length;
 
   // Storage Stats Calculation
   const [storageUsedBytes, setStorageUsedBytes] = useState(0);
@@ -1202,25 +1192,6 @@ export const AdminDashboardContent: React.FC = () => {
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--card-border)] pb-4">
         <div className="flex flex-wrap items-center gap-2">
           
-          {/* Pending Approvals Queue Tab */}
-          {(isSuperAdmin || userPerms.can_direct_publish) && (
-            <button
-              onClick={() => setActiveTab('pending')}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
-                activeTab === 'pending' 
-                  ? 'bg-amber-600 text-white shadow-md' 
-                  : 'bg-[var(--card-bg)] text-amber-500 border border-amber-500/30 hover:border-amber-500'
-              }`}
-            >
-              <AlertCircle className="w-4 h-4" />
-              <span>در انتظار تایید</span>
-              {totalPendingCount > 0 && (
-                <span className="px-2 py-0.5 rounded-full bg-red-500 text-white text-[10px] font-black animate-bounce">
-                  {totalPendingCount}
-                </span>
-              )}
-            </button>
-          )}
 
           {/* Audit Logs Tab */}
           <button
@@ -2738,51 +2709,7 @@ export const AdminDashboardContent: React.FC = () => {
         </div>
       )}
 
-      {/* PENDING APPROVALS QUEUE */}
-      {activeTab === 'pending' && (
-        <div className="space-y-6">
-          <div className="bg-amber-500/10 border border-amber-500/30 p-6 rounded-3xl space-y-2">
-            <h2 className="text-lg font-bold text-amber-400 font-serif-persian flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-amber-400" />
-              <span>پست‌ها و ویرایش‌های در انتظار تایید مدیر ارشد (NAZIR YOSUF)</span>
-            </h2>
-          </div>
 
-          {totalPendingCount === 0 ? (
-            <div className="p-12 text-center text-xs text-[var(--text-secondary)] bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl">
-              هیچ پستی در انتظار تایید وجود ندارد.
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {pendingArticles.map(art => (
-                <div key={art.id} className="p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-bold bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-md">مقاله</span>
-                    <h3 className="text-base font-bold text-[var(--text-primary)] font-serif-persian">{art.title_fa}</h3>
-                    <p className="text-xs text-[var(--text-secondary)]">ارسال شده توسط: {art.submitted_by_name} | دیوایس: {art.submitted_device}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => approvePendingItem('article', art.id)}
-                      className="px-4 py-2 rounded-xl bg-emerald-600 text-white font-bold text-xs flex items-center gap-1.5 hover:bg-emerald-700 transition-all"
-                    >
-                      <Check className="w-4 h-4" />
-                      <span>تایید و انتشار</span>
-                    </button>
-                    <button
-                      onClick={() => rejectPendingItem('article', art.id)}
-                      className="px-4 py-2 rounded-xl bg-red-500/10 text-red-400 font-bold text-xs flex items-center gap-1.5 hover:bg-red-500/20 transition-all"
-                    >
-                      <X className="w-4 h-4" />
-                      <span>رد درخواست</span>
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
 
       {/* CO-HOST MANAGEMENT TAB */}
       {activeTab === 'cohosts' && isSuperAdmin && (
