@@ -453,7 +453,7 @@ function HomeContent() {
                                 {aud.title_fa}
                               </h4>
                               <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 font-serif-persian">
-                                {aud.speaker_fa} • <span className="dir-ltr font-mono">{formatDurationNumeric(aud.duration_fa)}</span>
+                                {aud.category_fa || 'محتوای صوتی'} • <span className="dir-ltr font-mono">{formatDurationNumeric(aud.duration_fa)}</span>
                               </p>
                             </div>
                           </div>
@@ -642,7 +642,7 @@ function HomeContent() {
                     </div>
 
                     <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian leading-snug">{aud.title_fa}</h3>
-                    <p className="text-xs text-[var(--text-secondary)] line-clamp-1">{aud.speaker_fa}</p>
+                    <p className="text-xs text-[var(--text-secondary)] line-clamp-1">{aud.description_fa || aud.category_fa}</p>
 
                     <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
                       <span>{aud.category_fa}</span>
@@ -785,7 +785,7 @@ function HomeContent() {
                     </div>
 
                     <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian leading-snug">{aud.title_fa}</h3>
-                    <p className="text-xs text-[var(--text-secondary)] line-clamp-1">{aud.speaker_fa}</p>
+                    <p className="text-xs text-[var(--text-secondary)] line-clamp-1">{aud.description_fa || aud.category_fa}</p>
 
                     <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
                       <span>{aud.category_fa}</span>
@@ -1046,17 +1046,14 @@ function HomeContent() {
                           </h3>
 
                           <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed font-serif-persian">
-                            {aud.speaker_fa 
-                              ? `${aud.speaker_fa?.includes('،') || aud.speaker_fa?.includes(',') || (aud.speaker_fa?.match(/@/g) || []).length > 1 ? 'ارائه‌دهندگان:' : 'گوینده:'} ${aud.speaker_fa}`
-                              : aud.description_fa
-                            }
+                            {aud.description_fa || 'محتوای صوتی و پادکست‌های مجله ایدئولوژی مهدویت'}
                           </p>
                         </div>
 
                         {/* Card Footer */}
                         <div className="pt-2.5 border-t border-[var(--card-border)] flex items-center justify-between text-xs font-serif-persian">
                           <span className="text-[var(--text-secondary)] text-[11px] font-bold line-clamp-1 max-w-[130px] sm:max-w-[150px]">
-                            {aud.speaker_fa ? aud.speaker_fa.split('،')[0].split(',')[0] : 'سلسله مباحث مهدویت'}
+                            {aud.category_fa || 'مجله مهدویت'}
                           </span>
 
                           <div className="flex items-center gap-2">

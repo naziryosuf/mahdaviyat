@@ -72,20 +72,18 @@ export function AudioShareModal({ audio, onClose }: AudioShareModalProps) {
 
   if (!mounted || !audio) return null;
 
-  // Always use official live URL so WhatsApp, Twitter, Facebook, Eitaa crawlers get Open Graph meta and cover preview
+  // Always use official live URL so WhatsApp, Facebook, LinkedIn, Telegram crawlers get Open Graph meta and cover preview
   const shareUrl = `https://www.ideologymahdaviyat.org/audio?id=${encodeURIComponent(audio.id)}`;
 
   const whatsappMessage = `🎧 فایل صوتی: ${audio.title_fa}
-گوینده: ${audio.speaker_fa || 'مجله ایدئولوژی مهدویت'}
 مدت زمان: ${audio.duration_fa || formatDurationNumeric(audio.duration_fa)}
 
 شنیدن آنلاین در مجله ایدئولوژی مهدویت:
 ${shareUrl}`;
 
   const whatsappHref = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappMessage)}`;
-  const telegramHref = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`🎧 ${audio.title_fa}\nگوینده: ${audio.speaker_fa || ''}`)}`;
+  const telegramHref = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`🎧 ${audio.title_fa}`)}`;
   const linkedinHref = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
-  const twitterHref = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`🎧 ${audio.title_fa} - مجله ایدئولوژی مهدویت`)}`;
   const facebookHref = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
 
   const handleCopy = () => {
@@ -99,7 +97,7 @@ ${shareUrl}`;
       try {
         await navigator.share({
           title: audio.title_fa,
-          text: `🎧 ${audio.title_fa} - ${audio.speaker_fa || ''}`,
+          text: `🎧 ${audio.title_fa} - مجله ایدئولوژی مهدویت`,
           url: shareUrl,
         });
       } catch {
@@ -154,7 +152,7 @@ ${shareUrl}`;
           </button>
         </div>
 
-        {/* Ultra-compact Audio Preview Card */}
+        {/* Ultra-compact Audio Preview Card (No Speaker) */}
         <div className="p-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] flex items-center gap-3">
           <div className="w-14 h-14 rounded-lg overflow-hidden border border-[#1B889A]/30 shrink-0 bg-slate-900 shadow-xs">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -168,23 +166,18 @@ ${shareUrl}`;
             />
           </div>
 
-          <div className="min-w-0 flex-1 space-y-0.5 text-right">
+          <div className="min-w-0 flex-1 space-y-1 text-right">
             <div className="flex items-center justify-between text-[10px]">
               <span className="text-[#1B889A] font-bold truncate">{audio.category_fa || 'محتوای صوتی'}</span>
               <span className="text-[var(--text-secondary)] font-mono dir-ltr shrink-0 font-bold">{formatDurationNumeric(audio.duration_fa)}</span>
             </div>
-            <h4 className="text-xs font-bold text-[var(--text-primary)] font-serif-persian line-clamp-1 leading-snug">
+            <h4 className="text-xs font-bold text-[var(--text-primary)] font-serif-persian line-clamp-2 leading-snug">
               {audio.title_fa}
             </h4>
-            {audio.speaker_fa && (
-              <p className="text-[10px] text-[var(--text-secondary)] line-clamp-1">
-                گوینده: {audio.speaker_fa}
-              </p>
-            )}
           </div>
         </div>
 
-        {/* Social Share Grid (WhatsApp, Telegram, LinkedIn, X/Twitter) */}
+        {/* Social Share Grid (WhatsApp, Telegram, LinkedIn, Facebook) */}
         <div className="grid grid-cols-2 gap-2">
           {/* WhatsApp */}
           <a
@@ -226,18 +219,18 @@ ${shareUrl}`;
             <span>لینکدین</span>
           </a>
 
-          {/* X (Twitter) */}
+          {/* Facebook */}
           <a
-            href={twitterHref}
+            href={facebookHref}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-neutral-900/10 dark:bg-white/10 hover:bg-black dark:hover:bg-white text-[var(--text-primary)] hover:text-white dark:hover:text-black border border-[var(--card-border)] font-bold text-xs shadow-2xs transition-all active:scale-95"
-            title="اشتراک‌گذاری در توییتر (ایکس)"
+            className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[#1877F2]/15 hover:bg-[#1877F2] text-[#1877F2] hover:text-white border border-[#1877F2]/30 font-bold text-xs shadow-2xs transition-all active:scale-95"
+            title="اشتراک‌گذاری در فیسبوک"
           >
-            <svg className="w-3 h-3 fill-current shrink-0" viewBox="0 0 24 24">
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
             </svg>
-            <span>ایکس</span>
+            <span>فیسبوک</span>
           </a>
         </div>
 

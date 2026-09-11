@@ -186,8 +186,8 @@ export const PersistentAudioBar: React.FC = () => {
             <h5 className="text-[11px] sm:text-sm font-extrabold text-[var(--text-primary)] truncate font-serif-persian" title={currentAudio.title_fa}>
               {currentAudio.title_fa}
             </h5>
-            <p className="text-[9px] sm:text-xs text-[var(--text-secondary)] truncate">
-              {currentAudio.speaker_fa}
+            <p className="text-[9px] sm:text-xs text-[#1B889A] font-bold truncate">
+              {currentAudio.category_fa || 'محتوای صوتی'}
             </p>
           </div>
         </div>

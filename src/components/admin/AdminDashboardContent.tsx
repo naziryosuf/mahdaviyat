@@ -1627,8 +1627,6 @@ export const AdminDashboardContent: React.FC = () => {
                     </div>
                     <h4 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian">{aud.title_fa}</h4>
                     <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--text-secondary)] mt-1">
-                      <span>گوینده: {aud.speaker_fa}</span>
-                      <span>•</span>
                       <span>زمان: {aud.duration_fa}</span>
                       <span>•</span>
                       <span className="flex items-center gap-1 font-bold text-rose-500 px-2 py-0.5 rounded-lg bg-rose-500/10 font-mono">
@@ -2366,14 +2364,6 @@ export const AdminDashboardContent: React.FC = () => {
                 <label className="block font-bold mb-1">عنوان محتوای صوتی:</label>
                 <input type="text" value={audTitle} onChange={e => setAudTitle(e.target.value)} required className="w-full p-2.5 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-xl" />
               </div>
-              <MultiAuthorPicker
-                label="گوینده / سخنران / پادکستر(ها):"
-                value={audSpeaker}
-                onChange={setAudSpeaker}
-                teamMembers={teamMembers}
-                placeholder="مثلاً: @استاد حسینی، @نذیر یوسفی یا انتخاب از تیم..."
-                helperText="امکان تگ و @ کردن چند گوینده/پادکستر هم‌زمان بدون محدودیت"
-              />
 
               <div>
                 <label className="block font-bold mb-1">مدت زمان:</label>

@@ -170,7 +170,7 @@ function AudioContent() {
             {/* Content Details */}
             <div className="space-y-4 text-center md:text-right flex-1">
               <span className="px-3.5 py-1.5 rounded-full teal-badge text-xs font-bold inline-block">
-                {activeAudio.category_fa} • {activeAudio.speaker_fa?.includes('،') || activeAudio.speaker_fa?.includes(',') || (activeAudio.speaker_fa?.match(/@/g) || []).length > 1 ? 'گویندگان:' : 'گوینده:'} {activeAudio.speaker_fa}
+                {activeAudio.category_fa || 'محتوای صوتی'}
               </span>
 
               <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-serif-persian leading-snug">
@@ -418,17 +418,14 @@ function AudioContent() {
                     </h3>
 
                     <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed font-serif-persian">
-                      {aud.speaker_fa 
-                        ? `${aud.speaker_fa?.includes('،') || aud.speaker_fa?.includes(',') || (aud.speaker_fa?.match(/@/g) || []).length > 1 ? 'ارائه‌دهندگان:' : 'گوینده:'} ${aud.speaker_fa}`
-                        : aud.description_fa
-                      }
+                      {aud.description_fa || 'محتوای صوتی و پادکست‌های مجله ایدئولوژی مهدویت'}
                     </p>
                   </div>
 
                   {/* Card Footer */}
                   <div className="pt-2.5 border-t border-[var(--card-border)] flex items-center justify-between text-xs font-serif-persian">
                     <span className="text-[var(--text-secondary)] text-[11px] font-bold line-clamp-1 max-w-[130px] sm:max-w-[150px]">
-                      {aud.speaker_fa ? aud.speaker_fa.split('،')[0].split(',')[0] : 'سلسله مباحث مهدویت'}
+                      {aud.category_fa || 'مجله مهدویت'}
                     </span>
 
                     <div className="flex items-center gap-2">
