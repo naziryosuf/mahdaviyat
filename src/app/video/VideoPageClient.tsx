@@ -125,7 +125,9 @@ function VideoContentInner() {
                     <h4 className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[#1B889A] transition-colors font-serif-persian leading-snug">
                       {vid.title_fa}
                     </h4>
-                    <p className="text-xs text-[var(--text-secondary)] font-serif-persian">سخنران: {vid.speaker_fa}</p>
+                    <p className="text-xs text-[var(--text-secondary)] font-serif-persian">
+                      {vid.speaker_fa?.includes('،') || vid.speaker_fa?.includes(',') || (vid.speaker_fa?.match(/@/g) || []).length > 1 ? 'سخنرانان / ارائه‌دهندگان:' : 'سخنران:'} {vid.speaker_fa}
+                    </p>
                   </div>
                 </div>
 

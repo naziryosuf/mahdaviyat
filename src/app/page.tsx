@@ -326,7 +326,9 @@ function HomeContent() {
                           </div>
 
                           <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs">
-                            <span className="text-[var(--text-secondary)] truncate max-w-[180px]">نویسنده: {art.author_name_fa}</span>
+                            <span className="text-[var(--text-secondary)]">
+                              {art.author_name_fa?.includes('،') || art.author_name_fa?.includes(',') || (art.author_name_fa?.match(/@/g) || []).length > 1 ? 'نویسندگان:' : 'نویسنده:'} {art.author_name_fa}
+                            </span>
                             <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
                               <span>مطالعه کامل</span>
                               <ArrowLeft className="w-3.5 h-3.5" />
@@ -499,7 +501,7 @@ function HomeContent() {
                       </div>
                       
                       <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
-                        <span className="truncate">نویسنده: {art.author_name_fa}</span>
+                        <span>{art.author_name_fa?.includes('،') || art.author_name_fa?.includes(',') || (art.author_name_fa?.match(/@/g) || []).length > 1 ? 'نویسندگان:' : 'نویسنده:'} {art.author_name_fa}</span>
                         <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
                           <span>مطالعه</span>
                           <ArrowLeft className="w-3.5 h-3.5" />
@@ -634,7 +636,7 @@ function HomeContent() {
                       </div>
                       
                       <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
-                        <span className="truncate">نویسنده: {art.author_name_fa}</span>
+                        <span>{art.author_name_fa?.includes('،') || art.author_name_fa?.includes(',') || (art.author_name_fa?.match(/@/g) || []).length > 1 ? 'نویسندگان:' : 'نویسنده:'} {art.author_name_fa}</span>
                         <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
                           <span>مطالعه</span>
                           <ArrowLeft className="w-3.5 h-3.5" />
@@ -752,7 +754,7 @@ function HomeContent() {
                       </div>
 
                       <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)] font-serif-persian">
-                        <span className="truncate">نویسنده: <strong className="text-[var(--text-primary)]">{art.author_name_fa}</strong></span>
+                        <span>{art.author_name_fa?.includes('،') || art.author_name_fa?.includes(',') || (art.author_name_fa?.match(/@/g) || []).length > 1 ? 'نویسندگان:' : 'نویسنده:'} <strong className="text-[var(--text-primary)]">{art.author_name_fa}</strong></span>
                         <Link href={`/content/${art.id}`} className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
                           <span>مطالعه</span>
                           <ArrowLeft className="w-3.5 h-3.5" />
@@ -917,7 +919,9 @@ function HomeContent() {
                         <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors leading-snug">
                           {vid.title_fa}
                         </h3>
-                        <p className="text-xs text-[var(--text-secondary)] mt-1 font-serif-persian">سخنران: {vid.speaker_fa}</p>
+                        <p className="text-xs text-[var(--text-secondary)] mt-1 font-serif-persian">
+                          {vid.speaker_fa?.includes('،') || vid.speaker_fa?.includes(',') || (vid.speaker_fa?.match(/@/g) || []).length > 1 ? 'سخنرانان / ارائه‌دهندگان:' : 'سخنران:'} {vid.speaker_fa}
+                        </p>
                       </div>
                     </div>
 

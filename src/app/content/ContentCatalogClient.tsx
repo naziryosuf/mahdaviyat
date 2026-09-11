@@ -171,7 +171,7 @@ function ContentCatalogInner() {
 
                 <div className="pt-4 border-t border-[var(--card-border)] flex items-center justify-between">
                   <span className="text-xs text-[var(--text-secondary)] font-serif-persian">
-                    نویسنده: {art.author_name_fa || 'M. Nazir Yosuf'}
+                    {art.author_name_fa?.includes('،') || art.author_name_fa?.includes(',') || (art.author_name_fa?.match(/@/g) || []).length > 1 ? 'نویسندگان:' : 'نویسنده:'} {art.author_name_fa || 'M. Nazir Yosuf'}
                   </span>
                   <Link
                     href={`/content/${art.id}`}

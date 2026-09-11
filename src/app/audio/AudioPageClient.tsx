@@ -99,7 +99,7 @@ function AudioContent() {
             {/* Content Details */}
             <div className="space-y-4 text-center md:text-right flex-1">
               <span className="px-3.5 py-1.5 rounded-full teal-badge text-xs font-bold inline-block">
-                {activeAudio.category_fa} • گوینده: {activeAudio.speaker_fa}
+                {activeAudio.category_fa} • {activeAudio.speaker_fa?.includes('،') || activeAudio.speaker_fa?.includes(',') || (activeAudio.speaker_fa?.match(/@/g) || []).length > 1 ? 'گویندگان:' : 'گوینده:'} {activeAudio.speaker_fa}
               </span>
 
               <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-serif-persian leading-snug">
@@ -258,7 +258,9 @@ function AudioContent() {
                 </div>
 
                 <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs">
-                  <span className="text-[var(--text-secondary)] truncate max-w-[120px] sm:max-w-[140px]">گوینده: {aud.speaker_fa}</span>
+                  <span className="text-[var(--text-secondary)]">
+                    {aud.speaker_fa?.includes('،') || aud.speaker_fa?.includes(',') || (aud.speaker_fa?.match(/@/g) || []).length > 1 ? 'گویندگان:' : 'گوینده:'} {aud.speaker_fa}
+                  </span>
                   
                   <div className="flex items-center gap-2">
                     <button

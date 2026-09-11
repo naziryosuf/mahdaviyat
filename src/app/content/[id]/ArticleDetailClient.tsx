@@ -35,6 +35,7 @@ import {
 } from 'lucide-react';
 import { parseVideoUrl } from '@/utils/videoEmbed';
 import { Article, TeamMember } from '@/types';
+import { parseMultipleAuthors } from '@/utils/authorParser';
 
 interface ArticleDetailClientProps {
   id: string;
@@ -111,13 +112,51 @@ export function ArticleDetailClient({ id, initialArticle }: ArticleDetailClientP
     );
   }
 
-  const authorName = article.author_name_fa || '';
-  const authorMember = teamMembers.find((m) => {
-    if (!m?.name_fa || !authorName) return false;
+  const parsedAuthors = parseMultipleAuthors(article.author_name_fa, teamMembers, article.author_title_fa);
+  const authorMember = parsedAuthors[0]?.member || teamMembers.find((m) => {
+    if (!m?.name_fa || !article.author_name_fa) return false;
     const mName = m.name_fa.toLowerCase().trim();
-    const aName = authorName.toLowerCase().trim();
+    const aName = article.author_name_fa.toLowerCase().trim();
     return mName.includes(aName) || aName.includes(mName);
   });
+
+  const renderTextWithMentions = (text: string) => {
+    if (!text || !text.includes('@')) return text;
+    const parts = text.split(/(@[^\s,،.:؛!؟\n]+(?:\s+[^\s,،.:؛!؟\n]+)?)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith('@')) {
+        const cleanName = part.replace(/^@/, '').trim();
+        const matched = teamMembers.find((m) => {
+          if (!m?.name_fa) return false;
+          const mn = m.name_fa.toLowerCase().trim();
+          const cn = cleanName.toLowerCase();
+          return mn === cn || mn.includes(cn) || cn.includes(mn);
+        });
+
+        if (matched) {
+          return (
+            <button
+              key={i}
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedAuthorMember(matched);
+              }}
+              className="inline-flex items-center gap-1 text-[#1B889A] font-bold hover:underline bg-[#1B889A]/10 hover:bg-[#1B889A]/20 px-1.5 py-0.5 rounded-lg border border-[#1B889A]/30 align-middle transition-all mx-0.5 text-xs sm:text-sm cursor-pointer"
+              title={`مشاهده پروفایل ${matched.name_fa}`}
+            >
+              {matched.avatar_url && !matched.avatar_url.includes('unsplash') && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={matched.avatar_url} alt="" className="w-3.5 h-3.5 rounded-full object-cover shrink-0" />
+              )}
+              <span>@{matched.name_fa}</span>
+            </button>
+          );
+        }
+      }
+      return part;
+    });
+  };
 
   const isBookmarked = bookmarkedArticles.includes(article.id);
   const isPlayingThisAudio = currentAudio?.id === article.id && isPlayingAudio;
@@ -459,33 +498,47 @@ export function ArticleDetailClient({ id, initialArticle }: ArticleDetailClientP
         </h1>
 
         <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--card-border)] text-xs text-[var(--text-secondary)]">
-          <div className="flex items-center gap-3">
-            <div
-              onClick={() => setSelectedAuthorMember(authorMember || {
-                id: 'author_temp',
-                name_fa: article.author_name_fa,
-                role_fa: article.author_title_fa || 'پژوهشگر / نویسنده',
-                bio_fa: `نویسنده و پژوهشگر مقاله‌های علمی - شناختی مجله ایدئولوژی مهدویت.\nعنوان مقاله: ${article.title_fa}`,
-                avatar_url: article.author_avatar || '',
-                specialization_fa: article.category_fa || 'نویسنده'
-              })}
-              className="flex items-center gap-2 cursor-pointer group hover:bg-[#1B889A]/10 px-2.5 py-1 rounded-xl transition-all border border-transparent hover:border-[#1B889A]/30"
-              title="مشاهده پروفایل و بیوگرافی نویسنده"
-            >
-              {authorMember?.avatar_url && !authorMember.avatar_url.includes('unsplash.com') ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={authorMember.avatar_url} alt="" className="w-6 h-6 rounded-full object-cover border border-[#1B889A] shrink-0 group-hover:scale-110 transition-transform" />
-              ) : article.author_avatar && !article.author_avatar.includes('unsplash.com') ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={article.author_avatar} alt="" className="w-6 h-6 rounded-full object-cover border border-[#1B889A] shrink-0 group-hover:scale-110 transition-transform" />
-              ) : (
-                <div className="w-6 h-6 rounded-full bg-[#1B889A] text-white flex items-center justify-center font-bold text-[10px] shrink-0">
-                  {article.author_name_fa ? article.author_name_fa.trim().charAt(0) : 'ن'}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <span className="font-bold text-[var(--text-secondary)] shrink-0">
+              {parsedAuthors.length > 1 ? 'نویسندگان / همکاران:' : 'نویسنده:'}
+            </span>
+
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+              {parsedAuthors.map((author, idx) => (
+                <div
+                  key={idx}
+                  onClick={() => setSelectedAuthorMember(author.member || {
+                    id: `author_temp_${idx}`,
+                    name_fa: author.cleanName,
+                    role_fa: author.role || article.author_title_fa || 'پژوهشگر / نویسنده',
+                    bio_fa: `نویسنده و پژوهشگر همکار در نشریه و مقاله‌های علمی - شناختی مجله ایدئولوژی مهدویت.\nعنوان مقاله: ${article.title_fa}`,
+                    avatar_url: author.avatar || (idx === 0 ? article.author_avatar : '') || '',
+                    specialization_fa: article.category_fa || 'نویسنده'
+                  })}
+                  className="inline-flex items-center gap-1.5 cursor-pointer group hover:bg-[#1B889A]/15 bg-[var(--card-bg)] px-2.5 py-1 rounded-xl transition-all border border-[var(--card-border)] hover:border-[#1B889A] shadow-xs active:scale-95"
+                  title={`مشاهده پروفایل و بیوگرافی ${author.cleanName}`}
+                >
+                  {author.avatar && !author.avatar.includes('unsplash.com') ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={author.avatar} alt="" className="w-5 h-5 rounded-full object-cover border border-[#1B889A] shrink-0 group-hover:scale-110 transition-transform" />
+                  ) : article.author_avatar && !article.author_avatar.includes('unsplash.com') && parsedAuthors.length === 1 ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={article.author_avatar} alt="" className="w-5 h-5 rounded-full object-cover border border-[#1B889A] shrink-0 group-hover:scale-110 transition-transform" />
+                  ) : (
+                    <div className="w-5 h-5 rounded-full bg-[#1B889A] text-white flex items-center justify-center font-bold text-[9px] shrink-0">
+                      {author.cleanName ? author.cleanName.trim().charAt(0) : 'ن'}
+                    </div>
+                  )}
+                  <strong className="text-[var(--text-primary)] group-hover:text-[#1B889A] underline decoration-dotted font-bold text-xs transition-colors">
+                    @{author.cleanName}
+                  </strong>
+                  {author.role && (
+                    <span className="text-[#1B889A] font-semibold text-[10px] hidden sm:inline mr-0.5">
+                      ({author.role})
+                    </span>
+                  )}
                 </div>
-              )}
-              <span className="text-xs">
-                نویسنده: <strong className="text-[var(--text-primary)] group-hover:text-[#1B889A] underline decoration-dotted font-bold">@{article.author_name_fa}</strong> {article.author_title_fa && <span className="text-[#1B889A] font-semibold mr-1">({article.author_title_fa})</span>}
-              </span>
+              ))}
             </div>
             <span>•</span>
             <span className="flex items-center gap-1">
@@ -515,7 +568,7 @@ export function ArticleDetailClient({ id, initialArticle }: ArticleDetailClientP
       <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl p-5 sm:p-10 shadow-xl space-y-6 modern-card printable-area">
         {article.excerpt_fa && (
           <p className="text-[var(--text-primary)] font-bold leading-relaxed border-r-4 border-[#1B889A] pr-4 text-sm sm:text-base font-serif-persian">
-            {article.excerpt_fa}
+            {renderTextWithMentions(article.excerpt_fa)}
           </p>
         )}
 
@@ -523,7 +576,7 @@ export function ArticleDetailClient({ id, initialArticle }: ArticleDetailClientP
           className="text-[var(--text-primary)] font-serif-persian leading-loose whitespace-pre-line space-y-4"
           style={{ fontSize: `${fontSize}px` }}
         >
-          {article.content_fa}
+          {renderTextWithMentions(article.content_fa)}
         </div>
 
         {/* KEYWORDS / TAGS SECTION */}
