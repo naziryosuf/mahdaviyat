@@ -48,7 +48,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const title = (article.title_fa || 'مقاله تحلیلی').trim();
-  const description = (article.excerpt_fa || article.content_fa?.slice(0, 160) || 'مجله مستقل فکری-شناختی ایدئولوژی مهدویت')
+  const description = (article.excerpt_fa || article.content_fa?.slice(0, 160) || 'مجلۀ علمی - معنوی ایدئولوژی مهدویت')
     .replace(/[\r\n]+/g, ' ')
     .trim();
   const imageUrl = article.image_url && article.image_url.trim() !== '' 
@@ -65,7 +65,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: title,
       description: description,
       url: pageUrl,
-      siteName: 'مجله مستقل فکری-شناختی ایدئولوژی مهدویت',
+      siteName: 'مجلۀ علمی - معنوی ایدئولوژی مهدویت',
       images: [
         {
           url: imageUrl,

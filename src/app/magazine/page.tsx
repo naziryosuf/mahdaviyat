@@ -62,7 +62,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   if (!issue) {
     return {
       title: 'آرشیو مجله دیجیتالی',
-      description: 'مطالعه آنلاین و دانلود رایگان شماره‌های رسمی مجله علمی، تحلیلی و شناختی ایدئولوژی مهدویت با کیفیت بالا.',
+      description: 'مطالعه آنلاین و دانلود رایگان شماره‌های رسمی مجلۀ علمی - معنوی ایدئولوژی مهدویت با کیفیت بالا.',
     };
   }
 

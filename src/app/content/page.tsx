@@ -3,12 +3,12 @@ import { ContentCatalogClient } from './ContentCatalogClient';
 
 export const metadata: Metadata = {
   title: 'آرشیو مقالات و پژوهش‌ها',
-  description: 'مجموعه مقالات، یادداشت‌های تحلیلی، مقالات پژوهشی و گفتمان‌های فکری مجله مستقل ایدئولوژی مهدویت.',
+  description: 'مجموعه مقالات، یادداشت‌های تحلیلی و مقالات پژوهشی مجلۀ علمی - معنوی ایدئولوژی مهدویت.',
   openGraph: {
     title: 'آرشیو مقالات و پژوهش‌های ایدئولوژی مهدویت',
-    description: 'مجموعه مقالات، یادداشت‌های تحلیلی و مقالات پژوهشی مجله ایدئولوژی مهدویت.',
+    description: 'مجموعه مقالات، یادداشت‌های تحلیلی و مقالات پژوهشی مجلۀ علمی - معنوی ایدئولوژی مهدویت.',
     url: 'https://www.ideologymahdaviyat.org/content',
-    siteName: 'ایدئولوژی مهدویت',
+    siteName: 'مجلۀ علمی - معنوی ایدئولوژی مهدویت',
     images: [
       {
         url: '/official_logo.jpg',

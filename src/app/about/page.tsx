@@ -89,8 +89,8 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     };
   }
 
-  const defaultTitle = 'درباره ما و اعضای هیئت تحریریه | مجله ایدئولوژی مهدویت';
-  const defaultDesc = 'معرفی رسالت، اهداف فکری، چشم‌انداز و اعضای هیئت تحریریه و نویسندگان مجله مستقل ایدئولوژی مهدویت.';
+  const defaultTitle = 'درباره ما و اعضای هیئت تحریریه | مجلۀ علمی - معنوی ایدئولوژی مهدویت';
+  const defaultDesc = 'معرفی رسالت، چشم‌انداز، اعضای هیئت تحریریه و نویسندگان مجلۀ علمی - معنوی ایدئولوژی مهدویت.';
   const defaultLogo = 'https://www.ideologymahdaviyat.org/official_logo.jpg';
 
   return {

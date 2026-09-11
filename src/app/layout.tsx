@@ -5,20 +5,20 @@ import { AppClientLayoutWrapper } from "@/components/layout/AppClientLayoutWrapp
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.ideologymahdaviyat.org'),
   title: {
-    default: "مجله مستقل فکری-شناختی ایدئولوژی مهدویت",
-    template: "%s | مجله ایدئولوژی مهدویت",
+    default: "مجلۀ علمی - معنوی ایدئولوژی مهدویت",
+    template: "%s | مجلۀ علمی - معنوی ایدئولوژی مهدویت",
   },
-  description: "نشریه مستقل علمی، تحلیلی و شناختی ایدئولوژی مهدویت - بستر اندیشه، فلسفه، جهان‌بینی توحیدی و معرفت دینی.",
+  description: "تلاش فرهنگی برای ایجاد بیداری معنوی و اجتماعی",
   icons: {
     icon: "/logo_calligraphy.png",
     shortcut: "/logo_calligraphy.png",
     apple: "/apple-touch-icon.png",
   },
   openGraph: {
-    title: "مجله مستقل فکری-شناختی ایدئولوژی مهدویت",
-    description: "نشریه مستقل علمی، تحلیلی و شناختی ایدئولوژی مهدویت.",
+    title: "مجلۀ علمی - معنوی ایدئولوژی مهدویت",
+    description: "تلاش فرهنگی برای ایجاد بیداری معنوی و اجتماعی",
     url: "https://www.ideologymahdaviyat.org",
-    siteName: "ایدئولوژی مهدویت",
+    siteName: "مجلۀ علمی - معنوی ایدئولوژی مهدویت",
     images: [
       {
         url: "/official_logo.jpg",
@@ -32,8 +32,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "مجله مستقل فکری-شناختی ایدئولوژی مهدویت",
-    description: "نشریه مستقل علمی، تحلیلی و شناختی ایدئولوژی مهدویت.",
+    title: "مجلۀ علمی - معنوی ایدئولوژی مهدویت",
+    description: "تلاش فرهنگی برای ایجاد بیداری معنوی و اجتماعی",
     images: ["/official_logo.jpg"],
   },
 };

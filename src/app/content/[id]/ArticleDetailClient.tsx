@@ -68,7 +68,7 @@ export function ArticleDetailClient({ id, initialArticle }: ArticleDetailClientP
       try {
         await navigator.share({
           title: article.title_fa,
-          text: `${article.title_fa}\n\n${article.excerpt_fa || ''}\n\nمجله مستقل فکری-شناختی ایدئولوژی مهدویت\n`,
+          text: `${article.title_fa}\n\n${article.excerpt_fa || ''}\n\nمجلۀ علمی - معنوی ایدئولوژی مهدویت\n`,
           url: shareUrl,
         });
         return;
@@ -251,7 +251,7 @@ export function ArticleDetailClient({ id, initialArticle }: ArticleDetailClientP
               )}
               <div className="p-3.5 space-y-1 text-right">
                 <span className="text-[10px] text-[#1B889A] font-bold block">
-                  مجله مستقل فکری-شناختی ایدئولوژی مهدویت
+                  مجلۀ علمی - معنوی ایدئولوژی مهدویت
                 </span>
                 <h4 className="text-xs sm:text-sm font-bold text-[var(--text-primary)] font-serif-persian line-clamp-2">
                   {article.title_fa}
