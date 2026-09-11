@@ -23,7 +23,8 @@ import { AudioItem } from '@/types';
 import { AudioShareModal } from '@/components/audio/AudioShareModal';
 import { formatDurationNumeric } from '@/lib/audioUtils';
 
-const AUDIO_WAVE_HEIGHTS = [32, 60, 42, 85, 100, 68, 92, 48, 72, 95, 58, 42, 88, 94, 52, 78, 100, 72, 44, 86, 62, 38, 76, 54, 32];
+// Natural WhatsApp Voice Wave Heights (extracted directly from user reference waveform)
+const AUDIO_WAVE_HEIGHTS = [28, 50, 20, 18, 57, 85, 20, 48, 100, 78, 12, 25, 88, 28, 28, 55, 72, 12, 22, 38, 95, 65, 18, 45, 22];
 
 function AudioContent() {
   const searchParams = useSearchParams();
@@ -234,31 +235,38 @@ function AudioContent() {
                     onError={(e) => {
                       e.currentTarget.src = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
                     }}
-                    className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-500"
+                    className={`w-full h-full object-cover object-center transition-transform duration-500 ${
+                      isPlayingThis ? 'scale-105' : 'group-hover/img:scale-105'
+                    }`}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
+                  {/* Deeper / Darker backdrop on cover (خیره تر هنگام پخش) */}
+                  <div className={`absolute inset-0 transition-colors duration-300 ${
+                    isPlayingThis 
+                      ? 'bg-black/75 backdrop-blur-[1px]' 
+                      : 'bg-gradient-to-t from-black/75 via-black/25 to-transparent'
+                  }`} />
 
-                  {/* Centered Audio Wave or Play Button */}
+                  {/* Centered Audio Wave or Play Button (NO ENCLOSING BOX / قالب پاک شده) */}
                   {isPlayingThis ? (
-                    /* WHEN PLAYING: Large, Dark/Frosted Waveform in Center of Cover */
-                    <div className="absolute inset-0 flex items-center justify-center p-3 z-10">
-                      <div className="w-[92%] sm:w-[88%] max-w-[360px] px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-2xl bg-black/90 backdrop-blur-xl border border-[#1B889A]/60 shadow-[0_12px_40px_rgba(0,0,0,0.8)] flex items-center justify-between gap-2.5 sm:gap-3 animate-fade-in">
-                        {/* Round Pause Button */}
-                        <div className="w-10 sm:w-11 h-10 sm:h-11 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-lg ring-4 ring-[#1B889A]/30 shrink-0">
-                          <Pause className="w-4 sm:w-5 h-4 sm:h-5 fill-current" />
+                    /* WHEN PLAYING: Free-floating Natural Wave in Center of Cover without any box */
+                    <div className="absolute inset-0 flex items-center justify-center px-4 sm:px-6 z-10">
+                      <div className="w-full max-w-[340px] flex items-center justify-between gap-3 sm:gap-4 select-none animate-fade-in">
+                        {/* Round Glowing Pause Button */}
+                        <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#1B889A] hover:bg-[#156d7b] text-white flex items-center justify-center shadow-[0_0_20px_rgba(27,136,154,0.7)] ring-4 ring-white/20 shrink-0 transition-transform active:scale-95">
+                          <Pause className="w-5 h-5 fill-current" />
                         </div>
 
-                        {/* WhatsApp Style Animated Waveform Bars (Larger & Taller) */}
-                        <div className="flex-1 flex items-center justify-center gap-[2.5px] sm:gap-[3px] h-7 sm:h-8 px-1">
+                        {/* Natural WhatsApp Style Animated Waveform (Larger, Taller, NO Container Box) */}
+                        <div className="flex-1 flex items-center justify-center gap-[3px] sm:gap-[4px] h-12 sm:h-14 px-1">
                           {AUDIO_WAVE_HEIGHTS.map((heightPercent, bIdx) => {
                             const animDuration = 0.45 + ((bIdx % 5) * 0.1);
                             const animDelay = (bIdx % 7) * 0.08;
                             return (
                               <span
                                 key={bIdx}
-                                className="w-[2.5px] sm:w-[3px] rounded-full bg-[#1B889A] transition-all"
+                                className="w-[3px] sm:w-[3.5px] rounded-full bg-[#1B889A] transition-all drop-shadow-[0_0_8px_rgba(27,136,154,0.6)]"
                                 style={{
-                                  height: `${Math.max(20, heightPercent)}%`,
+                                  height: `${heightPercent}%`,
                                   transformOrigin: 'center',
                                   animation: `whatsappWave ${animDuration}s ease-in-out infinite alternate ${animDelay}s`,
                                 }}
@@ -267,8 +275,8 @@ function AudioContent() {
                           })}
                         </div>
 
-                        {/* Numeric Time strictly: 01.02.00 or 00.15.00 */}
-                        <span className="text-[11px] sm:text-xs font-mono font-bold text-white dir-ltr shrink-0 bg-white/10 px-2 sm:px-2.5 py-1 rounded-lg border border-white/15 tracking-wide">
+                        {/* Clean Numeric Time without box */}
+                        <span className="text-xs sm:text-sm font-mono font-bold text-white dir-ltr shrink-0 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] tracking-wider">
                           {durationNumeric}
                         </span>
                       </div>
