@@ -43,18 +43,26 @@ export const PersistentAudioBar: React.FC = () => {
   };
 
   const speedOptions = [0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
+  const prevAudioUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (audioRef.current) {
+    if (audioRef.current && currentAudio) {
+      if (prevAudioUrlRef.current !== currentAudio.audio_url) {
+        prevAudioUrlRef.current = currentAudio.audio_url;
+        audioRef.current.load();
+      }
       audioRef.current.playbackRate = playbackRate;
       audioRef.current.volume = muted ? 0 : volume;
       if (isPlayingAudio) {
-        audioRef.current.play().catch(() => {});
+        const p = audioRef.current.play();
+        if (p !== undefined) {
+          p.catch(() => {});
+        }
       } else {
         audioRef.current.pause();
       }
     }
-  }, [isPlayingAudio, currentAudio, playbackRate, volume, muted]);
+  }, [isPlayingAudio, currentAudio?.id, currentAudio?.audio_url, playbackRate, volume, muted]);
 
   if (!currentAudio) return null;
 

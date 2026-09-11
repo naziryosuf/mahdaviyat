@@ -219,7 +219,7 @@ function AudioContent() {
                     : 'border-[var(--card-border)]'
                 }`}
               >
-                {/* 1. COVER IMAGE (RED ZONE) */}
+                {/* 1. COVER IMAGE WITH INTERACTIVE PLAY BUTTON & ON-COVER WAVEFORM */}
                 <div
                   onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
                   className="block relative w-full aspect-video overflow-hidden border-b border-[var(--card-border)] bg-slate-900 group/img cursor-pointer shrink-0"
@@ -233,14 +233,14 @@ function AudioContent() {
                     }}
                     className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
 
-                  {/* Center Interactive Play Button Overlay */}
+                  {/* Center Interactive Play Button */}
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-xl ${
                       isPlayingThis 
                         ? 'bg-[#1B889A] text-white scale-100 ring-4 ring-white/30' 
-                        : 'bg-black/50 text-white group-hover/img:scale-110 group-hover/img:bg-[#1B889A]'
+                        : 'bg-black/60 text-white group-hover/img:scale-110 group-hover/img:bg-[#1B889A]'
                     }`}>
                       {isPlayingThis ? (
                         <Pause className="w-5 h-5 fill-current" />
@@ -250,117 +250,84 @@ function AudioContent() {
                     </div>
                   </div>
 
-                  {/* Category Badge & Duration */}
-                  <div className="absolute bottom-2.5 right-2.5 left-2.5 flex items-center justify-between text-white pointer-events-none">
-                    <span className="px-2.5 py-0.5 rounded-lg bg-black/60 backdrop-blur-xs border border-white/10 text-[10px] font-bold">
-                      {aud.category_fa || 'محتوای صوتی'}
-                    </span>
-                    <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-black/60 backdrop-blur-xs border border-white/10 text-[10px] font-bold">
-                      <Clock className="w-3 h-3 text-[#1B889A]" />
-                      <span>{aud.duration_fa}</span>
-                    </span>
-                  </div>
-                </div>
+                  {/* Animated Zigzag Sound Waveform Over Cover (WHEN PLAYING) */}
+                  {isPlayingThis ? (
+                    <div className="absolute inset-x-3 bottom-3 py-1.5 px-3 rounded-xl bg-black/80 backdrop-blur-md border border-[#1B889A]/60 flex items-center justify-between gap-2 shadow-2xl z-10">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-[#1B889A] shrink-0">
+                        <Volume2 className="w-3.5 h-3.5 animate-pulse text-[#1B889A]" />
+                        <span className="text-[10px] font-mono">پخش ویس</span>
+                      </div>
 
-                {/* Card Content Body */}
-                <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                  <div className="space-y-3.5">
-                    {/* 2. WHATSAPP VOICE NOTE WAVEFORM (YELLOW ZONE) */}
-                    <div
-                      onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
-                      className={`p-2.5 sm:p-3 rounded-2xl border transition-all cursor-pointer flex items-center gap-3 select-none ${
-                        isPlayingThis 
-                          ? 'bg-[#1B889A]/10 border-[#1B889A]/50 shadow-xs ring-1 ring-[#1B889A]/20' 
-                          : 'bg-[var(--bg-color)] border-[var(--card-border)] hover:border-[#1B889A]/40'
-                      }`}
-                      title={isPlayingThis ? 'توقف پخش' : 'پخش ویس صوتی'}
-                    >
-                      {/* Round WhatsApp Play/Pause Button */}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          isPlayingThis ? pauseAudio() : playAudio(aud);
-                        }}
-                        className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all shadow-sm active:scale-95 ${
-                          isPlayingThis 
-                            ? 'bg-[#1B889A] text-white ring-4 ring-[#1B889A]/20 shadow-md' 
-                            : 'bg-[#1B889A]/15 text-[#1B889A] hover:bg-[#1B889A] hover:text-white'
-                        }`}
-                        aria-label={isPlayingThis ? 'توقف پخش' : 'پخش ویس'}
-                      >
-                        {isPlayingThis ? (
-                          <Pause className="w-4 h-4 fill-current" />
-                        ) : (
-                          <Play className="w-4 h-4 fill-current translate-x-0.5" />
-                        )}
-                      </button>
-
-                      {/* Zigzag Sound Waveform Bars (Equalizer) */}
-                      <div className="flex-1 flex items-center justify-between gap-[2px] sm:gap-[3px] h-7 px-1">
+                      {/* WhatsApp Style Animated Waveform Bars */}
+                      <div className="flex-1 flex items-center justify-center gap-[2px] sm:gap-[3px] h-5 px-1">
                         {AUDIO_WAVE_HEIGHTS.map((heightPercent, bIdx) => {
                           const animDuration = 0.45 + ((bIdx % 5) * 0.1);
                           const animDelay = (bIdx % 7) * 0.08;
-
                           return (
                             <span
                               key={bIdx}
-                              className={`w-[2.5px] sm:w-[3px] rounded-full transition-all duration-150 ${
-                                isPlayingThis
-                                  ? 'bg-[#1B889A]'
-                                  : 'bg-stone-300 dark:bg-stone-600'
-                              }`}
+                              className="w-[2.5px] rounded-full bg-[#1B889A] transition-all"
                               style={{
                                 height: `${heightPercent}%`,
                                 transformOrigin: 'center',
-                                animation: isPlayingThis 
-                                  ? `whatsappWave ${animDuration}s ease-in-out infinite alternate ${animDelay}s` 
-                                  : 'none',
+                                animation: `whatsappWave ${animDuration}s ease-in-out infinite alternate ${animDelay}s`,
                               }}
                             />
                           );
                         })}
                       </div>
 
-                      {/* Playback indicator / Duration */}
-                      <div className="shrink-0 text-left">
-                        {isPlayingThis ? (
-                          <span className="flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-[#1B889A] animate-pulse">
-                            <span className="w-2 h-2 rounded-full bg-[#1B889A]" />
-                            <span>در حال پخش</span>
-                          </span>
-                        ) : (
-                          <span className="text-[10px] sm:text-[11px] font-mono font-bold text-[var(--text-secondary)]">
-                            {aud.duration_fa?.split(' ')[0] || 'ویس'}
-                          </span>
-                        )}
-                      </div>
+                      <span className="text-[10px] font-mono font-bold text-stone-200 dir-ltr shrink-0">
+                        {aud.duration_fa?.split(' ')[0] || ''}
+                      </span>
+                    </div>
+                  ) : (
+                    /* Category Badge & Duration Over Cover (WHEN IDLE) */
+                    <div className="absolute bottom-2.5 right-2.5 left-2.5 flex items-center justify-between text-white pointer-events-none">
+                      <span className="px-2.5 py-0.5 rounded-lg bg-black/60 backdrop-blur-xs border border-white/10 text-[10px] font-bold">
+                        {aud.category_fa || 'محتوای صوتی'}
+                      </span>
+                      <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-black/60 backdrop-blur-xs border border-white/10 text-[10px] font-bold">
+                        <Clock className="w-3 h-3 text-[#1B889A]" />
+                        <span>{aud.duration_fa}</span>
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Card Content Body - Standard Height Matching Other Cards */}
+                <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A]/10 text-[#1B889A] text-[10px] font-bold border border-[#1B889A]/30">
+                        {aud.category_fa || 'محتوای صوتی'}
+                      </span>
+                      <span className="text-[var(--text-secondary)] font-mono text-[11px] font-bold flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-[#1B889A]" />
+                        <span>{aud.duration_fa}</span>
+                      </span>
                     </div>
 
-                    {/* 3. AUDIO TITLE & SPEAKER (GREEN ZONE) */}
-                    <div className="space-y-1.5">
-                      <h3
-                        onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
-                        className="text-base font-bold text-[var(--text-primary)] font-serif-persian leading-snug group-hover:text-[#1B889A] transition-colors cursor-pointer line-clamp-1"
-                        title={aud.title_fa}
-                      >
-                        {aud.title_fa}
-                      </h3>
+                    <h3
+                      onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
+                      className="text-sm sm:text-base font-bold text-[var(--text-primary)] font-serif-persian leading-snug group-hover:text-[#1B889A] transition-colors cursor-pointer line-clamp-1"
+                      title={aud.title_fa}
+                    >
+                      {aud.title_fa}
+                    </h3>
 
-                      <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed font-serif-persian">
-                        {aud.speaker_fa 
-                          ? `${aud.speaker_fa?.includes('،') || aud.speaker_fa?.includes(',') || (aud.speaker_fa?.match(/@/g) || []).length > 1 ? 'ارائه‌دهندگان:' : 'گوینده:'} ${aud.speaker_fa}`
-                          : aud.description_fa
-                        }
-                      </p>
-                    </div>
+                    <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed font-serif-persian">
+                      {aud.speaker_fa 
+                        ? `${aud.speaker_fa?.includes('،') || aud.speaker_fa?.includes(',') || (aud.speaker_fa?.match(/@/g) || []).length > 1 ? 'ارائه‌دهندگان:' : 'گوینده:'} ${aud.speaker_fa}`
+                        : aud.description_fa
+                      }
+                    </p>
                   </div>
 
                   {/* Card Footer */}
-                  <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs font-serif-persian">
-                    <span className="text-[var(--text-secondary)] font-bold flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5 text-[#1B889A]" />
-                      {aud.duration_fa}
+                  <div className="pt-2.5 border-t border-[var(--card-border)] flex items-center justify-between text-xs font-serif-persian">
+                    <span className="text-[var(--text-secondary)] text-[11px] font-bold line-clamp-1 max-w-[130px] sm:max-w-[150px]">
+                      {aud.speaker_fa ? aud.speaker_fa.split('،')[0].split(',')[0] : 'سلسله مباحث مهدویت'}
                     </span>
 
                     <div className="flex items-center gap-2">
@@ -385,10 +352,10 @@ function AudioContent() {
                             playAudio(aud);
                           }
                         }}
-                        className={`px-3.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-xs ${
+                        className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-xs ${
                           isPlayingThis
-                            ? 'bg-amber-600 hover:bg-amber-500 text-white'
-                            : 'bg-[#1B889A] hover:bg-[#156d7b] text-white'
+                            ? 'bg-[#1B889A] text-white shadow-[#1B889A]/30'
+                            : 'bg-[#1B889A]/10 text-[#1B889A] hover:bg-[#1B889A] hover:text-white border border-[#1B889A]/30'
                         }`}
                       >
                         {isPlayingThis ? (
