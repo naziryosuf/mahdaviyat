@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   X, 
   Share2, 
   MessageCircle, 
-  Send, 
-  Globe, 
   Copy, 
   Check, 
   ExternalLink 
@@ -20,18 +19,33 @@ interface AudioShareModalProps {
 
 export function AudioShareModal({ audio, onClose }: AudioShareModalProps) {
   const [copied, setCopied] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Lock body scroll and handle escape key when modal is open
+  useEffect(() => {
+    if (!audio) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [audio, onClose]);
 
-  if (!audio) return null;
+  if (!mounted || !audio) return null;
 
-  // Always use official live URL so WhatsApp crawlers can access Open Graph meta tags and cover image
+  // Always use official live URL so social crawlers (WhatsApp, Twitter, Facebook) can access Open Graph meta tags and cover image
   const shareUrl = `https://www.ideologymahdaviyat.org/audio?id=${encodeURIComponent(audio.id)}`;
 
   const whatsappMessage = `🎧 فایل صوتی: ${audio.title_fa}
@@ -43,7 +57,8 @@ ${shareUrl}`;
 
   const whatsappHref = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappMessage)}`;
   const telegramHref = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`🎧 ${audio.title_fa}\nگوینده: ${audio.speaker_fa || ''}`)}`;
-  const eitaaHref = `https://eitaa.com/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`🎧 ${audio.title_fa}\nگوینده: ${audio.speaker_fa || ''}`)}`;
+  const twitterHref = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`🎧 ${audio.title_fa} - مجله ایدئولوژی مهدویت`)}`;
+  const facebookHref = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
 
   const handleCopy = () => {
     navigator.clipboard?.writeText(shareUrl);
@@ -65,19 +80,19 @@ ${shareUrl}`;
     }
   };
 
-  return (
+  const modalContent = (
     <div 
-      className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-opacity duration-200 animate-in fade-in no-print"
+      className="fixed inset-0 z-[999999] flex items-center justify-center p-3 sm:p-5 bg-black/75 backdrop-blur-md overflow-y-auto no-print"
       onClick={onClose}
     >
       <div 
-        className="bg-[var(--card-bg)] border-2 border-[#1B889A] rounded-3xl p-5 sm:p-7 max-w-lg w-full space-y-4 sm:space-y-5 shadow-2xl modern-card relative animate-in zoom-in-95 fade-in slide-in-from-bottom-3"
+        className="bg-[var(--card-bg)] border-2 border-[#1B889A] rounded-3xl p-5 sm:p-6 max-w-md w-full space-y-4 shadow-2xl modern-card relative my-auto animate-in zoom-in-95 fade-in duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 left-4 p-2 rounded-xl text-[var(--text-secondary)] hover:text-white hover:bg-[#1B889A] transition-all shadow-sm active:scale-95"
+          className="absolute top-4 left-4 p-2 rounded-xl text-[var(--text-secondary)] hover:text-white hover:bg-[#1B889A] transition-all shadow-sm active:scale-95 z-10"
           title="بستن پنجره"
           aria-label="بستن"
         >
@@ -85,7 +100,7 @@ ${shareUrl}`;
         </button>
 
         {/* Header */}
-        <div className="flex items-center gap-3 border-b border-[var(--card-border)] pb-3">
+        <div className="flex items-center gap-3 border-b border-[var(--card-border)] pb-3 pl-10">
           <div className="w-10 h-10 rounded-2xl bg-[#1B889A]/15 border border-[#1B889A]/40 flex items-center justify-center text-[#1B889A] shrink-0">
             <Share2 className="w-5 h-5" />
           </div>
@@ -94,7 +109,7 @@ ${shareUrl}`;
               اشتراک‌گذاری فایل صوتی
             </h3>
             <p className="text-xs text-[var(--text-secondary)] truncate">
-              ارسال همراه با تصویر کاور، عنوان و پخش آنلاین
+              ارسال همراه با تصویر کاور و پخش آنلاین
             </p>
           </div>
         </div>
@@ -113,11 +128,11 @@ ${shareUrl}`;
                 }}
               />
               <div className="absolute top-2 right-2 px-2.5 py-1 rounded-lg bg-black/75 backdrop-blur-md text-white text-[10px] font-bold">
-                پیش‌نمایش کاور در واتساپ و شبکه‌های اجتماعی
+                پیش‌نمایش در شبکه‌های اجتماعی
               </div>
             </div>
           )}
-          <div className="p-3.5 space-y-1.5 text-right">
+          <div className="p-3 space-y-1 text-right">
             <div className="flex items-center justify-between text-[11px]">
               <span className="text-[#1B889A] font-bold">
                 مجله ایدئولوژی مهدویت • {audio.category_fa || 'محتوای صوتی'}
@@ -137,18 +152,18 @@ ${shareUrl}`;
           </div>
         </div>
 
-        {/* Social Share Buttons */}
+        {/* Social Share Grid (WhatsApp, Telegram, Twitter/X, Facebook) */}
         <div className="grid grid-cols-2 gap-2.5">
           {/* WhatsApp */}
           <a
             href={whatsappHref}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-[#25D366]/15 hover:bg-[#25D366] text-[#25D366] hover:text-white border border-[#25D366]/30 font-bold text-xs shadow-sm transition-all active:scale-95"
-            title="اشتراک‌گذاری در واتساپ با تصویر کاور و عنوان"
+            className="flex items-center justify-center gap-2 p-2.5 sm:p-3 rounded-2xl bg-[#25D366]/15 hover:bg-[#25D366] text-[#25D366] hover:text-white border border-[#25D366]/30 font-bold text-xs shadow-xs transition-all active:scale-95"
+            title="اشتراک‌گذاری در واتساپ"
           >
             <MessageCircle className="w-4 h-4" />
-            <span>ارسال در واتساپ</span>
+            <span>واتساپ</span>
           </a>
 
           {/* Telegram */}
@@ -156,57 +171,56 @@ ${shareUrl}`;
             href={telegramHref}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-[#229ED9]/15 hover:bg-[#229ED9] text-[#229ED9] hover:text-white border border-[#229ED9]/30 font-bold text-xs shadow-sm transition-all active:scale-95"
+            className="flex items-center justify-center gap-2 p-2.5 sm:p-3 rounded-2xl bg-[#229ED9]/15 hover:bg-[#229ED9] text-[#229ED9] hover:text-white border border-[#229ED9]/30 font-bold text-xs shadow-xs transition-all active:scale-95"
             title="اشتراک‌گذاری در تلگرام"
           >
-            <Send className="w-4 h-4" />
-            <span>ارسال در تلگرام</span>
+            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
+            </svg>
+            <span>تلگرام</span>
           </a>
 
-          {/* Eitaa */}
+          {/* X (Twitter) */}
           <a
-            href={eitaaHref}
+            href={twitterHref}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-[#E85E26]/15 hover:bg-[#E85E26] text-[#E85E26] hover:text-white border border-[#E85E26]/30 font-bold text-xs shadow-sm transition-all active:scale-95"
-            title="اشتراک‌گذاری در پیام‌رسان ایتا"
+            className="flex items-center justify-center gap-2 p-2.5 sm:p-3 rounded-2xl bg-neutral-900/10 dark:bg-white/10 hover:bg-black dark:hover:bg-white text-[var(--text-primary)] hover:text-white dark:hover:text-black border border-[var(--card-border)] font-bold text-xs shadow-xs transition-all active:scale-95"
+            title="اشتراک‌گذاری در ایکس (توییتر)"
           >
-            <Globe className="w-4 h-4" />
-            <span>ارسال در ایتا</span>
+            <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+            <span>ایکس (توییتر)</span>
           </a>
 
-          {/* Copy Direct Link */}
-          <button
-            onClick={handleCopy}
-            className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-[#1B889A]/15 hover:bg-[#1B889A] text-[#1B889A] hover:text-white border border-[#1B889A]/30 font-bold text-xs shadow-sm transition-all active:scale-95"
-            title="کپی لینک مستقیم فایل صوتی"
+          {/* Facebook */}
+          <a
+            href={facebookHref}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center justify-center gap-2 p-2.5 sm:p-3 rounded-2xl bg-[#1877F2]/15 hover:bg-[#1877F2] text-[#1877F2] hover:text-white border border-[#1877F2]/30 font-bold text-xs shadow-xs transition-all active:scale-95"
+            title="اشتراک‌گذاری در فیسبوک"
           >
-            {copied ? (
-              <>
-                <Check className="w-4 h-4 text-emerald-400" />
-                <span className="text-emerald-400">لینک کپی شد!</span>
-              </>
-            ) : (
-              <>
-                <Copy className="w-4 h-4" />
-                <span>کپی لینک فایل</span>
-              </>
-            )}
-          </button>
+            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+            </svg>
+            <span>فیسبوک</span>
+          </a>
         </div>
 
         {/* Native Mobile Share (if supported) */}
         {typeof navigator !== 'undefined' && typeof navigator.share === 'function' && (
           <button
             onClick={handleNativeShare}
-            className="w-full flex items-center justify-center gap-2 p-3 rounded-2xl bg-[var(--bg-color)] hover:bg-[#1B889A] text-[var(--text-primary)] hover:text-white border border-[var(--card-border)] hover:border-[#1B889A] font-bold text-xs transition-all shadow-sm active:scale-95"
+            className="w-full flex items-center justify-center gap-2 p-2.5 rounded-2xl bg-[var(--bg-color)] hover:bg-[#1B889A] text-[var(--text-primary)] hover:text-white border border-[var(--card-border)] hover:border-[#1B889A] font-bold text-xs transition-all shadow-xs active:scale-95"
           >
             <ExternalLink className="w-4 h-4" />
-            <span>اشتراک‌گذاری با سایر برنامه‌های گوشی</span>
+            <span>اشتراک‌گذاری در سایر برنامه‌های گوشی</span>
           </button>
         )}
 
-        {/* Direct Link Input Box */}
+        {/* Direct Link Input Box & Copy */}
         <div className="pt-2 border-t border-[var(--card-border)] flex items-center gap-2">
           <input
             type="text"
@@ -216,12 +230,25 @@ ${shareUrl}`;
           />
           <button
             onClick={handleCopy}
-            className="px-3.5 py-2.5 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs shrink-0 transition-colors shadow-sm"
+            className="px-3.5 py-2.5 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs shrink-0 transition-colors shadow-sm flex items-center gap-1.5 active:scale-95"
           >
-            {copied ? 'کپی شد' : 'کپی'}
+            {copied ? (
+              <>
+                <Check className="w-4 h-4 text-emerald-300" />
+                <span>کپی شد!</span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-4 h-4" />
+                <span>کپی لینک</span>
+              </>
+            )}
           </button>
         </div>
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }
+
