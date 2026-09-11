@@ -156,7 +156,7 @@ export const PersistentAudioBar: React.FC = () => {
             />
           </div>
           <div className="min-w-0">
-            <h5 className="text-[11px] sm:text-sm font-extrabold text-[var(--text-primary)] truncate font-serif-persian">
+            <h5 className="text-[11px] sm:text-sm font-extrabold text-[var(--text-primary)] truncate font-serif-persian" title={currentAudio.title_fa}>
               {currentAudio.title_fa}
             </h5>
             <p className="text-[9px] sm:text-xs text-[var(--text-secondary)] truncate">
@@ -379,7 +379,7 @@ export const PersistentAudioBar: React.FC = () => {
                     مدت: {currentAudio.duration_fa}
                   </span>
                 </div>
-                <h4 className="text-xs sm:text-sm font-bold text-[var(--text-primary)] font-serif-persian line-clamp-2">
+                <h4 className="text-xs sm:text-sm font-bold text-[var(--text-primary)] font-serif-persian leading-snug">
                   {currentAudio.title_fa}
                 </h4>
                 <p className="text-[11px] text-[var(--text-secondary)] line-clamp-1">

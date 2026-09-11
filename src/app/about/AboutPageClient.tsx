@@ -342,9 +342,9 @@ function AboutContent() {
                     onClick={() => setSelectedMember(null)}
                     className="p-3.5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] flex items-center justify-between text-xs sm:text-sm transition-all group shadow-sm hover:shadow-md"
                   >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <FileText className="w-4 h-4 text-[#1B889A] shrink-0" />
-                      <span className="font-bold text-[var(--text-primary)] group-hover:text-[#1B889A] transition-colors truncate">{art.title_fa}</span>
+                    <div className="flex items-start sm:items-center gap-2.5 flex-1 min-w-0">
+                      <FileText className="w-4 h-4 text-[#1B889A] shrink-0 mt-0.5 sm:mt-0" />
+                      <span className="font-bold text-[var(--text-primary)] group-hover:text-[#1B889A] transition-colors leading-snug">{art.title_fa}</span>
                     </div>
                     <span className="text-xs text-[#1B889A] font-bold shrink-0">{art.read_time_fa}</span>
                   </Link>
@@ -353,11 +353,11 @@ function AboutContent() {
                 {memberAudios.map((aud) => (
                   <div
                     key={aud.id}
-                    className="p-3.5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] flex items-center justify-between text-xs sm:text-sm shadow-sm"
+                    className="p-3.5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] flex items-center justify-between text-xs sm:text-sm shadow-sm gap-2"
                   >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <Volume2 className="w-4 h-4 text-[#1B889A] shrink-0" />
-                      <span className="font-bold text-[var(--text-primary)] truncate">{aud.title_fa}</span>
+                    <div className="flex items-start sm:items-center gap-2.5 flex-1 min-w-0">
+                      <Volume2 className="w-4 h-4 text-[#1B889A] shrink-0 mt-0.5 sm:mt-0" />
+                      <span className="font-bold text-[var(--text-primary)] leading-snug">{aud.title_fa}</span>
                     </div>
                     <button
                       onClick={() => { playAudio(aud); setSelectedMember(null); }}
@@ -374,11 +374,11 @@ function AboutContent() {
                     key={vid.id}
                     href="/media"
                     onClick={() => setSelectedMember(null)}
-                    className="p-3.5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] flex items-center justify-between text-xs sm:text-sm transition-all group shadow-sm hover:shadow-md"
+                    className="p-3.5 rounded-2xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] flex items-center justify-between text-xs sm:text-sm transition-all group shadow-sm hover:shadow-md gap-2"
                   >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <Video className="w-4 h-4 text-[#1B889A] shrink-0" />
-                      <span className="font-bold text-[var(--text-primary)] group-hover:text-[#1B889A] transition-colors truncate">{vid.title_fa}</span>
+                    <div className="flex items-start sm:items-center gap-2.5 flex-1 min-w-0">
+                      <Video className="w-4 h-4 text-[#1B889A] shrink-0 mt-0.5 sm:mt-0" />
+                      <span className="font-bold text-[var(--text-primary)] group-hover:text-[#1B889A] transition-colors leading-snug">{vid.title_fa}</span>
                     </div>
                     <span className="text-xs text-[#1B889A] font-bold shrink-0">{vid.duration_fa}</span>
                   </Link>
@@ -453,7 +453,7 @@ function AboutContent() {
                 )}
               </div>
               <div className="space-y-1 text-right min-w-0 flex-1">
-                <h4 className="text-sm sm:text-base font-bold text-[var(--text-primary)] font-serif-persian truncate">
+                <h4 className="text-sm sm:text-base font-bold text-[var(--text-primary)] font-serif-persian leading-snug">
                   {sharingMember.name_fa}
                 </h4>
                 <p className="text-xs text-[#1B889A] font-bold">

@@ -136,8 +136,8 @@ export function MediaPageClient() {
                       : 'border-[var(--card-border)] hover:border-[#1B889A]'
                   }`}
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-2xl overflow-hidden border border-[#1B889A]/40 shrink-0 relative bg-stone-900 shadow-md">
+                  <div className="flex items-start gap-4">
+                    <div className="w-14 h-14 rounded-2xl overflow-hidden border border-[#1B889A]/40 shrink-0 relative bg-stone-900 shadow-md mt-0.5">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={aud.cover_image} alt="" className="w-full h-full object-cover" />
                       <button
@@ -154,22 +154,22 @@ export function MediaPageClient() {
                         </div>
                       </button>
                     </div>
-                    <div className="min-w-0">
-                      <span className="px-2.5 py-0.5 rounded-full teal-badge text-[10px] font-bold">
+                    <div className="min-w-0 flex-1">
+                      <span className="px-2.5 py-0.5 rounded-full teal-badge text-[10px] font-bold inline-block">
                         {aud.category_fa}
                       </span>
                       <h3 
                         onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
-                        className="text-sm font-bold text-[var(--text-primary)] font-serif-persian truncate mt-1 cursor-pointer hover:text-[#1B889A] transition-colors"
-                        title="پخش محتوای صوتی"
+                        className="text-sm font-bold text-[var(--text-primary)] font-serif-persian leading-snug mt-1 cursor-pointer hover:text-[#1B889A] transition-colors"
+                        title={aud.title_fa}
                       >
                         {aud.title_fa}
                       </h3>
-                      <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{aud.speaker_fa}</p>
+                      <p className="text-[11px] text-[var(--text-secondary)] mt-1 font-serif-persian">{aud.speaker_fa}</p>
                     </div>
                   </div>
 
-                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed line-clamp-2">
+                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-serif-persian">
                     {aud.description_fa}
                   </p>
 
@@ -268,7 +268,7 @@ export function MediaPageClient() {
                       <span className="px-2.5 py-0.5 rounded-full teal-badge text-[10px] font-bold block w-fit mb-1.5">
                         {vid.category_fa}
                       </span>
-                      <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors leading-snug line-clamp-2">
+                      <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian group-hover:text-[#1B889A] transition-colors leading-snug">
                         {vid.title_fa}
                       </h3>
                       <p className="text-xs text-[var(--text-secondary)] mt-1 font-serif-persian">سخنران: {vid.speaker_fa}</p>
@@ -347,7 +347,7 @@ export function MediaPageClient() {
             <div className="p-4 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
               <div className="flex items-center gap-2 min-w-0">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#1B889A] animate-pulse shrink-0" />
-                <h3 className="font-bold text-sm sm:text-base truncate font-serif-persian">{activeDisplayVideo.title_fa}</h3>
+                <h3 className="font-bold text-sm sm:text-base leading-snug font-serif-persian">{activeDisplayVideo.title_fa}</h3>
               </div>
               <button
                 onClick={() => setActiveDisplayVideo(null)}

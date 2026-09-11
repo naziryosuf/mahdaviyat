@@ -181,7 +181,7 @@ export const Navbar: React.FC = () => {
                   className="hidden xl:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1B889A]/20 border border-[#1B889A]/50 text-[#1B889A] dark:text-cyan-300 text-xs font-bold animate-pulse shadow-md"
                 >
                   <Music className="w-3.5 h-3.5 text-[#1B889A] animate-spin" style={{ animationDuration: '4s' }} />
-                  <span className="max-w-[90px] truncate">{currentAudio.title_fa}</span>
+                  <span className="max-w-[120px] truncate" title={currentAudio.title_fa}>{currentAudio.title_fa}</span>
                 </Link>
               )}
 

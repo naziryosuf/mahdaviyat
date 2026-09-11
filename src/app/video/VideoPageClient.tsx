@@ -122,7 +122,7 @@ function VideoContentInner() {
                     <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full teal-badge inline-block">
                       {vid.category_fa}
                     </span>
-                    <h4 className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[#1B889A] transition-colors line-clamp-2 font-serif-persian leading-snug">
+                    <h4 className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[#1B889A] transition-colors font-serif-persian leading-snug">
                       {vid.title_fa}
                     </h4>
                     <p className="text-xs text-[var(--text-secondary)] font-serif-persian">سخنران: {vid.speaker_fa}</p>
@@ -161,7 +161,7 @@ function VideoContentInner() {
             <div className="p-4 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
               <div className="flex items-center gap-2 min-w-0">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#1B889A] animate-pulse shrink-0" />
-                <h3 className="font-bold text-sm sm:text-base truncate font-serif-persian">{selectedVideo.title_fa}</h3>
+                <h3 className="font-bold text-sm sm:text-base leading-snug font-serif-persian">{selectedVideo.title_fa}</h3>
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -226,7 +226,7 @@ function VideoContentInner() {
                 />
               </div>
               <div className="min-w-0 flex-1">
-                <h4 className="text-xs font-bold text-[var(--text-primary)] font-serif-persian truncate">
+                <h4 className="text-xs font-bold text-[var(--text-primary)] font-serif-persian leading-snug">
                   {sharingVideo.title_fa}
                 </h4>
                 <p className="text-[11px] text-[#1B889A] font-bold truncate">

@@ -247,7 +247,7 @@ function AudioContent() {
 
                   <h3 
                     onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
-                    className="text-base font-bold text-[var(--text-primary)] font-serif-persian line-clamp-2 cursor-pointer hover:text-[#1B889A] transition-colors"
+                    className="text-base font-bold text-[var(--text-primary)] font-serif-persian leading-snug cursor-pointer hover:text-[#1B889A] transition-colors"
                   >
                     {aud.title_fa}
                   </h3>
@@ -374,7 +374,7 @@ function AudioContent() {
                     مدت: {sharingAudio.duration_fa}
                   </span>
                 </div>
-                <h4 className="text-xs sm:text-sm font-bold text-[var(--text-primary)] font-serif-persian line-clamp-2">
+                <h4 className="text-xs sm:text-sm font-bold text-[var(--text-primary)] font-serif-persian leading-snug">
                   {sharingAudio.title_fa}
                 </h4>
                 <p className="text-[11px] text-[var(--text-secondary)] line-clamp-1">

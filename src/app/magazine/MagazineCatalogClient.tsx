@@ -352,7 +352,7 @@ function MagazineContentInner() {
                 />
               </div>
               <div className="min-w-0 flex-1">
-                <h4 className="text-xs font-bold text-[var(--text-primary)] font-serif-persian truncate">
+                <h4 className="text-xs font-bold text-[var(--text-primary)] font-serif-persian leading-snug">
                   {sharingIssue.title_fa}
                 </h4>
                 <p className="text-[11px] text-[#1B889A] font-bold truncate">

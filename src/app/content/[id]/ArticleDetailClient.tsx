@@ -253,7 +253,7 @@ export function ArticleDetailClient({ id, initialArticle }: ArticleDetailClientP
                 <span className="text-[10px] text-[#1B889A] font-bold block">
                   مجلۀ علمی - معنوی ایدئولوژی مهدویت
                 </span>
-                <h4 className="text-xs sm:text-sm font-bold text-[var(--text-primary)] font-serif-persian line-clamp-2">
+                <h4 className="text-xs sm:text-sm font-bold text-[var(--text-primary)] font-serif-persian leading-snug">
                   {article.title_fa}
                 </h4>
                 {article.excerpt_fa && (
