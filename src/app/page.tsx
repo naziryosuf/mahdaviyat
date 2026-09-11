@@ -1045,6 +1045,12 @@ function HomeContent() {
                             {aud.title_fa}
                           </h3>
 
+                          {aud.speaker_fa && (
+                            <p className="text-[11px] text-[var(--text-secondary)] font-bold line-clamp-1 font-serif-persian">
+                              {aud.speaker_fa}
+                            </p>
+                          )}
+
                           <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed font-serif-persian">
                             {aud.description_fa || 'محتوای صوتی و پادکست‌های مجله ایدئولوژی مهدویت'}
                           </p>
@@ -1053,7 +1059,7 @@ function HomeContent() {
                         {/* Card Footer */}
                         <div className="pt-2.5 border-t border-[var(--card-border)] flex items-center justify-between text-xs font-serif-persian">
                           <span className="text-[var(--text-secondary)] text-[11px] font-bold line-clamp-1 max-w-[130px] sm:max-w-[150px]">
-                            {aud.category_fa || 'مجله مهدویت'}
+                            {aud.speaker_fa ? aud.speaker_fa.split('،')[0].split(',')[0] : (aud.category_fa || 'مجله مهدویت')}
                           </span>
 
                           <div className="flex items-center gap-2">

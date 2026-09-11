@@ -76,13 +76,13 @@ export function AudioShareModal({ audio, onClose }: AudioShareModalProps) {
   const shareUrl = `https://www.ideologymahdaviyat.org/audio?id=${encodeURIComponent(audio.id)}`;
 
   const whatsappMessage = `🎧 فایل صوتی: ${audio.title_fa}
-مدت زمان: ${audio.duration_fa || formatDurationNumeric(audio.duration_fa)}
+${audio.speaker_fa ? `${audio.speaker_fa}\n` : ''}مدت زمان: ${audio.duration_fa || formatDurationNumeric(audio.duration_fa)}
 
 شنیدن آنلاین در مجله ایدئولوژی مهدویت:
 ${shareUrl}`;
 
   const whatsappHref = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappMessage)}`;
-  const telegramHref = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`🎧 ${audio.title_fa}`)}`;
+  const telegramHref = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`🎧 ${audio.title_fa}${audio.speaker_fa ? `\n${audio.speaker_fa}` : ''}`)}`;
   const linkedinHref = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
   const facebookHref = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
 
@@ -171,9 +171,14 @@ ${shareUrl}`;
               <span className="text-[#1B889A] font-bold truncate">{audio.category_fa || 'محتوای صوتی'}</span>
               <span className="text-[var(--text-secondary)] font-mono dir-ltr shrink-0 font-bold">{formatDurationNumeric(audio.duration_fa)}</span>
             </div>
-            <h4 className="text-xs font-bold text-[var(--text-primary)] font-serif-persian line-clamp-2 leading-snug">
+            <h4 className="text-xs font-bold text-[var(--text-primary)] font-serif-persian line-clamp-1 leading-snug">
               {audio.title_fa}
             </h4>
+            {audio.speaker_fa && (
+              <p className="text-[10px] text-[var(--text-secondary)] line-clamp-1">
+                {audio.speaker_fa}
+              </p>
+            )}
           </div>
         </div>
 

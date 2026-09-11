@@ -170,7 +170,7 @@ function AudioContent() {
             {/* Content Details */}
             <div className="space-y-4 text-center md:text-right flex-1">
               <span className="px-3.5 py-1.5 rounded-full teal-badge text-xs font-bold inline-block">
-                {activeAudio.category_fa || 'محتوای صوتی'}
+                {activeAudio.category_fa || 'محتوای صوتی'} {activeAudio.speaker_fa ? `• ${activeAudio.speaker_fa}` : ''}
               </span>
 
               <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-serif-persian leading-snug">
@@ -417,6 +417,12 @@ function AudioContent() {
                       {aud.title_fa}
                     </h3>
 
+                    {aud.speaker_fa && (
+                      <p className="text-[11px] text-[var(--text-secondary)] font-bold line-clamp-1 font-serif-persian">
+                        {aud.speaker_fa}
+                      </p>
+                    )}
+
                     <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed font-serif-persian">
                       {aud.description_fa || 'محتوای صوتی و پادکست‌های مجله ایدئولوژی مهدویت'}
                     </p>
@@ -425,7 +431,7 @@ function AudioContent() {
                   {/* Card Footer */}
                   <div className="pt-2.5 border-t border-[var(--card-border)] flex items-center justify-between text-xs font-serif-persian">
                     <span className="text-[var(--text-secondary)] text-[11px] font-bold line-clamp-1 max-w-[130px] sm:max-w-[150px]">
-                      {aud.category_fa || 'مجله مهدویت'}
+                      {aud.speaker_fa ? aud.speaker_fa.split('،')[0].split(',')[0] : (aud.category_fa || 'مجله مهدویت')}
                     </span>
 
                     <div className="flex items-center gap-2">
