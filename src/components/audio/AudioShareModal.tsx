@@ -72,18 +72,19 @@ export function AudioShareModal({ audio, onClose }: AudioShareModalProps) {
 
   if (!mounted || !audio) return null;
 
-  // Always use official live URL so WhatsApp, Twitter, Facebook crawlers get Open Graph meta and cover preview
+  // Always use official live URL so WhatsApp, Twitter, Facebook, Eitaa crawlers get Open Graph meta and cover preview
   const shareUrl = `https://www.ideologymahdaviyat.org/audio?id=${encodeURIComponent(audio.id)}`;
 
   const whatsappMessage = `🎧 فایل صوتی: ${audio.title_fa}
 گوینده: ${audio.speaker_fa || 'مجله ایدئولوژی مهدویت'}
-مدت زمان: ${formatDurationNumeric(audio.duration_fa)}
+مدت زمان: ${audio.duration_fa || formatDurationNumeric(audio.duration_fa)}
 
 شنیدن آنلاین در مجله ایدئولوژی مهدویت:
 ${shareUrl}`;
 
   const whatsappHref = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappMessage)}`;
   const telegramHref = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`🎧 ${audio.title_fa}\nگوینده: ${audio.speaker_fa || ''}`)}`;
+  const eitaaHref = `https://eitaa.com/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`🎧 ${audio.title_fa} - گوینده: ${audio.speaker_fa || ''}`)}`;
   const twitterHref = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`🎧 ${audio.title_fa} - مجله ایدئولوژی مهدویت`)}`;
   const facebookHref = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
 
@@ -161,11 +162,11 @@ ${shareUrl}`;
           <div className="w-14 h-14 rounded-lg overflow-hidden border border-[#1B889A]/30 shrink-0 bg-slate-900 shadow-xs">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={audio.cover_image && !audio.cover_image.startsWith('file://') ? audio.cover_image : 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=600&auto=format&fit=crop&q=80'}
+              src={audio.cover_image && !audio.cover_image.startsWith('file://') && audio.cover_image.trim() !== '' ? audio.cover_image : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80'}
               alt={audio.title_fa}
               className="w-full h-full object-cover"
               onError={(e) => {
-                e.currentTarget.src = 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=600&auto=format&fit=crop&q=80';
+                e.currentTarget.src = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
               }}
             />
           </div>
@@ -173,7 +174,7 @@ ${shareUrl}`;
           <div className="min-w-0 flex-1 space-y-0.5 text-right">
             <div className="flex items-center justify-between text-[10px]">
               <span className="text-[#1B889A] font-bold truncate">{audio.category_fa || 'محتوای صوتی'}</span>
-              <span className="text-[var(--text-secondary)] font-mono dir-ltr shrink-0">{formatDurationNumeric(audio.duration_fa)}</span>
+              <span className="text-[var(--text-secondary)] font-mono dir-ltr shrink-0 font-bold">{formatDurationNumeric(audio.duration_fa)}</span>
             </div>
             <h4 className="text-xs font-bold text-[var(--text-primary)] font-serif-persian line-clamp-1 leading-snug">
               {audio.title_fa}
@@ -186,7 +187,7 @@ ${shareUrl}`;
           </div>
         </div>
 
-        {/* Social Share Grid (WhatsApp, Telegram, X/Twitter, Facebook) */}
+        {/* Social Share Grid (WhatsApp, Telegram, Eitaa, X/Twitter, Facebook) */}
         <div className="grid grid-cols-2 gap-2">
           {/* WhatsApp */}
           <a
@@ -214,6 +215,18 @@ ${shareUrl}`;
             <span>تلگرام</span>
           </a>
 
+          {/* Eitaa */}
+          <a
+            href={eitaaHref}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[#E85E26]/15 hover:bg-[#E85E26] text-[#E85E26] hover:text-white border border-[#E85E26]/30 font-bold text-xs shadow-2xs transition-all active:scale-95"
+            title="اشتراک‌گذاری در ایتا"
+          >
+            <span className="font-extrabold text-[11px]">e</span>
+            <span>ایتا</span>
+          </a>
+
           {/* X (Twitter) */}
           <a
             href={twitterHref}
@@ -225,21 +238,7 @@ ${shareUrl}`;
             <svg className="w-3 h-3 fill-current shrink-0" viewBox="0 0 24 24">
               <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
             </svg>
-            <span>ایکس (توییتر)</span>
-          </a>
-
-          {/* Facebook */}
-          <a
-            href={facebookHref}
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[#1877F2]/15 hover:bg-[#1877F2] text-[#1877F2] hover:text-white border border-[#1877F2]/30 font-bold text-xs shadow-2xs transition-all active:scale-95"
-            title="اشتراک‌گذاری در فیسبوک"
-          >
-            <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24">
-              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-            </svg>
-            <span>فیسبوک</span>
+            <span>ایکس</span>
           </a>
         </div>
 

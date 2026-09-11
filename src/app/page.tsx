@@ -39,6 +39,7 @@ const AUDIO_WAVE_HEIGHTS = [28, 50, 20, 18, 57, 85, 20, 48, 100, 78, 12, 25, 88,
 function HomeContent() {
   const searchParams = useSearchParams();
   const urlSearch = searchParams.get('search') || '';
+  const audioIdParam = searchParams.get('audio') || searchParams.get('id');
 
   const { articles, magazineIssues, videos, audios, playAudio, pauseAudio, currentAudio, isPlayingAudio, audioCurrentTime, audioDuration, language, incrementMagazineDownloads } = useStore();
   const t = translations[language] || translations.fa;
@@ -50,6 +51,25 @@ function HomeContent() {
   const searchResultsRef = useRef<HTMLDivElement>(null);
 
   const categories = ['همه', 'سرمقاله‌ها', 'تحلیل‌ها', 'نقد مکاتب', 'شناخت مهدویت'];
+
+  // Auto-play and scroll to audio section if audio ID param is present in URL
+  useEffect(() => {
+    if (audioIdParam && audios.length > 0) {
+      const match = audios.find(a => a.id === audioIdParam);
+      if (match) {
+        if (currentAudio?.id !== audioIdParam) {
+          playAudio(match);
+        }
+        setTimeout(() => {
+          const heading = Array.from(document.querySelectorAll('h2')).find(h => h.innerText.includes('صوتی‌های اخیر'));
+          const section = heading?.closest('section');
+          if (section) {
+            section.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 400);
+      }
+    }
+  }, [audioIdParam, audios, currentAudio?.id, playAudio]);
 
   const triggerSearchExecution = (queryStr: string) => {
     const trimmed = queryStr.trim();
@@ -871,7 +891,7 @@ function HomeContent() {
                   <span>صوتی‌های اخیر</span>
                 </h2>
                 <Link
-                  href="/media?tab=podcasts"
+                  href="/audio"
                   className="text-xs text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0"
                 >
                   <span>مشاهده آرشیف کامل محتوای صوتی</span>

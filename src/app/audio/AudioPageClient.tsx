@@ -73,6 +73,16 @@ function AudioContent() {
   });
 
   const activeAudio = currentAudio || sortedAudios[0];
+  const isPlayingActive = activeAudio && currentAudio?.id === activeAudio.id && isPlayingAudio;
+  const effectiveActiveTotalSec = (activeAudio && currentAudio?.id === activeAudio.id && audioDuration > 0)
+    ? audioDuration
+    : (activeAudio ? parseDurationToSeconds(activeAudio.duration_fa) : 0);
+  const remainingActiveSec = (activeAudio && currentAudio?.id === activeAudio.id)
+    ? Math.max(0, effectiveActiveTotalSec - audioCurrentTime)
+    : effectiveActiveTotalSec;
+  const activeCountdownText = (activeAudio && currentAudio?.id === activeAudio.id && isPlayingAudio)
+    ? formatRemainingCountdown(remainingActiveSec, effectiveActiveTotalSec)
+    : (activeAudio ? formatDurationNumeric(activeAudio.duration_fa) : '00.00');
 
   return (
     <div className="space-y-10 py-6">
@@ -85,29 +95,76 @@ function AudioContent() {
 
           <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
             
-            {/* Cover Image with Interactive Play/Pause Overlay */}
+            {/* Cover Image with Interactive Play/Pause Overlay & WhatsApp Wave */}
             <div 
               onClick={() => {
-                if (currentAudio?.id === activeAudio.id && isPlayingAudio) {
+                if (isPlayingActive) {
                   pauseAudio();
                 } else {
                   playAudio(activeAudio);
                 }
               }}
-              className="w-44 h-44 sm:w-56 sm:h-56 rounded-2xl overflow-hidden border-2 border-[#1B889A]/40 shadow-2xl relative shrink-0 cursor-pointer group/hero"
-              title={currentAudio?.id === activeAudio.id && isPlayingAudio ? "توقف پخش" : "پخش محتوای صوتی"}
+              className="w-48 h-48 sm:w-60 sm:h-60 rounded-2xl overflow-hidden border-2 border-[#1B889A]/40 shadow-2xl relative shrink-0 cursor-pointer group/hero select-none bg-slate-900"
+              title={isPlayingActive ? "توقف پخش" : "پخش محتوای صوتی"}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={activeAudio.cover_image} alt="" className="w-full h-full object-cover group-hover/hero:scale-105 transition-transform duration-500" />
-              <div className="absolute inset-0 bg-black/30 group-hover/hero:bg-black/40 transition-colors flex items-center justify-center">
-                <div className="w-12 h-12 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-xl group-hover/hero:scale-110 transition-transform">
-                  {currentAudio?.id === activeAudio.id && isPlayingAudio ? (
-                    <Pause className="w-5 h-5 fill-current" />
-                  ) : (
-                    <Play className="w-5 h-5 fill-current translate-x-[1px]" />
-                  )}
+              <img 
+                src={activeAudio.cover_image && !activeAudio.cover_image.startsWith('file://') ? activeAudio.cover_image : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80'} 
+                alt="" 
+                draggable={false}
+                className="w-full h-full object-cover group-hover/hero:scale-105 transition-transform duration-500 pointer-events-none" 
+              />
+              <div className={`absolute inset-0 transition-colors pointer-events-none ${
+                isPlayingActive ? 'bg-black/75 backdrop-blur-[1px]' : 'bg-black/40 group-hover/hero:bg-black/30'
+              }`} />
+
+              {/* Centered Wave or Play Button */}
+              {isPlayingActive ? (
+                <div className="absolute inset-0 flex flex-col items-center justify-center p-3 z-10 gap-2.5 pointer-events-none">
+                  <div className="flex items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        pauseAudio();
+                      }}
+                      className="w-11 h-11 rounded-full bg-[#1B889A] hover:bg-[#156d7b] text-white flex items-center justify-center shadow-[0_0_20px_rgba(27,136,154,0.7)] ring-4 ring-white/20 shrink-0 transition-transform active:scale-95 pointer-events-auto cursor-pointer"
+                      title="توقف پخش"
+                    >
+                      <Pause className="w-5 h-5 fill-current" />
+                    </button>
+
+                    <div className="flex items-center gap-[2.5px] sm:gap-[3px] h-10 px-1 pointer-events-none">
+                      {AUDIO_WAVE_HEIGHTS.slice(0, 15).map((heightPercent, bIdx) => {
+                        const animDuration = 0.45 + ((bIdx % 5) * 0.1);
+                        const animDelay = (bIdx % 7) * 0.08;
+                        return (
+                          <span
+                            key={bIdx}
+                            className="w-[2.5px] sm:w-[3px] rounded-full bg-[#1B889A] drop-shadow-[0_0_8px_rgba(27,136,154,0.6)]"
+                            style={{
+                              height: `${heightPercent}%`,
+                              transformOrigin: 'center',
+                              animation: `whatsappWave ${animDuration}s ease-in-out infinite alternate ${animDelay}s`,
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Clean Numeric Countdown Time */}
+                  <span className="text-sm font-mono font-bold text-white dir-ltr drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] tracking-wider">
+                    {activeCountdownText}
+                  </span>
                 </div>
-              </div>
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-12 h-12 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-xl group-hover/hero:scale-110 transition-transform">
+                    <Play className="w-5 h-5 fill-current translate-x-[1px]" />
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Content Details */}
@@ -129,7 +186,7 @@ function AudioContent() {
                 
                 <button
                   onClick={() => {
-                    if (currentAudio?.id === activeAudio.id && isPlayingAudio) {
+                    if (isPlayingActive) {
                       pauseAudio();
                     } else {
                       playAudio(activeAudio);
@@ -137,7 +194,7 @@ function AudioContent() {
                   }}
                   className="flex items-center gap-2.5 px-6 py-3 rounded-2xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs sm:text-sm shadow-lg shadow-[#1B889A]/30 transition-all active:scale-95"
                 >
-                  {currentAudio?.id === activeAudio.id && isPlayingAudio ? (
+                  {isPlayingActive ? (
                     <>
                       <Pause className="w-4 h-4 fill-current" />
                       <span>توقف</span>
@@ -153,7 +210,7 @@ function AudioContent() {
                 <span className="text-xs text-stone-300 font-bold flex items-center gap-1.5 bg-white/5 border border-white/10 px-3.5 py-2.5 rounded-2xl">
                   <Clock className="w-4 h-4 text-[#1B889A]" />
                   <span>مدت زمان:</span>
-                  <span className="dir-ltr font-mono text-[#1B889A]">{formatDurationNumeric(activeAudio.duration_fa)}</span>
+                  <span className="dir-ltr font-mono text-[#1B889A]">{activeCountdownText}</span>
                 </span>
 
                 {/* Share Button in Hero Banner */}
