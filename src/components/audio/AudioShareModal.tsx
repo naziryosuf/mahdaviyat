@@ -8,7 +8,7 @@ import {
   MessageCircle, 
   Copy, 
   Check, 
-  ExternalLink 
+  ExternalLink
 } from 'lucide-react';
 import { AudioItem } from '@/types';
 import { formatDurationNumeric } from '@/lib/audioUtils';
@@ -84,7 +84,7 @@ ${shareUrl}`;
 
   const whatsappHref = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappMessage)}`;
   const telegramHref = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`🎧 ${audio.title_fa}\nگوینده: ${audio.speaker_fa || ''}`)}`;
-  const eitaaHref = `https://eitaa.com/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`🎧 ${audio.title_fa} - گوینده: ${audio.speaker_fa || ''}`)}`;
+  const linkedinHref = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
   const twitterHref = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`🎧 ${audio.title_fa} - مجله ایدئولوژی مهدویت`)}`;
   const facebookHref = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
 
@@ -139,12 +139,9 @@ ${shareUrl}`;
             <div className="w-8 h-8 rounded-xl bg-[#1B889A]/15 border border-[#1B889A]/40 flex items-center justify-center text-[#1B889A] shrink-0">
               <Share2 className="w-4 h-4" />
             </div>
-            <div>
-              <h3 className="text-sm font-extrabold text-[var(--text-primary)] font-serif-persian leading-none">
-                اشتراک‌گذاری فایل صوتی
-              </h3>
-              <span className="text-[10px] text-[var(--text-secondary)]">ارسال همراه با عنوان و پیش‌نمایش کاور</span>
-            </div>
+            <h3 className="text-sm font-extrabold text-[var(--text-primary)] font-serif-persian leading-none">
+              اشتراک‌گذاری فایل صوتی
+            </h3>
           </div>
 
           <button
@@ -187,7 +184,7 @@ ${shareUrl}`;
           </div>
         </div>
 
-        {/* Social Share Grid (WhatsApp, Telegram, Eitaa, X/Twitter, Facebook) */}
+        {/* Social Share Grid (WhatsApp, Telegram, LinkedIn, X/Twitter) */}
         <div className="grid grid-cols-2 gap-2">
           {/* WhatsApp */}
           <a
@@ -215,16 +212,18 @@ ${shareUrl}`;
             <span>تلگرام</span>
           </a>
 
-          {/* Eitaa */}
+          {/* LinkedIn */}
           <a
-            href={eitaaHref}
+            href={linkedinHref}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[#E85E26]/15 hover:bg-[#E85E26] text-[#E85E26] hover:text-white border border-[#E85E26]/30 font-bold text-xs shadow-2xs transition-all active:scale-95"
-            title="اشتراک‌گذاری در ایتا"
+            className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[#0A66C2]/15 hover:bg-[#0A66C2] text-[#0A66C2] hover:text-white border border-[#0A66C2]/30 font-bold text-xs shadow-2xs transition-all active:scale-95"
+            title="اشتراک‌گذاری در لینکدین"
           >
-            <span className="font-extrabold text-[11px]">e</span>
-            <span>ایتا</span>
+            <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24">
+              <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45a1.64 1.64 0 1 0 0 3.28 1.64 1.64 0 0 0 0-3.28z"/>
+            </svg>
+            <span>لینکدین</span>
           </a>
 
           {/* X (Twitter) */}
@@ -242,14 +241,14 @@ ${shareUrl}`;
           </a>
         </div>
 
-        {/* Native Mobile Share (if supported) */}
+        {/* Native Share */}
         {typeof navigator !== 'undefined' && typeof navigator.share === 'function' && (
           <button
             onClick={handleNativeShare}
             className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[var(--bg-color)] hover:bg-[#1B889A] text-[var(--text-primary)] hover:text-white border border-[var(--card-border)] hover:border-[#1B889A] font-bold text-xs transition-all shadow-2xs active:scale-95"
           >
             <ExternalLink className="w-3.5 h-3.5" />
-            <span>اشتراک‌گذاری در سایر برنامه‌های گوشی</span>
+            <span>اشتراک‌گذاری در سایر برنامه‌ها</span>
           </button>
         )}
 
@@ -268,12 +267,12 @@ ${shareUrl}`;
             {copied ? (
               <>
                 <Check className="w-3.5 h-3.5 text-emerald-300" />
-                <span>کپی شد</span>
+                <span>یادداشت شد</span>
               </>
             ) : (
               <>
                 <Copy className="w-3.5 h-3.5" />
-                <span>کپی</span>
+                <span>یادداشت</span>
               </>
             )}
           </button>
