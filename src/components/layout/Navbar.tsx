@@ -229,7 +229,7 @@ export const Navbar: React.FC = () => {
               <div className="relative" ref={langRef}>
                 <button
                   onClick={() => setLangDropdownOpen(!langDropdownOpen)}
-                  className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] text-[11px] sm:text-xs font-bold text-[var(--text-primary)] hover:border-[#1B889A] transition-all shadow-sm active:scale-95 touch-target"
+                  className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] text-[11px] sm:text-xs font-bold text-[var(--text-primary)] hover:border-[#1B889A] hover:bg-[#1B889A]/10 transition-all shadow-sm active:scale-95 touch-target"
                   title="تغییر زبان"
                   aria-label="تغییر زبان"
                   aria-expanded={langDropdownOpen}
@@ -274,13 +274,13 @@ export const Navbar: React.FC = () => {
               {/* Theme Switcher Button */}
               <button
                 onClick={toggleTheme}
-                className="p-2 sm:p-2.5 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] text-amber-400 hover:text-amber-300 transition-all shadow-sm active:scale-95 touch-target flex items-center justify-center"
+                className="p-2 sm:p-2.5 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] text-[#1B889A] hover:bg-[#1B889A]/10 hover:border-[#1B889A] transition-all shadow-sm active:scale-95 touch-target flex items-center justify-center"
                 aria-label="تغییر تم"
               >
                 {theme === 'dark' ? (
-                  <Sun className="w-4 h-4 text-amber-400 shrink-0" />
+                  <Sun className="w-4 h-4 text-[#1B889A] shrink-0" />
                 ) : (
-                  <Moon className="w-4 h-4 text-slate-700 dark:text-slate-200 shrink-0" />
+                  <Moon className="w-4 h-4 text-[#1B889A] shrink-0" />
                 )}
               </button>
 
@@ -323,8 +323,12 @@ export const Navbar: React.FC = () => {
                   </button>
                 </div>
 
-                <button onClick={toggleTheme} aria-label="تغییر تم" className="p-2 rounded-lg bg-slate-800 text-amber-400 flex items-center justify-center">
-                  {theme === 'dark' ? <Sun className="w-4 h-4 shrink-0" /> : <Moon className="w-4 h-4 text-slate-200 shrink-0" />}
+                <button
+                  onClick={toggleTheme}
+                  aria-label="تغییر تم"
+                  className="p-2 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] text-[#1B889A] hover:bg-[#1B889A]/10 hover:border-[#1B889A] transition-all shadow-sm active:scale-95 flex items-center justify-center"
+                >
+                  {theme === 'dark' ? <Sun className="w-4 h-4 text-[#1B889A] shrink-0" /> : <Moon className="w-4 h-4 text-[#1B889A] shrink-0" />}
                 </button>
               </div>
 
