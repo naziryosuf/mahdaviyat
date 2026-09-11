@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { AudioItem } from '@/types';
 import { AudioShareModal } from '@/components/audio/AudioShareModal';
-import { formatDurationNumeric } from '@/lib/audioUtils';
+import { formatDurationNumeric, parseDurationToSeconds, formatRemainingCountdown } from '@/lib/audioUtils';
 
 // Natural WhatsApp Voice Wave Heights (extracted directly from user reference waveform)
 const AUDIO_WAVE_HEIGHTS = [28, 50, 20, 18, 57, 85, 20, 48, 100, 78, 12, 25, 88, 28, 28, 55, 72, 12, 22, 38, 95, 65, 18, 45, 22];
@@ -29,7 +29,7 @@ const AUDIO_WAVE_HEIGHTS = [28, 50, 20, 18, 57, 85, 20, 48, 100, 78, 12, 25, 88,
 function AudioContent() {
   const searchParams = useSearchParams();
   const targetId = searchParams.get('id');
-  const { audios, playAudio, pauseAudio, currentAudio, isPlayingAudio } = useStore();
+  const { audios, playAudio, pauseAudio, currentAudio, isPlayingAudio, audioCurrentTime, audioDuration } = useStore();
   const [filterCategory, setFilterCategory] = useState('همه');
   const [searchQuery, setSearchQuery] = useState('');
   const [sharingAudio, setSharingAudio] = useState<AudioItem | null>(null);
@@ -219,6 +219,15 @@ function AudioContent() {
             const isCurrent = currentAudio?.id === aud.id;
             const isPlayingThis = isCurrent && isPlayingAudio;
             const durationNumeric = formatDurationNumeric(aud.duration_fa);
+            const effectiveTotalSec = (isCurrent && audioDuration > 0)
+              ? audioDuration
+              : parseDurationToSeconds(aud.duration_fa);
+            const remainingSec = isCurrent
+              ? Math.max(0, effectiveTotalSec - audioCurrentTime)
+              : effectiveTotalSec;
+            const countdownText = isCurrent
+              ? formatRemainingCountdown(remainingSec, effectiveTotalSec)
+              : durationNumeric;
             const coverSrc = aud.cover_image && aud.cover_image.trim() !== ''
               ? aud.cover_image
               : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
@@ -293,9 +302,9 @@ function AudioContent() {
                           })}
                         </div>
 
-                        {/* Clean Numeric Time without box */}
+                        {/* Clean Numeric Countdown Time without box (e.g. 11.59, 11.58) */}
                         <span className="text-xs sm:text-sm font-mono font-bold text-white dir-ltr shrink-0 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] tracking-wider pointer-events-none">
-                          {durationNumeric}
+                          {countdownText}
                         </span>
                       </div>
                     </div>

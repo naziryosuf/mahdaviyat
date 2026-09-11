@@ -44,11 +44,15 @@ export const PersistentAudioBar: React.FC = () => {
 
   const speedOptions = [0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
   const prevAudioUrlRef = useRef<string | null>(null);
+  const lastSecondRef = useRef<number>(-1);
+  const lastDurationRef = useRef<number>(-1);
 
   useEffect(() => {
     if (audioRef.current && currentAudio) {
       if (prevAudioUrlRef.current !== currentAudio.audio_url) {
         prevAudioUrlRef.current = currentAudio.audio_url;
+        lastSecondRef.current = -1;
+        lastDurationRef.current = -1;
         audioRef.current.load();
       }
       audioRef.current.playbackRate = playbackRate;
@@ -73,6 +77,18 @@ export const PersistentAudioBar: React.FC = () => {
     return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
+  const handleLoadedMetadata = () => {
+    if (audioRef.current) {
+      const current = audioRef.current.currentTime;
+      const duration = audioRef.current.duration;
+      if (!isNaN(duration) && isFinite(duration) && duration > 0) {
+        setDurationFormatted(formatSeconds(duration));
+        lastDurationRef.current = duration;
+        useStore.getState().setAudioTime(current, duration);
+      }
+    }
+  };
+
   const handleTimeUpdate = () => {
     if (audioRef.current) {
       const current = audioRef.current.currentTime;
@@ -80,21 +96,35 @@ export const PersistentAudioBar: React.FC = () => {
       setProgress((current / duration) * 100);
       setCurrentTimeFormatted(formatSeconds(current));
       setDurationFormatted(formatSeconds(duration));
+
+      const sec = Math.floor(current);
+      if (sec !== lastSecondRef.current || Math.abs(duration - lastDurationRef.current) > 0.5) {
+        lastSecondRef.current = sec;
+        lastDurationRef.current = duration;
+        useStore.getState().setAudioTime(current, duration);
+      }
     }
   };
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const seekPercent = Number(e.target.value);
     if (audioRef.current && audioRef.current.duration) {
-      audioRef.current.currentTime = (seekPercent / 100) * audioRef.current.duration;
+      const newTime = (seekPercent / 100) * audioRef.current.duration;
+      audioRef.current.currentTime = newTime;
       setProgress(seekPercent);
+      setCurrentTimeFormatted(formatSeconds(newTime));
+      lastSecondRef.current = Math.floor(newTime);
+      useStore.getState().setAudioTime(newTime, audioRef.current.duration);
     }
   };
 
   const skipTime = (seconds: number) => {
     if (audioRef.current) {
-      const newTime = audioRef.current.currentTime + seconds;
-      audioRef.current.currentTime = Math.max(0, Math.min(audioRef.current.duration || 0, newTime));
+      const newTime = Math.max(0, Math.min(audioRef.current.duration || 0, audioRef.current.currentTime + seconds));
+      audioRef.current.currentTime = newTime;
+      setCurrentTimeFormatted(formatSeconds(newTime));
+      lastSecondRef.current = Math.floor(newTime);
+      useStore.getState().setAudioTime(newTime, audioRef.current.duration || 0);
     }
   };
 
@@ -134,6 +164,8 @@ export const PersistentAudioBar: React.FC = () => {
       <audio
         ref={audioRef}
         src={currentAudio.audio_url}
+        onLoadedMetadata={handleLoadedMetadata}
+        onCanPlay={handleLoadedMetadata}
         onTimeUpdate={handleTimeUpdate}
         onEnded={() => toggleAudioPlay()}
       />

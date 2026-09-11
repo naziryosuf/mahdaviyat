@@ -68,6 +68,9 @@ interface AppState {
   // Active Audio Player State
   currentAudio: AudioItem | null;
   isPlayingAudio: boolean;
+  audioCurrentTime: number;
+  audioDuration: number;
+  setAudioTime: (currentTime: number, duration: number) => void;
   playAudio: (audio: AudioItem) => void;
   pauseAudio: () => void;
   toggleAudioPlay: () => void;
@@ -467,15 +470,24 @@ export const useStore = create<AppState>((set, get) => ({
 
   currentAudio: null,
   isPlayingAudio: false,
+  audioCurrentTime: 0,
+  audioDuration: 0,
+  setAudioTime: (currentTime: number, duration: number) => set({ audioCurrentTime: currentTime, audioDuration: duration }),
   playAudio: (audio) => {
-    set({ currentAudio: audio, isPlayingAudio: true });
+    const isSame = get().currentAudio?.id === audio?.id;
+    set({ 
+      currentAudio: audio, 
+      isPlayingAudio: true,
+      audioCurrentTime: isSame ? get().audioCurrentTime : 0,
+      audioDuration: isSame ? get().audioDuration : 0
+    });
     if (audio && audio.id && !audio.id.startsWith('art-')) {
       get().incrementAudioPlays(audio.id);
     }
   },
   pauseAudio: () => set({ isPlayingAudio: false }),
   toggleAudioPlay: () => set((state) => ({ isPlayingAudio: !state.isPlayingAudio })),
-  closeAudioPlayer: () => set({ currentAudio: null, isPlayingAudio: false }),
+  closeAudioPlayer: () => set({ currentAudio: null, isPlayingAudio: false, audioCurrentTime: 0, audioDuration: 0 }),
 
   bookmarkedArticles: [],
   toggleBookmark: (articleId) => {
