@@ -151,65 +151,70 @@ export function MediaPageClient() {
               return (
                 <div 
                   key={aud.id} 
-                  className={`p-5 rounded-3xl bg-[var(--card-bg)] border transition-all modern-card shadow-md space-y-4 ${
+                  className={`p-5 rounded-3xl bg-[var(--card-bg)] border transition-all modern-card shadow-md flex flex-col justify-between h-full ${
                     isCurrent 
                       ? 'border-[#1B889A] ring-2 ring-[#1B889A]/30' 
                       : 'border-[var(--card-border)] hover:border-[#1B889A]'
                   }`}
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 rounded-2xl overflow-hidden border border-[#1B889A]/40 shrink-0 relative bg-stone-900 shadow-md mt-0.5">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={aud.cover_image} alt="" className="w-full h-full object-cover" />
-                      <button
-                        onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
-                        className="absolute inset-0 bg-black/40 flex items-center justify-center text-white hover:bg-[#1B889A]/80 transition-colors"
-                        title={isPlayingThis ? "توقف" : "پخش"}
-                      >
-                        <div className="w-8 h-8 rounded-full bg-[#1B889A] flex items-center justify-center shadow-md">
-                          {isPlayingThis ? (
-                            <Pause className="w-3.5 h-3.5 fill-current" />
-                          ) : (
-                            <Play className="w-3.5 h-3.5 fill-current translate-x-[0.5px]" />
-                          )}
-                        </div>
-                      </button>
+                  <div className="flex-1 flex flex-col space-y-3">
+                    <div className="flex items-start gap-4">
+                      <div className="w-14 h-14 rounded-2xl overflow-hidden border border-[#1B889A]/40 shrink-0 relative bg-stone-900 shadow-md mt-0.5">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={aud.cover_image} alt="" className="w-full h-full object-cover" />
+                        <button
+                          onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
+                          className="absolute inset-0 bg-black/40 flex items-center justify-center text-white hover:bg-[#1B889A]/80 transition-colors"
+                          title={isPlayingThis ? "توقف" : "پخش"}
+                        >
+                          <div className="w-8 h-8 rounded-full bg-[#1B889A] flex items-center justify-center shadow-md">
+                            {isPlayingThis ? (
+                              <Pause className="w-3.5 h-3.5 fill-current" />
+                            ) : (
+                              <Play className="w-3.5 h-3.5 fill-current translate-x-[0.5px]" />
+                            )}
+                          </div>
+                        </button>
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <span className="px-2.5 py-0.5 rounded-full teal-badge text-[10px] font-bold inline-block">
+                          {aud.category_fa}
+                        </span>
+                        <h3 
+                          onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
+                          className="text-sm font-bold text-[var(--text-primary)] font-serif-persian leading-snug mt-1 cursor-pointer hover:text-[#1B889A] transition-colors line-clamp-2 min-h-[2.5rem]"
+                          title={aud.title_fa}
+                        >
+                          {aud.title_fa}
+                        </h3>
+                        <p className="text-[11px] text-[var(--text-secondary)] mt-1 font-serif-persian line-clamp-1">{aud.speaker_fa}</p>
+                      </div>
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <span className="px-2.5 py-0.5 rounded-full teal-badge text-[10px] font-bold inline-block">
-                        {aud.category_fa}
-                      </span>
-                      <h3 
-                        onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
-                        className="text-sm font-bold text-[var(--text-primary)] font-serif-persian leading-snug mt-1 cursor-pointer hover:text-[#1B889A] transition-colors"
-                        title={aud.title_fa}
-                      >
-                        {aud.title_fa}
-                      </h3>
-                      <p className="text-[11px] text-[var(--text-secondary)] mt-1 font-serif-persian">{aud.speaker_fa}</p>
+
+                    {/* Description with min-height so short or missing descriptions keep middle line aligned */}
+                    <div className="flex-1 flex flex-col justify-start">
+                      <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-serif-persian line-clamp-3 min-h-[3.6rem]">
+                        {aud.description_fa || ''}
+                      </p>
+
+                      {/* Clickable Tags Chips (Max 3) */}
+                      {aud.tags && aud.tags.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-1.5 pt-2 mt-auto">
+                          {aud.tags.slice(0, 3).map((tag, idx) => (
+                            <Link
+                              key={idx}
+                              href={`/?search=${encodeURIComponent(tag)}`}
+                              className="px-2 py-0.5 rounded-full bg-[#1B889A]/10 border border-[#1B889A]/30 text-[#1B889A] hover:bg-[#1B889A] hover:text-white text-[10px] font-bold transition-all shadow-sm"
+                            >
+                              #{tag}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-serif-persian">
-                    {aud.description_fa}
-                  </p>
-
-                  {/* Clickable Tags Chips (Max 3) */}
-                  {aud.tags && aud.tags.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                      {aud.tags.slice(0, 3).map((tag, idx) => (
-                        <Link
-                          key={idx}
-                          href={`/?search=${encodeURIComponent(tag)}`}
-                          className="px-2 py-0.5 rounded-full bg-[#1B889A]/10 border border-[#1B889A]/30 text-[#1B889A] hover:bg-[#1B889A] hover:text-white text-[10px] font-bold transition-all shadow-sm"
-                        >
-                          #{tag}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs">
+                  <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs mt-4">
                     <span className="text-[var(--text-secondary)] font-bold">{aud.duration_fa}</span>
                     <div className="flex items-center gap-2">
                       <button
