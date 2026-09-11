@@ -521,7 +521,13 @@ export const useStore = create<AppState>((set, get) => ({
 
   currentAudio: null,
   isPlayingAudio: false,
-  playAudio: (audio) => set({ currentAudio: audio, isPlayingAudio: true }),
+  playAudio: (audio) => {
+    set({ currentAudio: audio, isPlayingAudio: true });
+    if (audio && audio.id && !audio.id.startsWith('art-')) {
+      const currentPlays = audio.plays || 0;
+      get().updateAudio(audio.id, { plays: currentPlays + 1 });
+    }
+  },
   pauseAudio: () => set({ isPlayingAudio: false }),
   toggleAudioPlay: () => set((state) => ({ isPlayingAudio: !state.isPlayingAudio })),
   closeAudioPlayer: () => set({ currentAudio: null, isPlayingAudio: false }),
