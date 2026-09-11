@@ -1085,9 +1085,9 @@ function HomeContent() {
             </section>
           )}
 
-          {/* 5. ALL MAGAZINES SECTION (SORTED DESCENDING: NEWEST FIRST: 4, 3, 2, 1 / 8, 7, 6...) */}
+          {/* 5. ALL MAGAZINES SECTION (MATCHING SIZES & STYLES OF OTHER CARDS) */}
           {sortedMagazines.length > 0 && (
-            <section className="space-y-6">
+            <section className="space-y-5">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
                 <h2 className="text-base sm:text-xl font-extrabold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
                   <Newspaper className="w-5 sm:w-6 h-5 sm:h-6 text-[#1B889A]" />
@@ -1097,87 +1097,93 @@ function HomeContent() {
                   href="/magazine"
                   className="text-xs text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0"
                 >
-                  <span>مشاهده آرشیو کامل و ورق زدن آنلاین</span>
+                  <span>مشاهده آرشیف کامل مجلات</span>
                   <ArrowLeft className="w-4 h-4" />
                 </Link>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {sortedMagazines.map((issue, idx) => {
                   const coverSrc = issue.cover_image && issue.cover_image.trim() !== ''
                     ? issue.cover_image
                     : 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80';
 
                   return (
-                    <div
+                    <article
                       key={issue.id}
-                      className={`bg-[var(--card-bg)] border ${idx === 0 ? 'border-2 border-[#1B889A]/50 shadow-xl ring-1 ring-[#1B889A]/20' : 'border-[var(--card-border)] shadow-md'} rounded-2xl sm:rounded-3xl p-5 sm:p-6 space-y-4 modern-card flex flex-col justify-between hover:border-[#1B889A] transition-all duration-300 group`}
+                      className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl hover:border-[#1B889A] transition-all duration-300 shadow-md flex flex-col justify-between overflow-hidden group"
                     >
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className={`px-3 py-1 rounded-full text-[11px] sm:text-xs font-bold ${idx === 0 ? 'teal-badge shadow-xs' : 'bg-[#1B889A]/10 text-[#1B889A]'}`}>
-                            {idx === 0 ? 'جدیدترین شماره مجله' : `شماره ${issue.issue_number}`}
+                      <Link href={`/magazine?issue=${issue.id}`} className="block relative w-full aspect-video overflow-hidden border-b border-[var(--card-border)] bg-slate-900 group/img cursor-pointer shrink-0">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={coverSrc}
+                          alt={issue.title_fa}
+                          onError={(e) => {
+                            e.currentTarget.src = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80';
+                          }}
+                          className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                        <div className="absolute bottom-2.5 right-2.5 left-2.5 flex items-center justify-between text-white pointer-events-none">
+                          <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-black/60 backdrop-blur-xs border border-white/10 text-[10px] font-bold">
+                            <BookOpen className="w-3 h-3 text-[#1B889A]" />
+                            <span>{issue.page_count_fa || '۴۵ صفحه کامل'}</span>
                           </span>
-                          <span className="text-xs text-[var(--text-secondary)] font-bold flex items-center gap-1">
-                            <Calendar className="w-3.5 h-3.5 text-[#1B889A]" />
-                            {issue.publish_date_fa || '۱۴۰۴'}
-                          </span>
+                          {idx === 0 && (
+                            <span className="px-2.5 py-0.5 rounded-lg bg-[#1B889A] text-[10px] font-bold text-white shadow-xs">
+                              جدیدترین شماره
+                            </span>
+                          )}
+                        </div>
+                      </Link>
+
+                      <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+                        <div className="space-y-3">
+                          <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--text-secondary)]">
+                            <span className="px-2.5 py-0.5 rounded-full teal-badge text-[11px] font-bold">
+                              شماره {issue.issue_number}
+                            </span>
+                            <span className="flex items-center gap-1 font-bold text-[#1B889A]">
+                              <Calendar className="w-3.5 h-3.5" />
+                              {issue.publish_date_fa || '۱۴۰۴'}
+                            </span>
+                          </div>
+
+                          <h3 className="text-base font-bold text-[var(--text-primary)] font-serif-persian leading-snug group-hover:text-[#1B889A] transition-colors line-clamp-1">
+                            <Link href={`/magazine?issue=${issue.id}`}>
+                              {issue.title_fa}
+                            </Link>
+                          </h3>
+
+                          <p className="text-xs text-[var(--text-secondary)] line-clamp-3 leading-relaxed font-serif-persian">
+                            {issue.description_fa}
+                          </p>
                         </div>
 
-                        <h3 className="text-base sm:text-lg font-bold text-[var(--text-primary)] font-serif-persian line-clamp-2 leading-snug group-hover:text-[#1B889A] transition-colors">
-                          <Link href={`/magazine?issue=${issue.id}`}>
-                            {issue.title_fa}
-                          </Link>
-                        </h3>
+                        <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)] font-serif-persian">
+                          <a
+                            href={issue.pdf_url || '/downloads/mahdism_issue_1.pdf'}
+                            download={`مجله_ایدئولوژی_مهدویت_شماره_${issue.issue_number}.pdf`}
+                            target="_blank"
+                            rel="noreferrer"
+                            onClick={() => incrementMagazineDownloads(issue.id)}
+                            className="text-[var(--text-secondary)] hover:text-[#1B889A] font-bold flex items-center gap-1.5 transition-colors"
+                            title="دانلود نسخه PDF مجله"
+                          >
+                            <Download className="w-3.5 h-3.5 text-[#1B889A]" />
+                            <span>دانلود (PDF)</span>
+                          </a>
 
-                        <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed line-clamp-3 font-serif-persian">
-                          {issue.description_fa}
-                        </p>
-
-                        <div className="relative rounded-2xl overflow-hidden border border-[var(--card-border)] aspect-[16/9] sm:aspect-[4/3] bg-stone-900 group/img">
-                          <Link href={`/magazine?issue=${issue.id}`} className="block w-full h-full">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src={coverSrc}
-                              alt={issue.title_fa}
-                              onError={(e) => {
-                                e.currentTarget.src = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80';
-                              }}
-                              className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-3.5 sm:p-4">
-                              <span className="text-white text-xs font-bold flex items-center gap-2">
-                                <CheckCircle2 className="w-4 h-4 text-[#1B889A] shrink-0" />
-                                <span className="truncate">{issue.page_count_fa || '۴۵ صفحه کامل'}</span>
-                              </span>
-                            </div>
+                          <Link
+                            href={`/magazine?issue=${issue.id}`}
+                            className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0"
+                          >
+                            <span>ورق زدن آنلاین</span>
+                            <ArrowLeft className="w-3.5 h-3.5" />
                           </Link>
                         </div>
                       </div>
-
-                      <div className="pt-4 border-t border-[var(--card-border)] flex items-center justify-between gap-2">
-                        <a
-                          href={issue.pdf_url || '/downloads/mahdism_issue_1.pdf'}
-                          download={`مجله_ایدئولوژی_مهدویت_شماره_${issue.issue_number}.pdf`}
-                          target="_blank"
-                          rel="noreferrer"
-                          onClick={() => incrementMagazineDownloads(issue.id)}
-                          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[var(--bg-color)] hover:bg-[var(--muted-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--card-border)] font-bold text-xs transition-all active:scale-95"
-                          title="دانلود نسخه PDF مجله"
-                        >
-                          <Download className="w-3.5 h-3.5 text-[#1B889A]" />
-                          <span>دانلود (PDF)</span>
-                        </a>
-
-                        <Link
-                          href={`/magazine?issue=${issue.id}`}
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs transition-all shadow-md active:scale-95"
-                        >
-                          <span>ورق زدن آنلاین</span>
-                          <ArrowLeft className="w-3.5 h-3.5" />
-                        </Link>
-                      </div>
-                    </div>
+                    </article>
                   );
                 })}
               </div>
