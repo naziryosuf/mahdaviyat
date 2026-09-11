@@ -32,6 +32,8 @@ import { CalligraphyPenTitle } from '@/components/common/CalligraphyPenTitle';
 import { AudioShareModal } from '@/components/audio/AudioShareModal';
 import { AudioItem } from '@/types';
 
+const AUDIO_WAVE_HEIGHTS = [32, 60, 42, 85, 100, 68, 92, 48, 72, 95, 58, 42, 88, 94, 52, 78, 100, 72, 44, 86, 62, 38, 76, 54, 32];
+
 function HomeContent() {
   const searchParams = useSearchParams();
   const urlSearch = searchParams.get('search') || '';
@@ -861,93 +863,187 @@ function HomeContent() {
                 {audios.slice(0, 6).map((aud) => {
                   const isCurrent = currentAudio?.id === aud.id;
                   const isPlayingThis = isCurrent && isPlayingAudio;
+                  const coverSrc = aud.cover_image && aud.cover_image.trim() !== ''
+                    ? aud.cover_image
+                    : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
 
                   return (
-                    <div
+                    <article
                       key={aud.id}
-                      className={`p-5 rounded-3xl bg-[var(--card-bg)] border transition-all modern-card shadow-md flex flex-col justify-between space-y-4 group ${
+                      className={`bg-[var(--card-bg)] border rounded-2xl sm:rounded-3xl hover:border-[#1B889A] transition-all duration-300 shadow-md flex flex-col justify-between overflow-hidden group ${
                         isCurrent 
                           ? 'border-[#1B889A] ring-2 ring-[#1B889A]/30' 
-                          : 'border-[var(--card-border)] hover:border-[#1B889A]'
+                          : 'border-[var(--card-border)]'
                       }`}
                     >
-                      <div className="space-y-3">
-                        <div className="flex items-start gap-4">
-                          <div className="w-14 h-14 rounded-2xl overflow-hidden border border-[#1B889A]/40 shrink-0 relative bg-stone-900 shadow-md mt-0.5">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={aud.cover_image} alt="" className="w-full h-full object-cover" />
-                            <button
-                              onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
-                              className="absolute inset-0 bg-black/40 flex items-center justify-center text-white hover:bg-[#1B889A]/80 transition-colors"
-                              title={isPlayingThis ? "توقف" : "پخش"}
-                            >
-                              <div className="w-8 h-8 rounded-full bg-[#1B889A] flex items-center justify-center shadow-md">
-                                {isPlayingThis ? (
-                                   <Pause className="w-3.5 h-3.5 fill-current" />
-                                ) : (
-                                  <Play className="w-3.5 h-3.5 fill-current translate-x-[0.5px]" />
-                                )}
-                              </div>
-                            </button>
+                      {/* 1. COVER IMAGE (RED ZONE IN USER DIAGRAM) */}
+                      <div
+                        onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
+                        className="block relative w-full aspect-video overflow-hidden border-b border-[var(--card-border)] bg-slate-900 group/img cursor-pointer shrink-0"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={coverSrc}
+                          alt={aud.title_fa}
+                          onError={(e) => {
+                            e.currentTarget.src = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
+                          }}
+                          className="w-full h-full object-cover object-center group-hover/img:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+                        {/* Center Interactive Play Button Overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-xl ${
+                            isPlayingThis 
+                              ? 'bg-[#1B889A] text-white scale-100 ring-4 ring-white/30' 
+                              : 'bg-black/50 text-white group-hover/img:scale-110 group-hover/img:bg-[#1B889A]'
+                          }`}>
+                            {isPlayingThis ? (
+                              <Pause className="w-5 h-5 fill-current" />
+                            ) : (
+                              <Play className="w-5 h-5 fill-current translate-x-0.5" />
+                            )}
                           </div>
-                          <div className="min-w-0 flex-1">
-                            <span className="px-2.5 py-0.5 rounded-full teal-badge text-[10px] font-bold inline-block">
-                              {aud.category_fa}
-                            </span>
+                        </div>
+
+                        {/* Top Category Badge & Bottom Duration on Cover */}
+                        <div className="absolute bottom-2.5 right-2.5 left-2.5 flex items-center justify-between text-white pointer-events-none">
+                          <span className="px-2.5 py-0.5 rounded-lg bg-black/60 backdrop-blur-xs border border-white/10 text-[10px] font-bold">
+                            {aud.category_fa || 'محتوای صوتی'}
+                          </span>
+                          <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-black/60 backdrop-blur-xs border border-white/10 text-[10px] font-bold">
+                            <Clock className="w-3 h-3 text-[#1B889A]" />
+                            <span>{aud.duration_fa}</span>
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Card Content Body */}
+                      <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <div className="space-y-3.5">
+                          {/* 2. WHATSAPP VOICE NOTE WAVEFORM (YELLOW ZONE IN USER DIAGRAM) */}
+                          <div
+                            onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
+                            className={`p-2.5 sm:p-3 rounded-2xl border transition-all cursor-pointer flex items-center gap-3 select-none ${
+                              isPlayingThis 
+                                ? 'bg-[#1B889A]/10 border-[#1B889A]/50 shadow-xs ring-1 ring-[#1B889A]/20' 
+                                : 'bg-[var(--bg-color)] border-[var(--card-border)] hover:border-[#1B889A]/40'
+                            }`}
+                            title={isPlayingThis ? 'توقف پخش' : 'پخش ویس صوتی'}
+                          >
+                            {/* Round WhatsApp Play/Pause Button */}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                isPlayingThis ? pauseAudio() : playAudio(aud);
+                              }}
+                              className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all shadow-sm active:scale-95 ${
+                                isPlayingThis 
+                                  ? 'bg-[#1B889A] text-white ring-4 ring-[#1B889A]/20 shadow-md' 
+                                  : 'bg-[#1B889A]/15 text-[#1B889A] hover:bg-[#1B889A] hover:text-white'
+                              }`}
+                              aria-label={isPlayingThis ? 'توقف پخش' : 'پخش ویس'}
+                            >
+                              {isPlayingThis ? (
+                                <Pause className="w-4 h-4 fill-current" />
+                              ) : (
+                                <Play className="w-4 h-4 fill-current translate-x-0.5" />
+                              )}
+                            </button>
+
+                            {/* Zigzag Sound Waveform Bars (Equalizer) */}
+                            <div className="flex-1 flex items-center justify-between gap-[2px] sm:gap-[3px] h-7 px-1">
+                              {AUDIO_WAVE_HEIGHTS.map((heightPercent, bIdx) => {
+                                const animDuration = 0.45 + ((bIdx % 5) * 0.1);
+                                const animDelay = (bIdx % 7) * 0.08;
+
+                                return (
+                                  <span
+                                    key={bIdx}
+                                    className={`w-[2.5px] sm:w-[3px] rounded-full transition-all duration-150 ${
+                                      isPlayingThis
+                                        ? 'bg-[#1B889A]'
+                                        : 'bg-stone-300 dark:bg-stone-600'
+                                    }`}
+                                    style={{
+                                      height: `${heightPercent}%`,
+                                      transformOrigin: 'center',
+                                      animation: isPlayingThis 
+                                        ? `whatsappWave ${animDuration}s ease-in-out infinite alternate ${animDelay}s` 
+                                        : 'none',
+                                    }}
+                                  />
+                                );
+                              })}
+                            </div>
+
+                            {/* Playback indicator / Duration */}
+                            <div className="shrink-0 text-left">
+                              {isPlayingThis ? (
+                                <span className="flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-[#1B889A] animate-pulse">
+                                  <span className="w-2 h-2 rounded-full bg-[#1B889A]" />
+                                  <span>در حال پخش</span>
+                                </span>
+                              ) : (
+                                <span className="text-[10px] sm:text-[11px] font-mono font-bold text-[var(--text-secondary)]">
+                                  {aud.duration_fa?.split(' ')[0] || 'ویس'}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* 3. AUDIO TITLE & SPEAKER (GREEN ZONE IN USER DIAGRAM) */}
+                          <div className="space-y-1.5">
                             <h3
                               onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
-                              className="text-sm font-bold text-[var(--text-primary)] font-serif-persian leading-snug mt-1 cursor-pointer hover:text-[#1B889A] transition-colors"
+                              className="text-base font-bold text-[var(--text-primary)] font-serif-persian leading-snug group-hover:text-[#1B889A] transition-colors cursor-pointer line-clamp-1"
                               title={aud.title_fa}
                             >
                               {aud.title_fa}
                             </h3>
-                            <p className="text-[11px] text-[var(--text-secondary)] mt-1 font-serif-persian">{aud.speaker_fa}</p>
+
+                            <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed font-serif-persian">
+                              {aud.speaker_fa 
+                                ? `${aud.speaker_fa?.includes('،') || aud.speaker_fa?.includes(',') || (aud.speaker_fa?.match(/@/g) || []).length > 1 ? 'ارائه‌دهندگان:' : 'گوینده:'} ${aud.speaker_fa}`
+                                : aud.description_fa
+                              }
+                            </p>
                           </div>
                         </div>
 
-                        <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-serif-persian">
-                          {aud.description_fa}
-                        </p>
-                      </div>
+                        {/* Card Footer */}
+                        <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs font-serif-persian">
+                          <span className="text-[var(--text-secondary)] font-bold flex items-center gap-1">
+                            <Clock className="w-3.5 h-3.5 text-[#1B889A]" />
+                            {aud.duration_fa}
+                          </span>
 
-                      <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs">
-                        <span className="text-[var(--text-secondary)] font-bold flex items-center gap-1">
-                          <Clock className="w-3.5 h-3.5 text-[#1B889A]" />
-                          {aud.duration_fa}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setSharingAudio(aud)}
-                            className="p-2 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] text-[var(--text-secondary)] hover:text-[#1B889A] transition-all shadow-sm active:scale-95 flex items-center justify-center"
-                            title="اشتراک‌گذاری فایل صوتی"
-                            aria-label="اشتراک‌گذاری فایل صوتی"
-                          >
-                            <Share2 className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
-                            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-white font-bold text-xs transition-all shadow-md active:scale-95 ${
-                              isPlayingThis 
-                                ? 'bg-amber-600 hover:bg-amber-500 shadow-amber-600/30' 
-                                : 'bg-[#1B889A] hover:bg-[#156d7b] shadow-[#1B889A]/30'
-                            }`}
-                          >
-                            {isPlayingThis ? (
-                              <>
-                                <Pause className="w-3.5 h-3.5 fill-current" />
-                                <span>توقف</span>
-                              </>
-                            ) : (
-                              <>
-                                <Play className="w-3.5 h-3.5 fill-current translate-x-[0.5px]" />
-                                <span>شنیدن</span>
-                              </>
-                            )}
-                          </button>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSharingAudio(aud);
+                              }}
+                              className="p-1.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] text-[var(--text-secondary)] hover:text-[#1B889A] transition-all shadow-xs active:scale-95"
+                              title="اشتراک‌گذاری فایل صوتی"
+                            >
+                              <Share2 className="w-3.5 h-3.5" />
+                            </button>
+
+                            <Link
+                              href={`/audio?id=${aud.id}`}
+                              className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0"
+                            >
+                              <span>شنیدن کامل</span>
+                              <ArrowLeft className="w-3.5 h-3.5" />
+                            </Link>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    </article>
                   );
                 })}
               </div>
