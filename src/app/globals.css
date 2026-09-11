@@ -50,17 +50,27 @@
   overflow-wrap: anywhere;
 }
 
-html, body {
+html {
   min-height: 100vh;
-  height: 100%;
   background-color: var(--bg-color) !important;
   color: var(--text-primary);
   font-size: 16px;
   line-height: 1.8;
-  direction: rtl;
+  direction: ltr; /* Keeps root scrollbar strictly on the RIGHT side of the browser window */
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--bg-color) !important;
+  color: var(--text-primary);
+  font-size: 16px;
+  line-height: 1.8;
+  direction: rtl; /* Enforces 100% Right-to-Left flow for all website content */
+  margin: 0;
+  padding: 0;
+  overflow-x: clip;
 }
 
 /* RTL SAFE AREA INSET & TEXT WRAP HELPERS */
@@ -116,3 +126,29 @@ html, body {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* Sleek modern branded scrollbar on the right side */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(27, 136, 154, 0.45);
+  border-radius: 9999px;
+  border: 2px solid var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(27, 136, 154, 0.85);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(27, 136, 154, 0.5) transparent;
+}
+

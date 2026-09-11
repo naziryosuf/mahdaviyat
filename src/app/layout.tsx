@@ -44,7 +44,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa-AF" dir="rtl" suppressHydrationWarning>
+    <html lang="fa-AF" dir="ltr" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -71,7 +71,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased bg-[var(--bg-color)] text-[var(--text-primary)] min-h-screen flex flex-col justify-between" suppressHydrationWarning>
+      <body className="antialiased bg-[var(--bg-color)] text-[var(--text-primary)] min-h-screen flex flex-col justify-between" dir="rtl" suppressHydrationWarning>
         <AppClientLayoutWrapper>
           {children}
         </AppClientLayoutWrapper>
