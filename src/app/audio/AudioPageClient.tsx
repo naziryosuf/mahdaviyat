@@ -126,12 +126,12 @@ function AudioContent() {
                   {currentAudio?.id === activeAudio.id && isPlayingAudio ? (
                     <>
                       <Pause className="w-4 h-4 fill-current" />
-                      <span>توقف پخش صوتی</span>
+                      <span>توقف</span>
                     </>
                   ) : (
                     <>
                       <Play className="w-4 h-4 fill-current translate-x-[0.5px]" />
-                      <span>پخش محتوای صوتی</span>
+                      <span>شنیدن</span>
                     </>
                   )}
                 </button>
@@ -297,7 +297,7 @@ function AudioContent() {
                       ) : (
                         <>
                           <Play className="w-3.5 h-3.5 fill-current translate-x-[0.5px]" />
-                          <span>پخش</span>
+                          <span>شنیدن</span>
                         </>
                       )}
                     </button>

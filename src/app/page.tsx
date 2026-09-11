@@ -379,7 +379,7 @@ function HomeContent() {
                               <button
                                 onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
                                 className="absolute inset-0 bg-black/40 hover:bg-[#1B889A]/80 transition-colors flex items-center justify-center text-white"
-                                title={isPlayingThis ? "توقف پادکست" : "پخش پادکست"}
+                                title={isPlayingThis ? "توقف" : "شنیدن"}
                               >
                                 <div className="w-7 h-7 rounded-full bg-[#1B889A] flex items-center justify-center shadow-md">
                                   {isPlayingThis ? (
@@ -895,7 +895,7 @@ function HomeContent() {
                           ) : (
                             <>
                               <Play className="w-3.5 h-3.5 fill-current translate-x-[0.5px]" />
-                              <span>پخش پادکست</span>
+                              <span>شنیدن</span>
                             </>
                           )}
                         </button>

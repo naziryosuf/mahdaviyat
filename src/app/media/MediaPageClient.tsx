@@ -206,7 +206,7 @@ export function MediaPageClient() {
                       ) : (
                         <>
                           <Play className="w-3.5 h-3.5 fill-current translate-x-[0.5px]" />
-                          <span>پخش پادکست</span>
+                          <span>شنیدن</span>
                         </>
                       )}
                     </button>

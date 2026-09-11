@@ -364,7 +364,7 @@ function AboutContent() {
                       className="px-3.5 py-1.5 rounded-xl bg-[#1B889A] hover:bg-[#156d7b] text-white font-bold text-xs transition-colors shadow-md shrink-0 flex items-center gap-1"
                     >
                       <Play className="w-3.5 h-3.5 fill-current" />
-                      <span>پخش صوتی</span>
+                      <span>شنیدن</span>
                     </button>
                   </div>
                 ))}
