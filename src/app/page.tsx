@@ -764,13 +764,13 @@ function HomeContent() {
             </section>
           )}
 
-          {/* 2. THREE LATEST ARTICLES SECTION */}
+          {/* 2. SIX LATEST ARTICLES SECTION */}
           {articles.length > 0 && (
             <section className="space-y-5">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
                 <h2 className="text-base sm:text-xl font-extrabold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
                   <FileText className="w-5 sm:w-6 h-5 sm:h-6 text-[#1B889A]" />
-                  <span>سه نوشته اخیر</span>
+                  <span>شش نوشته اخیر</span>
                 </h2>
                 <Link
                   href="/content"
@@ -782,7 +782,7 @@ function HomeContent() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {articles.slice(0, 3).map((art) => (
+                {articles.slice(0, 6).map((art) => (
                   <article
                     key={art.id}
                     className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl sm:rounded-3xl hover:border-[#1B889A] transition-all duration-300 shadow-md flex flex-col justify-between overflow-hidden group"
@@ -836,13 +836,13 @@ function HomeContent() {
             </section>
           )}
 
-          {/* 3. THREE LATEST PODCASTS SECTION */}
+          {/* 3. SIX LATEST PODCASTS SECTION */}
           {audios.length > 0 && (
             <section className="space-y-5">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
                 <h2 className="text-base sm:text-xl font-extrabold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
                   <Volume2 className="w-5 sm:w-6 h-5 sm:h-6 text-[#1B889A]" />
-                  <span>سه محتوای صوتی اخیر</span>
+                  <span>شش محتوای صوتی اخیر</span>
                 </h2>
                 <Link
                   href="/media?tab=podcasts"
@@ -854,7 +854,7 @@ function HomeContent() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {audios.slice(0, 3).map((aud) => {
+                {audios.slice(0, 6).map((aud) => {
                   const isCurrent = currentAudio?.id === aud.id;
                   const isPlayingThis = isCurrent && isPlayingAudio;
 
@@ -950,13 +950,13 @@ function HomeContent() {
             </section>
           )}
 
-          {/* 4. THREE LATEST VIDEOS SECTION */}
+          {/* 4. SIX LATEST VIDEOS SECTION */}
           {videos.length > 0 && (
             <section className="space-y-5">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
                 <h2 className="text-base sm:text-lg font-extrabold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
                   <Video className="w-4.5 h-4.5 text-[#1B889A]" />
-                  <span>سه محتوای ویدیویی اخیر</span>
+                  <span>شش محتوای ویدیویی اخیر</span>
                 </h2>
                 <Link
                   href="/media?tab=videos"
@@ -968,7 +968,7 @@ function HomeContent() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {videos.slice(0, 3).map((vid) => (
+                {videos.slice(0, 6).map((vid) => (
                   <Link
                     key={vid.id}
                     href="/media?tab=videos"
