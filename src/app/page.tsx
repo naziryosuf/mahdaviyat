@@ -699,13 +699,13 @@ function HomeContent() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
                 <h2 className="text-base sm:text-xl font-extrabold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
                   <FileText className="w-5 sm:w-6 h-5 sm:h-6 text-[#1B889A]" />
-                  <span>سه مقاله اخیر</span>
+                  <span>سه نوشته اخیر</span>
                 </h2>
                 <Link
                   href="/content"
                   className="text-xs text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0"
                 >
-                  <span>مشاهده آرشیف کامل مقالات</span>
+                  <span>مشاهده آرشیف کامل نوشته‌ها</span>
                   <ArrowLeft className="w-4 h-4" />
                 </Link>
               </div>

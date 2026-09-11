@@ -42,9 +42,9 @@ function ContentCatalogInner() {
         <div className="max-w-2xl space-y-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full teal-badge text-xs font-bold shadow-sm">
             <Sparkles className="w-3.5 h-3.5 text-[#1B889A]" />
-            <span>آرشیف کامل مقالات و سایر متون</span>
+            <span>آرشیف کامل نوشته‌ها و سایر متون</span>
           </div>
-          <h1 className="text-3xl font-extrabold text-[var(--text-primary)] font-serif-persian">مقالات و سایر متون</h1>
+          <h1 className="text-3xl font-extrabold text-[var(--text-primary)] font-serif-persian">نوشته‌ها و سایر متون</h1>
           <p className="text-sm text-[var(--text-secondary)] font-serif-persian leading-relaxed">
             مجموعه کامل سرمقاله‌ها، مقالات علمی، تحلیل‌ها، تبصره‌ها و اشعار نشریه ایدئولوژی مهدویت.
           </p>
@@ -56,7 +56,7 @@ function ContentCatalogInner() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="جستجو در مقالات، هشتگ‌ها و متون..."
+            placeholder="جستجو در نوشته‌ها، هشتگ‌ها و متون..."
             className="w-full pl-12 pr-4 py-3 bg-[var(--bg-color)] border border-[var(--card-border)] rounded-2xl text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:border-[#1B889A] transition-colors shadow-inner"
           />
           <Search className="w-5 h-5 text-slate-400 absolute left-4 top-3.5" />
@@ -85,10 +85,10 @@ function ContentCatalogInner() {
         <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-8 sm:p-12 text-center space-y-4 modern-card">
           <FileText className="w-12 h-12 text-[#1B889A] mx-auto opacity-70" />
           <h3 className="text-lg font-bold text-[var(--text-primary)] font-serif-persian">
-            {searchQuery ? `هیچ مقاله‌ای با عنوان یا هشتگ «${searchQuery}» یافت نشد` : 'هنوز مقاله‌ای ثبت نگردیده است'}
+            {searchQuery ? `هیچ نوشته‌ای با عنوان یا هشتگ «${searchQuery}» یافت نشد` : 'هنوز نوشته‌ای ثبت نگردیده است'}
           </h3>
           <p className="text-xs sm:text-sm text-[var(--text-secondary)] max-w-md mx-auto">
-            می‌توانید عبارات جستجو را تغییر دهید یا از پنل مدیریت مقالات جدید انتشار دهید.
+            می‌توانید عبارات جستجو را تغییر دهید یا از پنل مدیریت نوشته‌های جدید انتشار دهید.
           </p>
         </div>
       ) : (

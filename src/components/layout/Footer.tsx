@@ -80,7 +80,7 @@ export const Footer: React.FC = () => {
                 <div className="w-7 h-7 rounded-lg bg-[#1B889A]/10 border border-[#1B889A]/30 flex items-center justify-center text-[#1B889A] shrink-0 group-hover:scale-105 transition-transform">
                   <FileText className="w-3.5 h-3.5" />
                 </div>
-                <span className="font-bold text-[var(--text-primary)] group-hover:text-[#1B889A] transition-colors truncate">{t.content || 'مقالات'}</span>
+                <span className="font-bold text-[var(--text-primary)] group-hover:text-[#1B889A] transition-colors truncate">{t.content || 'نوشته‌ها'}</span>
               </Link>
 
               <Link
