@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { AudioItem } from '@/types';
 import { AudioShareModal } from '@/components/audio/AudioShareModal';
+import { formatDurationNumeric } from '@/lib/audioUtils';
 
 const AUDIO_WAVE_HEIGHTS = [32, 60, 42, 85, 100, 68, 92, 48, 72, 95, 58, 42, 88, 94, 52, 78, 100, 72, 44, 86, 62, 38, 76, 54, 32];
 
@@ -139,9 +140,10 @@ function AudioContent() {
                   )}
                 </button>
 
-                <span className="text-xs text-stone-300 font-bold flex items-center gap-1 bg-white/5 border border-white/10 px-3.5 py-2.5 rounded-2xl">
+                <span className="text-xs text-stone-300 font-bold flex items-center gap-1.5 bg-white/5 border border-white/10 px-3.5 py-2.5 rounded-2xl">
                   <Clock className="w-4 h-4 text-[#1B889A]" />
-                  مدت زمان: {activeAudio.duration_fa}
+                  <span>مدت زمان:</span>
+                  <span className="dir-ltr font-mono text-[#1B889A]">{formatDurationNumeric(activeAudio.duration_fa)}</span>
                 </span>
 
                 {/* Share Button in Hero Banner */}
@@ -206,6 +208,7 @@ function AudioContent() {
           {filteredAudios.map((aud) => {
             const isCurrent = currentAudio?.id === aud.id;
             const isPlayingThis = isCurrent && isPlayingAudio;
+            const durationNumeric = formatDurationNumeric(aud.duration_fa);
             const coverSrc = aud.cover_image && aud.cover_image.trim() !== ''
               ? aud.cover_image
               : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
@@ -219,7 +222,7 @@ function AudioContent() {
                     : 'border-[var(--card-border)]'
                 }`}
               >
-                {/* 1. COVER IMAGE WITH INTERACTIVE PLAY BUTTON & ON-COVER WAVEFORM */}
+                {/* 1. COVER IMAGE WITH INTERACTIVE PLAY BUTTON & CENTERED ON-COVER WAVE */}
                 <div
                   onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
                   className="block relative w-full aspect-video overflow-hidden border-b border-[var(--card-border)] bg-slate-900 group/img cursor-pointer shrink-0"
@@ -235,63 +238,61 @@ function AudioContent() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
 
-                  {/* Center Interactive Play Button */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-xl ${
-                      isPlayingThis 
-                        ? 'bg-[#1B889A] text-white scale-100 ring-4 ring-white/30' 
-                        : 'bg-black/60 text-white group-hover/img:scale-110 group-hover/img:bg-[#1B889A]'
-                    }`}>
-                      {isPlayingThis ? (
-                        <Pause className="w-5 h-5 fill-current" />
-                      ) : (
-                        <Play className="w-5 h-5 fill-current translate-x-0.5" />
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Animated Zigzag Sound Waveform Over Cover (WHEN PLAYING) */}
+                  {/* Centered Audio Wave or Play Button */}
                   {isPlayingThis ? (
-                    <div className="absolute inset-x-3 bottom-3 py-1.5 px-3 rounded-xl bg-black/80 backdrop-blur-md border border-[#1B889A]/60 flex items-center justify-between gap-2 shadow-2xl z-10">
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-[#1B889A] shrink-0">
-                        <Volume2 className="w-3.5 h-3.5 animate-pulse text-[#1B889A]" />
-                        <span className="text-[10px] font-mono">پخش ویس</span>
-                      </div>
+                    /* WHEN PLAYING: Large, Dark/Frosted Waveform in Center of Cover */
+                    <div className="absolute inset-0 flex items-center justify-center p-3 z-10">
+                      <div className="w-[92%] sm:w-[88%] max-w-[360px] px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-2xl bg-black/90 backdrop-blur-xl border border-[#1B889A]/60 shadow-[0_12px_40px_rgba(0,0,0,0.8)] flex items-center justify-between gap-2.5 sm:gap-3 animate-fade-in">
+                        {/* Round Pause Button */}
+                        <div className="w-10 sm:w-11 h-10 sm:h-11 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-lg ring-4 ring-[#1B889A]/30 shrink-0">
+                          <Pause className="w-4 sm:w-5 h-4 sm:h-5 fill-current" />
+                        </div>
 
-                      {/* WhatsApp Style Animated Waveform Bars */}
-                      <div className="flex-1 flex items-center justify-center gap-[2px] sm:gap-[3px] h-5 px-1">
-                        {AUDIO_WAVE_HEIGHTS.map((heightPercent, bIdx) => {
-                          const animDuration = 0.45 + ((bIdx % 5) * 0.1);
-                          const animDelay = (bIdx % 7) * 0.08;
-                          return (
-                            <span
-                              key={bIdx}
-                              className="w-[2.5px] rounded-full bg-[#1B889A] transition-all"
-                              style={{
-                                height: `${heightPercent}%`,
-                                transformOrigin: 'center',
-                                animation: `whatsappWave ${animDuration}s ease-in-out infinite alternate ${animDelay}s`,
-                              }}
-                            />
-                          );
-                        })}
-                      </div>
+                        {/* WhatsApp Style Animated Waveform Bars (Larger & Taller) */}
+                        <div className="flex-1 flex items-center justify-center gap-[2.5px] sm:gap-[3px] h-7 sm:h-8 px-1">
+                          {AUDIO_WAVE_HEIGHTS.map((heightPercent, bIdx) => {
+                            const animDuration = 0.45 + ((bIdx % 5) * 0.1);
+                            const animDelay = (bIdx % 7) * 0.08;
+                            return (
+                              <span
+                                key={bIdx}
+                                className="w-[2.5px] sm:w-[3px] rounded-full bg-[#1B889A] transition-all"
+                                style={{
+                                  height: `${Math.max(20, heightPercent)}%`,
+                                  transformOrigin: 'center',
+                                  animation: `whatsappWave ${animDuration}s ease-in-out infinite alternate ${animDelay}s`,
+                                }}
+                              />
+                            );
+                          })}
+                        </div>
 
-                      <span className="text-[10px] font-mono font-bold text-stone-200 dir-ltr shrink-0">
-                        {aud.duration_fa?.split(' ')[0] || ''}
-                      </span>
+                        {/* Numeric Time strictly: 01.02.00 or 00.15.00 */}
+                        <span className="text-[11px] sm:text-xs font-mono font-bold text-white dir-ltr shrink-0 bg-white/10 px-2 sm:px-2.5 py-1 rounded-lg border border-white/15 tracking-wide">
+                          {durationNumeric}
+                        </span>
+                      </div>
                     </div>
                   ) : (
-                    /* Category Badge & Duration Over Cover (WHEN IDLE) */
-                    <div className="absolute bottom-2.5 right-2.5 left-2.5 flex items-center justify-between text-white pointer-events-none">
-                      <span className="px-2.5 py-0.5 rounded-lg bg-black/60 backdrop-blur-xs border border-white/10 text-[10px] font-bold">
-                        {aud.category_fa || 'محتوای صوتی'}
-                      </span>
-                      <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-black/60 backdrop-blur-xs border border-white/10 text-[10px] font-bold">
-                        <Clock className="w-3 h-3 text-[#1B889A]" />
-                        <span>{aud.duration_fa}</span>
-                      </span>
-                    </div>
+                    <>
+                      {/* WHEN IDLE: Center Circular Play Button */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-2xl bg-black/60 text-white group-hover/img:scale-110 group-hover/img:bg-[#1B889A] border border-white/20">
+                          <Play className="w-5 sm:w-6 h-5 sm:h-6 fill-current translate-x-0.5" />
+                        </div>
+                      </div>
+
+                      {/* Category Badge & Numeric Duration Over Cover */}
+                      <div className="absolute bottom-2.5 right-2.5 left-2.5 flex items-center justify-between text-white pointer-events-none">
+                        <span className="px-2.5 py-0.5 rounded-lg bg-black/60 backdrop-blur-xs border border-white/10 text-[10px] font-bold">
+                          {aud.category_fa || 'محتوای صوتی'}
+                        </span>
+                        <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-black/60 backdrop-blur-xs border border-white/10 text-[10px] font-bold font-mono dir-ltr">
+                          <Clock className="w-3 h-3 text-[#1B889A]" />
+                          <span>{durationNumeric}</span>
+                        </span>
+                      </div>
+                    </>
                   )}
                 </div>
 
@@ -302,9 +303,9 @@ function AudioContent() {
                       <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A]/10 text-[#1B889A] text-[10px] font-bold border border-[#1B889A]/30">
                         {aud.category_fa || 'محتوای صوتی'}
                       </span>
-                      <span className="text-[var(--text-secondary)] font-mono text-[11px] font-bold flex items-center gap-1">
+                      <span className="text-[var(--text-secondary)] font-mono text-[11px] font-bold flex items-center gap-1 dir-ltr">
                         <Clock className="w-3 h-3 text-[#1B889A]" />
-                        <span>{aud.duration_fa}</span>
+                        <span>{durationNumeric}</span>
                       </span>
                     </div>
 

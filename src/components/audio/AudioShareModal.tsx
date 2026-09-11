@@ -11,6 +11,7 @@ import {
   ExternalLink 
 } from 'lucide-react';
 import { AudioItem } from '@/types';
+import { formatDurationNumeric } from '@/lib/audioUtils';
 
 interface AudioShareModalProps {
   audio: AudioItem | null;
@@ -76,7 +77,7 @@ export function AudioShareModal({ audio, onClose }: AudioShareModalProps) {
 
   const whatsappMessage = `🎧 فایل صوتی: ${audio.title_fa}
 گوینده: ${audio.speaker_fa || 'مجله ایدئولوژی مهدویت'}
-مدت زمان: ${audio.duration_fa}
+مدت زمان: ${formatDurationNumeric(audio.duration_fa)}
 
 شنیدن آنلاین در مجله ایدئولوژی مهدویت:
 ${shareUrl}`;
@@ -172,7 +173,7 @@ ${shareUrl}`;
           <div className="min-w-0 flex-1 space-y-0.5 text-right">
             <div className="flex items-center justify-between text-[10px]">
               <span className="text-[#1B889A] font-bold truncate">{audio.category_fa || 'محتوای صوتی'}</span>
-              <span className="text-[var(--text-secondary)] font-medium shrink-0">{audio.duration_fa}</span>
+              <span className="text-[var(--text-secondary)] font-mono dir-ltr shrink-0">{formatDurationNumeric(audio.duration_fa)}</span>
             </div>
             <h4 className="text-xs font-bold text-[var(--text-primary)] font-serif-persian line-clamp-1 leading-snug">
               {audio.title_fa}
