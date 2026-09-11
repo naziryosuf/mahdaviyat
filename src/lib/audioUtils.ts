@@ -3,6 +3,9 @@ export function toEnglishDigits(str: string): string {
   return str.replace(/[۰-۹]/g, (d) => String(faDigits.indexOf(d)));
 }
 
+// Natural WhatsApp Voice Wave Heights
+export const AUDIO_WAVE_HEIGHTS: number[] = [28, 50, 20, 18, 57, 85, 20, 48, 100, 78, 12, 25, 88, 28, 28, 55, 72, 12, 22, 38, 95, 65, 18, 45, 22];
+
 /**
  * Converts any audio duration string (e.g. "۱۵ دقیقه", "یک ساعت و ۱۰ دقیقه", "12 دقیقه")
  * into clean numeric format: "HH.MM.SS" (e.g. "00.15.00", "01.10.00") without Persian words.

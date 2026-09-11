@@ -26,9 +26,25 @@ import { AudioItem, VideoItem, InfographicItem } from '@/types';
 import { VideoPlayerWithDescription } from '@/components/video/VideoPlayerWithDescription';
 import { AudioShareModal } from '@/components/audio/AudioShareModal';
 import { parseVideoUrl } from '@/utils/videoEmbed';
+import { 
+  AUDIO_WAVE_HEIGHTS, 
+  formatDurationNumeric, 
+  formatRemainingCountdown, 
+  parseDurationToSeconds 
+} from '@/lib/audioUtils';
 
 export function MediaPageClient() {
-  const { audios, videos, infographics, playAudio, pauseAudio, currentAudio, isPlayingAudio } = useStore();
+  const { 
+    audios, 
+    videos, 
+    infographics, 
+    playAudio, 
+    pauseAudio, 
+    currentAudio, 
+    isPlayingAudio,
+    audioCurrentTime,
+    audioDuration
+  } = useStore();
   const [activeTab, setActiveTab] = useState<'all' | 'podcasts' | 'videos' | 'infographics'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeDisplayVideo, setActiveDisplayVideo] = useState<VideoItem | null>(null);
@@ -143,63 +159,155 @@ export function MediaPageClient() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredAudios.map((aud) => {
               const isCurrent = currentAudio?.id === aud.id;
               const isPlayingThis = isCurrent && isPlayingAudio;
+              const durationNumeric = formatDurationNumeric(aud.duration_fa);
+              const effectiveTotalSec = (isCurrent && audioDuration > 0)
+                ? audioDuration
+                : parseDurationToSeconds(aud.duration_fa);
+              const remainingSec = isCurrent
+                ? Math.max(0, effectiveTotalSec - audioCurrentTime)
+                : effectiveTotalSec;
+              const countdownText = isCurrent
+                ? formatRemainingCountdown(remainingSec, effectiveTotalSec)
+                : durationNumeric;
+              const coverSrc = aud.cover_image && aud.cover_image.trim() !== ''
+                ? aud.cover_image
+                : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
 
               return (
-                <div 
-                  key={aud.id} 
-                  className={`p-5 rounded-3xl bg-[var(--card-bg)] border transition-all modern-card shadow-md flex flex-col justify-between h-full ${
+                <article
+                  key={aud.id}
+                  className={`bg-[var(--card-bg)] border rounded-2xl sm:rounded-3xl hover:border-[#1B889A] transition-all duration-300 shadow-md flex flex-col justify-between overflow-hidden group ${
                     isCurrent 
                       ? 'border-[#1B889A] ring-2 ring-[#1B889A]/30' 
-                      : 'border-[var(--card-border)] hover:border-[#1B889A]'
+                      : 'border-[var(--card-border)]'
                   }`}
                 >
-                  <div className="flex-1 flex flex-col space-y-3">
-                    <div className="flex items-start gap-4">
-                      <div className="w-14 h-14 rounded-2xl overflow-hidden border border-[#1B889A]/40 shrink-0 relative bg-stone-900 shadow-md mt-0.5">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={aud.cover_image} alt="" className="w-full h-full object-cover" />
-                        <button
-                          onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
-                          className="absolute inset-0 bg-black/40 flex items-center justify-center text-white hover:bg-[#1B889A]/80 transition-colors"
-                          title={isPlayingThis ? "توقف" : "پخش"}
-                        >
-                          <div className="w-8 h-8 rounded-full bg-[#1B889A] flex items-center justify-center shadow-md">
-                            {isPlayingThis ? (
-                              <Pause className="w-3.5 h-3.5 fill-current" />
-                            ) : (
-                              <Play className="w-3.5 h-3.5 fill-current translate-x-[0.5px]" />
-                            )}
-                          </div>
-                        </button>
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <span className="px-2.5 py-0.5 rounded-full teal-badge text-[10px] font-bold inline-block">
-                          {aud.category_fa}
-                        </span>
-                        <h3 
-                          onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
-                          className="text-sm font-bold text-[var(--text-primary)] font-serif-persian leading-snug mt-1 cursor-pointer hover:text-[#1B889A] transition-colors line-clamp-2 min-h-[2.5rem]"
-                          title={aud.title_fa}
-                        >
-                          {aud.title_fa}
-                        </h3>
-                        <p className="text-[11px] text-[var(--text-secondary)] mt-1 font-serif-persian line-clamp-1">{aud.speaker_fa}</p>
-                      </div>
-                    </div>
+                  {/* 1. COVER IMAGE WITH INTERACTIVE PLAY BUTTON & CENTERED ON-COVER WAVE */}
+                  <div
+                    onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
+                    className="block relative w-full aspect-video overflow-hidden border-b border-[var(--card-border)] bg-slate-900 group/img cursor-pointer shrink-0 select-none"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={coverSrc}
+                      alt={aud.title_fa}
+                      draggable={false}
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
+                      }}
+                      className={`w-full h-full object-cover object-center pointer-events-none transition-transform duration-500 ${
+                        isPlayingThis ? 'scale-105' : 'group-hover/img:scale-105'
+                      }`}
+                    />
+                    <div className={`absolute inset-0 pointer-events-none transition-colors duration-300 ${
+                      isPlayingThis 
+                        ? 'bg-black/75 backdrop-blur-[1px]' 
+                        : 'bg-gradient-to-t from-black/75 via-black/25 to-transparent'
+                    }`} />
 
-                    {/* Description with min-height so short or missing descriptions keep middle line aligned */}
-                    <div className="flex-1 flex flex-col justify-start">
-                      <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-serif-persian line-clamp-3 min-h-[3.6rem]">
-                        {aud.description_fa || ''}
+                    {/* Centered Audio Wave or Play Button */}
+                    {isPlayingThis ? (
+                      <div className="absolute inset-0 flex items-center justify-center px-4 sm:px-6 z-10">
+                        <div className="w-full max-w-[340px] flex items-center justify-between gap-3 sm:gap-4 select-none animate-fade-in">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              pauseAudio();
+                            }}
+                            className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#1B889A] hover:bg-[#156d7b] text-white flex items-center justify-center shadow-[0_0_20px_rgba(27,136,154,0.7)] ring-4 ring-white/20 shrink-0 transition-transform active:scale-95 cursor-pointer"
+                            title="توقف پخش"
+                          >
+                            <Pause className="w-5 h-5 fill-current" />
+                          </button>
+
+                          <div className="flex-1 flex items-center justify-center gap-[3px] sm:gap-[4px] h-12 sm:h-14 px-1 pointer-events-none">
+                            {AUDIO_WAVE_HEIGHTS.map((heightPercent, bIdx) => {
+                              const animDuration = 0.45 + ((bIdx % 5) * 0.1);
+                              const animDelay = (bIdx % 7) * 0.08;
+                              return (
+                                <span
+                                  key={bIdx}
+                                  className="w-[3px] sm:w-[3.5px] rounded-full bg-[#1B889A] drop-shadow-[0_0_8px_rgba(27,136,154,0.6)]"
+                                  style={{
+                                    height: `${heightPercent}%`,
+                                    transformOrigin: 'center',
+                                    animation: `whatsappWave ${animDuration}s ease-in-out infinite alternate ${animDelay}s`,
+                                  }}
+                                />
+                              );
+                            })}
+                          </div>
+
+                          <span className="text-xs sm:text-sm font-mono font-bold text-white dir-ltr shrink-0 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] tracking-wider pointer-events-none">
+                            {countdownText}
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              playAudio(aud);
+                            }}
+                            className="w-13 h-13 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-2xl bg-black/60 text-white group-hover/img:scale-110 group-hover/img:bg-[#1B889A] border border-white/20 cursor-pointer"
+                            title="شنیدن محتوای صوتی"
+                          >
+                            <Play className="w-5 sm:w-6 h-5 sm:h-6 fill-current translate-x-0.5" />
+                          </button>
+                        </div>
+
+                        <div className="absolute bottom-2.5 right-2.5 left-2.5 flex items-center justify-between text-white pointer-events-none">
+                          <span className="px-2.5 py-0.5 rounded-lg bg-black/60 backdrop-blur-xs border border-white/10 text-[10px] font-bold">
+                            {aud.category_fa || 'محتوای صوتی'}
+                          </span>
+                          <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-black/60 backdrop-blur-xs border border-white/10 text-[10px] font-bold font-mono dir-ltr">
+                            <Clock className="w-3 h-3 text-[#1B889A]" />
+                            <span>{durationNumeric}</span>
+                          </span>
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Card Content Body */}
+                  <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A]/10 text-[#1B889A] text-[10px] font-bold border border-[#1B889A]/30">
+                          {aud.category_fa || 'محتوای صوتی'}
+                        </span>
+                        <span className="text-[var(--text-secondary)] font-mono text-[11px] font-bold flex items-center gap-1 dir-ltr">
+                          <Clock className="w-3 h-3 text-[#1B889A]" />
+                          <span>{durationNumeric}</span>
+                        </span>
+                      </div>
+
+                      <h3
+                        onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
+                        className="text-sm sm:text-base font-bold text-[var(--text-primary)] font-serif-persian leading-snug group-hover:text-[#1B889A] transition-colors cursor-pointer line-clamp-1"
+                        title={aud.title_fa}
+                      >
+                        {aud.title_fa}
+                      </h3>
+
+                      <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed font-serif-persian">
+                        {aud.speaker_fa 
+                          ? `${aud.speaker_fa?.includes('،') || aud.speaker_fa?.includes(',') || (aud.speaker_fa?.match(/@/g) || []).length > 1 ? 'ارائه‌دهندگان:' : 'گوینده:'} ${aud.speaker_fa}`
+                          : aud.description_fa
+                        }
                       </p>
 
                       {/* Clickable Tags Chips (Max 3) */}
                       {aud.tags && aud.tags.length > 0 && (
-                        <div className="flex flex-wrap items-center gap-1.5 pt-2 mt-auto">
+                        <div className="flex flex-wrap items-center gap-1.5 pt-1">
                           {aud.tags.slice(0, 3).map((tag, idx) => (
                             <Link
                               key={idx}
@@ -212,43 +320,51 @@ export function MediaPageClient() {
                         </div>
                       )}
                     </div>
-                  </div>
 
-                  <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs mt-4">
-                    <span className="text-[var(--text-secondary)] font-bold">{aud.duration_fa}</span>
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setSharingAudio(aud)}
-                        className="p-2 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] text-[var(--text-secondary)] hover:text-[#1B889A] transition-all shadow-sm active:scale-95 flex items-center justify-center"
-                        title="اشتراک‌گذاری فایل صوتی"
-                        aria-label="اشتراک‌گذاری فایل صوتی"
-                      >
-                        <Share2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
-                        className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-white font-bold text-xs transition-all shadow-md active:scale-95 ${
-                          isPlayingThis 
-                            ? 'bg-amber-600 hover:bg-amber-500 shadow-amber-600/30' 
-                            : 'bg-[#1B889A] hover:bg-[#156d7b] shadow-[#1B889A]/30'
-                        }`}
-                      >
-                        {isPlayingThis ? (
-                          <>
-                            <Pause className="w-3.5 h-3.5 fill-current" />
-                            <span>توقف</span>
-                          </>
-                        ) : (
-                          <>
-                            <Play className="w-3.5 h-3.5 fill-current translate-x-[0.5px]" />
-                            <span>شنیدن</span>
-                          </>
-                        )}
-                      </button>
+                    {/* Card Footer */}
+                    <div className="pt-2.5 border-t border-[var(--card-border)] flex items-center justify-between text-xs font-serif-persian">
+                      <span className="text-[var(--text-secondary)] text-[11px] font-bold line-clamp-1 max-w-[130px] sm:max-w-[150px]">
+                        {aud.speaker_fa ? aud.speaker_fa.split('،')[0].split(',')[0] : 'سلسله مباحث مهدویت'}
+                      </span>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSharingAudio(aud);
+                          }}
+                          className="p-1.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] text-[var(--text-secondary)] hover:text-[#1B889A] transition-all shadow-xs active:scale-95"
+                          title="اشتراک‌گذاری فایل صوتی"
+                        >
+                          <Share2 className="w-3.5 h-3.5" />
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold text-xs transition-all shadow-xs active:scale-95 ${
+                            isPlayingThis 
+                              ? 'bg-[#1B889A] text-white shadow-[#1B889A]/30' 
+                              : 'bg-[#1B889A]/10 text-[#1B889A] hover:bg-[#1B889A] hover:text-white border border-[#1B889A]/30'
+                          }`}
+                        >
+                          {isPlayingThis ? (
+                            <>
+                              <Pause className="w-3.5 h-3.5 fill-current" />
+                              <span>توقف</span>
+                            </>
+                          ) : (
+                            <>
+                              <Play className="w-3.5 h-3.5 fill-current translate-x-[0.5px]" />
+                              <span>شنیدن</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </article>
               );
             })}
           </div>
