@@ -55,9 +55,14 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
   const title = audio.title_fa || 'محتوای صوتی و پادکست مهدویت';
   const description = audio.description_fa || `سخنران: ${audio.speaker_fa} • مدت زمان: ${audio.duration_fa}`;
-  const imageUrl = audio.cover_image && audio.cover_image.trim() !== ''
+  let imageUrl = audio.cover_image && audio.cover_image.trim() !== ''
     ? audio.cover_image
     : 'https://www.ideologymahdaviyat.org/official_logo.jpg';
+
+  if (imageUrl.startsWith('/')) {
+    imageUrl = `https://www.ideologymahdaviyat.org${imageUrl}`;
+  }
+
   const pageUrl = audioId
     ? `https://www.ideologymahdaviyat.org/audio?id=${encodeURIComponent(audioId)}`
     : 'https://www.ideologymahdaviyat.org/audio';
@@ -73,9 +78,11 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
       images: [
         {
           url: imageUrl,
+          secureUrl: imageUrl,
           width: 1200,
           height: 630,
           alt: title,
+          type: imageUrl.endsWith('.png') ? 'image/png' : 'image/jpeg',
         },
       ],
       locale: 'fa_AF',

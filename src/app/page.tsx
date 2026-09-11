@@ -22,11 +22,14 @@ import {
   CheckCircle2,
   X,
   Info,
-  Pin
+  Pin,
+  Share2
 } from 'lucide-react';
 import { translations } from '@/data/translations';
 import { KaabaUnityLogo } from '@/components/common/KaabaUnityLogo';
 import { CalligraphyPenTitle } from '@/components/common/CalligraphyPenTitle';
+import { AudioShareModal } from '@/components/audio/AudioShareModal';
+import { AudioItem } from '@/types';
 
 function HomeContent() {
   const searchParams = useSearchParams();
@@ -35,6 +38,7 @@ function HomeContent() {
   const { articles, magazineIssues, videos, audios, playAudio, pauseAudio, currentAudio, isPlayingAudio, language } = useStore();
   const t = translations[language] || translations.fa;
 
+  const [sharingAudio, setSharingAudio] = useState<AudioItem | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSearch, setActiveSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('همه');
@@ -407,6 +411,14 @@ function HomeContent() {
                               </p>
                             </div>
                           </div>
+                          <button
+                            type="button"
+                            onClick={() => setSharingAudio(aud)}
+                            className="p-1.5 rounded-xl text-[var(--text-secondary)] hover:text-[#1B889A] hover:bg-[#1B889A]/10 transition-colors shrink-0"
+                            title="اشتراک‌گذاری فایل صوتی"
+                          >
+                            <Share2 className="w-4 h-4" />
+                          </button>
                         </div>
                       );
                     })}
@@ -588,10 +600,20 @@ function HomeContent() {
 
                     <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
                       <span>{aud.category_fa}</span>
-                      <Link href="/audio" className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
-                        <span>شنیدن</span>
-                        <ArrowLeft className="w-3.5 h-3.5" />
-                      </Link>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => setSharingAudio(aud)}
+                          className="p-1 rounded-lg bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] text-[var(--text-secondary)] hover:text-[#1B889A] transition-all shadow-xs active:scale-95 flex items-center justify-center"
+                          title="اشتراک‌گذاری فایل صوتی"
+                        >
+                          <Share2 className="w-3.5 h-3.5" />
+                        </button>
+                        <Link href="/audio" className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                          <span>شنیدن</span>
+                          <ArrowLeft className="w-3.5 h-3.5" />
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -721,10 +743,20 @@ function HomeContent() {
 
                     <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
                       <span>{aud.category_fa}</span>
-                      <Link href="/audio" className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
-                        <span>شنیدن</span>
-                        <ArrowLeft className="w-3.5 h-3.5" />
-                      </Link>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => setSharingAudio(aud)}
+                          className="p-1 rounded-lg bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] text-[var(--text-secondary)] hover:text-[#1B889A] transition-all shadow-xs active:scale-95 flex items-center justify-center"
+                          title="اشتراک‌گذاری فایل صوتی"
+                        >
+                          <Share2 className="w-3.5 h-3.5" />
+                        </button>
+                        <Link href="/audio" className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                          <span>شنیدن</span>
+                          <ArrowLeft className="w-3.5 h-3.5" />
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -879,26 +911,37 @@ function HomeContent() {
                           <Clock className="w-3.5 h-3.5 text-[#1B889A]" />
                           {aud.duration_fa}
                         </span>
-                        <button
-                          onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
-                          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-white font-bold text-xs transition-all shadow-md active:scale-95 ${
-                            isPlayingThis 
-                              ? 'bg-amber-600 hover:bg-amber-500 shadow-amber-600/30' 
-                              : 'bg-[#1B889A] hover:bg-[#156d7b] shadow-[#1B889A]/30'
-                          }`}
-                        >
-                          {isPlayingThis ? (
-                            <>
-                              <Pause className="w-3.5 h-3.5 fill-current" />
-                              <span>توقف</span>
-                            </>
-                          ) : (
-                            <>
-                              <Play className="w-3.5 h-3.5 fill-current translate-x-[0.5px]" />
-                              <span>شنیدن</span>
-                            </>
-                          )}
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setSharingAudio(aud)}
+                            className="p-2 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] text-[var(--text-secondary)] hover:text-[#1B889A] transition-all shadow-sm active:scale-95 flex items-center justify-center"
+                            title="اشتراک‌گذاری فایل صوتی"
+                            aria-label="اشتراک‌گذاری فایل صوتی"
+                          >
+                            <Share2 className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
+                            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-white font-bold text-xs transition-all shadow-md active:scale-95 ${
+                              isPlayingThis 
+                                ? 'bg-amber-600 hover:bg-amber-500 shadow-amber-600/30' 
+                                : 'bg-[#1B889A] hover:bg-[#156d7b] shadow-[#1B889A]/30'
+                            }`}
+                          >
+                            {isPlayingThis ? (
+                              <>
+                                <Pause className="w-3.5 h-3.5 fill-current" />
+                                <span>توقف</span>
+                              </>
+                            ) : (
+                              <>
+                                <Play className="w-3.5 h-3.5 fill-current translate-x-[0.5px]" />
+                                <span>شنیدن</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   );
@@ -1099,6 +1142,9 @@ function HomeContent() {
           )}
         </>
       )}
+
+      {/* Audio Share Modal */}
+      <AudioShareModal audio={sharingAudio} onClose={() => setSharingAudio(null)} />
 
     </div>
   );

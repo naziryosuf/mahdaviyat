@@ -19,10 +19,12 @@ import {
   BookOpenCheck,
   MonitorPlay,
   ArrowLeft,
-  X
+  X,
+  Share2
 } from 'lucide-react';
 import { AudioItem, VideoItem, InfographicItem } from '@/types';
 import { VideoPlayerWithDescription } from '@/components/video/VideoPlayerWithDescription';
+import { AudioShareModal } from '@/components/audio/AudioShareModal';
 import { parseVideoUrl } from '@/utils/videoEmbed';
 
 export function MediaPageClient() {
@@ -30,6 +32,7 @@ export function MediaPageClient() {
   const [activeTab, setActiveTab] = useState<'all' | 'podcasts' | 'videos' | 'infographics'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeDisplayVideo, setActiveDisplayVideo] = useState<VideoItem | null>(null);
+  const [sharingAudio, setSharingAudio] = useState<AudioItem | null>(null);
 
   const currentDisplayVideo = activeDisplayVideo || videos[0];
 
@@ -190,26 +193,37 @@ export function MediaPageClient() {
 
                   <div className="pt-3 border-t border-[var(--card-border)] flex items-center justify-between text-xs">
                     <span className="text-[var(--text-secondary)] font-bold">{aud.duration_fa}</span>
-                    <button
-                      onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
-                      className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-white font-bold text-xs transition-all shadow-md active:scale-95 ${
-                        isPlayingThis 
-                          ? 'bg-amber-600 hover:bg-amber-500 shadow-amber-600/30' 
-                          : 'bg-[#1B889A] hover:bg-[#156d7b] shadow-[#1B889A]/30'
-                      }`}
-                    >
-                      {isPlayingThis ? (
-                        <>
-                          <Pause className="w-3.5 h-3.5 fill-current" />
-                          <span>توقف</span>
-                        </>
-                      ) : (
-                        <>
-                          <Play className="w-3.5 h-3.5 fill-current translate-x-[0.5px]" />
-                          <span>شنیدن</span>
-                        </>
-                      )}
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setSharingAudio(aud)}
+                        className="p-2 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] hover:border-[#1B889A] text-[var(--text-secondary)] hover:text-[#1B889A] transition-all shadow-sm active:scale-95 flex items-center justify-center"
+                        title="اشتراک‌گذاری فایل صوتی"
+                        aria-label="اشتراک‌گذاری فایل صوتی"
+                      >
+                        <Share2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
+                        className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-white font-bold text-xs transition-all shadow-md active:scale-95 ${
+                          isPlayingThis 
+                            ? 'bg-amber-600 hover:bg-amber-500 shadow-amber-600/30' 
+                            : 'bg-[#1B889A] hover:bg-[#156d7b] shadow-[#1B889A]/30'
+                        }`}
+                      >
+                        {isPlayingThis ? (
+                          <>
+                            <Pause className="w-3.5 h-3.5 fill-current" />
+                            <span>توقف</span>
+                          </>
+                        ) : (
+                          <>
+                            <Play className="w-3.5 h-3.5 fill-current translate-x-[0.5px]" />
+                            <span>شنیدن</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
@@ -361,6 +375,9 @@ export function MediaPageClient() {
           </div>
         </div>
       )}
+
+      {/* Audio Share Modal */}
+      <AudioShareModal audio={sharingAudio} onClose={() => setSharingAudio(null)} />
 
     </div>
   );
