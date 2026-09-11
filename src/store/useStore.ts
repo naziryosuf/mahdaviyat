@@ -1070,7 +1070,10 @@ export const useStore = create<AppState>((set, get) => ({
       }
 
       // 3. Videos
-      const { data: supaVideos, error: vidErr } = await supabase.from('video_items').select('*');
+      const { data: supaVideos, error: vidErr } = await supabase
+        .from('video_items')
+        .select('*')
+        .order('created_at', { ascending: false });
       if (!vidErr && supaVideos) {
         const mappedVideos = supaVideos.map(vid => ({
           ...vid,
@@ -1078,6 +1081,12 @@ export const useStore = create<AppState>((set, get) => ({
             ? 'محتوای ویدیویی'
             : vid.category_fa
         }));
+        mappedVideos.sort((a, b) => {
+          const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+          const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+          if (timeA !== timeB) return timeB - timeA;
+          return (b.id || '').localeCompare(a.id || '');
+        });
         set({ videos: mappedVideos });
         if (typeof localStorage !== 'undefined') {
           localStorage.setItem('mahdism_videos', JSON.stringify(mappedVideos));
@@ -1085,7 +1094,10 @@ export const useStore = create<AppState>((set, get) => ({
       }
 
       // 4. Audios
-      const { data: supaAudios, error: audErr } = await supabase.from('audio_items').select('*');
+      const { data: supaAudios, error: audErr } = await supabase
+        .from('audio_items')
+        .select('*')
+        .order('created_at', { ascending: false });
       if (!audErr && supaAudios) {
         const mappedAudios = supaAudios.map(aud => ({
           ...aud,
@@ -1093,6 +1105,12 @@ export const useStore = create<AppState>((set, get) => ({
             ? 'محتوای صوتی'
             : aud.category_fa
         }));
+        mappedAudios.sort((a, b) => {
+          const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+          const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+          if (timeA !== timeB) return timeB - timeA;
+          return (b.id || '').localeCompare(a.id || '');
+        });
         set({ audios: mappedAudios });
         if (typeof localStorage !== 'undefined') {
           localStorage.setItem('mahdism_audios', JSON.stringify(mappedAudios));
@@ -1223,14 +1241,19 @@ export const useStore = create<AppState>((set, get) => ({
       try {
         const parsedVids = JSON.parse(savedVideos);
         if (Array.isArray(parsedVids)) {
-          set({
-            videos: parsedVids.map((v: any) => ({
-              ...v,
-              category_fa: (!v.category_fa || v.category_fa.includes('درس‌گفتار') || v.category_fa.includes('درسگفتار'))
-                ? 'محتوای ویدیویی'
-                : v.category_fa
-            }))
+          const mappedVids = parsedVids.map((v: any) => ({
+            ...v,
+            category_fa: (!v.category_fa || v.category_fa.includes('درس‌گفتار') || v.category_fa.includes('درسگفتار'))
+              ? 'محتوای ویدیویی'
+              : v.category_fa
+          }));
+          mappedVids.sort((a, b) => {
+            const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+            const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+            if (timeA !== timeB) return timeB - timeA;
+            return (b.id || '').localeCompare(a.id || '');
           });
+          set({ videos: mappedVids });
         }
       } catch {}
     }
@@ -1240,14 +1263,19 @@ export const useStore = create<AppState>((set, get) => ({
       try {
         const parsedAuds = JSON.parse(savedAudios);
         if (Array.isArray(parsedAuds)) {
-          set({
-            audios: parsedAuds.map((a: any) => ({
-              ...a,
-              category_fa: (!a.category_fa || a.category_fa.includes('پادکست'))
-                ? 'محتوای صوتی'
-                : a.category_fa
-            }))
+          const mappedAuds = parsedAuds.map((a: any) => ({
+            ...a,
+            category_fa: (!a.category_fa || a.category_fa.includes('پادکست'))
+              ? 'محتوای صوتی'
+              : a.category_fa
+          }));
+          mappedAuds.sort((a, b) => {
+            const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+            const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+            if (timeA !== timeB) return timeB - timeA;
+            return (b.id || '').localeCompare(a.id || '');
           });
+          set({ audios: mappedAuds });
         }
       } catch {}
     }

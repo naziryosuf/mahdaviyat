@@ -73,6 +73,7 @@ export interface VideoItem {
   submitted_by_name?: string;
   submitted_at?: string;
   submitted_device?: string;
+  created_at?: string;
 }
 
 export interface AudioItem {
@@ -92,6 +93,7 @@ export interface AudioItem {
   submitted_by_name?: string;
   submitted_at?: string;
   submitted_device?: string;
+  created_at?: string;
 }
 
 export interface InfographicItem {

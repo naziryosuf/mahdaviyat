@@ -52,9 +52,18 @@ function AudioContent() {
     }
   }, [targetId, audios, currentAudio?.id, playAudio]);
 
-  const dynamicCategories = ['همه', ...Array.from(new Set(audios.map(a => a.category_fa || 'محتوای صوتی')))];
+  const sortedAudios = React.useMemo(() => {
+    return [...audios].sort((a, b) => {
+      const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+      const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+      if (timeA !== timeB) return timeB - timeA;
+      return (b.id || '').localeCompare(a.id || '');
+    });
+  }, [audios]);
 
-  const filteredAudios = audios.filter((aud) => {
+  const dynamicCategories = ['همه', ...Array.from(new Set(sortedAudios.map(a => a.category_fa || 'محتوای صوتی')))];
+
+  const filteredAudios = sortedAudios.filter((aud) => {
     const matchesCategory = filterCategory === 'همه' || aud.category_fa === filterCategory;
     const matchesQuery = 
       aud.title_fa.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -63,7 +72,7 @@ function AudioContent() {
     return matchesCategory && matchesQuery;
   });
 
-  const activeAudio = currentAudio || audios[0];
+  const activeAudio = currentAudio || sortedAudios[0];
 
   return (
     <div className="space-y-10 py-6">
@@ -226,21 +235,22 @@ function AudioContent() {
                 {/* 1. COVER IMAGE WITH INTERACTIVE PLAY BUTTON & CENTERED ON-COVER WAVE */}
                 <div
                   onClick={() => isPlayingThis ? pauseAudio() : playAudio(aud)}
-                  className="block relative w-full aspect-video overflow-hidden border-b border-[var(--card-border)] bg-slate-900 group/img cursor-pointer shrink-0"
+                  className="block relative w-full aspect-video overflow-hidden border-b border-[var(--card-border)] bg-slate-900 group/img cursor-pointer shrink-0 select-none"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={coverSrc}
                     alt={aud.title_fa}
+                    draggable={false}
                     onError={(e) => {
                       e.currentTarget.src = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
                     }}
-                    className={`w-full h-full object-cover object-center transition-transform duration-500 ${
+                    className={`w-full h-full object-cover object-center pointer-events-none transition-transform duration-500 ${
                       isPlayingThis ? 'scale-105' : 'group-hover/img:scale-105'
                     }`}
                   />
                   {/* Deeper / Darker backdrop on cover (خیره تر هنگام پخش) */}
-                  <div className={`absolute inset-0 transition-colors duration-300 ${
+                  <div className={`absolute inset-0 pointer-events-none transition-colors duration-300 ${
                     isPlayingThis 
                       ? 'bg-black/75 backdrop-blur-[1px]' 
                       : 'bg-gradient-to-t from-black/75 via-black/25 to-transparent'
@@ -252,19 +262,27 @@ function AudioContent() {
                     <div className="absolute inset-0 flex items-center justify-center px-4 sm:px-6 z-10">
                       <div className="w-full max-w-[340px] flex items-center justify-between gap-3 sm:gap-4 select-none animate-fade-in">
                         {/* Round Glowing Pause Button */}
-                        <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#1B889A] hover:bg-[#156d7b] text-white flex items-center justify-center shadow-[0_0_20px_rgba(27,136,154,0.7)] ring-4 ring-white/20 shrink-0 transition-transform active:scale-95">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            pauseAudio();
+                          }}
+                          className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#1B889A] hover:bg-[#156d7b] text-white flex items-center justify-center shadow-[0_0_20px_rgba(27,136,154,0.7)] ring-4 ring-white/20 shrink-0 transition-transform active:scale-95 cursor-pointer"
+                          title="توقف پخش"
+                        >
                           <Pause className="w-5 h-5 fill-current" />
-                        </div>
+                        </button>
 
                         {/* Natural WhatsApp Style Animated Waveform (Larger, Taller, NO Container Box) */}
-                        <div className="flex-1 flex items-center justify-center gap-[3px] sm:gap-[4px] h-12 sm:h-14 px-1">
+                        <div className="flex-1 flex items-center justify-center gap-[3px] sm:gap-[4px] h-12 sm:h-14 px-1 pointer-events-none">
                           {AUDIO_WAVE_HEIGHTS.map((heightPercent, bIdx) => {
                             const animDuration = 0.45 + ((bIdx % 5) * 0.1);
                             const animDelay = (bIdx % 7) * 0.08;
                             return (
                               <span
                                 key={bIdx}
-                                className="w-[3px] sm:w-[3.5px] rounded-full bg-[#1B889A] transition-all drop-shadow-[0_0_8px_rgba(27,136,154,0.6)]"
+                                className="w-[3px] sm:w-[3.5px] rounded-full bg-[#1B889A] drop-shadow-[0_0_8px_rgba(27,136,154,0.6)]"
                                 style={{
                                   height: `${heightPercent}%`,
                                   transformOrigin: 'center',
@@ -276,7 +294,7 @@ function AudioContent() {
                         </div>
 
                         {/* Clean Numeric Time without box */}
-                        <span className="text-xs sm:text-sm font-mono font-bold text-white dir-ltr shrink-0 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] tracking-wider">
+                        <span className="text-xs sm:text-sm font-mono font-bold text-white dir-ltr shrink-0 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] tracking-wider pointer-events-none">
                           {durationNumeric}
                         </span>
                       </div>
@@ -285,9 +303,17 @@ function AudioContent() {
                     <>
                       {/* WHEN IDLE: Center Circular Play Button */}
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-2xl bg-black/60 text-white group-hover/img:scale-110 group-hover/img:bg-[#1B889A] border border-white/20">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            playAudio(aud);
+                          }}
+                          className="w-13 h-13 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-2xl bg-black/60 text-white group-hover/img:scale-110 group-hover/img:bg-[#1B889A] border border-white/20 cursor-pointer"
+                          title="شنیدن محتوای صوتی"
+                        >
                           <Play className="w-5 sm:w-6 h-5 sm:h-6 fill-current translate-x-0.5" />
-                        </div>
+                        </button>
                       </div>
 
                       {/* Category Badge & Numeric Duration Over Cover */}

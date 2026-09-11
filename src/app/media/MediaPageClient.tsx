@@ -34,14 +34,32 @@ export function MediaPageClient() {
   const [activeDisplayVideo, setActiveDisplayVideo] = useState<VideoItem | null>(null);
   const [sharingAudio, setSharingAudio] = useState<AudioItem | null>(null);
 
-  const currentDisplayVideo = activeDisplayVideo || videos[0];
+  const sortedAudios = React.useMemo(() => {
+    return [...audios].sort((a, b) => {
+      const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+      const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+      if (timeA !== timeB) return timeB - timeA;
+      return (b.id || '').localeCompare(a.id || '');
+    });
+  }, [audios]);
 
-  const filteredAudios = audios.filter(a => 
+  const sortedVideos = React.useMemo(() => {
+    return [...videos].sort((a, b) => {
+      const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+      const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+      if (timeA !== timeB) return timeB - timeA;
+      return (b.id || '').localeCompare(a.id || '');
+    });
+  }, [videos]);
+
+  const currentDisplayVideo = activeDisplayVideo || sortedVideos[0];
+
+  const filteredAudios = sortedAudios.filter(a => 
     a.title_fa.toLowerCase().includes(searchQuery.toLowerCase()) || 
     a.speaker_fa.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const filteredVideos = videos.filter(v => 
+  const filteredVideos = sortedVideos.filter(v => 
     v.title_fa.toLowerCase().includes(searchQuery.toLowerCase()) || 
     v.speaker_fa.toLowerCase().includes(searchQuery.toLowerCase())
   );
