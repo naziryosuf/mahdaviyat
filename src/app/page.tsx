@@ -485,9 +485,8 @@ function HomeContent() {
                     <div className="p-4 flex-1 flex flex-col justify-between space-y-2.5">
                       <div className="space-y-2.5">
                         <div className="flex items-center justify-between text-xs">
-                          <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
-                            <Pin className="w-3 h-3 fill-current" />
-                            <span>مقاله پین‌شده</span>
+                          <span className="w-6 h-6 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-xs shrink-0" title="پین‌شده">
+                            <Pin className="w-3.5 h-3.5 fill-current" />
                           </span>
                           <span className="text-[#1B889A] font-bold text-[11px]">{art.read_time_fa}</span>
                         </div>
@@ -524,9 +523,8 @@ function HomeContent() {
                       </Link>
                     )}
                     <div className="flex items-center justify-between text-xs">
-                      <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
-                        <Pin className="w-3 h-3 fill-current" />
-                        <span>شماره مجله پین‌شده</span>
+                      <span className="w-6 h-6 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-xs shrink-0" title="پین‌شده">
+                        <Pin className="w-3.5 h-3.5 fill-current" />
                       </span>
                       <span className="text-[#1B889A] font-bold text-[11px]">{iss.publish_date_fa}</span>
                     </div>
@@ -560,9 +558,8 @@ function HomeContent() {
                       </Link>
                     )}
                     <div className="flex items-center justify-between text-xs">
-                      <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
-                        <Pin className="w-3 h-3 fill-current" />
-                        <span>ویدیو پین‌شده</span>
+                      <span className="w-6 h-6 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-xs shrink-0" title="پین‌شده">
+                        <Pin className="w-3.5 h-3.5 fill-current" />
                       </span>
                       <span className="text-[#1B889A] font-bold text-[11px]">{vid.duration_fa}</span>
                     </div>
@@ -571,6 +568,28 @@ function HomeContent() {
                       <span>{vid.category_fa}</span>
                       <Link href="/media?tab=videos" className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
                         <span>مشاهده</span>
+                        <ArrowLeft className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+
+                {audios.filter(aud => aud.featured).map(aud => (
+                  <div key={aud.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm overflow-hidden group">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="w-6 h-6 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-xs shrink-0" title="پین‌شده">
+                        <Pin className="w-3.5 h-3.5 fill-current" />
+                      </span>
+                      <span className="text-[#1B889A] font-bold text-[11px]">{aud.duration_fa}</span>
+                    </div>
+
+                    <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian leading-snug">{aud.title_fa}</h3>
+                    <p className="text-xs text-[var(--text-secondary)] line-clamp-1">{aud.speaker_fa}</p>
+
+                    <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
+                      <span>{aud.category_fa}</span>
+                      <Link href="/audio" className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                        <span>شنیدن</span>
                         <ArrowLeft className="w-3.5 h-3.5" />
                       </Link>
                     </div>
@@ -620,9 +639,8 @@ function HomeContent() {
                     <div className="p-4 flex-1 flex flex-col justify-between space-y-2.5">
                       <div className="space-y-2.5">
                         <div className="flex items-center justify-between text-xs">
-                          <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
-                            <Pin className="w-3 h-3 fill-current" />
-                            <span>مقاله پین‌شده</span>
+                          <span className="w-6 h-6 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-xs shrink-0" title="پین‌شده">
+                            <Pin className="w-3.5 h-3.5 fill-current" />
                           </span>
                           <span className="text-[#1B889A] font-bold text-[11px]">{art.read_time_fa}</span>
                         </div>
@@ -648,9 +666,8 @@ function HomeContent() {
                 {magazineIssues.filter(iss => iss.featured).map(iss => (
                   <div key={iss.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
-                        <Pin className="w-3 h-3 fill-current" />
-                        <span>شماره مجله پین‌شده</span>
+                      <span className="w-6 h-6 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-xs shrink-0" title="پین‌شده">
+                        <Pin className="w-3.5 h-3.5 fill-current" />
                       </span>
                       <span className="text-[#1B889A] font-bold text-[11px]">{iss.publish_date_fa}</span>
                     </div>
@@ -671,9 +688,8 @@ function HomeContent() {
                 {videos.filter(vid => vid.featured).map(vid => (
                   <div key={vid.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="px-2.5 py-0.5 rounded-full bg-[#1B889A] text-white text-[10px] font-bold flex items-center gap-1">
-                        <Pin className="w-3 h-3 fill-current" />
-                        <span>ویدیو پین‌شده</span>
+                      <span className="w-6 h-6 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-xs shrink-0" title="پین‌شده">
+                        <Pin className="w-3.5 h-3.5 fill-current" />
                       </span>
                       <span className="text-[#1B889A] font-bold text-[11px]">{vid.duration_fa}</span>
                     </div>
@@ -685,6 +701,28 @@ function HomeContent() {
                       <span>{vid.category_fa}</span>
                       <Link href="/media?tab=videos" className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
                         <span>مشاهده</span>
+                        <ArrowLeft className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+
+                {audios.filter(aud => aud.featured).map(aud => (
+                  <div key={aud.id} className="p-4 rounded-2xl bg-[var(--bg-color)] border-2 border-[#1B889A]/40 hover:border-[#1B889A] transition-all space-y-2.5 shadow-sm overflow-hidden group">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="w-6 h-6 rounded-full bg-[#1B889A] text-white flex items-center justify-center shadow-xs shrink-0" title="پین‌شده">
+                        <Pin className="w-3.5 h-3.5 fill-current" />
+                      </span>
+                      <span className="text-[#1B889A] font-bold text-[11px]">{aud.duration_fa}</span>
+                    </div>
+
+                    <h3 className="text-sm font-bold text-[var(--text-primary)] font-serif-persian leading-snug">{aud.title_fa}</h3>
+                    <p className="text-xs text-[var(--text-secondary)] line-clamp-1">{aud.speaker_fa}</p>
+
+                    <div className="pt-2 border-t border-[var(--card-border)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
+                      <span>{aud.category_fa}</span>
+                      <Link href="/audio" className="text-[#1B889A] font-bold hover:underline flex items-center gap-1 shrink-0">
+                        <span>شنیدن</span>
                         <ArrowLeft className="w-3.5 h-3.5" />
                       </Link>
                     </div>
