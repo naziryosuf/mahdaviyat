@@ -274,21 +274,20 @@ export const Navbar: React.FC = () => {
               {/* Theme Switcher Button */}
               <button
                 onClick={toggleTheme}
-                className="p-2 sm:p-2.5 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] text-amber-400 hover:text-amber-300 transition-all shadow-sm active:scale-95 touch-target"
-                title={theme === 'dark' ? 'تم روشن' : 'تم تاریک مدرن'}
+                className="p-2 sm:p-2.5 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] text-amber-400 hover:text-amber-300 transition-all shadow-sm active:scale-95 touch-target flex items-center justify-center"
                 aria-label="تغییر تم"
               >
                 {theme === 'dark' ? (
-                  <Sun className="w-4 h-4 text-amber-400" />
+                  <Sun className="w-4 h-4 text-amber-400 shrink-0" />
                 ) : (
-                  <Moon className="w-4 h-4 text-slate-700" />
+                  <Moon className="w-4 h-4 text-slate-700 dark:text-slate-200 shrink-0" />
                 )}
               </button>
 
               {/* Mobile Hamburger Toggle */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 sm:p-2.5 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] touch-target"
+                className="lg:hidden p-2 sm:p-2.5 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] touch-target flex items-center justify-center"
                 aria-label="منوی موبایل"
                 aria-expanded={mobileMenuOpen}
               >
@@ -324,8 +323,8 @@ export const Navbar: React.FC = () => {
                   </button>
                 </div>
 
-                <button onClick={toggleTheme} aria-label="تغییر تم" className="p-2 rounded-lg bg-slate-800 text-amber-400">
-                  {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                <button onClick={toggleTheme} aria-label="تغییر تم" className="p-2 rounded-lg bg-slate-800 text-amber-400 flex items-center justify-center">
+                  {theme === 'dark' ? <Sun className="w-4 h-4 shrink-0" /> : <Moon className="w-4 h-4 text-slate-200 shrink-0" />}
                 </button>
               </div>
 
