@@ -764,13 +764,13 @@ function HomeContent() {
             </section>
           )}
 
-          {/* 2. SIX LATEST ARTICLES SECTION */}
+          {/* 2. LATEST ARTICLES SECTION */}
           {articles.length > 0 && (
             <section className="space-y-5">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
                 <h2 className="text-base sm:text-xl font-extrabold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
                   <FileText className="w-5 sm:w-6 h-5 sm:h-6 text-[#1B889A]" />
-                  <span>شش نوشته اخیر</span>
+                  <span>نوشته‌های اخیر</span>
                 </h2>
                 <Link
                   href="/content"
@@ -836,13 +836,13 @@ function HomeContent() {
             </section>
           )}
 
-          {/* 3. SIX LATEST PODCASTS SECTION */}
+          {/* 3. LATEST PODCASTS SECTION */}
           {audios.length > 0 && (
             <section className="space-y-5">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
                 <h2 className="text-base sm:text-xl font-extrabold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
                   <Volume2 className="w-5 sm:w-6 h-5 sm:h-6 text-[#1B889A]" />
-                  <span>شش محتوای صوتی اخیر</span>
+                  <span>صوتی‌های اخیر</span>
                 </h2>
                 <Link
                   href="/media?tab=podcasts"
@@ -879,7 +879,7 @@ function HomeContent() {
                             >
                               <div className="w-8 h-8 rounded-full bg-[#1B889A] flex items-center justify-center shadow-md">
                                 {isPlayingThis ? (
-                                  <Pause className="w-3.5 h-3.5 fill-current" />
+                                   <Pause className="w-3.5 h-3.5 fill-current" />
                                 ) : (
                                   <Play className="w-3.5 h-3.5 fill-current translate-x-[0.5px]" />
                                 )}
@@ -950,13 +950,13 @@ function HomeContent() {
             </section>
           )}
 
-          {/* 4. SIX LATEST VIDEOS SECTION */}
+          {/* 4. LATEST VIDEOS SECTION */}
           {videos.length > 0 && (
             <section className="space-y-5">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
                 <h2 className="text-base sm:text-lg font-extrabold text-[var(--text-primary)] font-serif-persian flex items-center gap-2">
                   <Video className="w-4.5 h-4.5 text-[#1B889A]" />
-                  <span>شش محتوای ویدیویی اخیر</span>
+                  <span>ویدیوهای اخیر</span>
                 </h2>
                 <Link
                   href="/media?tab=videos"
