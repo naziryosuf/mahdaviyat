@@ -457,11 +457,8 @@ function HomeContent() {
                   </div>
                   <div className="min-w-0">
                     <h2 className="text-sm sm:text-lg font-extrabold text-[var(--text-primary)] font-serif-persian leading-snug">
-                      مطالب پین‌شده و ویژه
+                      پیشنهادهای ویژه
                     </h2>
-                    <p className="text-[11px] sm:text-xs text-[var(--text-secondary)] leading-relaxed">
-                      برگزیده متون، مجلات و رسانه‌ها در صفحه اول
-                    </p>
                   </div>
                 </div>
                 <span className="self-start sm:self-center px-3 py-1 rounded-full bg-[#1B889A]/20 text-[#1B889A] text-[11px] font-extrabold border border-[#1B889A]/40 whitespace-nowrap shrink-0">
@@ -595,11 +592,8 @@ function HomeContent() {
                   </div>
                   <div className="min-w-0">
                     <h2 className="text-sm sm:text-lg font-extrabold text-[var(--text-primary)] font-serif-persian leading-snug">
-                      مطالب پین‌شده و ویژه
+                      پیشنهادهای ویژه
                     </h2>
-                    <p className="text-[11px] sm:text-xs text-[var(--text-secondary)] leading-relaxed">
-                      برگزیده متون، مجلات و رسانه‌ها در صفحه اول
-                    </p>
                   </div>
                 </div>
                 <span className="self-start sm:self-center px-3 py-1 rounded-full bg-[#1B889A]/20 text-[#1B889A] text-[11px] font-extrabold border border-[#1B889A]/40 whitespace-nowrap shrink-0">
