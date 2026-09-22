@@ -84,6 +84,10 @@ export const SiteAccessLockGate: React.FC<SiteAccessLockGateProps> = ({ onUnlock
             <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
             <span>وب‌سایت در دست آماده‌سازی است</span>
           </div>
+
+          <p className="text-[11px] sm:text-xs text-[var(--text-secondary)] font-serif-persian pt-0.5">
+            دسترسی به سامانه صرفاً برای توسعه‌دهندگان و طراحان مجاز می‌باشد.
+          </p>
         </div>
 
         {/* Input Form */}
