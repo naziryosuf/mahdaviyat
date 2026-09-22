@@ -15,20 +15,20 @@ export const SiteAccessLockGate: React.FC<SiteAccessLockGateProps> = ({ onUnlock
   const [isSuccess, setIsSuccess] = useState(false);
   const [showText, setShowText] = useState(false);
 
-  // Allowed Passcodes: 2026, 1234, 112233, or custom code
-  const VALID_CODES = ['2026', '1234', '112233', '998877'];
+  // Strict Single Passcode: 4455 only
+  const VALID_CODE = '4455';
 
   const handleSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     const clean = passcode.trim();
     if (!clean) return;
 
-    if (VALID_CODES.includes(clean)) {
+    if (clean === VALID_CODE) {
       setIsSuccess(true);
       setError(false);
       setTimeout(() => {
         onUnlock();
-      }, 350);
+      }, 300);
     } else {
       setError(true);
       setIsSuccess(false);
@@ -37,8 +37,15 @@ export const SiteAccessLockGate: React.FC<SiteAccessLockGateProps> = ({ onUnlock
 
   const handleKeyClick = (num: string) => {
     setError(false);
-    if (passcode.length < 8) {
-      setPasscode(prev => prev + num);
+    if (passcode.length < 4) {
+      const updated = passcode + num;
+      setPasscode(updated);
+      if (updated === VALID_CODE) {
+        setIsSuccess(true);
+        setTimeout(() => {
+          onUnlock();
+        }, 300);
+      }
     }
   };
 
@@ -93,9 +100,17 @@ export const SiteAccessLockGate: React.FC<SiteAccessLockGateProps> = ({ onUnlock
             <input
               type={showText ? 'text' : 'password'}
               value={passcode}
+              maxLength={4}
               onChange={(e) => {
-                setPasscode(e.target.value);
+                const val = e.target.value;
+                setPasscode(val);
                 setError(false);
+                if (val.trim() === VALID_CODE) {
+                  setIsSuccess(true);
+                  setTimeout(() => {
+                    onUnlock();
+                  }, 300);
+                }
               }}
               autoFocus
               placeholder="رمز عبور..."
