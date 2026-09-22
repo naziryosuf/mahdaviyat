@@ -13,14 +13,13 @@ import { recordPageVisit } from "@/utils/siteAnalytics";
 
 export const AppClientLayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [hasAccess, setHasAccess] = useState<boolean | null>(null);
+  const [hasAccess, setHasAccess] = useState(false);
 
   useEffect(() => {
-    // Check if site access passcode has been granted
+    // Clear any persistent storage to ensure strict security on every page reload
     if (typeof window !== 'undefined') {
-      const granted = localStorage.getItem('mahdism_site_access_granted') === 'true' ||
-                      sessionStorage.getItem('mahdism_site_access_granted') === 'true';
-      setHasAccess(granted);
+      localStorage.removeItem('mahdism_site_access_granted');
+      sessionStorage.removeItem('mahdism_site_access_granted');
     }
 
     // Record anonymous visitor traffic
@@ -55,11 +54,6 @@ export const AppClientLayoutWrapper: React.FC<{ children: React.ReactNode }> = (
       }
     };
   }, []);
-
-  // During initial hydration check
-  if (hasAccess === null) {
-    return null;
-  }
 
   // If passcode not entered, show lock screen gate only
   if (!hasAccess) {

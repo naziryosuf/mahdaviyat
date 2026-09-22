@@ -26,13 +26,9 @@ export const SiteAccessLockGate: React.FC<SiteAccessLockGateProps> = ({ onUnlock
     if (VALID_CODES.includes(clean)) {
       setIsSuccess(true);
       setError(false);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('mahdism_site_access_granted', 'true');
-        sessionStorage.setItem('mahdism_site_access_granted', 'true');
-      }
       setTimeout(() => {
         onUnlock();
-      }, 400);
+      }, 350);
     } else {
       setError(true);
       setIsSuccess(false);
