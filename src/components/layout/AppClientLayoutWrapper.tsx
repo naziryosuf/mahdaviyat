@@ -7,13 +7,22 @@ import { Footer } from "@/components/layout/Footer";
 import { PersistentAudioBar } from "@/components/audio/PersistentAudioBar";
 import { InitialSitePreloader } from "@/components/common/InitialSitePreloader";
 import { ThemeTransitionWave } from "@/components/common/ThemeTransitionWave";
+import { SiteAccessLockGate } from "@/components/common/SiteAccessLockGate";
 import { useStore } from "@/store/useStore";
 import { recordPageVisit } from "@/utils/siteAnalytics";
 
 export const AppClientLayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [hasAccess, setHasAccess] = useState<boolean | null>(null);
 
   useEffect(() => {
+    // Check if site access passcode has been granted
+    if (typeof window !== 'undefined') {
+      const granted = localStorage.getItem('mahdism_site_access_granted') === 'true' ||
+                      sessionStorage.getItem('mahdism_site_access_granted') === 'true';
+      setHasAccess(granted);
+    }
+
     // Record anonymous visitor traffic
     recordPageVisit();
 
@@ -46,6 +55,21 @@ export const AppClientLayoutWrapper: React.FC<{ children: React.ReactNode }> = (
       }
     };
   }, []);
+
+  // During initial hydration check
+  if (hasAccess === null) {
+    return null;
+  }
+
+  // If passcode not entered, show lock screen gate only
+  if (!hasAccess) {
+    return (
+      <>
+        <ThemeTransitionWave />
+        <SiteAccessLockGate onUnlock={() => setHasAccess(true)} />
+      </>
+    );
+  }
 
   return (
     <>

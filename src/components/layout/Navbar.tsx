@@ -18,7 +18,8 @@ import {
   ChevronDown,
   Check,
   Search,
-  AlertCircle
+  AlertCircle,
+  Lock
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { translations } from '@/data/translations';
@@ -109,6 +110,14 @@ export const Navbar: React.FC = () => {
       message: 'The English section is currently under development.',
       closeLabel: 'Close'
     });
+  };
+
+  const handleLockSite = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('mahdism_site_access_granted');
+      sessionStorage.removeItem('mahdism_site_access_granted');
+      window.location.reload();
+    }
   };
 
   const navLinks = [
@@ -316,6 +325,16 @@ export const Navbar: React.FC = () => {
                 )}
               </div>
 
+              {/* Lock Site Button */}
+              <button
+                onClick={handleLockSite}
+                className="p-2 sm:p-2.5 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-secondary)] hover:text-red-400 hover:border-red-400/40 hover:bg-red-500/10 transition-all shadow-sm active:scale-95 touch-target flex items-center justify-center"
+                title="قفل موقت و مخفی‌سازی سایت"
+                aria-label="قفل سایت"
+              >
+                <Lock className="w-4 h-4 shrink-0" />
+              </button>
+
               {/* Theme Switcher Button */}
               <button
                 onClick={toggleTheme}
@@ -368,13 +387,22 @@ export const Navbar: React.FC = () => {
                   </button>
                 </div>
 
-                <button
-                  onClick={toggleTheme}
-                  aria-label="تغییر تم"
-                  className="p-2 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] text-[#1B889A] hover:bg-[#1B889A]/10 hover:border-[#1B889A] transition-all shadow-sm active:scale-95 flex items-center justify-center"
-                >
-                  {theme === 'dark' ? <Sun className="w-4 h-4 text-[#1B889A] shrink-0" /> : <Moon className="w-4 h-4 text-[#1B889A] shrink-0" />}
-                </button>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={handleLockSite}
+                    title="قفل موقت سایت"
+                    className="p-2 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-secondary)] hover:text-red-400 transition-all shadow-sm active:scale-95 flex items-center justify-center"
+                  >
+                    <Lock className="w-4 h-4 shrink-0" />
+                  </button>
+                  <button
+                    onClick={toggleTheme}
+                    aria-label="تغییر تم"
+                    className="p-2 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] text-[#1B889A] hover:bg-[#1B889A]/10 hover:border-[#1B889A] transition-all shadow-sm active:scale-95 flex items-center justify-center"
+                  >
+                    {theme === 'dark' ? <Sun className="w-4 h-4 text-[#1B889A] shrink-0" /> : <Moon className="w-4 h-4 text-[#1B889A] shrink-0" />}
+                  </button>
+                </div>
               </div>
 
               {navLinks.map((link) => {
