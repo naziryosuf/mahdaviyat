@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Lock, KeyRound, ShieldAlert, CheckCircle2, Eye, EyeOff, Sparkles } from 'lucide-react';
+import { ShieldAlert, CheckCircle2, Eye, EyeOff, Wrench, ArrowLeft } from 'lucide-react';
 import { KaabaUnityLogo } from '@/components/common/KaabaUnityLogo';
 
 interface SiteAccessLockGateProps {
@@ -32,7 +32,7 @@ export const SiteAccessLockGate: React.FC<SiteAccessLockGateProps> = ({ onUnlock
       }
       setTimeout(() => {
         onUnlock();
-      }, 500);
+      }, 400);
     } else {
       setError(true);
       setIsSuccess(false);
@@ -64,39 +64,30 @@ export const SiteAccessLockGate: React.FC<SiteAccessLockGateProps> = ({ onUnlock
       <div className="absolute -bottom-24 -right-24 w-80 sm:w-96 h-80 sm:h-96 bg-[#1B889A]/15 rounded-full blur-[90px] pointer-events-none" />
 
       <motion.div 
-        initial={{ opacity: 0, scale: 0.95, y: 15 }}
+        initial={{ opacity: 0, scale: 0.96, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="w-full max-w-md bg-[var(--card-bg)] border-2 border-[#1B889A] rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl modern-card relative z-10"
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+        className="w-full max-w-sm bg-[var(--card-bg)] border-2 border-[#1B889A]/50 rounded-3xl p-6 sm:p-7 space-y-5 shadow-2xl modern-card relative z-10"
       >
         
-        {/* Logo & Header */}
-        <div className="text-center space-y-3">
+        {/* Header */}
+        <div className="text-center space-y-2.5">
           <div className="flex justify-center">
-            <KaabaUnityLogo size="lg" />
+            <KaabaUnityLogo size="md" />
           </div>
 
-          <div className="space-y-1">
-            <h1 className="text-xl sm:text-2xl font-black text-[var(--text-primary)] font-serif-persian">
-              ایدئولوژی مهدویت
-            </h1>
-            <p className="text-xs font-bold text-[#1B889A] font-serif-persian">
-              مجله علمی - معنوی
-            </p>
-          </div>
+          <h1 className="text-xl sm:text-2xl font-black text-[var(--text-primary)] font-serif-persian tracking-tight">
+            ایدئولوژی مهدویت
+          </h1>
 
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1B889A]/15 border border-[#1B889A]/30 text-[#1B889A] text-[11px] font-bold">
-            <Lock className="w-3.5 h-3.5" />
-            <span>حالت اختصاصی و گذرواژه دسترسی</span>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold">
+            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+            <span>وب‌سایت در دست آماده‌سازی است</span>
           </div>
-
-          <p className="text-xs text-[var(--text-secondary)] font-serif-persian leading-relaxed pt-1">
-            جهت مشاهده و دسترسی به صفحات وب‌سایت، لطفاً کد دسترسی را وارد نمایید.
-          </p>
         </div>
 
         {/* Input Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3.5">
           
           <div className="relative flex items-center">
             <input
@@ -107,16 +98,15 @@ export const SiteAccessLockGate: React.FC<SiteAccessLockGateProps> = ({ onUnlock
                 setError(false);
               }}
               autoFocus
-              placeholder="کد دسترسی را وارد کنید..."
-              className="w-full py-3.5 pl-12 pr-12 text-center text-base sm:text-lg font-mono font-bold bg-[var(--bg-color)] border-2 border-[var(--card-border)] focus:border-[#1B889A] rounded-2xl text-[var(--text-primary)] tracking-widest focus:outline-none transition-all shadow-inner"
+              placeholder="رمز عبور..."
+              className="w-full py-3 pl-10 pr-4 text-center text-base sm:text-lg font-mono font-bold bg-[var(--bg-color)] border border-[var(--card-border)] focus:border-[#1B889A] rounded-2xl text-[var(--text-primary)] tracking-widest focus:outline-none transition-all shadow-inner"
             />
-            <KeyRound className="w-5 h-5 text-[#1B889A] absolute right-4 pointer-events-none" />
             
             <button
               type="button"
               onClick={() => setShowText(!showText)}
-              className="absolute left-3.5 p-1.5 rounded-xl text-[var(--text-secondary)] hover:text-[#1B889A] transition-colors"
-              title={showText ? 'مخفی کردن کد' : 'نمایش کد'}
+              className="absolute left-3 p-1.5 rounded-xl text-[var(--text-secondary)] hover:text-[#1B889A] transition-colors"
+              title={showText ? 'مخفی کردن' : 'نمایش'}
             >
               {showText ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
@@ -125,12 +115,12 @@ export const SiteAccessLockGate: React.FC<SiteAccessLockGateProps> = ({ onUnlock
           {/* Success Message */}
           {isSuccess && (
             <motion.div 
-              initial={{ opacity: 0, y: -5 }}
+              initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-3.5 rounded-2xl bg-emerald-500/15 border-2 border-emerald-500 text-emerald-400 font-bold text-xs text-center flex items-center justify-center gap-2 shadow-md"
+              className="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 font-bold text-xs text-center flex items-center justify-center gap-2 shadow-xs"
             >
               <CheckCircle2 className="w-4 h-4 shrink-0" />
-              <span>کد تأیید شد. در حال بارگذاری وب‌سایت...</span>
+              <span>تأیید شد. در حال ورود...</span>
             </motion.div>
           )}
 
@@ -139,21 +129,21 @@ export const SiteAccessLockGate: React.FC<SiteAccessLockGateProps> = ({ onUnlock
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="p-3 rounded-2xl bg-red-500/15 border border-red-500/30 text-red-400 text-xs font-bold text-center flex items-center justify-center gap-2"
+              className="p-2.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 text-xs font-bold text-center flex items-center justify-center gap-2"
             >
               <ShieldAlert className="w-4 h-4" />
-              <span>کد واردشده صحیح نمی‌باشد!</span>
+              <span>رمز عبور اشتباه است</span>
             </motion.div>
           )}
 
           {/* Numeric Touch Keypad */}
-          <div className="grid grid-cols-3 gap-2 max-w-xs mx-auto dir-ltr pt-1">
+          <div className="grid grid-cols-3 gap-2 max-w-[280px] mx-auto dir-ltr pt-1">
             {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((num) => (
               <button
                 key={num}
                 type="button"
                 onClick={() => handleKeyClick(num)}
-                className="py-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] text-base font-bold text-[var(--text-primary)] hover:border-[#1B889A] hover:bg-[#1B889A]/10 active:scale-95 transition-all shadow-xs"
+                className="py-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] text-base font-bold text-[var(--text-primary)] hover:border-[#1B889A] hover:bg-[#1B889A]/10 active:scale-95 transition-all shadow-2xs"
               >
                 {num}
               </button>
@@ -162,7 +152,7 @@ export const SiteAccessLockGate: React.FC<SiteAccessLockGateProps> = ({ onUnlock
             <button
               type="button"
               onClick={handleClear}
-              className="py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-xs font-bold text-red-500 hover:bg-red-500/20 active:scale-95 transition-all"
+              className="py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-xs font-bold text-red-400 hover:bg-red-500/20 active:scale-95 transition-all"
             >
               پاک کردن
             </button>
@@ -170,7 +160,7 @@ export const SiteAccessLockGate: React.FC<SiteAccessLockGateProps> = ({ onUnlock
             <button
               type="button"
               onClick={() => handleKeyClick('0')}
-              className="py-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] text-base font-bold text-[var(--text-primary)] hover:border-[#1B889A] hover:bg-[#1B889A]/10 active:scale-95 transition-all shadow-xs"
+              className="py-2.5 rounded-xl bg-[var(--bg-color)] border border-[var(--card-border)] text-base font-bold text-[var(--text-primary)] hover:border-[#1B889A] hover:bg-[#1B889A]/10 active:scale-95 transition-all shadow-2xs"
             >
               0
             </button>
@@ -178,7 +168,7 @@ export const SiteAccessLockGate: React.FC<SiteAccessLockGateProps> = ({ onUnlock
             <button
               type="button"
               onClick={handleBackspace}
-              className="py-2.5 rounded-xl bg-slate-800/20 border border-slate-700/30 text-xs font-bold text-[var(--text-secondary)] hover:bg-slate-800/40 active:scale-95 transition-all"
+              className="py-2.5 rounded-xl bg-slate-800/30 border border-slate-700/30 text-xs font-bold text-[var(--text-secondary)] hover:bg-slate-800/60 active:scale-95 transition-all"
             >
               ⌫
             </button>
@@ -188,16 +178,16 @@ export const SiteAccessLockGate: React.FC<SiteAccessLockGateProps> = ({ onUnlock
           <button
             type="submit"
             disabled={!passcode.trim()}
-            className="w-full py-3.5 px-4 rounded-2xl bg-[#1B889A] hover:bg-[#156d7b] disabled:opacity-40 disabled:cursor-not-allowed text-white font-extrabold text-xs sm:text-sm shadow-md shadow-[#1B889A]/30 flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer mt-2"
+            className="w-full py-3 px-4 rounded-2xl bg-[#1B889A] hover:bg-[#156d7b] disabled:opacity-40 disabled:cursor-not-allowed text-white font-extrabold text-xs sm:text-sm shadow-md shadow-[#1B889A]/30 flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer mt-1"
           >
-            <Sparkles className="w-4 h-4" />
-            <span>ورود و تماشای وب‌سایت</span>
+            <span>ورود</span>
+            <ArrowLeft className="w-4 h-4" />
           </button>
 
         </form>
 
-        <div className="pt-2 text-center text-[10px] text-[var(--text-secondary)] font-mono">
-          © ۲۰۲۶ مجله ایدئولوژی مهدویت
+        <div className="pt-1 text-center text-[10px] text-[var(--text-secondary)] font-mono">
+          © ۲۰۲۶ ایدئولوژی مهدویت
         </div>
 
       </motion.div>
